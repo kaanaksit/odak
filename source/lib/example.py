@@ -5,7 +5,7 @@ import sys,odak
 
 __author__  = ('Kaan Akşit')
 
-def ornek():
+def example():
     # Fixed values are set
     onepxtom     = pow(10,-5)
     distance     = 0.3
@@ -33,4 +33,4 @@ def ornek():
     return True
     
 if __name__ == '__main__':
-    sys.exit(ornek())
+    sys.exit(example())

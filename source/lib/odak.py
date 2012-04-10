@@ -8,6 +8,8 @@ from mpl_toolkits.mplot3d import axes3d
 from numpy import *
 from numpy.fft import *
 
+__author__  = ('Kaan Akşit')
+
 class aperture():
     def __init__(self):
         return
