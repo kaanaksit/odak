@@ -1,0 +1,12 @@
+Wave optics and ray tracing library for Python
+
+Author: Kaan Akşit
+Licence: GPLV2
+
+Dependency: matplotlib, pygame, numpy
+
+Currently available methods inside source/lib/odak.py
+
+- Method for Fresnel and Fraunhofer diffractions
+- Method for creating apertures such as circular, rectangular, slits and two slits.
+- Method for plotting crossection, 2D & 3D data
