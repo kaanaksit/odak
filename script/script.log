@@ -1,0 +1,822 @@
+This is pdfTeX, Version 3.1415926-1.40.10 (Web2C 2009) (format=pdflatex 2010.12.12)  15 APR 2011 04:16
+entering extended mode
+ %&-line parsing enabled.
+**script.tex
+(./script.tex
+LaTeX2e <2009/09/24>
+Babel <v3.8l> and hyphenation patterns for english, usenglishmax, dumylang, noh
+yphenation, german-x-2009-06-19, ngerman-x-2009-06-19, ancientgreek, ibycus, ar
+abic, basque, bulgarian, catalan, pinyin, coptic, croatian, czech, danish, dutc
+h, esperanto, estonian, farsi, finnish, french, galician, german, ngerman, mono
+greek, greek, hungarian, icelandic, indonesian, interlingua, irish, italian, ku
+rmanji, latin, latvian, lithuanian, mongolian, mongolian2a, bokmal, nynorsk, po
+lish, portuguese, romanian, russian, sanskrit, serbian, slovak, slovenian, span
+ish, swedish, turkish, ukenglish, ukrainian, uppersorbian, welsh, loaded.
+(./IEEEtran.cls
+Document Class: IEEEtran 2007/03/05 V1.7a by Michael Shell
+-- See the "IEEEtran_HOWTO" manual for usage information.
+-- http://www.michaelshell.org/tex/ieeetran/
+\@IEEEtrantmpdimenA=\dimen102
+\@IEEEtrantmpdimenB=\dimen103
+\@IEEEtrantmpcountA=\count79
+\@IEEEtrantmpcountB=\count80
+\@IEEEtrantmptoksA=\toks14
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 366.
+
+(/usr/share/texmf-dist/tex/latex/psnfss/ot1ptm.fd
+File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
+)
+-- Using 8.5in x 11in (letter) paper.
+-- Using PDF output.
+\@IEEEnormalsizeunitybaselineskip=\dimen104
+-- This is a 9 point document.
+\CLASSINFOnormalsizebaselineskip=\dimen105
+\CLASSINFOnormalsizeunitybaselineskip=\dimen106
+\IEEEnormaljot=\dimen107
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <5> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <7> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <8> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8.5> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <8.5> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <14> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <17> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <17> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <20> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 724.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <20> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 724.
+\IEEEilabelindentA=\dimen108
+\IEEEilabelindentB=\dimen109
+\IEEEilabelindent=\dimen110
+\IEEEelabelindent=\dimen111
+\IEEEdlabelindent=\dimen112
+\IEEElabelindent=\dimen113
+\IEEEiednormlabelsep=\dimen114
+\IEEEiedmathlabelsep=\dimen115
+\IEEEiedtopsep=\skip41
+\c@section=\count81
+\c@subsection=\count82
+\c@subsubsection=\count83
+\c@paragraph=\count84
+\c@IEEEsubequation=\count85
+\abovecaptionskip=\skip42
+\belowcaptionskip=\skip43
+\c@figure=\count86
+\c@table=\count87
+\@IEEEeqnnumcols=\count88
+\@IEEEeqncolcnt=\count89
+\@IEEEtmpitemindent=\dimen116
+\c@IEEEbiography=\count90
+\@IEEEtranrubishbin=\box26
+) (/usr/share/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count91
+\float@exts=\toks15
+\float@box=\box27
+\@float@everytoks=\toks16
+\@floatcapt=\box28
+)
+(/usr/share/texmf-dist/tex/latex/ltxmisc/url.sty
+\Urlmuskip=\muskip10
+Package: url 2006/04/12  ver 3.3  Verb mode for urls, etc.
+) (./lettrine.sty
+File: lettrine.sty 2007/08/08 v1.62 (Daniel Flipo)
+
+(/usr/share/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks17
+)
+\c@DefaultLines=\count92
+\DefaultFindent=\dimen117
+\DefaultNindent=\dimen118
+\DefaultSlope=\dimen119
+\L@lbox=\box29
+\L@tbox=\box30
+\c@L@lines=\count93
+\L@Pindent=\dimen120
+\L@Findent=\dimen121
+\L@Nindent=\dimen122
+\L@lraise=\dimen123
+\L@first=\dimen124
+\L@next=\dimen125
+\L@slope=\dimen126
+\L@height=\dimen127
+\LettrineWidth=\dimen128
+
+Loading lettrine.cfg
+(/usr/share/texmf-dist/tex/latex/lettrine/lettrine.cfg))
+(/usr/share/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(/usr/share/texmf-dist/tex/latex/latexconfig/graphics.cfg
+File: graphics.cfg 2009/08/28 v1.8 graphics configuration of TeX Live
+)
+Package graphics Info: Driver file: pdftex.def on input line 91.
+
+(/usr/share/texmf-dist/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2009/08/25 v0.04m Graphics/color for pdfTeX
+\Gread@gobject=\count94
+))
+\Gin@req@height=\dimen129
+\Gin@req@width=\dimen130
+)
+(/usr/share/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2000/07/18 v2.13 AMS math features
+\@mathmargin=\skip44
+
+For additional information on amsmath, use the `?' option.
+(/usr/share/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01
+
+(/usr/share/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0
+\@emptytoks=\toks18
+\ex@=\dimen131
+))
+(/usr/share/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d
+\pmbraise@=\dimen132
+)
+(/usr/share/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 1999/12/14 v2.01 operator names
+)
+\inf@bad=\count95
+LaTeX Info: Redefining \frac on input line 211.
+\uproot@=\count96
+\leftroot@=\count97
+LaTeX Info: Redefining \overline on input line 307.
+\classnum@=\count98
+\DOTSCASE@=\count99
+LaTeX Info: Redefining \ldots on input line 379.
+LaTeX Info: Redefining \dots on input line 382.
+LaTeX Info: Redefining \cdots on input line 467.
+\Mathstrutbox@=\box31
+\strutbox@=\box32
+\big@size=\dimen133
+LaTeX Font Info:    Redeclaring font encoding OML on input line 567.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 568.
+\macc@depth=\count100
+\c@MaxMatrixCols=\count101
+\dotsspace@=\muskip11
+\c@parentequation=\count102
+\dspbrk@lvl=\count103
+\tag@help=\toks19
+\row@=\count104
+\column@=\count105
+\maxfields@=\count106
+\andhelp@=\toks20
+\eqnshift@=\dimen134
+\alignsep@=\dimen135
+\tagshift@=\dimen136
+\tagwidth@=\dimen137
+\totwidth@=\dimen138
+\lineht@=\dimen139
+\@envbody=\toks21
+\multlinegap=\skip45
+\multlinetaggap=\skip46
+\mathdisplay@stack=\toks22
+LaTeX Info: Redefining \[ on input line 2666.
+LaTeX Info: Redefining \] on input line 2667.
+)
+(/usr/share/texmf-dist/tex/latex/listings/listings.sty
+\lst@mode=\count107
+\lst@gtempboxa=\box33
+\lst@token=\toks23
+\lst@length=\count108
+\lst@currlwidth=\dimen140
+\lst@column=\count109
+\lst@pos=\count110
+\lst@lostspace=\dimen141
+\lst@width=\dimen142
+\lst@newlines=\count111
+\lst@lineno=\count112
+\lst@maxwidth=\dimen143
+
+(/usr/share/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2007/02/22 1.4 (Carsten Heinz)
+\c@lstnumber=\count113
+\lst@skipnumbers=\count114
+\lst@framebox=\box34
+)
+(/usr/share/texmf-dist/tex/latex/listings/listings.cfg
+File: listings.cfg 2007/02/22 1.4 listings configuration
+))
+Package: listings 2007/02/22 1.4 (Carsten Heinz)
+
+(/usr/share/texmf-dist/tex/latex/subfig/subfig.sty
+Package: subfig 2005/06/28 ver: 1.3 subfig package
+
+(/usr/share/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2009/10/09 v3.1k Customizing captions (AR)
+
+(/usr/share/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2009/10/09 v3.1k caption3 kernel (AR)
+\captionmargin=\dimen144
+\captionmargin@=\dimen145
+\captionwidth=\dimen146
+\caption@indent=\dimen147
+\caption@parindent=\dimen148
+\caption@hangindent=\dimen149
+Package caption Info: Unknown document class (or package),
+(caption)             standard defaults will be used on input line 1068.
+)
+
+Package caption Warning: Unsupported document class (or package) detected,
+(caption)                usage of the caption package is not recommended.
+See the caption package documentation for explanation.
+
+Package caption Info: \@makecaption = \long macro:#1#2->\ifx \@captype \@IEEEta
+blestring \footnotesize \begin {center}{\normalfont \footnotesize #1}\\{\normal
+font \footnotesize \scshape #2}\end {center}\@IEEEtablecaptionsepspace \else \@
+IEEEfigurecaptionsepspace \setbox \@tempboxa \hbox {\normalfont \footnotesize {
+#1.}~~ #2}\ifdim \wd \@tempboxa >\hsize \setbox \@tempboxa \hbox {\normalfont \
+footnotesize {#1.}~~ }\parbox [t]{\hsize }{\normalfont \footnotesize \noindent 
+\unhbox \@tempboxa #2}\else \ifCLASSOPTIONconference \hbox to\hsize {\normalfon
+t \footnotesize \hfil \box \@tempboxa \hfil }\else \hbox to\hsize {\normalfont 
+\footnotesize \box \@tempboxa \hfil }\fi \fi \fi .
+\c@ContinuedFloat=\count115
+Package caption Info: float package is loaded.
+Package caption Info: listings package is loaded.
+)
+\c@KVtest=\count116
+\sf@farskip=\skip47
+\sf@captopadj=\dimen150
+\sf@capskip=\skip48
+\sf@nearskip=\skip49
+\c@subfigure=\count117
+\c@subfigure@save=\count118
+\c@lofdepth=\count119
+\c@subtable=\count120
+\c@subtable@save=\count121
+\c@lotdepth=\count122
+\sf@top=\skip50
+\sf@bottom=\skip51
+) (/usr/share/texmf-dist/tex/latex/hyperref/hyperref.sty
+Package: hyperref 2009/12/28 v6.79z Hypertext links for LaTeX
+
+(/usr/share/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2009/04/10 v2.0 Provides the ifpdf switch (HO)
+Package ifpdf Info: pdfTeX in pdf mode detected.
+)
+(/usr/share/texmf-dist/tex/generic/oberdiek/ifvtex.sty
+Package: ifvtex 2008/11/04 v1.4 Switches for detecting VTeX and its modes (HO)
+Package ifvtex Info: VTeX not detected.
+)
+(/usr/share/texmf-dist/tex/generic/ifxetex/ifxetex.sty
+Package: ifxetex 2009/01/23 v0.5 Provides ifxetex conditional
+)
+(/usr/share/texmf-dist/tex/latex/oberdiek/hycolor.sty
+Package: hycolor 2009/12/12 v1.6 Color options of hyperref/bookmark (HO)
+
+(/usr/share/texmf-dist/tex/latex/oberdiek/xcolor-patch.sty
+Package: xcolor-patch 2009/12/12 xcolor patch
+))
+\@linkdim=\dimen151
+\Hy@linkcounter=\count123
+\Hy@pagecounter=\count124
+
+(/usr/share/texmf-dist/tex/latex/hyperref/pd1enc.def
+File: pd1enc.def 2009/12/28 v6.79z Hyperref: PDFDocEncoding definition (HO)
+)
+(/usr/share/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
+Package: pdftexcmds 2009/12/12 v0.7 Utility functions of pdfTeX for LuaTeX (HO)
+
+
+(/usr/share/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2007/09/09 v1.2 Providing info/warning/message (HO)
+)
+(/usr/share/texmf-dist/tex/generic/oberdiek/ifluatex.sty
+Package: ifluatex 2009/04/17 v1.2 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+(/usr/share/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2009/12/12 v1.1 LaTeX kernel commands for general use (HO)
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+)
+(/usr/share/texmf-dist/tex/generic/oberdiek/etexcmds.sty
+Package: etexcmds 2007/12/12 v1.2 Prefix for e-TeX command names (HO)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+)
+(/usr/share/texmf-dist/tex/generic/oberdiek/intcalc.sty
+Package: intcalc 2007/09/27 v1.1 Expandable integer calculations (HO)
+)
+(/usr/share/texmf-dist/tex/latex/latexconfig/hyperref.cfg
+File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
+)
+(/usr/share/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2009/12/08 v3.6 Keyval support for LaTeX options (HO)
+
+(/usr/share/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+Package: kvsetkeys 2009/12/22 v1.7 Key value parser (HO)
+))
+Package hyperref Info: Option `colorlinks' set `true' on input line 3076.
+Package hyperref Info: Hyper figures OFF on input line 3157.
+Package hyperref Info: Link nesting OFF on input line 3162.
+Package hyperref Info: Hyper index ON on input line 3165.
+Package hyperref Info: Plain pages OFF on input line 3172.
+Package hyperref Info: Backreferencing OFF on input line 3177.
+
+Implicit mode ON; LaTeX internals redefined
+Package hyperref Info: Bookmarks ON on input line 3373.
+LaTeX Info: Redefining \url on input line 3610.
+(/usr/share/texmf-dist/tex/generic/oberdiek/bitset.sty
+Package: bitset 2007/09/28 v1.0 Data type bit set (HO)
+
+(/usr/share/texmf-dist/tex/generic/oberdiek/bigintcalc.sty
+Package: bigintcalc 2007/11/11 v1.1 Expandable big integer calculations (HO)
+))
+\Fld@menulength=\count125
+\Field@Width=\dimen152
+\Fld@charsize=\dimen153
+\Field@toks=\toks24
+Package hyperref Info: Hyper figures OFF on input line 4570.
+Package hyperref Info: Link nesting OFF on input line 4575.
+Package hyperref Info: Hyper index ON on input line 4578.
+Package hyperref Info: backreferencing OFF on input line 4585.
+Package hyperref Info: Link coloring ON on input line 4588.
+Package hyperref Info: Link coloring with OCG OFF on input line 4595.
+Package hyperref Info: PDF/A mode OFF on input line 4600.
+
+(/usr/share/texmf-dist/tex/generic/oberdiek/atbegshi.sty
+Package: atbegshi 2009/12/02 v1.10 At begin shipout hook (HO)
+)
+\Hy@abspage=\count126
+\c@Item=\count127
+\c@Hfootnote=\count128
+)
+*hyperref using default driver hpdftex*
+(/usr/share/texmf-dist/tex/latex/hyperref/hpdftex.def
+File: hpdftex.def 2009/12/28 v6.79z Hyperref driver for pdfTeX
+
+(/usr/share/texmf-dist/tex/generic/oberdiek/atveryend.sty
+Package: atveryend 2009/12/11 v1.3 Hooks at very end of document (HO)
+Package atveryend Info: \enddocument detected (standard).
+)
+\Fld@listcount=\count129
+\c@bookmark@seq@number=\count130
+
+(/usr/share/texmf-dist/tex/generic/oberdiek/rerunfilecheck.sty
+Package: rerunfilecheck 2009/12/18 v1.2 Rerun checks for auxiliary files (HO)
+
+(/usr/share/texmf-dist/tex/generic/oberdiek/uniquecounter.sty
+Package: uniquecounter 2009/12/18 v1.1 Provides unlimited unique counter (HO)
+)
+Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 3
+26.
+)
+\Hy@SectionHShift=\skip52
+)
+(/usr/share/texmf-dist/tex/latex/psnfss/newcent.sty
+Package: newcent 2005/04/12 PSNFSS-v9.2a (SPQR) 
+) (./script.aux)
+\openout1 = `script.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Try loading font information for OT1+pnc on input line 19.
+
+(/usr/share/texmf-dist/tex/latex/psnfss/ot1pnc.fd
+File: ot1pnc.fd 2001/06/04 font definitions for OT1/pnc.
+)
+LaTeX Font Info:    Font shape `OT1/pnc/bx/n' in size <5> not available
+(Font)              Font shape `OT1/pnc/b/n' tried instead on input line 19.
+LaTeX Font Info:    Font shape `OT1/pnc/bx/it' in size <5> not available
+(Font)              Font shape `OT1/pnc/b/it' tried instead on input line 19.
+LaTeX Font Info:    Font shape `OT1/pnc/bx/n' in size <7> not available
+(Font)              Font shape `OT1/pnc/b/n' tried instead on input line 19.
+LaTeX Font Info:    Font shape `OT1/pnc/bx/it' in size <7> not available
+(Font)              Font shape `OT1/pnc/b/it' tried instead on input line 19.
+LaTeX Font Info:    Font shape `OT1/pnc/bx/n' in size <8> not available
+(Font)              Font shape `OT1/pnc/b/n' tried instead on input line 19.
+LaTeX Font Info:    Font shape `OT1/pnc/bx/it' in size <8> not available
+(Font)              Font shape `OT1/pnc/b/it' tried instead on input line 19.
+LaTeX Font Info:    Font shape `OT1/pnc/bx/n' in size <8.5> not available
+(Font)              Font shape `OT1/pnc/b/n' tried instead on input line 19.
+LaTeX Font Info:    Font shape `OT1/pnc/bx/it' in size <8.5> not available
+(Font)              Font shape `OT1/pnc/b/it' tried instead on input line 19.
+LaTeX Font Info:    Font shape `OT1/pnc/bx/n' in size <9> not available
+(Font)              Font shape `OT1/pnc/b/n' tried instead on input line 19.
+LaTeX Font Info:    Font shape `OT1/pnc/bx/it' in size <9> not available
+(Font)              Font shape `OT1/pnc/b/it' tried instead on input line 19.
+LaTeX Font Info:    Font shape `OT1/pnc/bx/n' in size <10> not available
+(Font)              Font shape `OT1/pnc/b/n' tried instead on input line 19.
+LaTeX Font Info:    Font shape `OT1/pnc/bx/it' in size <10> not available
+(Font)              Font shape `OT1/pnc/b/it' tried instead on input line 19.
+LaTeX Font Info:    Font shape `OT1/pnc/bx/n' in size <14> not available
+(Font)              Font shape `OT1/pnc/b/n' tried instead on input line 19.
+LaTeX Font Info:    Font shape `OT1/pnc/bx/it' in size <14> not available
+(Font)              Font shape `OT1/pnc/b/it' tried instead on input line 19.
+LaTeX Font Info:    Font shape `OT1/pnc/bx/n' in size <17> not available
+(Font)              Font shape `OT1/pnc/b/n' tried instead on input line 19.
+LaTeX Font Info:    Font shape `OT1/pnc/bx/it' in size <17> not available
+(Font)              Font shape `OT1/pnc/b/it' tried instead on input line 19.
+LaTeX Font Info:    Font shape `OT1/pnc/bx/n' in size <20> not available
+(Font)              Font shape `OT1/pnc/b/n' tried instead on input line 19.
+LaTeX Font Info:    Font shape `OT1/pnc/bx/it' in size <20> not available
+(Font)              Font shape `OT1/pnc/b/it' tried instead on input line 19.
+
+(/usr/share/texmf-dist/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count131
+\scratchdimen=\dimen154
+\scratchbox=\box35
+\nofMPsegments=\count132
+\nofMParguments=\count133
+\everyMPshowfont=\toks25
+\MPscratchCnt=\count134
+\MPscratchDim=\dimen155
+\MPnumerator=\count135
+\everyMPtoPDFconversion=\toks26
+)
+\c@lstlisting=\count136
+Package caption Info: Begin \AtBeginDocument code.
+Package caption3 Info: subfig package 1.2 or 1.3 is loaded.
+LaTeX Info: Redefining \subref on input line 19.
+Package caption Info: Incompatible package detected (regarding \@caption).
+(caption)             \@caption = \long macro:#1[#2]#3->\expandafter \ifx \csna
+me if@capstart\expandafter \endcsname \csname iftrue\endcsname \global \let \@c
+urrentHref \hc@currentHref \else \hyper@makecurrent {\@captype }\fi \@ifundefin
+ed {NR@gettitle}{\def \@currentlabelname {#2}}{\NR@gettitle {#2}}\par \addconte
+ntsline {\csname ext@#1\endcsname }{#1}{\protect \numberline {\csname the#1\end
+csname }{\ignorespaces #2}}\begingroup \@parboxrestore \if@minipage \@setminipa
+ge \fi \normalsize \expandafter \ifx \csname if@capstart\expandafter \endcsname
+ \csname iftrue\endcsname \global \@capstartfalse \@makecaption {\csname fnum@#
+1\endcsname }{\ignorespaces #3}\else \@makecaption {\csname fnum@#1\endcsname }
+{\ignorespaces \ifHy@nesting \expandafter \hyper@@anchor \expandafter {\@curren
+tHref }{#3}\else \Hy@raisedlink {\expandafter \hyper@@anchor \expandafter {\@cu
+rrentHref }{\relax }}#3\fi }\fi \par \endgroup .
+
+
+Package caption Warning: \caption will not be redefined since it's already
+(caption)                redefined by a document class or package which is
+(caption)                unknown to the caption package.
+See the caption package documentation for explanation.
+
+Package caption Info: hyperref package is loaded.
+Package caption Info: End \AtBeginDocument code.
+(/usr/share/texmf-dist/tex/latex/graphics/color.sty
+Package: color 2005/11/14 v1.0j Standard LaTeX Color (DPC)
+
+(/usr/share/texmf-dist/tex/latex/latexconfig/color.cfg
+File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
+)
+Package color Info: Driver file: pdftex.def on input line 130.
+)
+Package hyperref Info: Link coloring ON on input line 19.
+
+(/usr/share/texmf-dist/tex/latex/hyperref/nameref.sty
+Package: nameref 2009/12/18 v2.35 Cross-referencing by name of section
+
+(/usr/share/texmf-dist/tex/latex/oberdiek/refcount.sty
+Package: refcount 2008/08/11 v3.1 Data extraction from references (HO)
+)
+(/usr/share/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
+Package: gettitlestring 2009/12/18 v1.3 Cleanup title references (HO)
+)
+\c@section@level=\count137
+)
+LaTeX Info: Redefining \ref on input line 19.
+LaTeX Info: Redefining \pageref on input line 19.
+ (./script.out) (./script.out)
+\@outlinefile=\write3
+\openout3 = `script.out'.
+
+\AtBeginShipoutBox=\box36
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 32.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 32.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 32.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <9> on input line 41.
+
+Underfull \hbox (badness 6510) in paragraph at lines 69--70
+[]\OT1/pnc/m/n/9 Figure [][]1[][] shows dif-fer-ent avail-able aper-tures from
+ []
+
+<img/circle.png, id=122, 578.16pt x 433.62pt>
+File: img/circle.png Graphic file (type png)
+ <use img/circle.png>
+<img/rectangle.png, id=124, 578.16pt x 433.62pt>
+File: img/rectangle.png Graphic file (type png)
+ <use img/rectangle.png>
+<img/twoslits.png, id=125, 578.16pt x 433.62pt>
+File: img/twoslits.png Graphic file (type png)
+ <use img/twoslits.png>
+<img/sinamgrating.png, id=126, 578.16pt x 433.62pt>
+File: img/sinamgrating.png Graphic file (type png)
+ <use img/sinamgrating.png>
+Underfull \hbox (badness 10000) in paragraph at lines 76--76
+[]\OT1/pnc/m/n/8 (d)
+ []
+
+
+Underfull \hbox (badness 1502) in paragraph at lines 82--83
+[]\OT1/pnc/m/n/9 Explanation of each func-tion is given in sub-sec-tions
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 82--83
+
+ []
+
+LaTeX Font Info:    Try loading font information for OMS+pnc on input line 84.
+(/usr/share/texmf-dist/tex/latex/psnfss/omspnc.fd
+File: omspnc.fd 
+)
+LaTeX Font Info:    Font shape `OMS/pnc/m/n' in size <8> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 84.
+ [1{/usr/share/texmf/fonts/map/pdftex/updmap/pdftex.map}
+
+
+ <./img/circle.png> <./img/rectangle.png> <./img/twoslits.png> <./img/sinamgrat
+ing.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 85--86
+ \OT1/pnc/m/it/9 1) odak.aperture.circle(nx,ny,radius): [][][] \OT1/pnc/m/n/9 n
+x de-fines the
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 85--86
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 87--88
+ \OT1/pnc/m/it/9 2) odak.aperture.lens(self,nx,ny,focal,wavelength): [][][] \OT
+1/pnc/m/n/9 nx
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 87--88
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 89--90
+ \OT1/pnc/m/it/9 3) odak.aperture.rectangle(nx,ny,side): [][][] \OT1/pnc/m/n/9 
+nx de-fines the
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 89--90
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 91--92
+ \OT1/pnc/m/it/9 4) odak.aperture.sinamgrating(self,nx,ny,grating): [][][] \OT1
+/pnc/m/n/9 nx
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 91--92
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 93--94
+
+ []
+
+
+Underfull \hbox (badness 1867) in paragraph at lines 96--97
+[]\OT1/pnc/m/n/9 This class con-tains pre-defined callable func-tions for
+ []
+
+
+Overfull \hbox (20.63411pt too wide) in paragraph at lines 108--109
+ \OT1/pnc/m/it/9 1) odak.diffractions.fresnelfraunhofer(obj,wavelength,distance
+):
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 108--109
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 110--111
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 112--113
+
+ []
+
+
+Overfull \hbox (5.72119pt too wide) in paragraph at lines 114--115
+ \OT1/pnc/m/it/9 4) odak.diffractions.talbotcalculate(obj,grating,wavelength):
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 114--115
+
+ []
+
+
+Package amsmath Warning: Foreign command \over;
+(amsmath)                \frac or \genfrac should be used instead
+(amsmath)                 on input line 151.
+
+(/usr/share/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2004/09/05 1.3 listings language file
+) (../source/lib/odak.py
+LaTeX Font Info:    Font shape `OMS/pnc/m/n' in size <9> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 74.
+) [2] (../source/lib/odak.py
+LaTeX Font Info:    Try loading font information for OML+pnc on input line 58.
+ (/usr/share/texmf-dist/tex/latex/psnfss/omlpnc.fd
+File: omlpnc.fd 
+)
+LaTeX Font Info:    Font shape `OML/pnc/m/n' in size <9> not available
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 58.
+) <img/cooleytukey.png, id=199, 401.5pt x 265.99374pt>
+File: img/cooleytukey.png Graphic file (type png)
+
+<use img/cooleytukey.png> (../source/lib/sample.py)
+<img/rectangle1mm.png, id=203, 578.16pt x 433.62pt>
+File: img/rectangle1mm.png Graphic file (type png)
+ <use img/rectangle1mm.png>
+<img/q1d100um.png, id=204, 578.16pt x 433.62pt>
+File: img/q1d100um.png Graphic file (type png)
+ <use img/q1d100um.png>
+<img/q1i100um.png, id=205, 578.16pt x 433.62pt>
+File: img/q1i100um.png Graphic file (type png)
+ <use img/q1i100um.png>
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [3 <./img/cooleytukey.png (PNG copy)> <./img/rectangle1mm.png> <./img/q1d100um
+.png>]
+<img/q1d1mm.png, id=253, 578.16pt x 433.62pt>
+File: img/q1d1mm.png Graphic file (type png)
+ <use img/q1d1mm.png>
+<img/q1i1mm.png, id=254, 578.16pt x 433.62pt>
+File: img/q1i1mm.png Graphic file (type png)
+ <use img/q1i1mm.png>
+<img/q1d10mm.png, id=255, 578.16pt x 433.62pt>
+File: img/q1d10mm.png Graphic file (type png)
+ <use img/q1d10mm.png>
+<img/q1i10mm.png, id=256, 578.16pt x 433.62pt>
+File: img/q1i10mm.png Graphic file (type png)
+ <use img/q1i10mm.png>
+<img/q1d100mm.png, id=257, 578.16pt x 433.62pt>
+File: img/q1d100mm.png Graphic file (type png)
+ <use img/q1d100mm.png>
+<img/q1i100mm.png, id=258, 578.16pt x 433.62pt>
+File: img/q1i100mm.png Graphic file (type png)
+ <use img/q1i100mm.png>
+<img/q1d1m.png, id=259, 578.16pt x 433.62pt>
+File: img/q1d1m.png Graphic file (type png)
+ <use img/q1d1m.png>
+<img/q1i1m.png, id=260, 578.16pt x 433.62pt>
+File: img/q1i1m.png Graphic file (type png)
+ <use img/q1i1m.png>
+<img/q1d100m.png, id=261, 578.16pt x 433.62pt>
+File: img/q1d100m.png Graphic file (type png)
+ <use img/q1d100m.png>
+<img/q1i100m.png, id=262, 578.16pt x 433.62pt>
+File: img/q1i100m.png Graphic file (type png)
+ <use img/q1i100m.png> [4 <./img/q1i100um.png> <./img/q1d1mm.png> <./img/q1i1mm
+.png> <./img/q1d10mm.png> <./img/q1i10mm.png> <./img/q1d100mm.png> <./img/q1i10
+0mm.png> <./img/q1d1m.png> <./img/q1i1m.png> <./img/q1d100m.png>] (../source/li
+b/sample.py)
+<img/lenstrans.png, id=289, 578.16pt x 433.62pt>
+File: img/lenstrans.png Graphic file (type png)
+ <use img/lenstrans.png>
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+<img/q2d1mm.png, id=290, 578.16pt x 433.62pt>
+File: img/q2d1mm.png Graphic file (type png)
+ <use img/q2d1mm.png>
+<img/q2s1mm.png, id=291, 578.16pt x 433.62pt>
+File: img/q2s1mm.png Graphic file (type png)
+ <use img/q2s1mm.png>
+<img/q2d15mm.png, id=292, 578.16pt x 433.62pt>
+File: img/q2d15mm.png Graphic file (type png)
+ <use img/q2d15mm.png>
+<img/q2s15mm.png, id=293, 578.16pt x 433.62pt>
+File: img/q2s15mm.png Graphic file (type png)
+ <use img/q2s15mm.png>
+<img/q2d100mm.png, id=294, 578.16pt x 433.62pt>
+File: img/q2d100mm.png Graphic file (type png)
+ <use img/q2d100mm.png> [5 <./img/q1i100m.png> <./img/lenstrans.png> <./img/q2d
+1mm.png> <./img/q2s1mm.png> <./img/q2d15mm.png> <./img/q2s15mm.png>]
+<img/q2s100mm.png, id=330, 578.16pt x 433.62pt>
+File: img/q2s100mm.png Graphic file (type png)
+ <use img/q2s100mm.png>
+<img/sinam.png, id=335, 578.16pt x 433.62pt>
+File: img/sinam.png Graphic file (type png)
+ <use img/sinam.png>
+(../source/lib/sample.py) <img/q3d1.png, id=336, 578.16pt x 433.62pt>
+File: img/q3d1.png Graphic file (type png)
+
+<use img/q3d1.png> <img/q3s1.png, id=337, 578.16pt x 433.62pt>
+File: img/q3s1.png Graphic file (type png)
+
+<use img/q3s1.png> <img/q3d2.png, id=338, 578.16pt x 433.62pt>
+File: img/q3d2.png Graphic file (type png)
+
+<use img/q3d2.png>
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [6 <./img/q2d100mm.png> <./img/q2s100mm.png> <./img/sinam.png> <./img/q3d1.png
+> <./img/q3s1.png>] <img/q3s2.png, id=377, 578.16pt x 433.62pt>
+File: img/q3s2.png Graphic file (type png)
+ <use img/q3s2.png>
+(../source/lib/odak.py [7 <./img/q3d2.png> <./img/q3s2.png>])
+(../source/lib/sample.py [8]) (./script.bbl)
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 444.
+ [9
+
+]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 444.
+ (./script.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 444.
+Package rerunfilecheck Info: File `script.out' has not changed.
+(rerunfilecheck)             Checksum: E6FB54131D492A5B6318975C59CFACA0;2061.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 8910 strings out of 493848
+ 135350 string characters out of 3154066
+ 643632 words of memory out of 3000000
+ 11653 multiletter control sequences out of 15000+200000
+ 57216 words of font info for 111 fonts, out of 3000000 for 9000
+ 717 hyphenation exceptions out of 8191
+ 44i,28n,45p,995b,1661s stack positions out of 5000i,500n,10000p,200000b,50000s
+{/usr/share/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmmi5.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/c
+mmi6.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/
+share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmr6.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmr8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/
+share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texmf-dist/fonts/type1/p
+ublic/amsfonts/cm/cmsy8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmsy9.pfb></usr/share/texmf-dist/fonts/type1/urw/ncntrsbk/uncb8a.pfb></usr/s
+hare/texmf-dist/fonts/type1/urw/ncntrsbk/uncbi8a.pfb></usr/share/texmf-dist/fon
+ts/type1/urw/ncntrsbk/uncr8a.pfb></usr/share/texmf-dist/fonts/type1/urw/ncntrsb
+k/uncri8a.pfb>
+Output written on script.pdf (9 pages, 2254781 bytes).
+PDF statistics:
+ 719 PDF objects out of 1000 (max. 8388607)
+ 353 named destinations out of 1000 (max. 500000)
+ 359 words of extra memory for PDF output out of 10000 (max. 10000000)
+

@@ -1,0 +1,46 @@
+\begin{thebibliography}{10}
+
+\bibitem{python}
+``{Python programming language - Official Website},'' April 2011.
+\newblock [online] \url{http://www.python.org/}.
+
+\bibitem{zemax}
+``{Home - ZEMAX: Software for Optical System Design},'' April 2011.
+\newblock [online] \url{http://www.zemax.com/}.
+
+\bibitem{opus}
+``{opus - optical design software},'' April 2011.
+\newblock [online] \url{http://www.maxreason.com/software/optics/opus.html}.
+
+\bibitem{optalix}
+``{OpTaliX: Optical Design Software},'' April 2011.
+\newblock [online] \url{http://www.optenso.com/links/links.html}.
+
+\bibitem{odak}
+``{odak - Wave optics and ray tracing simulation software - Google Project
+  Hosting},'' April 2011.
+\newblock [online] \url{http://code.google.com/p/odak/}.
+
+\bibitem{numpy}
+``{scientific-computing-tools-for-python for Python},'' April 2011.
+\newblock [online] \url{http://numpy.scipy.org/}.
+
+\bibitem{scipy}
+``{SciPy -},'' April 2011.
+\newblock [online] \url{http://www.scipy.org/}.
+
+\bibitem{matplotlib}
+``{matplotlib: python plotting - Matplotlib v1.0.1 documentation},'' April
+  2011.
+\newblock [online] \url{http://matplotlib.sourceforge.net/}.
+
+\bibitem{cooleytukey}
+``{Cooley-Tukey FFT algorith- Wikipedia, the free encyclopaedia},'' April 2011.
+\newblock [online]
+  \url{http://en.wikipedia.org/wiki/Cooley%E2%80%93Tukey_FFT_algorithm}.
+
+\bibitem{goodman2005introduction}
+J.~Goodman, {\em {Introduction to Fourier optics}}.
+\newblock Roberts \& Company Publishers, 2005.
+
+\end{thebibliography}
