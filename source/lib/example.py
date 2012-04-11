@@ -13,22 +13,31 @@ def example():
     aperturesize = 40
     pxx          = 128
     pxy          = 128
-    # Defining the aperture
+    diffrac      = odak.diffractions()
     aperture     = odak.aperture()
+    beam         = odak.beams()
+    # Defining the aperture
     rectangle    = aperture.rectangle(pxx,pxy,aperturesize)
     gaussian     = aperture.gaussian(pxx,pxy,aperturesize)
     circle       = aperture.circle(pxx,pxy,aperturesize)
-    aperture.show(rectangle,onepxtom,wavelength,distance,'Aperture')
-#    aperture.show3d(circle)
+    #aperture.show(rectangle,onepxtom,wavelength,'Aperture')
+    # Defining a diverging spherical wave
+    focal        = 0.0001
+    for distance in xrange(1,10):
+        # Focal point distance fromn the origin of the spherical wave
+        distance  *= 0.00001
+        spherical  = beam.spherical(pxx,pxy,distance,wavelength,onepxtom,focal,1,'converging')
+        aperture.show(diffrac.intensity(spherical,onepxtom),onepxtom,wavelength,'Detector at %s m' % distance)
+    sys.exit()
+    # Sample Fresnel and Fraunhofer region calculation of the given aperture
     for distance in xrange(1,10):
         distance    *= 0.01
-        print 'lambda*d/w = %s' % (wavelength*distance/(aperturesize*onepxtom))
+        print 'lambda*d/w = %s m' % (wavelength*distance/(aperturesize*onepxtom))
         # Calculating far field behaviour
-        diffrac      = odak.diffractions()
         output       = diffrac.fresnelfraunhofer(rectangle,wavelength,distance,onepxtom,aperturesize)
         # Calculating the fresnel number
         fresnelno    = diffrac.fresnelnumber(aperturesize,onepxtom,wavelength,distance)
-        aperture.show(diffrac.intensity(output,onepxtom),onepxtom,wavelength,distance,'Distance: %s m Wavelength: %s m Fresnel Number: %s'% (distance,wavelength,fresnelno))   
+        aperture.show(diffrac.intensity(output,onepxtom),onepxtom,wavelength,'Distance: %s m Wavelength: %s m Fresnel Number: %s'% (distance,wavelength,fresnelno))   
         aperture.showrow(diffrac.intensity(output,onepxtom),wavelength,onepxtom,distance)
     return True
     

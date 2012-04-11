@@ -58,15 +58,13 @@ class aperture():
             for j in xrange(ny):   
                 obj[i,j] = 1/pi/pow(sigma,2)*exp(-float(pow(i-nx/2,2)+pow(j-ny/2,2))/2/pow(sigma,2))
         return obj
-    def show(self,obj,pixeltom,wavelength,distance,title='Detector'):
+    def show(self,obj,pixeltom,wavelength,title='Detector'):
         # Plots a detector showing the given object
         plt.figure(),plt.title(title)
         nx,ny = obj.shape
         # Number of the ticks to be shown both in x and y axes
-        a     = 5
-#        plt.xticks(nx/a*(arange(a)+1),nx/a*(arange(a)+1)*pixeltom)
-#        plt.yticks(ny/a*(arange(a)+1),ny/a*(arange(a)+1)*pixeltom)
-        plt.imshow(abs(obj),cmap=matplotlib.cm.jet)
+        img = plt.imshow(abs(obj),cmap=matplotlib.cm.jet)
+        plt.colorbar(img,orientation='horizontal')
         plt.show()
         return True
     def show3d(self,obj):
@@ -74,7 +72,7 @@ class aperture():
         fig     = plt.figure()
         ax      = fig.gca(projection='3d')
         X,Y     = meshgrid(arange(nx),arange(ny))
-        surf = ax.plot_surface(X, Y, abs(obj), rstride=1, cstride=1, cmap=matplotlib.cm.jet,linewidth=0, antialiased=False)
+        surf    = ax.plot_surface(X, Y, abs(obj), rstride=1, cstride=1, cmap=matplotlib.cm.jet,linewidth=0, antialiased=False)
         fig.colorbar(surf, shrink=0.5, aspect=5)
         plt.show()
         return True
@@ -83,13 +81,27 @@ class aperture():
         nx,ny = obj.shape
         a     = 5
         plt.figure()
-#        plt.xticks(nx/a*(arange(a)+1),nx/a*(arange(a)+1)*pixeltom/wavelength/distance)
         plt.plot(arange(-nx/2,nx/2)*pixeltom,abs(obj[nx/2,:]))
         plt.show()
         return True
 
+class beams():
+    def __init(self):
+        return
+    def spherical(self,nx,ny,distance,wavelength,pixeltom,focal,amplitude=1,type='diverging'):
+        # Spherical wave
+        obj = zeros((nx,ny),dtype=complex)
+        k   = 2*pi/wavelength
+        X,Y = mgrid[-nx/2:nx/2,-ny/2:ny/2]*pixeltom
+        if type == 'diverging':
+            r = sqrt(pow(X,2)+pow(Y,2)+pow(distance,2))
+        elif type == 'converging':
+            r = sqrt(pow(X,2)+pow(Y,2)+pow(focal-distance,2)) 
+        U   = amplitude/r*exp(-1j*k*r)
+        return U
+
 class diffractions():
-    def __init__(selfparams):
+    def __init__(self):
         return
     def fresnelfraunhofer(self,wave,wavelength,distance,pixeltom,aperturesize):
         nu,nv  = wave.shape
@@ -98,7 +110,7 @@ class diffractions():
         Z      = pow(X,2)+pow(Y,2)
         distancecritical = pow(aperturesize*pixeltom,2)*2/wavelength
         print 'Critical distance of the system is %s m. Distance of the detector is %s m.' % (distancecritical,distance)
-        # Convolution kernel for Fresnel, Fourier multiplier for Fraunhofer
+        # Convolution kernel for free space
         h      = exp(1j*k*distance)/sqrt(1j*wavelength*distance)*exp(1j*k*0.5/distance*Z)
         qpf    = exp(-1j*k*0.5/distance*Z)
         if distancecritical < distance:
