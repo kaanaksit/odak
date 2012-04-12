@@ -88,16 +88,29 @@ class aperture():
 class beams():
     def __init(self):
         return
-    def spherical(self,nx,ny,distance,wavelength,pixeltom,focal,amplitude=1,type='diverging'):
+    def spherical(self,nx,ny,distance,wavelength,pixeltom,focal,amplitude=1):
         # Spherical wave
-        obj = zeros((nx,ny),dtype=complex)
-        k   = 2*pi/wavelength
-        X,Y = mgrid[-nx/2:nx/2,-ny/2:ny/2]*pixeltom
-        if type == 'diverging':
-            r = sqrt(pow(X,2)+pow(Y,2)+pow(distance,2))
-        elif type == 'converging':
-            r = sqrt(pow(X,2)+pow(Y,2)+pow(focal-distance,2)) 
-        U   = amplitude/r*exp(-1j*k*r)
+        distance = abs(focal-distance)
+        k        = 2*pi/wavelength
+        X,Y      = mgrid[-nx/2:nx/2,-ny/2:ny/2]*pixeltom
+        r        = sqrt(pow(X,2)+pow(Y,2)+pow(distance,2)) 
+        U        = amplitude/r*exp(-1j*k*r)
+        return U
+    def gaussian(self,nx,ny,distance,wavelength,pixeltom,amplitude,waistsize,focal=0):
+        # Gaussian beam
+        distance = abs(distance-focal)
+        X,Y      = mgrid[-nx/2:nx/2,-ny/2:ny/2]*pixeltom
+        ro       = sqrt(pow(X,2)+pow(Y,2))
+        z0       = pow(waistsize,2)*pi/wavelength
+        A0       = amplitude/(1j*z0)
+        if distance == 0:
+            U = A0*exp(-pow(ro,2)/pow(waistsize,2))
+            return U
+        k        = 2*pi/wavelength
+        R        = distance*(1+pow(z0/distance,2))
+        W        = waistsize*sqrt(1+pow(distance/z0,2))
+        ksi      = 1./arctan(distance/z0)
+        U        = A0*waistsize/W*exp(-pow(ro,2)/pow(W,2))*exp(-1j*k*distance-1j*pow(ro,2)/2/R+1j*ksi)
         return U
 
 class diffractions():
@@ -118,8 +131,7 @@ class diffractions():
         result = fftshift(ifft2(fft2(wave)*fft2(h)))
         return result
     def fresnelnumber(self,aperturesize,pixeltom,wavelength,distance):
-        fresnelno = pow(aperturesize*pixeltom,2)/wavelength/distance
-        return fresnelno
+        return  pow(aperturesize*pixeltom,2)/wavelength/distance
     def intensity(self,obj,pixeltom):
         return abs(pow(obj,2))*pow(pixeltom,2)*0.5*8.854*pow(10,-12)*299792458
 
