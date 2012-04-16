@@ -166,8 +166,8 @@ class diffractions():
         # Convolution kernel for free space
         h      = exp(1j*k*distance)/sqrt(1j*wavelength*distance)*exp(1j*k*0.5/distance*Z)
         qpf    = exp(-1j*k*0.5/distance*Z)
-#        if distancecritical < distance:
-#            wave = wave*qpf
+        if distancecritical < distance:
+            wave = wave*qpf
         result = fftshift(ifft2(fft2(wave)*fft2(h)))
         return result
     def fresnelnumber(self,aperturesize,pixeltom,wavelength,distance):
