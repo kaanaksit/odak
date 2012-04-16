@@ -102,7 +102,7 @@ class aperture():
         nx,ny = obj.shape
         # Number of the ticks to be shown both in x and y axes
         img = plt.imshow(abs(obj),cmap=matplotlib.cm.jet)
-        plt.colorbar(img,orientation='horizontal')
+        plt.colorbar(img,orientation='vertical')
         plt.show()
         return True
     def show3d(self,obj):
@@ -154,6 +154,8 @@ class beams():
 class diffractions():
     def __init__(self):
         return
+    def fft(self,obj):
+        return fftshift(fft2(obj))
     def fresnelfraunhofer(self,wave,wavelength,distance,pixeltom,aperturesize):
         nu,nv  = wave.shape
         k      = 2*pi/wavelength
@@ -163,9 +165,9 @@ class diffractions():
         print 'Critical distance of the system is %s m. Distance of the detector is %s m.' % (distancecritical,distance)
         # Convolution kernel for free space
         h      = exp(1j*k*distance)/sqrt(1j*wavelength*distance)*exp(1j*k*0.5/distance*Z)
-        qpf    = exp(1j*k*0.5/distance*Z)
-        if distancecritical < distance:
-            wave = wave*qpf
+        qpf    = exp(-1j*k*0.5/distance*Z)
+#        if distancecritical < distance:
+#            wave = wave*qpf
         result = fftshift(ifft2(fft2(wave)*fft2(h)))
         return result
     def fresnelnumber(self,aperturesize,pixeltom,wavelength,distance):

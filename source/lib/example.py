@@ -14,11 +14,11 @@ def example():
 
 def example_of_retroreflector():
     onepxtom     = pow(10,-5)
-    distance     = 1
+    distance     = 0.8
     wavelength   = 500*pow(10,-9)
     aperturesize = 40
-    pxx          = 240
-    pxy          = 240
+    pxx          = 480
+    pxy          = 480
     pitch        = 40
     diffrac      = odak.diffractions()
     aperture     = odak.aperture()
@@ -26,18 +26,19 @@ def example_of_retroreflector():
     # Retroreflector corner cube array is created
     retro        = aperture.retroreflector(pxx,pxy,wavelength,pitch)
     aperture.show(retro,onepxtom,wavelength,'Detector')
+    #aperture.show(diffrac.fft(retro),onepxtom,wavelength,'FFT')
     #aperture.show3d(retro)
     # Divergin gaussian beam defined
-    focal        = 0
+    focal        = 0.8
     amplitude    = 1
-    waistsize    = 0.1
+    waistsize    = 50*onepxtom
     gaussianbeam = beam.gaussian(pxx,pxy,distance,wavelength,onepxtom,amplitude,waistsize,focal)
     aperture.show(gaussianbeam,onepxtom,wavelength,'Detector at %s m' % (distance))
     # Output after the gaussian beam reflects from retroreflector
     output1      = gaussianbeam*retro
     aperture.show(output1,onepxtom,wavelength,'Detector')
     # Output at the far distance
-    distance     = 0.8
+    distance     = 0.65
     output2      = diffrac.fresnelfraunhofer(output1,wavelength,distance,onepxtom,aperturesize)
     aperture.show(diffrac.intensity(output2,onepxtom),onepxtom,wavelength,'Detector')
     return True
