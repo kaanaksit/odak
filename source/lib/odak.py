@@ -53,10 +53,48 @@ class aperture():
         return obj
     def gaussian(self,nx,ny,sigma):
         # Creates a 2D gaussian matrix
-        obj=zeros((nx,ny),dtype=complex)
+        obj = zeros((nx,ny),dtype=complex)
         for i in xrange(nx):
             for j in xrange(ny):   
                 obj[i,j] = 1/pi/pow(sigma,2)*exp(-float(pow(i-nx/2,2)+pow(j-ny/2,2))/2/pow(sigma,2))
+        return obj
+    def retroreflector(self,nx,ny,wavelength,pitch):
+        if nx != ny:
+           nx = max([nx,ny])
+           ny = nx
+        part  = zeros((pitch,int(pitch/2)))
+        for i in xrange(int(sqrt(3)*pitch/6)):
+            for j in xrange(int(pitch/2)):
+                if float(j)/(int(sqrt(3)*pitch/6)-i) < sqrt(3): 
+                    part[i,j]       = int(sqrt(3)*pitch/6)-i
+                    part[pitch-i-1,int(pitch/2)-j-1] = part[i,j]
+        for i in xrange(int(pitch)):
+            for j in xrange(int(pitch/2)):
+                if j != 0:
+                    if float(j)/(int(pitch)-i) < 0.5 and (int(sqrt(3)*pitch/6)-i)/float(j) < 1./sqrt(3):
+                        # Distance to plane determines the level of the amplitude 
+                        # Plane as a line y = slope*x+ pitch 
+                        # Perpendicula line  y = -(1/slope)*x+n
+                        slope     = -0.5
+                        n         = j + (1/slope) * (i)
+                        x1        = (n - pitch/2)/(slope+1/slope)
+                        y1        = -(1/slope)*x1+n 
+                        part[i,j] = int(sqrt(3)*pitch/6) - sqrt( pow(i-x1,2) + pow(j-y1,2) )
+                        part[pitch-i-1,int(pitch/2)-j-1] = part[i,j]
+                else:
+                    if i > int(sqrt(3)*pitch/6):
+                        slope     = -0.5
+                        n         = j + (1/slope) * (i)
+                        x1        = (n - pitch/2)/(slope+1/slope)
+                        y1        = -(1/slope)*x1+n
+                        part[i,j] = int(sqrt(3)*pitch/6) - sqrt( pow(i-x1,2) + pow(j-y1,2) )
+                        part[pitch-i-1,int(pitch/2)-j-1] = part[i,j]
+        left  = part
+        right = part[::-1]
+        part  = append(left,right,axis=1)
+        obj   = tile(part,(nx/pitch,ny/pitch))
+        for i in xrange(nx/pitch/2):
+           obj[(2*i+1)*pitch:(2*i+1)*pitch+pitch,:] = roll(obj[(2*i+1)*pitch:(2*i+1)*pitch+pitch,:],pitch/2)    
         return obj
     def show(self,obj,pixeltom,wavelength,title='Detector'):
         # Plots a detector showing the given object
@@ -71,8 +109,8 @@ class aperture():
         nx,ny   = obj.shape
         fig     = plt.figure()
         ax      = fig.gca(projection='3d')
-        X,Y     = meshgrid(arange(nx),arange(ny))
-        surf    = ax.plot_surface(X, Y, abs(obj), rstride=1, cstride=1, cmap=matplotlib.cm.jet,linewidth=0, antialiased=False)
+        X,Y     = mgrid[0:nx,0:ny]
+        surf    = ax.plot_surface(X,Y,abs(obj), rstride=1, cstride=1, cmap=matplotlib.cm.jet,linewidth=0, antialiased=False)
         fig.colorbar(surf, shrink=0.5, aspect=5)
         plt.show()
         return True
@@ -125,7 +163,7 @@ class diffractions():
         print 'Critical distance of the system is %s m. Distance of the detector is %s m.' % (distancecritical,distance)
         # Convolution kernel for free space
         h      = exp(1j*k*distance)/sqrt(1j*wavelength*distance)*exp(1j*k*0.5/distance*Z)
-        qpf    = exp(-1j*k*0.5/distance*Z)
+        qpf    = exp(1j*k*0.5/distance*Z)
         if distancecritical < distance:
             wave = wave*qpf
         result = fftshift(ifft2(fft2(wave)*fft2(h)))

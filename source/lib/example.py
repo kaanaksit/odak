@@ -7,8 +7,39 @@ __author__  = ('Kaan Akşit')
 
 def example():
     #example_of_gaussian()
-    example_of_spherical_wave()
+    #example_of_spherical_wave()
     #example_of_fresnel_fraunhofer()
+    example_of_retroreflector()
+    return True
+
+def example_of_retroreflector():
+    onepxtom     = pow(10,-5)
+    distance     = 1
+    wavelength   = 500*pow(10,-9)
+    aperturesize = 40
+    pxx          = 240
+    pxy          = 240
+    pitch        = 40
+    diffrac      = odak.diffractions()
+    aperture     = odak.aperture()
+    beam         = odak.beams()
+    # Retroreflector corner cube array is created
+    retro        = aperture.retroreflector(pxx,pxy,wavelength,pitch)
+    aperture.show(retro,onepxtom,wavelength,'Detector')
+    #aperture.show3d(retro)
+    # Divergin gaussian beam defined
+    focal        = 0
+    amplitude    = 1
+    waistsize    = 0.1
+    gaussianbeam = beam.gaussian(pxx,pxy,distance,wavelength,onepxtom,amplitude,waistsize,focal)
+    aperture.show(gaussianbeam,onepxtom,wavelength,'Detector at %s m' % (distance))
+    # Output after the gaussian beam reflects from retroreflector
+    output1      = gaussianbeam*retro
+    aperture.show(output1,onepxtom,wavelength,'Detector')
+    # Output at the far distance
+    distance     = 0.8
+    output2      = diffrac.fresnelfraunhofer(output1,wavelength,distance,onepxtom,aperturesize)
+    aperture.show(diffrac.intensity(output2,onepxtom),onepxtom,wavelength,'Detector')
     return True
 
 def example_of_gaussian():
