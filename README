@@ -7,8 +7,9 @@ Dependency: matplotlib, pygame, numpy
 
 Currently available methods inside source/lib/odak.py
 
-- Method for Fresnel and Fraunhofer diffractions
-- Method for creating apertures such as circular, rectangular, slits, sinusoidal amplitude grating, lens, retroreflector and two slits
-- Method for plotting crossection, 2D & 3D data
-- Method for diverging and converging spherical wave
-- Method for diverging and converging gaussian beam
+- Methods for Fresnel and Fraunhofer diffractions
+- Methods for creating apertures such as circular, rectangular, slits, sinusoidal amplitude grating, lens, retroreflector and two slits
+- Methods for plotting crossection, 2D & 3D data
+- Methods for diverging and converging spherical wave
+- Methods for diverging and converging gaussian beam
+- Methods for Jones Calculus: Linear polarizers, circullar polarizers and quarter wave plates

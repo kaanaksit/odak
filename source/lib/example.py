@@ -9,7 +9,15 @@ def example():
     #example_of_gaussian()
     #example_of_spherical_wave()
     #example_of_fresnel_fraunhofer()
-    example_of_retroreflector()
+    #example_of_retroreflector()
+    example_of_jones_calculus()
+    return True
+
+def example_of_jones_calculus():
+    jones = odak.jonescalculus()
+    print 'A sample linear polarizer: \n', jones.linearpolarizer(1,45,'horizontal')
+    print 'A sample circullar polarizer: \n', jones.circullarpolarizer(1,'lefthanded')
+    print 'A sample quarter wave plate: \n', jones.quarterwaveplate(1,0,'horizontal')
     return True
 
 def example_of_retroreflector():
@@ -17,14 +25,14 @@ def example_of_retroreflector():
     distance     = 0.8
     wavelength   = 500*pow(10,-9)
     aperturesize = 40
-    pxx          = 480
-    pxy          = 480
+    pxx          = 1920
+    pxy          = 1920
     pitch        = 40
     diffrac      = odak.diffractions()
     aperture     = odak.aperture()
     beam         = odak.beams()
     # Retroreflector corner cube array is created
-    retro        = aperture.retroreflector(pxx,pxy,wavelength,pitch)
+    retro        = aperture.retroreflector(pxx,pxy,wavelength,pitch,'exp')
     aperture.show(retro,onepxtom,wavelength,'Detector')
     #aperture.show(diffrac.fft(retro),onepxtom,wavelength,'FFT')
     #aperture.show3d(retro)
@@ -38,9 +46,9 @@ def example_of_retroreflector():
     output1      = gaussianbeam*retro
     aperture.show(output1,onepxtom,wavelength,'Detector')
     # Output at the far distance
-    distance     = 0.65
+    distance     = 1
     output2      = diffrac.fresnelfraunhofer(output1,wavelength,distance,onepxtom,aperturesize)
-    aperture.show(diffrac.intensity(output2,onepxtom),onepxtom,wavelength,'Detector')
+    aperture.show(diffrac.intensity(output2,onepxtom),onepxtom,wavelength,'Detector','normal')
     return True
 
 def example_of_gaussian():

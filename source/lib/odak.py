@@ -7,8 +7,47 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d
 from numpy import *
 from numpy.fft import *
+from math import *
 
 __author__  = ('Kaan Akşit')
+
+class jonescalculus():
+    def __init__(self):
+        return
+    def linearpolarizer(self,input,rotation=0,type='horizontal'):
+        # Linear polarizer, rotation is in degrees and it is counter clockwise
+        rotation = radians(rotation)
+        rotmat   = array([[cos(rotation),sin(rotation)],[-sin(rotation),cos(rotation)]])
+        if type == 'horizontal':
+            linearpolarizer = array([[1,0],[0,0]])
+        if type == 'vertical':
+            linearpolarizer = array([[0,0],[0,1]])
+        linearpolarizer = dot(rotmat.transpose(),dot(linearpolarizer,rotmat))
+        return dot(linearpolarizer,input)
+    def circullarpolarizer(self,input,type='lefthanded'):
+        # Circullar polarizer
+        if type == 'lefthanded':
+            circullarpolarizer = array([[0.5,-0.5j],[0.5j,0.5]])
+        if type == 'righthanded':
+            circullarpolarizer = array([[0.5,0.5j],[-0.5j,0.5]])
+        return dot(circullarpolarizer,input)
+    def quarterwaveplate(self,input,rotation=0,type='horizontal'):
+        # Quarter wave plate, type determines the placing of the fast axis
+        rotation = radians(rotation)
+        rotmat   = array([[cos(rotation),sin(rotation)],[-sin(rotation),cos(rotation)]])
+        if type == 'horizontal':
+            qwp = 0.5*array([[1,-1j],[1j,1]])
+        if type == 'vertical':
+            qwp = 0.5*array([[1,1j],[-1j,1]])   
+        qwp = dot(rotmat.transpose(),dot(qwp,rotmat))        
+        return dot(qwp,input)
+    def halfwaveplate(self,input,rotation):
+        # Half wave plate
+        rotation = radians(rotation)
+        rotmat   = array([[cos(rotation),sin(rotation)],[-sin(rotation),cos(rotation)]])
+        hwp      = array([[1,0)],[0,-1]])
+        hwp      = dot(rotmat.transpose(),dot(hwp,rotmat))
+        return dot(hwp,input)
 
 class aperture():
     def __init__(self):
@@ -58,7 +97,7 @@ class aperture():
             for j in xrange(ny):   
                 obj[i,j] = 1/pi/pow(sigma,2)*exp(-float(pow(i-nx/2,2)+pow(j-ny/2,2))/2/pow(sigma,2))
         return obj
-    def retroreflector(self,nx,ny,wavelength,pitch):
+    def retroreflector(self,nx,ny,wavelength,pitch,type='normal'):
         if nx != ny:
            nx = max([nx,ny])
            ny = nx
@@ -95,13 +134,20 @@ class aperture():
         obj   = tile(part,(nx/pitch,ny/pitch))
         for i in xrange(nx/pitch/2):
            obj[(2*i+1)*pitch:(2*i+1)*pitch+pitch,:] = roll(obj[(2*i+1)*pitch:(2*i+1)*pitch+pitch,:],pitch/2)    
+        k     = 2*pi/wavelength
+        if type == 'exp':
+            obj = exp(1j*k*obj)
         return obj
-    def show(self,obj,pixeltom,wavelength,title='Detector'):
+    def show(self,obj,pixeltom,wavelength,title='Detector',type='normal'):
         # Plots a detector showing the given object
         plt.figure(),plt.title(title)
         nx,ny = obj.shape
         # Number of the ticks to be shown both in x and y axes
-        img = plt.imshow(abs(obj),cmap=matplotlib.cm.jet)
+        if type == 'normal':
+            obj = abs(obj)
+        elif type == 'log':
+            obj = log(abs(obj))
+        img = plt.imshow(obj,cmap=matplotlib.cm.jet)
         plt.colorbar(img,orientation='vertical')
         plt.show()
         return True
@@ -175,9 +221,9 @@ class diffractions():
     def intensity(self,obj,pixeltom):
         return abs(pow(obj,2))*pow(pixeltom,2)*0.5*8.854*pow(10,-12)*299792458
 
-def ana():
-    print 'Odak'    
+def main():
+    print 'Odak by %s' % __author__
     return True
 
 if __name__ == '__main__':
-    sys.exit(ana())
+    sys.exit(main())
