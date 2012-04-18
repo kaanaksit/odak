@@ -41,13 +41,21 @@ class jonescalculus():
             qwp = 0.5*array([[1,1j],[-1j,1]])   
         qwp = dot(rotmat.transpose(),dot(qwp,rotmat))        
         return dot(qwp,input)
-    def halfwaveplate(self,input,rotation):
+    def halfwaveplate(self,input,rotation=0):
         # Half wave plate
         rotation = radians(rotation)
         rotmat   = array([[cos(rotation),sin(rotation)],[-sin(rotation),cos(rotation)]])
         hwp      = array([[1,0)],[0,-1]])
         hwp      = dot(rotmat.transpose(),dot(hwp,rotmat))
         return dot(hwp,input)
+    def birefringentplate(self,input,nx,ny,d,wavelength,rotation=0):
+        # Birefringent plate, d thickness, nx and ny refractive indices
+        rotation = radians(rotation)
+        rotmat   = array([[cos(rotation),sin(rotation)],[-sin(rotation),cos(rotation)]])
+        delta    = 2*pi*(nx-ny)*d/wavelength
+        bfp      = array([[1,0],[0,exp(-1j*delta)]])
+        bfp      = dot(rotmat.transpose(),dot(bfp,rotmat))
+        return
 
 class aperture():
     def __init__(self):
