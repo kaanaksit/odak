@@ -12,4 +12,4 @@ Currently available methods inside source/lib/odak.py
 - Methods for plotting crossection, 2D & 3D data
 - Methods for diverging and converging spherical wave
 - Methods for diverging and converging gaussian beam
-- Methods for Jones Calculus: Linear polarizers, circullar polarizers, quarter wave plates and birefringent
+- Methods for Jones Calculus: Linear polarizers, circullar polarizers, quarter wave plates and birefringent plate
