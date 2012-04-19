@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys,odak
+import sys,odak,math
 
 __author__  = ('Kaan Akşit')
 
@@ -14,10 +14,27 @@ def example():
     return True
 
 def example_of_jones_calculus():
-    jones = odak.jonescalculus()
-    print 'A sample linear polarizer: \n', jones.linearpolarizer(1,45,'horizontal')
+    greenwavelength = 532*pow(10,-9)
+    redwavelength   = 432*pow(10,-9)
+    bluewavelength  = 640*pow(10,-9)
+    nx              = 1
+    ny              = 0.9
+    d               = pow(10,-3)
+    jones           = odak.jonescalculus()
+    print 'A sample linear polarizer: \n', jones.linearpolarizer(1,90)
     print 'A sample circullar polarizer: \n', jones.circullarpolarizer(1,'lefthanded')
-    print 'A sample quarter wave plate: \n', jones.quarterwaveplate(1,0,'horizontal')
+    print 'A sample quarter wave plate: \n', jones.quarterwaveplate(1,0)
+    print 'A sample half wave plate: \n', jones.halfwaveplate(1,0)
+    print 'A sample birefringent plate: \n',jones.birefringentplate(1,nx,ny,d,greenwavelength,0)
+    # Initial condition of the electric field
+    u     = jones.electricfield(1/math.sqrt(2),1/math.sqrt(2))
+    print 'Initial electric field vector: \n', u
+    u     = jones.halfwaveplate(u,0)
+    print 'Electric field vector after a half wave plate: \n', u
+    u     = jones.quarterwaveplate(u,0)
+    print 'Electric field vector after a quarter wave plate: \n', u
+    u     = jones.circullarpolarizer(u,'lefthanded')
+    print 'Electric field vector after a left handed circullar polarizer: \n', u
     return True
 
 def example_of_retroreflector():

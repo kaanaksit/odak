@@ -7,21 +7,17 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d
 from numpy import *
 from numpy.fft import *
-from math import *
 
 __author__  = ('Kaan Akşit')
 
 class jonescalculus():
     def __init__(self):
         return
-    def linearpolarizer(self,input,rotation=0,type='horizontal'):
+    def linearpolarizer(self,input,rotation=0):
         # Linear polarizer, rotation is in degrees and it is counter clockwise
-        rotation = radians(rotation)
-        rotmat   = array([[cos(rotation),sin(rotation)],[-sin(rotation),cos(rotation)]])
-        if type == 'horizontal':
-            linearpolarizer = array([[1,0],[0,0]])
-        if type == 'vertical':
-            linearpolarizer = array([[0,0],[0,1]])
+        rotation        = radians(rotation)
+        rotmat          = array([[cos(rotation),sin(rotation)],[-sin(rotation),cos(rotation)]])
+        linearpolarizer = array([[1,0],[0,0]])
         linearpolarizer = dot(rotmat.transpose(),dot(linearpolarizer,rotmat))
         return dot(linearpolarizer,input)
     def circullarpolarizer(self,input,type='lefthanded'):
@@ -31,21 +27,18 @@ class jonescalculus():
         if type == 'righthanded':
             circullarpolarizer = array([[0.5,0.5j],[-0.5j,0.5]])
         return dot(circullarpolarizer,input)
-    def quarterwaveplate(self,input,rotation=0,type='horizontal'):
+    def quarterwaveplate(self,input,rotation=0):
         # Quarter wave plate, type determines the placing of the fast axis
         rotation = radians(rotation)
         rotmat   = array([[cos(rotation),sin(rotation)],[-sin(rotation),cos(rotation)]])
-        if type == 'horizontal':
-            qwp = 0.5*array([[1,-1j],[1j,1]])
-        if type == 'vertical':
-            qwp = 0.5*array([[1,1j],[-1j,1]])   
+        qwp = array([[1,0],[0,-1j]])
         qwp = dot(rotmat.transpose(),dot(qwp,rotmat))        
         return dot(qwp,input)
     def halfwaveplate(self,input,rotation=0):
         # Half wave plate
         rotation = radians(rotation)
         rotmat   = array([[cos(rotation),sin(rotation)],[-sin(rotation),cos(rotation)]])
-        hwp      = array([[1,0)],[0,-1]])
+        hwp      = array([[1,0],[0,-1]])
         hwp      = dot(rotmat.transpose(),dot(hwp,rotmat))
         return dot(hwp,input)
     def birefringentplate(self,input,nx,ny,d,wavelength,rotation=0):
@@ -55,7 +48,9 @@ class jonescalculus():
         delta    = 2*pi*(nx-ny)*d/wavelength
         bfp      = array([[1,0],[0,exp(-1j*delta)]])
         bfp      = dot(rotmat.transpose(),dot(bfp,rotmat))
-        return
+        return dot(bfp,input)
+    def electricfield(self,a1,a2):        
+        return array([[a1],[a2]])
 
 class aperture():
     def __init__(self):
