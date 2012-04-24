@@ -141,7 +141,7 @@ class aperture():
         if type == 'exp':
             obj = exp(1j*k*obj)
         return obj
-    def show(self,obj,pixeltom,wavelength,title='Detector',type='normal'):
+    def show(self,obj,pixeltom,wavelength,title='Detector',type='normal',filename=None):
         # Plots a detector showing the given object
         plt.figure(),plt.title(title)
         nx,ny = obj.shape
@@ -150,8 +150,10 @@ class aperture():
             obj = abs(obj)
         elif type == 'log':
             obj = log(abs(obj))
-        img = plt.imshow(obj,cmap=matplotlib.cm.jet)
+        img = plt.imshow(obj,cmap=matplotlib.cm.jet,origin='lower')
         plt.colorbar(img,orientation='vertical')
+        if filename != None:
+            plt.savefig(filename)
         plt.show()
         return True
     def show3d(self,obj):

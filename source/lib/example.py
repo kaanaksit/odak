@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys,odak,math
+import sys,odak
 
 __author__  = ('Kaan Akşit')
 
@@ -26,15 +26,6 @@ def example_of_jones_calculus():
     print 'A sample quarter wave plate: \n', jones.quarterwaveplate(1,0)
     print 'A sample half wave plate: \n', jones.halfwaveplate(1,0)
     print 'A sample birefringent plate: \n',jones.birefringentplate(1,nx,ny,d,greenwavelength,0)
-    # Initial condition of the electric field
-    u     = jones.electricfield(1/math.sqrt(2),1/math.sqrt(2))
-    print 'Initial electric field vector: \n', u
-    u     = jones.halfwaveplate(u,0)
-    print 'Electric field vector after a half wave plate: \n', u
-    u     = jones.quarterwaveplate(u,0)
-    print 'Electric field vector after a quarter wave plate: \n', u
-    u     = jones.circullarpolarizer(u,'lefthanded')
-    print 'Electric field vector after a left handed circullar polarizer: \n', u
     return True
 
 def example_of_retroreflector():
