@@ -25,7 +25,8 @@ def example_of_jones_calculus():
     print 'A sample circullar polarizer: \n', jones.circullarpolarizer(1,'lefthanded')
     print 'A sample quarter wave plate: \n', jones.quarterwaveplate(1,0)
     print 'A sample half wave plate: \n', jones.halfwaveplate(1,0)
-    print 'A sample birefringent plate: \n',jones.birefringentplate(1,nx,ny,d,greenwavelength,0)
+    print 'A sample birefringent plate: \n', jones.birefringentplate(1,nx,ny,d,greenwavelength,0)
+    print 'A sample liquid crystal cell: \n', jones.liquidcrystal(1,3000,1.2,1,0.1,greenwavelength,0)
     return True
 
 def example_of_retroreflector():

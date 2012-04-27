@@ -49,6 +49,17 @@ class jonescalculus():
         bfp      = array([[1,0],[0,exp(-1j*delta)]])
         bfp      = dot(rotmat.transpose(),dot(bfp,rotmat))
         return dot(bfp,input)
+    def liquidcrystal(self,input,alpha,ne,n0,d,wavelength,rotation=0):
+        # Nematic or ferroelectric liquid crystal, d cell thickness, extraordinary refrative index ne, ordinary refractive index n0,
+        # alpha helical twist per meter in right-hand sense along the direction of wave propagation
+        rotation = radians(rotation)
+        rotmat   = array([[cos(rotation),sin(rotation)],[-sin(rotation),cos(rotation)]])
+        beta     = 2*pi*(ne-n0)/wavelength
+        lrot     = array([[cos(alpha*d),-sin(alpha*d)],[sin(alpha*d),cos(alpha*d)]])
+        lretard  = array([[1,0],[0,exp(-1j*beta*d)]])
+        lc       = dot(lrot,lretard)
+        lc       = dot(rotmat.transpose(),dot(lc,rotmat))
+        return dot(lc,input)
     def electricfield(self,a1,a2):        
         return array([[a1],[a2]])
 
@@ -141,7 +152,7 @@ class aperture():
         if type == 'exp':
             obj = exp(1j*k*obj)
         return obj
-    def show(self,obj,pixeltom,wavelength,title='Detector',type='normal',filename=None):
+    def show(self,obj,pixeltom,wavelength,title='Detector',type='normal',filename=None,xlabel=None,ylabel=None):
         # Plots a detector showing the given object
         plt.figure(),plt.title(title)
         nx,ny = obj.shape
@@ -152,6 +163,8 @@ class aperture():
             obj = log(abs(obj))
         img = plt.imshow(obj,cmap=matplotlib.cm.jet,origin='lower')
         plt.colorbar(img,orientation='vertical')
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
         if filename != None:
             plt.savefig(filename)
         plt.show()
