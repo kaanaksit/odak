@@ -26,7 +26,8 @@ def example_of_jones_calculus():
     print 'A sample quarter wave plate: \n', jones.quarterwaveplate(1,0)
     print 'A sample half wave plate: \n', jones.halfwaveplate(1,0)
     print 'A sample birefringent plate: \n', jones.birefringentplate(1,nx,ny,d,greenwavelength,0)
-    print 'A sample liquid crystal cell: \n', jones.liquidcrystal(1,3000,1.2,1,0.1,greenwavelength,0)
+    print 'A sample nematic liquid crystal cell: \n', jones.nematicliquidcrystal(1,3000,1.2,1,0.1,greenwavelength,0)
+    print 'A sample ferroelectric liquid crystal cell: \n', jones.ferroliquidcrystal(1,30,2,1,0.1,greenwavelength,'+',0) 
     return True
 
 def example_of_retroreflector():
@@ -41,7 +42,7 @@ def example_of_retroreflector():
     aperture     = odak.aperture()
     beam         = odak.beams()
     # Retroreflector corner cube array is created
-    retro        = aperture.retroreflector(pxx,pxy,wavelength,pitch,'exp')
+    retro        = aperture.retroreflector(pxx,pxy,wavelength,pitch,'normal')
     aperture.show(retro,onepxtom,wavelength,'Detector')
     #aperture.show(diffrac.fft(retro),onepxtom,wavelength,'FFT')
     #aperture.show3d(retro)

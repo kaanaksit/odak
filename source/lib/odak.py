@@ -49,8 +49,8 @@ class jonescalculus():
         bfp      = array([[1,0],[0,exp(-1j*delta)]])
         bfp      = dot(rotmat.transpose(),dot(bfp,rotmat))
         return dot(bfp,input)
-    def liquidcrystal(self,input,alpha,ne,n0,d,wavelength,rotation=0):
-        # Nematic or ferroelectric liquid crystal, d cell thickness, extraordinary refrative index ne, ordinary refractive index n0,
+    def nematicliquidcrystal(self,input,alpha,ne,n0,d,wavelength,rotation=0):
+        # Nematic liquid crystal, d cell thickness, extraordinary refrative index ne, ordinary refractive index n0,
         # alpha helical twist per meter in right-hand sense along the direction of wave propagation
         rotation = radians(rotation)
         rotmat   = array([[cos(rotation),sin(rotation)],[-sin(rotation),cos(rotation)]])
@@ -58,6 +58,22 @@ class jonescalculus():
         lrot     = array([[cos(alpha*d),-sin(alpha*d)],[sin(alpha*d),cos(alpha*d)]])
         lretard  = array([[1,0],[0,exp(-1j*beta*d)]])
         lc       = dot(lrot,lretard)
+        lc       = dot(rotmat.transpose(),dot(lc,rotmat))
+        return dot(lc,input)
+    def ferroliquidcrystal(self,input,tetat,ne,n0,d,wavelength,fieldsign='+',rotation=0):
+        # Ferroelectric liquid crystal, d cell thickness, extraordinary refrative index ne, ordinary refractive index n0
+        # Applied field sign determines the rotation angle
+        rotation = radians(rotation)
+        tetat    = radians(tetat)
+        rotmat   = array([[cos(rotation),sin(rotation)],[-sin(rotation),cos(rotation)]])
+        beta     = 2*pi*(ne-n0)/wavelength
+        lrot1    = array([[cos(tetat),-sin(tetat)],[sin(tetat),cos(tetat)]])
+        lrot2    = array([[cos(tetat),sin(tetat)],[-sin(tetat),cos(tetat)]])
+        lretard  = array([[1,0],[0,exp(-1j*beta*d)]])
+        if fieldsign == '+':
+            lc = dot(dot(lrot1,lretard),lrot2)
+        elif fieldsign == '-':
+            lc = dot(dot(lrot2,lretard),lrot1)    
         lc       = dot(rotmat.transpose(),dot(lc,rotmat))
         return dot(lc,input)
     def electricfield(self,a1,a2):        
@@ -149,8 +165,8 @@ class aperture():
         for i in xrange(nx/pitch/2):
            obj[(2*i+1)*pitch:(2*i+1)*pitch+pitch,:] = roll(obj[(2*i+1)*pitch:(2*i+1)*pitch+pitch,:],pitch/2)    
         k     = 2*pi/wavelength
-        if type == 'exp':
-            obj = exp(1j*k*obj)
+        D     = 5
+        obj   = pow(obj,3)*exp(1j*k*obj)
         return obj
     def show(self,obj,pixeltom,wavelength,title='Detector',type='normal',filename=None,xlabel=None,ylabel=None):
         # Plots a detector showing the given object
