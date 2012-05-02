@@ -3,7 +3,7 @@ Wave optics and ray tracing library for Python
 Author: Kaan Akşit
 Licence: GPLV2
 
-Dependency: matplotlib, pygame, numpy
+Dependency: matplotlib, numpy
 
 Currently available methods inside source/lib/odak.py
 
@@ -13,3 +13,4 @@ Currently available methods inside source/lib/odak.py
 - Methods for diverging and converging spherical wave
 - Methods for diverging and converging gaussian beam
 - Methods for Jones Calculus: Linear polarizers, circullar polarizers, quarter wave plates, liquid crystal cells (Nematic and ferroelectric) and birefringent plate
+- Methods for visualising and calculating ray tracing
