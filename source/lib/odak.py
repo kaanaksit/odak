@@ -10,6 +10,52 @@ from numpy.fft import *
 
 __author__  = ('Kaan Akşit')
 
+class raytracing():
+    def __init__(self):
+        # See "General Ray tracing procedure" from G.H. Spencerand M.V.R.K Murty for the theoratical explanation
+        self.fig = plt.figure()
+        self.ax  = self.fig.gca(projection='3d')
+        return
+    def createvector(self,(x0,y0,z0),(alpha,beta,gamma)):
+        # Create a vector with the given points and angles in each direction
+        point = array([[x0],[y0],[z0]])
+        alpha = radians(alpha)
+        beta  = radians(beta)
+        gamma = radians(gamma)
+        # Cosines vector
+        cosin = array([[alpha],[beta],[gamma]])
+        return array([point,cosin])
+    def transform(self,input,(alpha,beta,gamma),(x0,y0,z0)):
+        # alpha; rotation angle (euler) of x axis 
+        # beta; rotation angle (euler) of y axis
+        # gamma; rotation angle (euler) of z axis
+        # x0; x coordinate of origin measured in the reference system
+        # y0; y coordinate of origin measured in the reference system
+        # z0; z coordinate of origin measured in the reference system
+        alpha  = radians(alpha)
+        beta   = radians(beta)
+        gamma  = radians(gamma)
+        R1     = array([[cos(gamma),-sin(gamma),0],[sin(gamma),cos(gamma),0],[0,0,1]])
+        R2     = array([[1,0,0],[0,cos(beta),-sin(beta)],[0,sin(beta),cos(beta)]])
+        R3     = array([[cos(alpha),0,-sin(alpha)],[0,1,0],[sin(alpha),0,cos(alpha)]])
+        R      = dot(dot(R1,R2),R3)
+        output = dot(R,input-array([[x0],[y0],[z0]]))
+        return output
+    def plotvector(self,vector,finalsurface,color='b'):
+        # Method to plot rays
+        xspace = linspace(vector[0,0],finalsurface[0],3)
+        yspace = linspace(vector[0,1],finalsurface[1],3)
+        zspace = linspace(vector[0,2],finalsurface[2],3)
+        X      = xspace*tan(radians(vector[1,0]))
+        Y      = yspace*tan(radians(vector[1,1]))
+        Z      = zspace*tan(radians(vector[1,2]))
+        self.ax.plot(X,Y,Z,color)
+        return True
+    def showplot(self,title='Ray tracing'):
+        plt.title(title)
+        plt.show()
+        return True
+
 class jonescalculus():
     def __init__(self):
         return
@@ -52,6 +98,8 @@ class jonescalculus():
     def nematicliquidcrystal(self,input,alpha,ne,n0,d,wavelength,rotation=0):
         # Nematic liquid crystal, d cell thickness, extraordinary refrative index ne, ordinary refractive index n0,
         # alpha helical twist per meter in right-hand sense along the direction of wave propagation
+        # alpha is calculated is by dividing cell thickness to 1 meter length
+        # alpha    =  1 /d
         rotation = radians(rotation)
         rotmat   = array([[cos(rotation),sin(rotation)],[-sin(rotation),cos(rotation)]])
         beta     = 2*pi*(ne-n0)/wavelength

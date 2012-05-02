@@ -10,7 +10,20 @@ def example():
     #example_of_spherical_wave()
     #example_of_fresnel_fraunhofer()
     #example_of_retroreflector()
-    example_of_jones_calculus()
+    #example_of_jones_calculus()
+    examlple_of_ray_tracing()
+    return True
+
+def examlple_of_ray_tracing():
+    ray    = odak.raytracing()
+    vector = ray.createvector((0,0,0),(45,0,0))
+#    print 'Input vector: \n %s' % vector
+#    rotvec = ray.transform(vector,(45,0,0),(0.5,1,0))
+#    print 'Output vector: \n %s' % rotvec
+    ray.plotvector(vector,[3,3,3])
+    vector = ray.createvector((2,1,1),(45,40,10))
+    ray.plotvector(vector,[3,3,3])
+    ray.showplot()
     return True
 
 def example_of_jones_calculus():
