@@ -19,9 +19,9 @@ class raytracing():
     def createvector(self,(x0,y0,z0),(alpha,beta,gamma)):
         # Create a vector with the given points and angles in each direction
         point = array([[x0],[y0],[z0]])
-        alpha = radians(alpha)
-        beta  = radians(beta)
-        gamma = radians(gamma)
+        alpha = cos(radians(alpha))
+        beta  = cos(radians(beta))
+        gamma = cos(radians(gamma))
         # Cosines vector
         cosin = array([[alpha],[beta],[gamma]])
         return array([point,cosin])
@@ -41,18 +41,19 @@ class raytracing():
         R      = dot(dot(R1,R2),R3)
         output = dot(R,input-array([[x0],[y0],[z0]]))
         return output
-    def plotvector(self,vector,finalsurface,color='b'):
+    def plotvector(self,vector,distance,color='b'):
         # Method to plot rays
-        xspace = linspace(vector[0,0],finalsurface[0],3)
-        yspace = linspace(vector[0,1],finalsurface[1],3)
-        zspace = linspace(vector[0,2],finalsurface[2],3)
-        X      = xspace*tan(radians(vector[1,0]))
-        Y      = yspace*tan(radians(vector[1,1]))
-        Z      = zspace*tan(radians(vector[1,2]))
-        self.ax.plot(X,Y,Z,color)
+        x = array([vector[0,0,0], distance * vector[1,0] + vector[0,0,0]])
+        y = array([vector[0,1,0], distance * vector[1,1] + vector[0,1,0]])
+        z = array([vector[0,2,0], distance * vector[1,2] + vector[0,2,0]])
+        self.ax.plot(x,y,z,color)
         return True
     def showplot(self,title='Ray tracing'):
+        # Shows the prepared plot
         plt.title(title)
+        self.ax.set_xlim(-10,10)
+        self.ax.set_ylim(-10,10)
+        self.ax.set_zlim(-10,10)
         plt.show()
         return True
 
