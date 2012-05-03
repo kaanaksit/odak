@@ -41,23 +41,42 @@ class raytracing():
         R      = dot(dot(R1,R2),R3)
         output = dot(R,input-array([[x0],[y0],[z0]]))
         return output
-    def findinterspher(self,vector,sphere,error):
+    def findinterspher(self,vector,sphere,error=0.01,numiter=5000):
         # Method for finding intersection in between a vector and a spherical surface
+        # There are things to be done to fix wrong root convergence
         number   = 0
         distance = 0
-        epsilon  = error*2 
+        epsilon  = error*2
         while epsilon > error:
             number   += 1
             olddist   = distance
+            k         = vector[0,0,0]
+            l         = vector[0,1,0]
+            m         = vector[0,2,0]
             x         = distance * vector[1,0] + vector[0,0,0]
             y         = distance * vector[1,1] + vector[0,1,0]
             z         = distance * vector[1,2] + vector[0,2,0]
-            delta     = (2*x*vector[1,0] + 2*y*vector[1,1] + 2*z*vector[1,2])
-            print delta
-            distance  = distance - (pow(x-sphere[0],2)+pow(y-sphere[1],2)+pow(z-sphere[2],2)-sphere[3]) / delta
-            epsilon   = abs(distance-olddist)
-            print 'Iteration number: %s, Calculated distance: %s, Error: %s' % (number,distance,epsilon)
-        return distance
+            delta     = 2*k*(k*distance + vector[1,0] - sphere[0])
+            delta    += 2*l*(l*distance + vector[1,1] - sphere[1])
+            delta    += 2*m*(m*distance + vector[1,2] - sphere[2])
+            delta2    = 2*k*k + 2*l*l + 2*m*m
+            FXYZ      = pow(x-sphere[0],2) + pow(y-sphere[1],2) + pow(z-sphere[2],2) - pow(sphere[3],2)
+            distance += 0.01
+            normang   = array([[(sphere[0]-x)/sphere[3]],[(sphere[1]-y)/sphere[3]],[(sphere[2]-z)/sphere[3]]])
+            normpnt   = array([x,y,z])
+            normvec   = array([normpnt,normang])
+            if FXYZ < 0:
+                return distance,normvec
+            # Kernel for Newton Raphsody method
+#            u         = FXYZ/delta
+#            distance  = distance - u
+#            epsilon   = abs(distance-olddist)
+            # Iteration reminder
+#            print 'Iteration number: %s, Calculated distance: %s, Error: %s, Points: %s %s %s, Function:  %s' % (number,distance,epsilon,x,y,z,FXYZ)
+            # Check if the number of iterations are too much
+#            if number > numiter:
+#               return 0        
+        return distance,normvec
     def plotvector(self,vector,distance,color='g'):
         # Method to plot rays
         x = array([vector[0,0,0], distance * vector[1,0] + vector[0,0,0]])
@@ -67,7 +86,7 @@ class raytracing():
         return True
     def plotsphericallens(self,cx=0,cy=0,cz=0,r=10):
         # Method to plot surfaces
-        u = linspace(pi/2, 3*pi/2, 100)
+        u = linspace(pi/2,3*pi/2,100)
         v = linspace(0, pi, 100)
         x = r * outer(cos(u), sin(v)) + cx
         y = r * outer(sin(u), sin(v)) + cy
@@ -77,9 +96,6 @@ class raytracing():
     def showplot(self,title='Ray tracing'):
         # Shows the prepared plot
         plt.title(title)
-        self.ax.set_xlim(-30,30)
-        self.ax.set_ylim(-30,30)
-        self.ax.set_zlim(-30,30)
         plt.show()
         return True
 
