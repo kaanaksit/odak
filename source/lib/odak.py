@@ -41,19 +41,45 @@ class raytracing():
         R      = dot(dot(R1,R2),R3)
         output = dot(R,input-array([[x0],[y0],[z0]]))
         return output
-    def plotvector(self,vector,distance,color='b'):
+    def findinterspher(self,vector,sphere,error):
+        # Method for finding intersection in between a vector and a spherical surface
+        number   = 0
+        distance = 0
+        epsilon  = error*2 
+        while epsilon > error:
+            number   += 1
+            olddist   = distance
+            x         = distance * vector[1,0] + vector[0,0,0]
+            y         = distance * vector[1,1] + vector[0,1,0]
+            z         = distance * vector[1,2] + vector[0,2,0]
+            delta     = (2*x*vector[1,0] + 2*y*vector[1,1] + 2*z*vector[1,2])
+            print delta
+            distance  = distance - (pow(x-sphere[0],2)+pow(y-sphere[1],2)+pow(z-sphere[2],2)-sphere[3]) / delta
+            epsilon   = abs(distance-olddist)
+            print 'Iteration number: %s, Calculated distance: %s, Error: %s' % (number,distance,epsilon)
+        return distance
+    def plotvector(self,vector,distance,color='g'):
         # Method to plot rays
         x = array([vector[0,0,0], distance * vector[1,0] + vector[0,0,0]])
         y = array([vector[0,1,0], distance * vector[1,1] + vector[0,1,0]])
         z = array([vector[0,2,0], distance * vector[1,2] + vector[0,2,0]])
         self.ax.plot(x,y,z,color)
         return True
+    def plotsphericallens(self,cx=0,cy=0,cz=0,r=10):
+        # Method to plot surfaces
+        u = linspace(pi/2, 3*pi/2, 100)
+        v = linspace(0, pi, 100)
+        x = r * outer(cos(u), sin(v)) + cx
+        y = r * outer(sin(u), sin(v)) + cy
+        z = r * outer(ones(size(u)), cos(v)) + cz
+        self.ax.plot_surface(x, y, z,  rstride=6, cstride=6, color='b')
+        return array([cx,cy,cz,r])
     def showplot(self,title='Ray tracing'):
         # Shows the prepared plot
         plt.title(title)
-        self.ax.set_xlim(-10,10)
-        self.ax.set_ylim(-10,10)
-        self.ax.set_zlim(-10,10)
+        self.ax.set_xlim(-30,30)
+        self.ax.set_ylim(-30,30)
+        self.ax.set_zlim(-30,30)
         plt.show()
         return True
 

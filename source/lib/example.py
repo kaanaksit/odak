@@ -15,14 +15,16 @@ def example():
     return True
 
 def examlple_of_ray_tracing():
-    ray    = odak.raytracing()
-    vector = ray.createvector((0,0,0),(45,0,0))
-#    print 'Input vector: \n %s' % vector
+    n         = 1
+    error     = 1
+    ray       = odak.raytracing()
+    vector    = ray.createvector((1,1,1),(45,80,90))
+    print 'Input vector: \n %s' % vector
 #    rotvec = ray.transform(vector,(45,0,0),(0.5,1,0))
 #    print 'Output vector: \n %s' % rotvec
-    ray.plotvector(vector,[3,3,3])
-    vector = ray.createvector((2,1,1),(45,40,10))
-    ray.plotvector(vector,[3,3,3])
+    spherical = ray.plotsphericallens(20)
+    distance  = ray.findinterspher(vector,spherical,error)
+    ray.plotvector(vector,distance)
     ray.showplot()
     return True
 
