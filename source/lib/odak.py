@@ -41,6 +41,48 @@ class raytracing():
         R      = dot(dot(R1,R2),R3)
         output = dot(R,input-array([[x0],[y0],[z0]]))
         return output
+    def reflect(self,vector,normvector):
+        mu     = 1 
+        div   = pow(normvector[1,0],2)  + pow(normvector[1,1],2) + pow(normvector[1,2],2)
+        a     = mu* (vector[1,0]*normvector[1,0] + vector[1,1]*normvector[1,1] + vector[1,2]*normvector[1,2]) / div
+        vector[0,0] = normvector[0,0]
+        vector[0,1] = normvector[0,1]
+        vector[0,2] = normvector[0,2]
+        vector[1,0] = vector[1,0] - 2*a*normvector[1,0]
+        vector[1,1] = vector[1,1] - 2*a*normvector[1,1]
+        vector[1,2] = vector[1,2] - 2*a*normvector[1,2]
+        return vector
+    def snell(self,vector,normvector,n1,n2,error=0.01):
+        # Method for Snell's law
+        # n1 refractive index of the medium which vector is coming from
+        # n2 refractive index of the medium which vector tries to go into
+        mu    = n1/n2
+        div   = pow(normvector[1,0],2)  + pow(normvector[1,1],2) + pow(normvector[1,2],2)
+        a     = mu* (vector[1,0]*normvector[1,0] + vector[1,1]*normvector[1,1] + vector[1,2]*normvector[1,2]) / div
+        b     = (pow(mu,2)-1) / div
+        to    = -b*0.5/a
+        num   = 0
+        eps   = error*2
+        # Newton-Raphson method to find the correct root
+        while eps > error:
+           num   += 1
+           oldto  = to
+           v      = pow(to,2) + 2*a*to + b
+           deltav = 2*(to+a)
+           to     = to - v /deltav
+           eps    = abs(oldto-to)
+           # Iteration notifier
+           #print 'Iteration number: %s, Error: %s' % (num,error)
+           # Iteration limiter
+           if num > 5000:
+              return vector
+        vector[0,0] = normvector[0,0]
+        vector[0,1] = normvector[0,1]
+        vector[0,2] = normvector[0,2]
+        vector[1,0] = mu*vector[1,0] + to*normvector[1,0]
+        vector[1,1] = mu*vector[1,1] + to*normvector[1,1]
+        vector[1,2] = mu*vector[1,2] + to*normvector[1,2]
+        return vector
     def findinterspher(self,vector,sphere,error=0.01,numiter=5000):
         # Method for finding intersection in between a vector and a spherical surface
         # There are things to be done to fix wrong root convergence
@@ -74,8 +116,8 @@ class raytracing():
             # Iteration reminder
 #            print 'Iteration number: %s, Calculated distance: %s, Error: %s, Points: %s %s %s, Function:  %s' % (number,distance,epsilon,x,y,z,FXYZ)
             # Check if the number of iterations are too much
-#            if number > numiter:
-#               return 0        
+            if number > numiter:
+               return 0,normvec        
         return distance,normvec
     def plotvector(self,vector,distance,color='g'):
         # Method to plot rays
