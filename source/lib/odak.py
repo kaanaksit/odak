@@ -10,6 +10,22 @@ from numpy.fft import *
 
 __author__  = ('Kaan Akşit')
 
+class paraxialmatrix():
+    def __init__(self):
+        # See "Laser beams and resonators" from Kogelnik and Li for the theoratical explanation
+        return
+    def createvector(self,x,angle):
+        # Creates a paraxial ray, angle is in degrees, x is the distance of the point to the plane of direction of propagation
+        angle  = radians(angle)
+        vector = array([[x],[angle],[1]])
+        return vector
+    def freespace(self,vector,distance,deltax=0,deltafi=0):
+        # Ray transfer matrix of free space propagation, distance is in meters
+        # deltax is the spatial shift, deltafi is the angular shift
+        space  = array([[1,distance,deltax],[0,1,deltafi],[0,0,1]])
+        vector = dot(space,vector)
+        return vector
+
 class raytracing():
     def __init__(self):
         # See "General Ray tracing procedure" from G.H. Spencerand M.V.R.K Murty for the theoratical explanation

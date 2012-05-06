@@ -11,10 +11,19 @@ def example():
     #example_of_fresnel_fraunhofer()
     #example_of_retroreflector()
     #example_of_jones_calculus()
-    examlple_of_ray_tracing()
+    #example_of_ray_tracing()
+    example_of_paraxial_matrix()
     return True
 
-def examlple_of_ray_tracing():
+def example_of_paraxial_matrix():
+    parax  = odak.paraxialmatrix()
+    vector = parax.createvector(1,2)
+    print 'Input vector: \n%s' % vector
+    vector = parax.freespace(vector,1)
+    print 'Vector at a given certain distance: \n%s' % vector
+    return True
+
+def example_of_ray_tracing():
     n         = 1
     ray       = odak.raytracing()
     vector    = ray.createvector((0,0,0),(45,80,90))
