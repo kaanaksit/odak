@@ -9,9 +9,9 @@ Currently available methods inside source/lib/odak.py
 
 - Methods for Fresnel and Fraunhofer diffractions
 - Methods for creating apertures such as circular, rectangular, slits, sinusoidal amplitude grating, lens, retroreflector and two slits
-- Methods for plotting crossection, 2D & 3D data
+- Methods for plotting cross section, 2D & 3D data
 - Methods for diverging and converging spherical wave
 - Methods for diverging and converging gaussian beam
-- Methods for Jones Calculus: Linear polarizers, circullar polarizers, quarter wave plates, liquid crystal cells (Nematic and ferroelectric) and birefringent plate
-- Methods for ploting rays, snell's law and reflecting
+- Methods for Jones Calculus: Linear polarizers, circular polarizers, quarter wave plates, liquid crystal cells (Nematic and ferroelectric) and birefringent plate
+- Methods for ray tracing, plotting rays, snell's law and reflecting
 - Methods for paraxial matrix theory: free space propagation
