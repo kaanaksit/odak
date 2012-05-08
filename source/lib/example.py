@@ -34,10 +34,15 @@ def example_of_ray_tracing():
         distance,normvec  = ray.findinterspher(vector,spherical)
         if distance != 0:      
             ray.plotvector(vector,distance)
-            refractvector     = ray.snell(vector,normvec,1,1.51)
-            ray.plotvector(refractvector,20)
+            refractvector = ray.snell(vector,normvec,1,1.51)
+            #ray.plotvector(refractvector,20)
             #reflectvector     = ray.reflect(vector,normvec)
             #ray.plotvector(reflectvector,distance)
+        distance,normvec  = ray.findinterspher(refractvector,spherical)
+        if distance != 0:
+            ray.plotvector(refractvector,distance)
+            refractvector2 = ray.snell(refractvector,normvec,1,1.51)
+            ray.plotvector(refractvector2,20)
     ray.showplot()
     return True
 

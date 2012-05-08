@@ -99,16 +99,23 @@ class raytracing():
         vector[1,1] = mu*vector[1,1] + to*normvector[1,1]
         vector[1,2] = mu*vector[1,2] + to*normvector[1,2]
         return vector
-    def findinterspher(self,vector,sphere,error=0.0001,numiter=10000):
+    def findinterspher(self,vector,sphere,error=0.00000001,numiter=10000):
         # Method for finding intersection in between a vector and a spherical surface
         # There are things to be done to fix wrong root convergence
         number   = 0
         distance = 1
         olddist  = 0
+        shift    = 0
         epsilon  = error*2
         k        = vector[0,0,0]
         l        = vector[0,1,0]
         m        = vector[0,2,0]
+        FXYZ     = pow(k-sphere[0],2) + pow(l-sphere[1],2) + pow(m-sphere[2],2) - pow(sphere[3],2)
+        if abs(FXYZ) < 0.01:
+            shift = 1.5 * sphere[3]
+            k     = shift * vector[1,0] + k
+            l     = shift * vector[1,1] + l
+            m     = shift * vector[1,2] + m
         while epsilon > error:
             number  += 1
             x        = olddist * vector[1,0] + k
@@ -129,11 +136,11 @@ class raytracing():
             normpnt  = array([x,y,z])
             normvec  = array([normpnt,normang])
             # Iteration reminder
-            print 'Iteration number: %s, Calculated distance: %s, Error: %s, Points: %s %s %s, Function:  %s' % (number,newdist,epsilon,x,y,z,FXYZ)
+            #print 'Iteration number: %s, Calculated distance: %s, Error: %s, Points: %s %s %s, Function:  %s' % (number,distance,epsilon,x,y,z,FXYZ)
             # Check if the number of iterations are too much
             if number > numiter:
                return 0,normvec        
-        return distance,normvec
+        return distance+shift,normvec
     def plotvector(self,vector,distance,color='g'):
         # Method to plot rays
         x = array([vector[0,0,0], distance * vector[1,0] + vector[0,0,0]])
