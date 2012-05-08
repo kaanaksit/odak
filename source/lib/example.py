@@ -11,8 +11,8 @@ def example():
     #example_of_fresnel_fraunhofer()
     #example_of_retroreflector()
     #example_of_jones_calculus()
-    #example_of_ray_tracing()
-    example_of_paraxial_matrix()
+    example_of_ray_tracing()
+    #example_of_paraxial_matrix()
     return True
 
 def example_of_paraxial_matrix():
@@ -26,20 +26,18 @@ def example_of_paraxial_matrix():
 def example_of_ray_tracing():
     n         = 1
     ray       = odak.raytracing()
-    vector    = ray.createvector((0,0,0),(45,80,90))
-    print 'Input vector: \n%s' % vector
 #    rotvec = ray.transform(vector,(45,0,0),(0.5,1,0))
 #    print 'Output vector: \n %s' % rotvec
-    spherical = ray.plotsphericallens(20)
-    for angle in xrange(80,101):
-        vector            = ray.createvector((5,5,5),(45,angle,angle))
+    spherical = ray.plotsphericallens(20,0,0,10)
+    for angle in xrange(100,120):
+        vector            = ray.createvector((0,5,5),(45,angle,angle))
         distance,normvec  = ray.findinterspher(vector,spherical)
         if distance != 0:      
             ray.plotvector(vector,distance)
             refractvector     = ray.snell(vector,normvec,1,1.51)
             ray.plotvector(refractvector,20)
-#        reflectvector     = ray.reflect(vector,normvec)
-#        ray.plotvector(reflectvector,distance)
+            #reflectvector     = ray.reflect(vector,normvec)
+            #ray.plotvector(reflectvector,distance)
     ray.showplot()
     return True
 
@@ -107,9 +105,9 @@ def example_of_gaussian():
     amplitude    = 10
     waistsize    = 20*onepxtom
     # Distance in between beam waist and the simulation origin
-    focal        = 0.5
-    for distance in xrange(1,3):
-        distance    *= 0.2
+    focal        = 8
+    for distance in xrange(5,10):
+        distance    *= 1
         gaussianbeam = beam.gaussian(pxx,pxy,distance,wavelength,onepxtom,amplitude,waistsize,focal)
         aperture.show(diffrac.intensity(gaussianbeam,onepxtom),onepxtom,wavelength,'Detector at %s m' % (distance))
     aperture.show3d(gaussianbeam)

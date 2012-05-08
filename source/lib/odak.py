@@ -99,38 +99,37 @@ class raytracing():
         vector[1,1] = mu*vector[1,1] + to*normvector[1,1]
         vector[1,2] = mu*vector[1,2] + to*normvector[1,2]
         return vector
-    def findinterspher(self,vector,sphere,error=0.01,numiter=5000):
+    def findinterspher(self,vector,sphere,error=0.0001,numiter=10000):
         # Method for finding intersection in between a vector and a spherical surface
         # There are things to be done to fix wrong root convergence
         number   = 0
-        distance = 0
+        distance = 1
+        olddist  = 0
         epsilon  = error*2
+        k        = vector[0,0,0]
+        l        = vector[0,1,0]
+        m        = vector[0,2,0]
         while epsilon > error:
-            number   += 1
-            olddist   = distance
-            k         = vector[0,0,0]
-            l         = vector[0,1,0]
-            m         = vector[0,2,0]
-            x         = distance * vector[1,0] + vector[0,0,0]
-            y         = distance * vector[1,1] + vector[0,1,0]
-            z         = distance * vector[1,2] + vector[0,2,0]
-            delta     = 2*k*(k*distance + vector[1,0] - sphere[0])
-            delta    += 2*l*(l*distance + vector[1,1] - sphere[1])
-            delta    += 2*m*(m*distance + vector[1,2] - sphere[2])
-            delta2    = 2*k*k + 2*l*l + 2*m*m
-            FXYZ      = pow(x-sphere[0],2) + pow(y-sphere[1],2) + pow(z-sphere[2],2) - pow(sphere[3],2)
-            distance += 0.01
-            normang   = array([[(sphere[0]-x)/sphere[3]],[(sphere[1]-y)/sphere[3]],[(sphere[2]-z)/sphere[3]]])
-            normpnt   = array([x,y,z])
-            normvec   = array([normpnt,normang])
-            if FXYZ < 0:
-                return distance,normvec
-            # Kernel for Newton Raphsody method
-#            u         = FXYZ/delta
-#            distance  = distance - u
-#            epsilon   = abs(distance-olddist)
+            number  += 1
+            x        = olddist * vector[1,0] + k
+            y        = olddist * vector[1,1] + l
+            z        = olddist * vector[1,2] + m
+            oldFXYZ  = pow(x-sphere[0],2) + pow(y-sphere[1],2) + pow(z-sphere[2],2) - pow(sphere[3],2)
+            x        = distance * vector[1,0] + k
+            y        = distance * vector[1,1] + l
+            z        = distance * vector[1,2] + m
+            FXYZ     = pow(x-sphere[0],2) + pow(y-sphere[1],2) + pow(z-sphere[2],2) - pow(sphere[3],2)
+            # Secant method is calculated, see wikipedia article of the method for more
+            newdist  = distance - FXYZ*(distance-olddist)/(FXYZ-oldFXYZ)
+            epsilon  = abs(newdist-distance)
+            oldFXYZ  = FXYZ
+            olddist  = distance
+            distance = newdist
+            normang  = array([[(sphere[0]-x)/sphere[3]],[(sphere[1]-y)/sphere[3]],[(sphere[2]-z)/sphere[3]]])
+            normpnt  = array([x,y,z])
+            normvec  = array([normpnt,normang])
             # Iteration reminder
-#            print 'Iteration number: %s, Calculated distance: %s, Error: %s, Points: %s %s %s, Function:  %s' % (number,distance,epsilon,x,y,z,FXYZ)
+            print 'Iteration number: %s, Calculated distance: %s, Error: %s, Points: %s %s %s, Function:  %s' % (number,newdist,epsilon,x,y,z,FXYZ)
             # Check if the number of iterations are too much
             if number > numiter:
                return 0,normvec        
@@ -146,6 +145,7 @@ class raytracing():
         # Method to plot surfaces
         u = linspace(pi/2,3*pi/2,100)
         v = linspace(0, pi, 100)
+        u = linspace(0,2*pi,100)
         x = r * outer(cos(u), sin(v)) + cx
         y = r * outer(sin(u), sin(v)) + cy
         z = r * outer(ones(size(u)), cos(v)) + cz
