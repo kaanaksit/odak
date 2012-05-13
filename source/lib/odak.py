@@ -13,6 +13,7 @@ __author__  = ('Kaan Akşit')
 class paraxialmatrix():
     def __init__(self):
         # See "Laser beams and resonators" from Kogelnik and Li for the theoratical explanation
+        self.fig = plt.figure()
         return
     def createvector(self,x,angle):
         # Creates a paraxial ray, angle is in degrees, x is the distance of the point to the plane of direction of propagation
@@ -25,6 +26,11 @@ class paraxialmatrix():
         space  = array([[1,distance,deltax],[0,1,deltafi],[0,0,1]])
         vector = dot(space,vector)
         return vector
+    def plotvector(self,startvector,stopvector):
+        # Method to plot paraxial vectors in 2D space
+        plt.plot([startvector[0]/startvector[1],startvector[0]],[stopvector[0]/stopvector[1],stopvector[0]],'o-')
+        plt.show()
+        return True
 
 class raytracing():
     def __init__(self):
