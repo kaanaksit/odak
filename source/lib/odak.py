@@ -5,6 +5,7 @@
 import sys,matplotlib
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from numpy import *
 from numpy.fft import *
 
@@ -28,7 +29,7 @@ class paraxialmatrix():
         return vector
     def plotvector(self,startvector,stopvector):
         # Method to plot paraxial vectors in 2D space
-        plt.plot([startvector[0]/startvector[1],startvector[0]],[stopvector[0]/stopvector[1],stopvector[0]],'o-')
+        plt.plot([startvector[0]/startvector[1],stopvector[0]/stopvector[1]],[startvector[0],stopvector[0]],'o-')
         plt.show()
         return True
 
@@ -47,6 +48,43 @@ class raytracing():
         # Cosines vector
         cosin = array([[alpha],[beta],[gamma]])
         return array([point,cosin])
+    def createvectorfromtwopoints(self,(x0,y0,z0),(x1,y1,z1)):
+        # Create a vector from two given points
+        point = array([[x0],[y0],[z0]])
+        # Distance between two points
+        s     = sqrt( pow((x0-x1),2) + pow((y0-y1),2) + pow((z0-z1),2) )
+        alpha = (x1-x0)/s
+        beta  = (y1-y0)/s
+        gamma = (z1-z0)/s
+        # Cosines vector
+        cosin = array([[alpha],[beta],[gamma]])
+        return array([point,cosin])
+    def anglebetweentwovector(self,vector0,vector1):
+        # Finds angle between two vectors
+        # Used method described under: http://www.wikihow.com/Find-the-Angle-Between-Two-Vectors
+        angle = vector0[1]*vector1[1]
+        angle = angle[0]+angle[1]+angle[2]
+        s1    = sqrt(vector0[1][0]**2+vector0[1][1]**2+vector0[1][2]**2)
+        s2    = sqrt(vector1[1][0]**2+vector1[1][1]**2+vector1[1][2]**2)
+        angle = degrees(arccos(angle/(s1*s2)))
+        return angle
+    def isitontriangle(self,pointtocheck,point0,point1,point2,error=0.1):
+        # Check if the given point is insight the triangle which represented 
+        # by three corners of the triangle.
+        # Used method described under: http://www.blackpawn.com/texts/pointinpoly/default.html
+        # point0, point1 and point2 are the corners of the triangle
+        # point is the point to check
+        vector1 = self.createvectorfromtwopoints(pointtocheck,point0)
+        vector2 = self.createvectorfromtwopoints(pointtocheck,point1)
+        vector3 = self.createvectorfromtwopoints(pointtocheck,point2)
+        angle0  = self.anglebetweentwovector(vector1,vector2)
+        angle1  = self.anglebetweentwovector(vector2,vector3)
+        angle2  = self.anglebetweentwovector(vector3,vector1)
+        sum     = angle0+angle1+angle2
+        if sum <= 360+error and sum >= 360-error:
+            return True
+        else:
+            return False
     def transform(self,input,(alpha,beta,gamma),(x0,y0,z0)):
         # alpha; rotation angle (euler) of x axis 
         # beta; rotation angle (euler) of y axis
@@ -64,6 +102,7 @@ class raytracing():
         output = dot(R,input-array([[x0],[y0],[z0]]))
         return output
     def reflect(self,vector,normvector):
+        # Used method described in G.H. Spencer and M.V.R.K. Murty, "General Ray-Tracing Procedure", 1961
         mu     = 1 
         div   = pow(normvector[1,0],2)  + pow(normvector[1,1],2) + pow(normvector[1,2],2)
         a     = mu* (vector[1,0]*normvector[1,0] + vector[1,1]*normvector[1,1] + vector[1,2]*normvector[1,2]) / div
@@ -156,14 +195,23 @@ class raytracing():
         return True
     def plotsphericallens(self,cx=0,cy=0,cz=0,r=10):
         # Method to plot surfaces
-        u = linspace(pi/2,3*pi/2,100)
-        v = linspace(0, pi, 100)
-        u = linspace(0,2*pi,100)
-        x = r * outer(cos(u), sin(v)) + cx
-        y = r * outer(sin(u), sin(v)) + cy
-        z = r * outer(ones(size(u)), cos(v)) + cz
-        self.ax.plot_surface(x, y, z,  rstride=6, cstride=6, color='b')
+        sampleno = 100
+        u        = linspace(pi/2,3*pi/2,sampleno)
+        v        = linspace(0, pi, sampleno)
+        u        = linspace(0,2*pi,sampleno)
+        x        = r * outer(cos(u), sin(v)) + cx
+        y        = r * outer(sin(u), sin(v)) + cy
+        z        = r * outer(ones(size(u)), cos(v)) + cz
+        self.ax.plot_surface(x, y, z, rstride=6, cstride=6, color='b')
         return array([cx,cy,cz,r])
+    def plottriangle(self,point0,point1,point2):
+        # Method to plot triangular surface
+        x = array([ point0[0], point1[0], point2[0]])
+        y = array([ point0[1], point1[1], point2[1]])
+        z = array([ point0[2], point1[2], point2[2]])
+        verts = [zip(x, y,z)]
+        self.ax.add_collection3d(Poly3DCollection(verts))
+        return True
     def showplot(self,title='Ray tracing'):
         # Shows the prepared plot
         plt.title(title)

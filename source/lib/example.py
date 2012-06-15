@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys,odak
+import sys,odak,math
 
 __author__  = ('Kaan Akşit')
 
@@ -12,7 +12,19 @@ def example():
     #example_of_retroreflector()
     #example_of_jones_calculus()
     #example_of_ray_tracing()
-    example_of_paraxial_matrix()
+    #example_of_paraxial_matrix()
+    example_of_ray_tracing_2()
+    return True
+
+def example_of_ray_tracing_2():
+    ray     = odak.raytracing()
+    point   = (0,math.sqrt(3)/2,0.99)
+    point0  = (1,0,1)
+    point1  = (0,math.sqrt(3),1)
+    point2  = (-1,0,1)
+    print ray.isitontriangle(point,point0,point1,point2)
+    ray.plottriangle(point0,point1,point2)
+    ray.showplot()
     return True
 
 def example_of_paraxial_matrix():
