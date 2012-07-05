@@ -150,7 +150,7 @@ class raytracing():
         vector[1,1] = mu*vector[1,1] + to*normvector[1,1]
         vector[1,2] = mu*vector[1,2] + to*normvector[1,2]
         return vector
-    def findinterspher(self,vector,sphere,error=0.00000001,numiter=10000):
+    def findinterspher(self,vector,sphere,error=0.00000001,numiter=1000,iternotify='no'):
         # Method for finding intersection in between a vector and a spherical surface
         # There are things to be done to fix wrong root convergence
         number   = 0
@@ -187,12 +187,13 @@ class raytracing():
             normpnt  = array([x,y,z])
             normvec  = array([normpnt,normang])
             # Iteration reminder
-            #print 'Iteration number: %s, Calculated distance: %s, Error: %s, Points: %s %s %s, Function:  %s' % (number,distance,epsilon,x,y,z,FXYZ)
+            if iternotify == 'yes':
+                print 'Iteration number: %s, Calculated distance: %s, Error: %s, Points: %s %s %s, Function:  %s' % (number,distance,epsilon,x,y,z,FXYZ)
             # Check if the number of iterations are too much
             if number > numiter:
                return 0,normvec        
         return distance+shift,normvec
-    def findintersurface(self,vector,(point0,point1,point2),error=0.00001,numiter=10000):
+    def findintersurface(self,vector,(point0,point1,point2),error=0.00001,numiter=100,iternotify='no'):
         # Method to find intersection point inbetween a surface and a vector
         # See http://www.jtaylor1142001.net/calcjat/Solutions/VPlanes/VP3Pts.htm
         vector1  = self.createvectorfromtwopoints(point0,point1)
@@ -227,7 +228,8 @@ class raytracing():
             distance    = newdistance
             normvec[0]  = array([x1,y1,z2])
             # Iteration reminder
-            #print 'Iteration number: %s, Calculated distance: %s, Error: %s, F1: %s, F2: %s, Old distance: %s ' % (number,distance,error,F1,F2,olddistance)
+            if iternotify == 'yes':
+                print 'Iteration number: %s, Calculated distance: %s, Error: %s, F1: %s, F2: %s, Old distance: %s ' % (number,distance,error,F1,F2,olddistance)
             if number > numiter:
                return 0,normvec
         return olddistance, normvec
@@ -257,17 +259,17 @@ class raytracing():
         verts = [zip(x, y,z)]
         self.ax.add_collection3d(Poly3DCollection(verts))
         return array([point0,point1,point2])
-    def plotcornercube(self,centerx,centery,centerz,pitch):
+    def plotcornercube(self,centerx,centery,centerz,pitch,revert=False):
         # Method to plot a single cornercube
         point00 = array([ centerx, centery, centerz])
         point10 = array([ centerx, centery, centerz])
-        point20 = array([ centerx, centery, centerz])
+        point22 = array([ centerx, centery, centerz])
         point01 = array([ centerx, centery-2*pitch/3, centerz+sqrt(2)*pitch/3 ])
         point11 = array([ centerx, centery-2*pitch/3, centerz+sqrt(2)*pitch/3 ])
         point21 = array([ centerx-pitch/sqrt(3), centery+pitch/3, centerz+sqrt(2)*pitch/3 ])
         point02 = array([ centerx-pitch/sqrt(3), centery+pitch/3, centerz+sqrt(2)*pitch/3 ])
         point12 = array([ centerx+pitch/sqrt(3), centery+pitch/3, centerz+sqrt(2)*pitch/3 ])
-        point22 = array([ centerx+pitch/sqrt(3), centery+pitch/3, centerz+sqrt(2)*pitch/3 ])
+        point20 = array([ centerx+pitch/sqrt(3), centery+pitch/3, centerz+sqrt(2)*pitch/3 ])
         self.plottriangle(point00,point01,point02)
         self.plottriangle(point10,point11,point12)
         self.plottriangle(point20,point21,point22)

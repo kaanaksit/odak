@@ -19,11 +19,26 @@ def example():
 
 def example_of_ray_tracing_3():
     ray               = odak.raytracing()
-    cornercube        = ray.plotcornercube(0,0,0,10)
-    for points in cornercube:
-        print points[0]
-    #ray.defineplotshape((-20,20),(-20,20),(-20,20))
-    #ray.showplot()
+    pitch             = 10
+    cornercube        = ray.plotcornercube(0,0,0,pitch)
+    vector            = ray.createvector((1,2,10),(90,90,0))
+    rayslist          = []
+    distance          = 2
+    rayslist.append(vector)
+    for rays in rayslist:
+        if len(rayslist) > 3:
+            rays[1] = -rays[1]
+            ray.plotvector(rays,10)
+            break
+        for points in cornercube:
+            distance,normvec = ray.findintersurface(rays,(points[0],points[1],points[2]))
+            if ray.isitontriangle(normvec[0],points[0],points[1],points[2]) == True:
+                ray.plotvector(normvec,pitch/10,'r')
+                ray.plotvector(rays,distance)
+                reflectvector = ray.reflect(rays,normvec)
+                rayslist.append(reflectvector)
+    ray.defineplotshape((-20,20),(-20,20),(-20,20))
+    ray.showplot()
     return True
 
 def example_of_ray_tracing_2():
