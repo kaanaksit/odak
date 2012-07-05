@@ -59,6 +59,12 @@ class raytracing():
         # Cosines vector
         cosin = array([[alpha],[beta],[gamma]])
         return array([point,cosin])
+    def multiplytwovectors(self,vector1,vector2):
+        # Multiply two vectors and return the resultant vector
+        # Used method described under: 
+        # Cross-product: http://en.wikipedia.org/wiki/Cross_product
+        angle = cross(vector1[1].transpose()[0],vector2[1].transpose()[0])
+        return array([vector1[0],[[angle[0]],[angle[1]],[angle[2]]]])
     def anglebetweentwovector(self,vector0,vector1):
         # Finds angle between two vectors
         # Used method described under: http://www.wikihow.com/Find-the-Angle-Between-Two-Vectors
@@ -186,6 +192,45 @@ class raytracing():
             if number > numiter:
                return 0,normvec        
         return distance+shift,normvec
+    def findintersurface(self,vector,(point0,point1,point2),error=0.00001,numiter=10000):
+        # Method to find intersection point inbetween a surface and a vector
+        # See http://www.jtaylor1142001.net/calcjat/Solutions/VPlanes/VP3Pts.htm
+        vector1  = self.createvectorfromtwopoints(point0,point1)
+        vector2  = self.createvectorfromtwopoints(point0,point2)
+        normvec  = self.multiplytwovectors(vector1,vector2)
+        k        = vector[0,0,0]
+        l        = vector[0,1,0]
+        m        = vector[0,2,0]
+        # See http://en.wikipedia.org/wiki/Normal_%28geometry%29
+        a           = normvec[1][0]
+        b           = normvec[1][1]
+        c           = normvec[1][2]
+        d           = -normvec[1][0]*normvec[0][0]-normvec[1][1]*normvec[0][1]-normvec[1][2]*normvec[0][2]
+        distance    = 1 
+        number      = 0
+        olddistance = 0
+        epsilon     = error*2
+        while epsilon > error:
+            number     += 1
+            x1          = distance * vector[1,0] + k
+            y1          = distance * vector[1,1] + l
+            z1          = distance * vector[1,2] + m
+            x2          = olddistance * vector[1,0] + k
+            y2          = olddistance * vector[1,1] + l
+            z2          = olddistance * vector[1,2] + m
+            F1          = a*x1+b*y1+c*z1+d
+            F2          = a*x2+b*y2+c*z2+d
+            # Secant method: http://en.wikipedia.org/wiki/Secant_method
+            newdistance = distance - F1*(distance-olddistance)/(F1-F2)
+            epsilon     = abs(distance-olddistance)
+            olddistance = distance
+            distance    = newdistance
+            normvec[0]  = array([x1,y1,z2])
+            # Iteration reminder
+            #print 'Iteration number: %s, Calculated distance: %s, Error: %s, F1: %s, F2: %s, Old distance: %s ' % (number,distance,error,F1,F2,olddistance)
+            if number > numiter:
+               return 0,normvec
+        return olddistance, normvec
     def plotvector(self,vector,distance,color='g'):
         # Method to plot rays
         x = array([vector[0,0,0], distance * vector[1,0] + vector[0,0,0]])
@@ -211,7 +256,7 @@ class raytracing():
         z = array([ point0[2], point1[2], point2[2]])
         verts = [zip(x, y,z)]
         self.ax.add_collection3d(Poly3DCollection(verts))
-        return True
+        return array([point0,point1,point2])
     def plotcornercube(self,centerx,centery,centerz,pitch):
         # Method to plot a single cornercube
         point00 = array([ centerx, centery, centerz])
@@ -227,6 +272,11 @@ class raytracing():
         self.plottriangle(point10,point11,point12)
         self.plottriangle(point20,point21,point22)
         return array([point00,point01,point02]),array([point10,point11,point12]),array([point20,point21,point22])
+    def defineplotshape(self,(xmin,xmax),(ymin,ymax),(zmin,zmax)):
+        self.ax.set_xlim3d(xmin,xmax)
+        self.ax.set_ylim3d(ymin,ymax)
+        self.ax.set_zlim3d(zmin,zmax)
+        return True
     def showplot(self,title='Ray tracing'):
         # Shows the prepared plot
         plt.title(title)

@@ -13,19 +13,34 @@ def example():
     #example_of_jones_calculus()
     #example_of_ray_tracing()
     #example_of_paraxial_matrix()
-    example_of_ray_tracing_2()
+    #example_of_ray_tracing_2()
+    example_of_ray_tracing_3()
+    return True
+
+def example_of_ray_tracing_3():
+    ray               = odak.raytracing()
+    cornercube        = ray.plotcornercube(0,0,0,10)
+    for points in cornercube:
+        print points[0]
+    #ray.defineplotshape((-20,20),(-20,20),(-20,20))
+    #ray.showplot()
     return True
 
 def example_of_ray_tracing_2():
-    ray     = odak.raytracing()
-    point   = (0,math.sqrt(3)/2,1)
-    point0  = (1,0,1)
-    point1  = (0,math.sqrt(3),0)
-    point2  = (-1,0,1)
-    print ray.isitontriangle(point,point0,point1,point2)
-#    ray.plottriangle(point0,point1,point2)
-#    vector  = parax.
-    ray.plotcornercube(0,0,0,10)
+    ray               = odak.raytracing()
+    point             = (0,math.sqrt(3)/2,1)
+    point0            = (1,0,1)
+    point1            = (0,math.sqrt(3),0)
+    point2            = (-1,0,1)
+    ray.plottriangle(point0,point1,point2)
+    vector            = ray.createvector((0,1,5),(90,90,0))
+    distance,normvec  = ray.findintersurface(vector,(point0,point1,point2))
+    if ray.isitontriangle(normvec[0],point0,point1,point2) == True:
+        ray.plotvector(normvec,distance)
+        ray.plotvector(vector,distance)
+        reflectvector     = ray.reflect(vector,normvec)
+        ray.plotvector(reflectvector,distance)
+    ray.defineplotshape((-20,20),(-20,20),(-20,20))
     ray.showplot()
     return True
 
