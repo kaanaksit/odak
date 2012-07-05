@@ -18,30 +18,33 @@ def example():
     return True
 
 def example_of_ray_tracing_3():
-    ray               = odak.raytracing()
+    ray         = odak.raytracing()
     # Be careful points and pitch must be float
-    pitch             = 10.
-    cornercube        = ray.plotcornercube(0,0,0,pitch,revert=False)
-    vector0           = ray.createvector((1.,2.1,10.),(90,90,0))
-    vector1           = ray.createvector((1.,1.,10.),(90,90,0))
-    vector2           = ray.createvector((-1.,1.,10.),(90,90,0))
-    vectorlist        = [vector0,vector1,vector2]
+    pitch       = 10.
+    cornercube0 = ray.plotcornercube(0,0,0,pitch,revert=False)
+    cornercube1 = ray.plotcornercube(pitch/math.sqrt(3),-pitch/3,0,pitch,revert=True)
+    vector0     = ray.createvector((1.,2.1,10.),(90,90,0))
+    vector1     = ray.createvector((1.,1.,10.),(90,90,0))
+    vector2     = ray.createvector((4.,-4.,10.),(90,90,0))
+    vectorlist  = [vector0,vector1,vector2]
+    cornercubes = [cornercube0,cornercube1]
     for vectors in vectorlist:
-        rayslist          = []
-        distance          = 2
-        rayslist.append(vectors)
-        for rays in rayslist:
-            if len(rayslist) > 3:
-                rays[1] = -rays[1]
-                ray.plotvector(rays,10)
-                break
-            for points in cornercube:
-                distance,normvec = ray.findintersurface(rays,(points[0],points[1],points[2]))
-                if ray.isitontriangle(normvec[0],points[0],points[1],points[2]) == True:
-                    ray.plotvector(normvec,pitch/10,'r')
-                    ray.plotvector(rays,distance)
-                    reflectvector = ray.reflect(rays,normvec)
-                    rayslist.append(reflectvector)
+        for cubes in cornercubes:
+            rayslist          = []
+            distance          = 2
+            rayslist.append(vectors)
+            for rays in rayslist:
+                if len(rayslist) > 3:
+                    rays[1] = -rays[1]
+                    ray.plotvector(rays,10)
+                    break
+                for points in cubes:
+                    distance,normvec = ray.findintersurface(rays,(points[0],points[1],points[2]))
+                    if ray.isitontriangle(normvec[0],points[0],points[1],points[2]) == True:
+                        ray.plotvector(normvec,pitch/10,'r')
+                        ray.plotvector(rays,distance)
+                        reflectvector = ray.reflect(rays,normvec)
+                        rayslist.append(reflectvector)
     ray.defineplotshape((-5,5),(-5,5),(0,10))
     ray.showplot()
     return True
