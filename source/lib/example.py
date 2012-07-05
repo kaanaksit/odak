@@ -19,11 +19,12 @@ def example():
 
 def example_of_ray_tracing_3():
     ray               = odak.raytracing()
-    pitch             = 10
+    # Be careful points and pitch must be float
+    pitch             = 10.
     cornercube        = ray.plotcornercube(0,0,0,pitch)
-    vector0           = ray.createvector((1,2,10),(90,90,0))
-    vector1           = ray.createvector((1,1,10),(90,90,0))
-    vector2           = ray.createvector((-1,1,10),(90,90,0))
+    vector0           = ray.createvector((1.,2.1,10.),(90,90,0))
+    vector1           = ray.createvector((1.,1.,10.),(90,90,0))
+    vector2           = ray.createvector((-1.,1.,10.),(90,90,0))
     vectorlist        = [vector0,vector1,vector2]
     for vectors in vectorlist:
         rayslist          = []
