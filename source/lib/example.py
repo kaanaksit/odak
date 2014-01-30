@@ -11,9 +11,9 @@ def example():
     #example_of_fresnel_fraunhofer()
     #example_of_retroreflector()
     #example_of_jones_calculus()
-    #example_of_ray_tracing()
+    example_of_ray_tracing()
     #example_of_paraxial_matrix()
-    #example_of_ray_tracing_2()
+    example_of_ray_tracing_2()
     example_of_ray_tracing_3()
     return True
 

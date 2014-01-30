@@ -4,6 +4,8 @@
 
 import sys,matplotlib
 import matplotlib.pyplot as plt
+import mpl_toolkits.mplot3d.art3d as art3d
+from matplotlib.patches import Circle, PathPatch
 from mpl_toolkits.mplot3d import axes3d
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from numpy import *
@@ -39,6 +41,27 @@ class raytracing():
         self.fig = plt.figure()
         self.ax  = self.fig.gca(projection='3d')
         return
+    def findangles(self,Point1,Point2):
+        # Function to find angle between two points if there was a line intersecting at both of them.
+        # Vector to hold angles is created.
+        angles   = []
+        # Find the distance in between points.
+        distance = self.finddistancebetweentwopoints(Point1,Point2)
+        # X axis rotation is calculated.
+        angles.append(degrees(arccos( (Point2[0]-Point1[0])/distance )))
+        # Y axis rotation is calculated.
+        angles.append(degrees(arccos( (Point2[1]-Point1[1])/distance )))
+        # Z axis rotation is calculated.
+        angles.append(degrees(arccos( (Point2[2]-Point1[2])/distance )))
+        # Angles are returned.
+        return angles
+    def finddistancebetweentwopoints(self,Point1,Point2):
+        # Function to find the distance between two points if there was a line intersecting at both of them.
+        distancex = Point1[0]-Point2[0]
+        distancey = Point1[1]-Point2[1]
+        distancez = Point1[2]-Point2[2]
+        distance  = sqrt(pow(distancex,2)+pow(distancey,2)+pow(distancez,2))
+        return distance
     def createvector(self,(x0,y0,z0),(alpha,beta,gamma)):
         # Create a vector with the given points and angles in each direction
         point = array([[x0],[y0],[z0]])
@@ -243,7 +266,6 @@ class raytracing():
     def plotsphericallens(self,cx=0,cy=0,cz=0,r=10):
         # Method to plot surfaces
         sampleno = 100
-        u        = linspace(pi/2,3*pi/2,sampleno)
         v        = linspace(0, pi, sampleno)
         u        = linspace(0,2*pi,sampleno)
         x        = r * outer(cos(u), sin(v)) + cx
@@ -251,6 +273,12 @@ class raytracing():
         z        = r * outer(ones(size(u)), cos(v)) + cz
         self.ax.plot_surface(x, y, z, rstride=6, cstride=6, color='b')
         return array([cx,cy,cz,r])
+    def plotcircle(self,center,r,c='none'):
+        # Method to plot circle.
+        circle = Circle((center[0], center[1]), r, facecolor=c, edgecolor=(0,0,0), linewidth=3, alpha=0.5)
+        self.ax.add_patch(circle)
+        art3d.pathpatch_2d_to_3d(circle, z=center[2], zdir='z')
+        return array([center,r]) 
     def plottriangle(self,point0,point1,point2):
         # Method to plot triangular surface
         x = array([ point0[0], point1[0], point2[0]])
