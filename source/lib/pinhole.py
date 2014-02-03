@@ -14,11 +14,24 @@ def PinholeCircular():
     # Distance between pinholes and the point sources (mm).
     ds          = 5.0
     # Distance between center to center in between pinholes (mm).
-    dhp          = 1.5
+    dhp         = 1.5
     # Radius of the pinholes (mm).
     r           = 0.5
     # Distance between the point sources (mm).
     dpp         = 1.0
+    # Half of the aperture of the eye (mm).
+    dea         = 2.4
+    # Half of the thickness of the eye lens (mm).
+    tel         = 0.2
+    # Refractive index of the eye lens.
+    nel         = 1.51    
+    # Distance between the pinholes and the lens
+    dpl         = -1
+    # X and Y positions of the lens.
+    xel         = 0
+    yel         = 0
+    # Z position of the lens is calculated.
+    zel         = dpl-tel
     # Define the center of the first circular pinhole in 3D space.
     HoleCenter1 = (-dhp/2,0,0)
     # Define the radius of the first circular pinhole in mm.
@@ -49,6 +62,13 @@ def PinholeCircular():
     SourceList = [Point1,
                   Point2
                  ]
+    # Plot a spherical lens.
+    AsphericalLens = ray.plotasphericallens(xel,yel,zel,dea,dea,tel,nel,'b')
+    # Create a dummy spherical lens to find the intersection point of the incoming ray with aspherical lens.
+    R        = (pow(dea,2) + pow(tel,2)) / (2*tel)
+    DummySL1 = (xel,yel,zel-R,R)
+    # Array to save rays.
+    rays     = []
     # Iterate ray tracing for every point source.
     for origin in SourceList:
         # Make destination choice according to the source.
@@ -66,15 +86,24 @@ def PinholeCircular():
             angles = ray.findangles(origin,item)
             # Creating the new vector in the direction of destination using the previous angles calculated.
             NewRay = ray.createvector(origin,angles)
+            # Storing ray to the rays vector.
+            rays.append(NewRay)
             # Find the distance between the origin and the destination point.
-            distance    = ray.finddistancebetweentwopoints(origin,item)
+            #distance    = ray.finddistancebetweentwopoints(origin,item)
+            # Intersect the vector with dummy sphere.
+            distance,normvec  = ray.findinterspher(NewRay,DummySL1)  
             # Chiefray color selection.
             if item == DestinationList[0]:
                 color = RayColor + '+--'
             else:
                 color = RayColor + '+-'
             # Plot the ray from origin to the destination.
-            ray.plotvector(NewRay,distance,color)        
+            if distance != 0:
+                ray.plotvector(NewRay,distance,color)        
+    # Find the intersection of two rays.
+    intersection, distances = ray.CalculateIntersectionOfTwoVectors(rays[0],rays[5])
+    ray.PlotPoint(intersection,'g*')
+    #ray.plotvector(rays[0],distances[1],'g*')
     # Show the ray tracing envorinment in three-dimensional space.
     ds = 1.5*ds
     ray.defineplotshape((-ds,ds),(-ds,ds),(-ds,ds))

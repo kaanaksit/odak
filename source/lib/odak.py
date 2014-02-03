@@ -5,6 +5,7 @@
 import sys,matplotlib
 import matplotlib.pyplot as plt
 import mpl_toolkits.mplot3d.art3d as art3d
+import scipy.linalg
 from matplotlib.patches import Circle, PathPatch
 from mpl_toolkits.mplot3d import axes3d
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
@@ -71,6 +72,26 @@ class raytracing():
         # Cosines vector
         cosin = array([[alpha],[beta],[gamma]])
         return array([point,cosin])
+    def CalculateIntersectionOfTwoVectors(self,vector1,vector2):
+        A = array([[vector1[1][0][0], vector2[1][0][0] ],
+                   [vector1[1][1][0], vector2[1][1][0] ],
+#                   [vector1[1][2][0], vector2[1][2][0] ]
+                  ])
+        B = array([vector1[0][0]-vector2[0][0],
+                   vector1[0][1]-vector2[0][1],
+#                   vector1[0][2]-vector2[0][2]
+                  ])
+        # LU decomposition solution.
+        distances = scipy.linalg.solve(A, B)
+        # Point vector created.
+        Point     = [] 
+        # Intersection point at X axis.
+        Point.append((vector1[0][0][0]-distances[0]*vector1[1][0][0])[0])
+        # Intersection point at Y axis.
+        Point.append((vector1[0][1][0]-distances[0]*vector1[1][1][0])[0])
+        # Intersection point at Z axis.
+        Point.append((vector1[0][2][0]-distances[0]*vector1[1][2][0])[0])
+        return Point,distances
     def createvectorfromtwopoints(self,(x0,y0,z0),(x1,y1,z1)):
         # Create a vector from two given points
         point = array([[x0],[y0],[z0]])
@@ -263,7 +284,11 @@ class raytracing():
         z = array([vector[0,2,0], distance * vector[1,2] + vector[0,2,0]])
         self.ax.plot(x,y,z,color)
         return True
-    def plotsphericallens(self,cx=0,cy=0,cz=0,r=10):
+    def PlotPoint(self,point,color='g*'):
+        # Method to plot a single spot.
+        self.ax.plot(array([point[0]]),array([point[1]]),array([point[2]]),color)
+        return True
+    def plotsphericallens(self,cx=0,cy=0,cz=0,r=10,c='none'):
         # Method to plot surfaces
         sampleno = 100
         v        = linspace(0, pi, sampleno)
@@ -271,8 +296,27 @@ class raytracing():
         x        = r * outer(cos(u), sin(v)) + cx
         y        = r * outer(sin(u), sin(v)) + cy
         z        = r * outer(ones(size(u)), cos(v)) + cz
-        self.ax.plot_surface(x, y, z, rstride=6, cstride=6, color='b')
+        self.ax.plot_surface(x, y, z, rstride=6, cstride=6, color=c)
         return array([cx,cy,cz,r])
+    def CalculateFocal(self,rx,ry,rz,n):
+        # Method to calculate the focal length of the lens in different axes.
+        for a in [rx,ry]:
+            R         = (pow(a,2)+pow(rz,2))/(2*rz)
+            LensMaker = (n-1)*(-2/R+(n-1)*rz*2/(n*R))
+            f         = pow(LensMaker,-1)
+            print 'Focal length of the lens: ',f
+        return True
+    def plotasphericallens(self,cx=0,cy=0,cz=0,rx=10,ry=10,rz=10,n=1.51,c='none'):
+        # Method to plot surfaces
+        sampleno = 50
+        v        = linspace(0, pi, sampleno)
+        u        = linspace(0,2*pi,sampleno)
+        x        = rx * outer(cos(u), sin(v)) + cx
+        y        = ry * outer(sin(u), sin(v)) + cy
+        z        = rz * outer(ones(size(u)), cos(v)) + cz
+        self.ax.plot_surface(x, y, z, rstride=6, cstride=6, color=c)
+        self.CalculateFocal(rx,ry,rz,n)
+        return array([cx,cy,cz,rx,ry,rz])
     def plotcircle(self,center,r,c='none'):
         # Method to plot circle.
         circle = Circle((center[0], center[1]), r, facecolor=c, edgecolor=(0,0,0), linewidth=3, alpha=0.5)
