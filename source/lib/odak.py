@@ -6,6 +6,7 @@ import sys,matplotlib
 import matplotlib.pyplot as plt
 import mpl_toolkits.mplot3d.art3d as art3d
 import scipy.linalg
+from matplotlib import cm
 from matplotlib.patches import Circle, PathPatch
 from mpl_toolkits.mplot3d import axes3d
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
@@ -42,6 +43,9 @@ class raytracing():
         self.fig = plt.figure()
         self.ax  = self.fig.gca(projection='3d')
         return
+    def DegreesToRadians(self,angle):
+        # Function to convert degrees to radians.
+        return radians(angle)
     def findangles(self,Point1,Point2):
         # Function to find angle between two points if there was a line intersecting at both of them.
         # Vector to hold angles is created.
@@ -73,16 +77,23 @@ class raytracing():
         cosin = array([[alpha],[beta],[gamma]])
         return array([point,cosin])
     def CalculateIntersectionOfTwoVectors(self,vector1,vector2):
-        A = array([[vector1[1][0][0], vector2[1][0][0] ],
+        # Method to calculate the intersection of two vectors.
+        A = array([
+                   [vector1[1][0][0], vector2[1][0][0] ],
                    [vector1[1][1][0], vector2[1][1][0] ],
-#                   [vector1[1][2][0], vector2[1][2][0] ]
+                   [vector1[1][2][0], vector2[1][2][0] ]
                   ])
-        B = array([vector1[0][0]-vector2[0][0],
+        B = array(
+                  [vector1[0][0]-vector2[0][0],
                    vector1[0][1]-vector2[0][1],
-#                   vector1[0][2]-vector2[0][2]
+                   vector1[0][2]-vector2[0][2]
                   ])
         # LU decomposition solution.
-        distances = scipy.linalg.solve(A, B)
+        distances = scipy.linalg.solve(A[:][0:2], B[:][0:2])
+        # Check if the given solution matches the initial condition at the third equation.
+        if int(abs(dot(A[:][2],distances))) != int(abs(B[:][2])):
+           distances[0] = 0
+           distances[1] = 0
         # Point vector created.
         Point     = [] 
         # Intersection point at X axis.
@@ -153,16 +164,17 @@ class raytracing():
         return output
     def reflect(self,vector,normvector):
         # Used method described in G.H. Spencer and M.V.R.K. Murty, "General Ray-Tracing Procedure", 1961
-        mu     = 1 
-        div   = pow(normvector[1,0],2)  + pow(normvector[1,1],2) + pow(normvector[1,2],2)
-        a     = mu* (vector[1,0]*normvector[1,0] + vector[1,1]*normvector[1,1] + vector[1,2]*normvector[1,2]) / div
-        vector[0,0] = normvector[0,0]
-        vector[0,1] = normvector[0,1]
-        vector[0,2] = normvector[0,2]
-        vector[1,0] = vector[1,0] - 2*a*normvector[1,0]
-        vector[1,1] = vector[1,1] - 2*a*normvector[1,1]
-        vector[1,2] = vector[1,2] - 2*a*normvector[1,2]
-        return vector
+        mu = 1
+        div = pow(normvector[1,0],2) + pow(normvector[1,1],2) + pow(normvector[1,2],2)
+        a = mu* (vector[1,0]*normvector[1,0] + vector[1,1]*normvector[1,1] + vector[1,2]*normvector[1,2]) / div
+        VectorOutput      = vector.copy()
+        VectorOutput[0,0] = normvector[0,0]
+        VectorOutput[0,1] = normvector[0,1]
+        VectorOutput[0,2] = normvector[0,2]
+        VectorOutput[1,0] = vector[1,0] - 2*a*normvector[1,0]
+        VectorOutput[1,1] = vector[1,1] - 2*a*normvector[1,1]
+        VectorOutput[1,2] = vector[1,2] - 2*a*normvector[1,2]
+        return VectorOutput        
     def snell(self,vector,normvector,n1,n2,error=0.01):
         # Method for Snell's law
         # n1 refractive index of the medium which vector is coming from
@@ -187,13 +199,14 @@ class raytracing():
            # Iteration limiter
            if num > 5000:
               return vector
-        vector[0,0] = normvector[0,0]
-        vector[0,1] = normvector[0,1]
-        vector[0,2] = normvector[0,2]
-        vector[1,0] = mu*vector[1,0] + to*normvector[1,0]
-        vector[1,1] = mu*vector[1,1] + to*normvector[1,1]
-        vector[1,2] = mu*vector[1,2] + to*normvector[1,2]
-        return vector
+        VectorOutput      = vector.copy()
+        VectorOutput[0,0] = normvector[0,0]
+        VectorOutput[0,1] = normvector[0,1]
+        VectorOutput[0,2] = normvector[0,2]
+        VectorOutput[1,0] = mu*vector[1,0] + to*normvector[1,0]
+        VectorOutput[1,1] = mu*vector[1,1] + to*normvector[1,1]
+        VectorOutput[1,2] = mu*vector[1,2] + to*normvector[1,2]
+        return VectorOutput
     def findinterspher(self,vector,sphere,error=0.00000001,numiter=1000,iternotify='no'):
         # Method for finding intersection in between a vector and a spherical surface
         # There are things to be done to fix wrong root convergence
@@ -284,11 +297,26 @@ class raytracing():
         z = array([vector[0,2,0], distance * vector[1,2] + vector[0,2,0]])
         self.ax.plot(x,y,z,color)
         return True
-    def PlotPoint(self,point,color='g*'):
+    def PlotPoint(self,point,color='g*',contour='False'):
         # Method to plot a single spot.
         self.ax.plot(array([point[0]]),array([point[1]]),array([point[2]]),color)
+        # Plotting contour on 3-axes.
+        if contour == 'True':
+            self.ax.contour(array([[-1,0,1],
+                                   [-1,0,1],
+                                   [-1,0,1]
+                                   ]),
+                            array([[-1,0,1],
+                                   [-1,0,1],
+                                   [-1,0,1]
+                                   ]),
+                            array([[2,4,2],
+                                   [1,4,5],
+                                   [3,3,3]
+                                   ]),
+                            zdir='z', offset=-100, cmap=cm.coolwarm)
         return True
-    def plotsphericallens(self,cx=0,cy=0,cz=0,r=10,c='none'):
+    def plotsphericallens(self,cx=0,cy=0,cz=0,r=10,c='none',a=0.3):
         # Method to plot surfaces
         sampleno = 100
         v        = linspace(0, pi, sampleno)
@@ -296,7 +324,7 @@ class raytracing():
         x        = r * outer(cos(u), sin(v)) + cx
         y        = r * outer(sin(u), sin(v)) + cy
         z        = r * outer(ones(size(u)), cos(v)) + cz
-        self.ax.plot_surface(x, y, z, rstride=6, cstride=6, color=c)
+        self.ax.plot_surface(x, y, z, rstride=8, cstride=8, alpha=a, color=c, antialiased=True)
         return array([cx,cy,cz,r])
     def CalculateFocal(self,rx,ry,rz,n):
         # Method to calculate the focal length of the lens in different axes.
@@ -317,9 +345,9 @@ class raytracing():
         self.ax.plot_surface(x, y, z, rstride=6, cstride=6, color=c)
         self.CalculateFocal(rx,ry,rz,n)
         return array([cx,cy,cz,rx,ry,rz])
-    def plotcircle(self,center,r,c='none'):
+    def PlotCircle(self,center,r,c='none'):
         # Method to plot circle.
-        circle = Circle((center[0], center[1]), r, facecolor=c, edgecolor=(0,0,0), linewidth=3, alpha=0.5)
+        circle = Circle((center[0], center[1]), r, facecolor=c, edgecolor=(0,0,0), linewidth=4, alpha=1)
         self.ax.add_patch(circle)
         art3d.pathpatch_2d_to_3d(circle, z=center[2], zdir='z')
         return array([center,r]) 
