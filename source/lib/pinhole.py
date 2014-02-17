@@ -1,25 +1,24 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys,odak,math
+import sys,odak,math,csv
+import matplotlib.pyplot as plt
 from math import cos, sin
 
 __author__  = ('Kaan Akşit')
+# This script solves the question how stereoscopy is improved with two pinholes infront of an eye.
 
-def example():
-    PinholeCircular()
-    return True
-
-def PinholeCircular():
+# Main function where variables are set, and the solution method is called.
+def main():
     # REMEMBER TO ALWAYS ASSIGN FLOATING NUMBERS TO THE VARIABLES!
     # Distance between pinholes and the point sources (mm).
-    ds          = 10.0
+    ds          = 1100.0
     # Distance between center to center in between pinholes (mm).
-    dhp         = 1.5
+    dhp         = 2
     # Radius of the pinholes (mm).
     r           = 0.5
     # Distance between the point sources (mm).
-    dpp         = 1.0
+    dpp         = 4.0
     # Half of the aperture of the eye (mm), and also determines equivalent ball lens focal.
     dea         = 9.0
     # Diameter of the whole eye, according to http://www.opticampus.com/files/introduction_to_ophthalmic_optics.pdf ,which employs Gullstrand-Emsley model.
@@ -28,23 +27,65 @@ def PinholeCircular():
     tel         = 0.2
     # Refractive index of the cristal eye lens (ball lens in our case).
     nel         = 1.41
-    # Refractive indel of inside the lens.
+    # Refractive index of inside the lens.
     nie         = 1.33
     # Refractive index of the outside envorinment.
     nair        = 1
-    # Distance between the pinholes and the lens
-    dpl         = -1
+    # Distance between the pinholes and the lens (mm).
+    dpl         = -10
     # X and Y positions of the lens.
     xel         = 0
     yel         = 0
-    # Z position of the lens is calculated.
-    zel         = dpl-tel
     # Detector position in 3D space determined by three points from the surface. 
     DetPos      = [
                   (-30,30,-50),
                   (30,-30,-50),
                   (30,30,-50)
                   ]
+    # Solve the problem according to the given values.
+#    Solve(ds,dhp,r,dpp,dea,dwe,tel,nel,nie,nair,dpl,xel,yel,DetPos,True)
+    # Open a csv file to store the output of the simulation.
+    filename = 'results.csv'
+    out      = csv.writer(open(filename,"w"), delimiter=',',quoting=csv.QUOTE_ALL)
+    # Iterative solution for plotting dependency on aperture size, separation between point sources, and separation between two pinholes.
+    VoxelHeights = []
+    VoxelWidths  = []
+    X            = []
+    Y            = []
+    step         = 0.05
+    # Iterate the aperture size.
+    for r in xrange(1,12,1):
+        r *= step
+        # Iterate the seperation of point sources.
+        for dpp in xrange(1,32,1):
+            dpp *= step
+            # Solve the given case.
+            VoxelHeight, VoxelWidth = Solve(ds,dhp,r,dpp,dea,dwe,tel,nel,nie,nair,dpl,xel,yel,DetPos,False)
+            # Voxel dimensions stored in a list.
+            VoxelHeights.append(VoxelHeight)
+            VoxelWidths.append(VoxelWidth)
+            X.append(r)
+            Y.append(dpp)
+            # Values stored in a list.
+            Values = (r,dpp,VoxelHeight,VoxelWidth)
+            # Show current the latest solution.
+            print Values
+            # Write the solution to the file.
+            out.writerow(Values)
+    # Call ray tracing library to plot the data as a 3D surface.
+    Fig1 = odak.raytracing()
+    Fig2 = odak.raytracing()
+    # Plot the data as 3D surface.
+    Fig1.PlotData(X,Y,VoxelHeights,'g')
+    # Plot the Voxel Widths data as 3D surface.
+    Fig2.PlotData(X,Y,VoxelWidths,'g')    
+    # Show the plotted data.
+    Fig1.showplot()
+    return True
+
+def Solve(ds,dhp,r,dpp,dea,dwe,tel,nel,nie,nair,dpl,xel,yel,DetPos,ShowPlot=False):
+    # Z position of the lens is calculated.
+    zel         = dpl-tel
     # Define the center of the first circular pinhole in 3D space.
     HoleCenter1 = (-dhp/2,0,0)
     # Define the radius of the first circular pinhole in mm.
@@ -85,12 +126,12 @@ def PinholeCircular():
     SphericalLens = ray.plotsphericallens(DummySL1[0],DummySL1[1],DummySL1[2],DummySL1[3],'g',0.1)
     # Calculate and print power of the spherical lens.
     D = (nel-nair)*(pow(dea,-1)-pow(-dea,-1)+(nel-nair)*2*dea/nel/(-pow(dea,2)))
-    print 'Power of the spherical lens: ', 1000.*D
-    print 'Focal length of the spherical lens (mm): ', 1./D     
+#    print 'Power of the spherical lens: ', 1000.*D
+#    print 'Focal length of the spherical lens (mm): ', 1./D     
     # Calculate the effective focal length of a ball lens.
     # See http://www.edmundoptics.com/technical-resources-center/optics/understanding-ball-lenses/
     EFL = nel*2*dea/4/(nel-nair)
-    print 'Effective focal length of the ball lens (mm):', EFL
+#    print 'Effective focal length of the ball lens (mm):', EFL
     # Arrays to save rays by their source of origin.
     rays1    = []
     rays2    = []
@@ -142,6 +183,7 @@ def PinholeCircular():
 #                # Plot the refracting ray.
                 ray.plotvector(RefractOutsideRay,distance,color)
     # Loop to find intersection of the plotted rays.
+    InterPoints = []
     for RaySource1 in rays1:
         for RaySource2 in rays2:
             # Find the intersection of two rays.
@@ -149,12 +191,28 @@ def PinholeCircular():
             # Check if the calculated distance value has a logical value.
             CheckValue = "%.2f" % abs(distances[0])
             if CheckValue != '0.00' and float(CheckValue) < 100000:
-                ray.PlotPoint(intersection,'go','True')
+                ray.PlotPoint(intersection,'go',False,True)
+                # Storing intersection point in a list.
+                InterPoints.append(intersection)
+    # Transpose of the InterPoints 2D list.
+    l  = map(list,map(None,*InterPoints))
+    # Finding Voxel height.
+    m1          = max(l[2])
+    m2          = min(l[2])
+    VoxelHeight = abs(m1-m2) 
+    # Finding Voxel width.
+    m3         = max(l[0])
+    m4         = min(l[0])
+    VoxelWidth = abs(m1-m2)
     # Show the ray tracing envorinment in three-dimensional space.
-    limit = 0.8*ds
-    ray.defineplotshape((-limit,limit),(-limit,limit),(-limit,limit))
-    ray.showplot()
-    return True
+    if ShowPlot == True:
+        limit = 0.8*ds
+        ray.defineplotshape((-limit,limit),(-limit,limit),(-limit,limit))
+        ray.showplot()
+    else:
+        # Otherwise destroy figure.
+        ray.CloseFigure()
+    return VoxelHeight,VoxelWidth
 
 if __name__ == '__main__':
-    sys.exit(example())
+    sys.exit(main())

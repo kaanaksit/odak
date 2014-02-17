@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 # Programmed by Kaan Akşit
 
-import sys,matplotlib
-import matplotlib.pyplot as plt
+import sys,matplotlib,scipy
+import matplotlib.pyplot
 import mpl_toolkits.mplot3d.art3d as art3d
 import scipy.linalg
+from matplotlib.mlab import griddata
 from matplotlib import cm
 from matplotlib.patches import Circle, PathPatch
 from mpl_toolkits.mplot3d import axes3d
@@ -18,7 +19,8 @@ __author__  = ('Kaan Akşit')
 class paraxialmatrix():
     def __init__(self):
         # See "Laser beams and resonators" from Kogelnik and Li for the theoratical explanation
-        self.fig = plt.figure()
+        self.plt = matplotlib.pyplot
+        self.fig = self.plt.figure()
         return
     def createvector(self,x,angle):
         # Creates a paraxial ray, angle is in degrees, x is the distance of the point to the plane of direction of propagation
@@ -33,15 +35,19 @@ class paraxialmatrix():
         return vector
     def plotvector(self,startvector,stopvector):
         # Method to plot paraxial vectors in 2D space
-        plt.plot([startvector[0]/startvector[1],stopvector[0]/stopvector[1]],[startvector[0],stopvector[0]],'o-')
-        plt.show()
+        self.plt.plot([startvector[0]/startvector[1],stopvector[0]/stopvector[1]],[startvector[0],stopvector[0]],'o-')
+        self.plt.show()
         return True
 
 class raytracing():
     def __init__(self):
         # See "General Ray tracing procedure" from G.H. Spencerand M.V.R.K Murty for the theoratical explanation
-        self.fig = plt.figure()
+        self.plt = matplotlib.pyplot
+        self.fig = self.plt.figure()
+        # 3D projection is enabled.
         self.ax  = self.fig.gca(projection='3d')
+        # Enabling the grid in the figure.
+        self.ax.grid(True, color='k', linewidth=2)
         return
     def DegreesToRadians(self,angle):
         # Function to convert degrees to radians.
@@ -297,11 +303,11 @@ class raytracing():
         z = array([vector[0,2,0], distance * vector[1,2] + vector[0,2,0]])
         self.ax.plot(x,y,z,color)
         return True
-    def PlotPoint(self,point,color='g*',contour='False'):
+    def PlotPoint(self,point,color='g*',contour=False,marker=False):
         # Method to plot a single spot.
         self.ax.plot(array([point[0]]),array([point[1]]),array([point[2]]),color)
         # Plotting contour on 3-axes.
-        if contour == 'True':
+        if contour == True:
             self.ax.contour(array([[-1,0,1],
                                    [-1,0,1],
                                    [-1,0,1]
@@ -315,6 +321,10 @@ class raytracing():
                                    [3,3,3]
                                    ]),
                             zdir='z', offset=-100, cmap=cm.coolwarm)
+        # Add text near to the point.
+        if marker == True:
+            label = '(%.1f, %.1f, %.1f)' % (point[0], point[1], point[2])
+            self.ax.text(point[0], point[1], point[2], label)
         return True
     def plotsphericallens(self,cx=0,cy=0,cz=0,r=10,c='none',a=0.3):
         # Method to plot surfaces
@@ -326,13 +336,14 @@ class raytracing():
         z        = r * outer(ones(size(u)), cos(v)) + cz
         self.ax.plot_surface(x, y, z, rstride=8, cstride=8, alpha=a, color=c, antialiased=True)
         return array([cx,cy,cz,r])
-    def CalculateFocal(self,rx,ry,rz,n):
+    def CalculateFocal(self,rx,ry,rz,n,ShowFocal=False):
         # Method to calculate the focal length of the lens in different axes.
         for a in [rx,ry]:
             R         = (pow(a,2)+pow(rz,2))/(2*rz)
             LensMaker = (n-1)*(-2/R+(n-1)*rz*2/(n*R))
             f         = pow(LensMaker,-1)
-            print 'Focal length of the lens: ',f
+            if ShowFocal == True:
+                print 'Focal length of the lens: ',f
         return True
     def plotasphericallens(self,cx=0,cy=0,cz=0,rx=10,ry=10,rz=10,n=1.51,c='none'):
         # Method to plot surfaces
@@ -343,6 +354,7 @@ class raytracing():
         y        = ry * outer(sin(u), sin(v)) + cy
         z        = rz * outer(ones(size(u)), cos(v)) + cz
         self.ax.plot_surface(x, y, z, rstride=6, cstride=6, color=c)
+        # Calculate the focal length of the plotted lens.
         self.CalculateFocal(rx,ry,rz,n)
         return array([cx,cy,cz,rx,ry,rz])
     def PlotCircle(self,center,r,c='none'):
@@ -351,6 +363,16 @@ class raytracing():
         self.ax.add_patch(circle)
         art3d.pathpatch_2d_to_3d(circle, z=center[2], zdir='z')
         return array([center,r]) 
+    def PlotData(self,X,Y,Z,c='none'):
+        # Method to plot the given data.
+        # Gridding the data.
+        xi = linspace(min(X), max(X))
+        yi = linspace(min(Y), max(Y))  
+        xim, yim = meshgrid(xi, yi)
+        zi = griddata(X,Y,Z,xi,yi,interp='nn')     
+        # Plot the resultant figure.
+        self.ax.plot_surface(xim, yim, zi, rstride=2, cstride=2, cmap=cm.jet, alpha=0.3, color=c)
+        return True
     def plottriangle(self,point0,point1,point2):
         # Method to plot triangular surface
         x = array([ point0[0], point1[0], point2[0]])
@@ -383,14 +405,24 @@ class raytracing():
         self.plottriangle(point20,point21,point22)
         return array([point00,point01,point02]),array([point10,point11,point12]),array([point20,point21,point22])
     def defineplotshape(self,(xmin,xmax),(ymin,ymax),(zmin,zmax)):
+        # Method to define plot shape.
         self.ax.set_xlim3d(xmin,xmax)
         self.ax.set_ylim3d(ymin,ymax)
         self.ax.set_zlim3d(zmin,zmax)
         return True
     def showplot(self,title='Ray tracing'):
         # Shows the prepared plot
-        plt.title(title)
-        plt.show()
+        self.plt.title(title)
+        self.plt.show()
+        self.plt.close()
+        return True
+    def CloseFigure(self):
+        # Method to close the last figure.
+        self.plt.close()
+        return True
+    def CloseAllFigures(self):
+        # Method to close all figures.
+        self.plt.close('all')
         return True
 
 class jonescalculus():
@@ -555,37 +587,37 @@ class aperture():
         return obj
     def show(self,obj,pixeltom,wavelength,title='Detector',type='normal',filename=None,xlabel=None,ylabel=None):
         # Plots a detector showing the given object
-        plt.figure(),plt.title(title)
+        self.plt.figure(),self.plt.title(title)
         nx,ny = obj.shape
         # Number of the ticks to be shown both in x and y axes
         if type == 'normal':
             obj = abs(obj)
         elif type == 'log':
             obj = log(abs(obj))
-        img = plt.imshow(obj,cmap=matplotlib.cm.jet,origin='lower')
-        plt.colorbar(img,orientation='vertical')
-        plt.xlabel(xlabel)
-        plt.ylabel(ylabel)
+        img = self.plt.imshow(obj,cmap=matplotlib.cm.jet,origin='lower')
+        self.plt.colorbar(img,orientation='vertical')
+        self.plt.xlabel(xlabel)
+        self.plt.ylabel(ylabel)
         if filename != None:
-            plt.savefig(filename)
-        plt.show()
+            self.plt.savefig(filename)
+        self.plt.show()
         return True
     def show3d(self,obj):
         nx,ny   = obj.shape
-        fig     = plt.figure()
+        fig     = self.plt.figure()
         ax      = fig.gca(projection='3d')
         X,Y     = mgrid[0:nx,0:ny]
         surf    = ax.plot_surface(X,Y,abs(obj), rstride=1, cstride=1, cmap=matplotlib.cm.jet,linewidth=0, antialiased=False)
         fig.colorbar(surf, shrink=0.5, aspect=5)
-        plt.show()
+        self.plt.show()
         return True
     def showrow(self,obj,wavelength,pixeltom,distance):
         # Plots row crosssection of the given object
         nx,ny = obj.shape
         a     = 5
-        plt.figure()
-        plt.plot(arange(-nx/2,nx/2)*pixeltom,abs(obj[nx/2,:]))
-        plt.show()
+        self.plt.figure()
+        self.plt.plot(arange(-nx/2,nx/2)*pixeltom,abs(obj[nx/2,:]))
+        self.plt.show()
         return True
 
 class beams():
