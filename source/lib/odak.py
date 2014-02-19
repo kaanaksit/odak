@@ -43,6 +43,7 @@ class raytracing():
     def __init__(self):
         # See "General Ray tracing procedure" from G.H. Spencerand M.V.R.K Murty for the theoratical explanation
         self.plt = matplotlib.pyplot
+        # New figure created.
         self.fig = self.plt.figure()
         # 3D projection is enabled.
         self.ax  = self.fig.gca(projection='3d')
@@ -410,9 +411,12 @@ class raytracing():
         self.ax.set_ylim3d(ymin,ymax)
         self.ax.set_zlim3d(zmin,zmax)
         return True
-    def showplot(self,title='Ray tracing'):
+    def showplot(self,title=None,LabelX=None,LabelY=None):
         # Shows the prepared plot
-        self.plt.title(title)
+        if title != None or LabelX != None or LabelY!= None:
+            self.plt.title(title)
+            self.plt.xlabel(LabelX)
+            self.plt.ylabel(LabelY)
         self.plt.show()
         self.plt.close()
         return True

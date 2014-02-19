@@ -14,7 +14,7 @@ def main():
     # Distance between pinholes and the point sources (mm).
     ds          = 1100.0
     # Distance between center to center in between pinholes (mm).
-    dhp         = 2
+    dhp         = 2.
     # Radius of the pinholes (mm).
     r           = 0.5
     # Distance between the point sources (mm).
@@ -30,9 +30,9 @@ def main():
     # Refractive index of inside the lens.
     nie         = 1.33
     # Refractive index of the outside envorinment.
-    nair        = 1
+    nair        = 1.
     # Distance between the pinholes and the lens (mm).
-    dpl         = -10
+    dpl         = -10.
     # X and Y positions of the lens.
     xel         = 0
     yel         = 0
@@ -52,12 +52,14 @@ def main():
     VoxelWidths  = []
     X            = []
     Y            = []
+    Maxr         = 0.6
+    Maxdpp       = 1.61
     step         = 0.05
     # Iterate the aperture size.
-    for r in xrange(1,12,1):
+    for r in xrange(1,int(Maxr/step),1):
         r *= step
         # Iterate the seperation of point sources.
-        for dpp in xrange(1,32,1):
+        for dpp in xrange(1,int(Maxdpp/step),1):
             dpp *= step
             # Solve the given case.
             VoxelHeight, VoxelWidth = Solve(ds,dhp,r,dpp,dea,dwe,tel,nel,nie,nair,dpl,xel,yel,DetPos,False)
@@ -74,13 +76,17 @@ def main():
             out.writerow(Values)
     # Call ray tracing library to plot the data as a 3D surface.
     Fig1 = odak.raytracing()
-    Fig2 = odak.raytracing()
     # Plot the data as 3D surface.
     Fig1.PlotData(X,Y,VoxelHeights,'g')
-    # Plot the Voxel Widths data as 3D surface.
-    Fig2.PlotData(X,Y,VoxelWidths,'g')    
     # Show the plotted data.
-    Fig1.showplot()
+    Fig1.showplot('Voxel Height (mm)','Radius of the pinholes (mm)', 'Separation between light sources (mm)')
+
+    # Call ray tracing library to plot the data as a 3D surface.
+    Fig2 = odak.raytracing()
+    # Plot the data as 3D surface.
+    Fig2.PlotData(X,Y,VoxelWidths,'g')
+    # Show the plotted data.
+    Fig2.showplot('Voxel Widths (mm)','Radius of the pinholes (mm)', 'Separation between ligh  sources (mm)')
     return True
 
 def Solve(ds,dhp,r,dpp,dea,dwe,tel,nel,nie,nair,dpl,xel,yel,DetPos,ShowPlot=False):
@@ -203,7 +209,7 @@ def Solve(ds,dhp,r,dpp,dea,dwe,tel,nel,nie,nair,dpl,xel,yel,DetPos,ShowPlot=Fals
     # Finding Voxel width.
     m3         = max(l[0])
     m4         = min(l[0])
-    VoxelWidth = abs(m1-m2)
+    VoxelWidth = abs(m3-m4)
     # Show the ray tracing envorinment in three-dimensional space.
     if ShowPlot == True:
         limit = 0.8*ds
