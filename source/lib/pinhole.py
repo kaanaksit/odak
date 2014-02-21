@@ -52,9 +52,9 @@ def main():
     VoxelWidths  = []
     X            = []
     Y            = []
-    Maxr         = 0.6
+    Maxr         = 0.61
     Maxdpp       = 1.61
-    step         = 0.05
+    step         = 0.1
     # Iterate the aperture size.
     for r in xrange(1,int(Maxr/step),1):
         r *= step
@@ -74,19 +74,38 @@ def main():
             print Values
             # Write the solution to the file.
             out.writerow(Values)
+ 
+    # Font size in the plots.
+    FontSize =  22
+    # Font weight in the plots.
+    FontWeight = 'normal'
+    # Font type in the plots.
+    FontType = 'sans'
+    
+    # Call ray tracing library to plot the data as a 3D surface.
+    Fig = odak.raytracing()
+    # Setting font properties in the figure.
+    Fig.SetPlotFontSize(FontType,FontWeight,FontSize)
+    
+ 
     # Call ray tracing library to plot the data as a 3D surface.
     Fig1 = odak.raytracing()
+    # Setting font properties in the figure.
+    Fig1.SetPlotFontSize(FontType,FontWeight,FontSize)
     # Plot the data as 3D surface.
     Fig1.PlotData(X,Y,VoxelHeights,'g')
     # Show the plotted data.
-    Fig1.showplot('Voxel Height (mm)','Radius of the pinholes (mm)', 'Separation between light sources (mm)')
+    Fig1.showplot('$h$ (mm)','$d_p$ (mm)', '$d_k$ (mm)', 'VoxelHeightRay.png')
+
 
     # Call ray tracing library to plot the data as a 3D surface.
     Fig2 = odak.raytracing()
+    # Setting font properties in the figure.
+    Fig2.SetPlotFontSize(FontType,FontWeight,FontSize)
     # Plot the data as 3D surface.
     Fig2.PlotData(X,Y,VoxelWidths,'g')
     # Show the plotted data.
-    Fig2.showplot('Voxel Widths (mm)','Radius of the pinholes (mm)', 'Separation between ligh  sources (mm)')
+    Fig2.showplot('$w$ (mm)','$d_p$ (mm)', '$d_k$ (mm)', 'VoxelWidthRay.png')
     return True
 
 def Solve(ds,dhp,r,dpp,dea,dwe,tel,nel,nie,nair,dpl,xel,yel,DetPos,ShowPlot=False):

@@ -44,12 +44,31 @@ class raytracing():
         # See "General Ray tracing procedure" from G.H. Spencerand M.V.R.K Murty for the theoratical explanation
         self.plt = matplotlib.pyplot
         # New figure created.
-        self.fig = self.plt.figure()
+        self.fig = self.plt.figure(figsize=(17, 13))
         # 3D projection is enabled.
         self.ax  = self.fig.gca(projection='3d')
         # Enabling the grid in the figure.
         self.ax.grid(True, color='k', linewidth=2)
         return
+    def SetPlotFontSize(self,family='normal',weight='normal',size='22'):
+        # Definition to set the font type, size and weight in plots.
+        font = {'family' : family,
+                'weight' : weight,
+                'size'   : size}
+        matplotlib.rc('font', **font)
+        # Enables Latex support in the texts.
+        matplotlib.rc('text', usetex=True)
+        # Set the ticks font propoerties as well to be on the safe side.
+        self.ax.xaxis.label.set_fontsize(size)
+        self.ax.yaxis.label.set_fontsize(size)
+        self.ax.zaxis.label.set_fontsize(size)
+        self.ax.xaxis.label.set_family(family)
+        self.ax.yaxis.label.set_family(family)
+        self.ax.zaxis.label.set_family(family)
+        self.ax.xaxis.label.set_fontweight(weight)
+        self.ax.yaxis.label.set_fontweight(weight)
+        self.ax.zaxis.label.set_fontweight(weight)
+        return True
     def DegreesToRadians(self,angle):
         # Function to convert degrees to radians.
         return radians(angle)
@@ -411,14 +430,21 @@ class raytracing():
         self.ax.set_ylim3d(ymin,ymax)
         self.ax.set_zlim3d(zmin,zmax)
         return True
-    def showplot(self,title=None,LabelX=None,LabelY=None):
+    def SavePlot(self,filename):
+        # Definition to save the plotted figure. One should call it after showplot.
+        self.plt.savefig(filename,bbox_inches='tight')
+        return True
+    def showplot(self,title=None,LabelX=None,LabelY=None,filename=None):
         # Shows the prepared plot
         if title != None or LabelX != None or LabelY!= None:
             self.plt.title(title)
             self.plt.xlabel(LabelX)
             self.plt.ylabel(LabelY)
+        self.ax.view_init(10.0, -135.0)
+        if filename != None:
+            self.SavePlot(filename)
         self.plt.show()
-        self.plt.close()
+        self.CloseFigure()
         return True
     def CloseFigure(self):
         # Method to close the last figure.
