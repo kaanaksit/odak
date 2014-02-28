@@ -12,7 +12,7 @@ __author__  = ('Kaan Akşit')
 def main():
     # REMEMBER TO ALWAYS ASSIGN FLOATING NUMBERS TO THE VARIABLES!
     # Distance between pinholes and the point sources (mm).
-    ds          = 1100.0
+    ds          = 1000.0
     # Distance between center to center in between pinholes (mm).
     dhp         = 2.
     # Radius of the pinholes (mm).
@@ -52,8 +52,8 @@ def main():
     VoxelWidths  = []
     X            = []
     Y            = []
-    Maxr         = 0.61
-    Maxdpp       = 1.61
+    Maxr         = 0.91
+    Maxdpp       = 5.0
     step         = 0.1
     # Iterate the aperture size.
     for r in xrange(1,int(Maxr/step),1):
@@ -66,7 +66,7 @@ def main():
             # Voxel dimensions stored in a list.
             VoxelHeights.append(VoxelHeight)
             VoxelWidths.append(VoxelWidth)
-            X.append(r)
+            X.append(r*2)
             Y.append(dpp)
             # Values stored in a list.
             Values = (r,dpp,VoxelHeight,VoxelWidth)
@@ -95,7 +95,7 @@ def main():
     # Plot the data as 3D surface.
     Fig1.PlotData(X,Y,VoxelHeights,'g')
     # Show the plotted data.
-    Fig1.showplot('$h$ (mm)','$d_p$ (mm)', '$d_k$ (mm)', 'VoxelHeightRay.png')
+    Fig1.showplot('$h$ (mm)','$d_p$ (mm)', '$d_c$ (mm)', 'VoxelHeightRay.png')
 
 
     # Call ray tracing library to plot the data as a 3D surface.
@@ -105,7 +105,7 @@ def main():
     # Plot the data as 3D surface.
     Fig2.PlotData(X,Y,VoxelWidths,'g')
     # Show the plotted data.
-    Fig2.showplot('$w$ (mm)','$d_p$ (mm)', '$d_k$ (mm)', 'VoxelWidthRay.png')
+    Fig2.showplot('$w$ (mm)','$d_p$ (mm)', '$d_c$ (mm)', 'VoxelWidthRay.png')
     return True
 
 def Solve(ds,dhp,r,dpp,dea,dwe,tel,nel,nie,nair,dpl,xel,yel,DetPos,ShowPlot=False):
