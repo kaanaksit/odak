@@ -14,9 +14,9 @@ def main():
     # Distance between pinholes and the point sources (mm).
     ds          = 1000.0
     # Distance between center to center in between pinholes (mm).
-    dhp         = 2.
+    dhp         = 1.
     # Radius of the pinholes (mm).
-    r           = 0.5
+    r           = 0.4
     # Distance between the point sources (mm).
     dpp         = 4.0
     # Half of the aperture of the eye (mm), and also determines equivalent ball lens focal.
@@ -52,7 +52,7 @@ def main():
     VoxelWidths  = []
     X            = []
     Y            = []
-    Maxr         = 0.91
+    Maxr         = 0.6
     Maxdpp       = 5.0
     step         = 0.1
     # Iterate the aperture size.
@@ -83,29 +83,79 @@ def main():
     FontType = 'sans'
     
     # Call ray tracing library to plot the data as a 3D surface.
-    Fig = odak.raytracing()
+#    Fig = odak.raytracing()
     # Setting font properties in the figure.
-    Fig.SetPlotFontSize(FontType,FontWeight,FontSize)
+#    Fig.SetPlotFontSize(FontType,FontWeight,FontSize)
     
  
     # Call ray tracing library to plot the data as a 3D surface.
-    Fig1 = odak.raytracing()
+#    Fig1 = odak.raytracing()
     # Setting font properties in the figure.
-    Fig1.SetPlotFontSize(FontType,FontWeight,FontSize)
+#    Fig1.SetPlotFontSize(FontType,FontWeight,FontSize)
     # Plot the data as 3D surface.
-    Fig1.PlotData(X,Y,VoxelHeights,'g')
+#    Fig1.PlotData(X,Y,VoxelHeights,'g')
     # Show the plotted data.
-    Fig1.showplot('$h$ (mm)','$d_p$ (mm)', '$d_c$ (mm)', 'VoxelHeightRay.png')
+#    Fig1.showplot('$h$ (mm)','$d_p$ (mm)', '$d_c$ (mm)', 'VoxelHeightRay.png')
 
 
     # Call ray tracing library to plot the data as a 3D surface.
-    Fig2 = odak.raytracing()
+#    Fig2 = odak.raytracing()
     # Setting font properties in the figure.
-    Fig2.SetPlotFontSize(FontType,FontWeight,FontSize)
+#    Fig2.SetPlotFontSize(FontType,FontWeight,FontSize)
     # Plot the data as 3D surface.
-    Fig2.PlotData(X,Y,VoxelWidths,'g')
+#    Fig2.PlotData(X,Y,VoxelWidths,'g')
     # Show the plotted data.
-    Fig2.showplot('$w$ (mm)','$d_p$ (mm)', '$d_c$ (mm)', 'VoxelWidthRay.png')
+#    Fig2.showplot('$w$ (mm)','$d_p$ (mm)', '$d_c$ (mm)', 'VoxelWidthRay.png')
+
+    # Contour presentation of the data.
+    # Necessary imports for the contour plot.
+    import matplotlib.pyplot as plt
+    import matplotlib
+    from matplotlib import cm
+    from scipy.interpolate import Rbf
+    from numpy import *
+
+    # Definition to set the font type, size and weight in plots.
+    font = {'family' : FontType,
+            'weight' : FontWeight,
+            'size'   : FontSize}
+    matplotlib.rc('font', **font)
+    # Enables Latex support in the texts.
+    matplotlib.rc('text', usetex=True)    
+ 
+    # Voxel height and voxel width figure created.
+    for Z in [VoxelWidths,VoxelHeights]:
+        rbf    = Rbf(X, Y, Z, epsilon=2)
+        t1     = linspace(amin(X), amax(X), 300)
+        t2     = linspace(amin(Y), amax(Y), 300)
+        XI, YI = meshgrid(t1, t2)
+        ZI     = rbf(XI, YI)
+
+        # Plot the 2D surface shape. 
+        FigContour1 = plt.figure(figsize=(15,9),dpi=300)
+        ax1         = FigContour1.gca()
+        plt.pcolor(XI, YI, ZI, cmap=cm.jet)  
+
+        # Add colorbars and the labels to the figure.
+        cb = plt.colorbar(orientation='vertical')
+        cl = plt.getp(cb.ax, 'ymajorticklabels')
+        plt.setp(cl, fontsize=20)
+#        cb.ax.set_ylabel(etiket,fontsize=20)
+
+        # Regions are labeled with the contours.
+        levels = linspace(amin(ZI), amax(ZI), 10)
+        CS     = plt.contour(XI, YI, ZI, levels, linewidths=5,  colors='k', linestyle='-')
+        plt.clabel(CS, inline=1, fontsize=FontSize)
+        if Z == VoxelWidths:
+            name = 'VoxelWidthRay'
+            plt.title('$w_m (mm)$',fontsize=FontSize)
+        else: 
+            name = 'VoxelHeightRay'
+            plt.title('$h_m (mm)$',fontsize=FontSize)
+        plt.xlabel('$d_p (mm)$',fontsize=FontSize)
+        plt.ylabel('$d_c (mm)$',fontsize=FontSize)
+        plt.savefig('%s.png' % name)
+
     return True
 
 def Solve(ds,dhp,r,dpp,dea,dwe,tel,nel,nie,nair,dpl,xel,yel,DetPos,ShowPlot=False):

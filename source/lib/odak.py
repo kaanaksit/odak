@@ -391,6 +391,7 @@ class raytracing():
         xim, yim = meshgrid(xi, yi)
         zi = griddata(X,Y,Z,xi,yi,interp='nn')     
         # Plot the resultant figure.
+        self.ax  = self.fig.gca()
         self.ax.plot_surface(xim, yim, zi, rstride=2, cstride=2, cmap=cm.jet, alpha=0.3, color=c)
         return True
     def plottriangle(self,point0,point1,point2):
