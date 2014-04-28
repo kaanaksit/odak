@@ -14,7 +14,7 @@ def main():
     # Distance between pinholes and the point sources (mm).
     ds          = 1000.0
     # Distance between center to center in between pinholes (mm).
-    dhp         = 1.
+    dhp         = 2.
     # Radius of the pinholes (mm).
     r           = 0.4
     # Distance between the point sources (mm).
