@@ -1,8 +1,12 @@
-#!/usr/bin/python
+#!/usr/bin/python(-1, -1.4), (-0.62, -0.7), (-2, 0.5), (1.7, 1.2), (2.0, 1.4), (2.4, 1.7)
 # -*- coding: utf-8 -*-
 
 import sys,odak,math,csv
 import matplotlib.pyplot as plt
+import matplotlib
+from matplotlib import cm
+from scipy.interpolate import Rbf
+from numpy import *
 from math import cos, sin
 
 __author__  = ('Kaan Akşit')
@@ -11,7 +15,7 @@ __author__  = ('Kaan Akşit')
 # Main function where variables are set, and the solution method is called.
 def main():
     # REMEMBER TO ALWAYS ASSIGN FLOATING NUMBERS TO THE VARIABLES!
-    # Distance between pinholes and the point sources (mm).
+    # Distance between pinholes and the point sources (mm).http://nullege.com/codes/search/matplotlib.pyplot.contour
     ds          = 1000.0
     # Distance between center to center in between pinholes (mm).
     dhp         = 2.
@@ -76,7 +80,7 @@ def main():
             out.writerow(Values)
  
     # Font size in the plots.
-    FontSize =  22
+    FontSize =  30
     # Font weight in the plots.
     FontWeight = 'normal'
     # Font type in the plots.
@@ -109,11 +113,6 @@ def main():
 
     # Contour presentation of the data.
     # Necessary imports for the contour plot.
-    import matplotlib.pyplot as plt
-    import matplotlib
-    from matplotlib import cm
-    from scipy.interpolate import Rbf
-    from numpy import *
 
     # Definition to set the font type, size and weight in plots.
     font = {'family' : FontType,
@@ -134,7 +133,7 @@ def main():
         # Plot the 2D surface shape. 
         FigContour1 = plt.figure(figsize=(15,9),dpi=300)
         ax1         = FigContour1.gca()
-        plt.pcolor(XI, YI, ZI, cmap=cm.jet)  
+        plt.pcolor(XI, YI, ZI, cmap='Greys')
 
         # Add colorbars and the labels to the figure.
         cb = plt.colorbar(orientation='vertical')
@@ -144,8 +143,14 @@ def main():
 
         # Regions are labeled with the contours.
         levels = linspace(amin(ZI), amax(ZI), 10)
+        if Z == VoxelWidths:
+           levels = [0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5]
+           Digit  = '%1.2f'
+        else:
+           levels = [40,70,100,130,160,190]
+           Digit  = '%1.1f'
         CS     = plt.contour(XI, YI, ZI, levels, linewidths=5,  colors='k', linestyle='-')
-        plt.clabel(CS, inline=1, fontsize=FontSize)
+        plt.clabel(CS, levels, fmt=Digit, inline=1, fontsize=FontSize)
         if Z == VoxelWidths:
             name = 'VoxelWidthRay'
             plt.title('$w_m (mm)$',fontsize=FontSize)
