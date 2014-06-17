@@ -133,12 +133,12 @@ def main():
         # Plot the 2D surface shape. 
         FigContour1 = plt.figure(figsize=(15,9),dpi=300)
         ax1         = FigContour1.gca()
-        plt.pcolor(XI, YI, ZI, cmap='Greys')
+        #plt.pcolor(XI, YI, ZI, cmap='Greys')
 
         # Add colorbars and the labels to the figure.
-        cb = plt.colorbar(orientation='vertical')
-        cl = plt.getp(cb.ax, 'ymajorticklabels')
-        plt.setp(cl, fontsize=20)
+        #cb = plt.colorbar(orientation='vertical')
+        #cl = plt.getp(cb.ax, 'ymajorticklabels')
+        #plt.setp(cl, fontsize=20)
 #        cb.ax.set_ylabel(etiket,fontsize=20)
 
         # Regions are labeled with the contours.
