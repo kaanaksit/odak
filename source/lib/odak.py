@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 # Programmed by Kaan Akşit
 
+# Whole library can be found under https://github.com/kunguz/odak.
+
 import sys,matplotlib,scipy
 import matplotlib.pyplot
 import mpl_toolkits.mplot3d.art3d as art3d
@@ -13,29 +15,45 @@ from mpl_toolkits.mplot3d import axes3d
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from numpy import *
 from numpy.fft import *
+from math import radians,tan
 
 __author__  = ('Kaan Akşit')
 
-class paraxialmatrix():
+class ParaxialMatrix():
     def __init__(self):
         # See "Laser beams and resonators" from Kogelnik and Li for the theoratical explanation
         self.plt = matplotlib.pyplot
         self.fig = self.plt.figure()
         return
-    def createvector(self,x,angle):
+    def CreateVector(self,x,angle):
         # Creates a paraxial ray, angle is in degrees, x is the distance of the point to the plane of direction of propagation
         angle  = radians(angle)
-        vector = array([[x],[angle],[1]])
+        vector = array([[x],[tan(angle)],[1]])
         return vector
-    def freespace(self,vector,distance,deltax=0,deltafi=0):
-        # Ray transfer matrix of free space propagation, distance is in meters
-        # deltax is the spatial shift, deltafi is the angular shift
+    def FreeSpace(self,vector,distance,deltax=0,deltafi=0):
+        # Ray transfer matrix of free space propagation, distance is in milimeters.
+        # deltax is the spatial shift, deltafi is the angular shift.
         space  = array([[1,distance,deltax],[0,1,deltafi],[0,0,1]])
         vector = dot(space,vector)
         return vector
-    def plotvector(self,startvector,stopvector):
+    def CurvedInterface(self,vector,n1,n2,R,deltax=0,deltafi=0):
+        # Ray transfer matrix of a curved interface, focal length is f and is in in milimeters.
+        # Taken from Wikipedia article: Ray transfer matrix anaylsis.
+        # deltax is the spatial shift, deltafi is the angular shift.
+        # n1 is the first medium that the ray is coming from.
+        # n2 is the second medium that the ray is entering to.
+        # R is the radius of curvature, R>0 for convex
+        CInter = array([[1,(n1-n2)/R/n2,deltax],[0,n1/n2,deltafi],[0,0,1]])
+        vector = dot(CInter,vector)
+        return vector
+    def PlotVector(self,startvector,stopvector,posx=0):
         # Method to plot paraxial vectors in 2D space
-        self.plt.plot([startvector[0]/startvector[1],stopvector[0]/stopvector[1]],[startvector[0],stopvector[0]],'o-')
+        self.plt.plot([posx,(stopvector[0]-startvector[0])/stopvector[1]+posx],[startvector[0],stopvector[0]],'go-')
+        # Return new position at X-axis.
+        posx += (stopvector[0]-startvector[0])/stopvector[1]
+        return posx
+    def ShowPlot(self):
+        # Definition to plot the result.
         self.plt.show()
         return True
 

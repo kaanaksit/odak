@@ -11,9 +11,9 @@ def example():
     #example_of_fresnel_fraunhofer()
     #example_of_retroreflector()
     #example_of_jones_calculus()
-    example_of_ray_tracing()
-    #example_of_paraxial_matrix()
-    example_of_ray_tracing_2()
+    #example_of_ray_tracing()
+    example_of_paraxial_matrix()
+    #example_of_ray_tracing_2()
     #example_of_ray_tracing_3()
     return True
 
@@ -68,12 +68,21 @@ def example_of_ray_tracing_2():
     return True
 
 def example_of_paraxial_matrix():
-    parax     = odak.paraxialmatrix()
-    vector    = parax.createvector(1,2)
-    print 'Input vector: \n%s' % vector
-    endvector = parax.freespace(vector,10)
-    print 'Vector at a given certain distance: \n%s' % endvector
-    parax.plotvector(vector,endvector)
+    # Call from odak library for paraxialmatrix calculations.   
+    parax     = odak.ParaxialMatrix()
+    # Start position of everything at X-axis.
+    posx      = 0.
+    # Input vector creation. 
+    vector1   = parax.CreateVector(0,2) 
+    print 'Input vector: \n%s' % vector1
+    # Free-space propagation.
+    distance  = 10.
+    vector2   = parax.FreeSpace(vector1,distance)
+    print 'Vector at a given certain distance: \n%s' % vector2
+    # Plotting the ray.
+    posx      = parax.PlotVector(vector1,vector2,posx)
+    # Show plot.
+    parax.ShowPlot()
     return True
 
 def example_of_ray_tracing():
