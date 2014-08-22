@@ -1,4 +1,4 @@
-#!/usr/bin/python(-1, -1.4), (-0.62, -0.7), (-2, 0.5), (1.7, 1.2), (2.0, 1.4), (2.4, 1.7)
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 import sys,odak,math,csv

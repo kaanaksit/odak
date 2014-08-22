@@ -10,7 +10,7 @@ import mpl_toolkits.mplot3d.art3d as art3d
 import scipy.linalg
 from matplotlib.mlab import griddata
 from matplotlib import cm
-from matplotlib.patches import Circle, PathPatch
+from matplotlib.patches import Circle, PathPatch, Ellipse
 from mpl_toolkits.mplot3d import axes3d
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from numpy import *
@@ -24,6 +24,7 @@ class ParaxialMatrix():
         # See "Laser beams and resonators" from Kogelnik and Li for the theoratical explanation
         self.plt = matplotlib.pyplot
         self.fig = self.plt.figure()
+        self.ax  = self.fig.add_subplot(111,aspect='equal')
         return
     def CreateVector(self,x,angle):
         # Creates a paraxial ray, angle is in degrees, x is the distance of the point to the plane of direction of propagation
@@ -43,7 +44,7 @@ class ParaxialMatrix():
         # n1 is the first medium that the ray is coming from.
         # n2 is the second medium that the ray is entering to.
         # R is the radius of curvature, R>0 for convex
-        CInter = array([[1,(n1-n2)/R/n2,deltax],[0,n1/n2,deltafi],[0,0,1]])
+        CInter = array([[1,0,deltax],[(n1-n2)/R/n2,n1/n2,deltafi],[0,0,1]])
         vector = dot(CInter,vector)
         return vector
     def PlotVector(self,startvector,stopvector,posx=0):
@@ -52,6 +53,17 @@ class ParaxialMatrix():
         # Return new position at X-axis.
         posx += (stopvector[0]-startvector[0])/stopvector[1]
         return posx
+    def PlotLine(self,point1,point2):
+        # Definition to plot a line in between two points.
+        self.plt.plot(point1,point2,'ro--')
+        return True
+    def PlotLens(self,CenterXY, thickness, LensHeight, rotation, alpha=0.5):
+        # Definition to plot a lens.
+        lens = Ellipse(xy=CenterXY, width=thickness, height=LensHeight, angle=-rotation)
+        self.ax.add_artist(lens)        
+        lens.set_clip_box(self.ax.bbox)
+        lens.set_alpha(alpha)
+        return True
     def ShowPlot(self):
         # Definition to plot the result.
         self.plt.show()
