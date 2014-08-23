@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# Programmed by Kaan Akşit
 
 # Whole library can be found under https://github.com/kunguz/odak.
 
@@ -25,6 +24,8 @@ class ParaxialMatrix():
         self.plt = matplotlib.pyplot
         self.fig = self.plt.figure()
         self.ax  = self.fig.add_subplot(111,aspect='equal')
+        # Show grid.
+        self.plt.grid()
         return
     def CreateVector(self,x,angle):
         # Creates a paraxial ray, angle is in degrees, x is the distance of the point to the plane of direction of propagation
@@ -47,15 +48,19 @@ class ParaxialMatrix():
         CInter = array([[1,0,deltax],[(n1-n2)/R/n2,n1/n2,deltafi],[0,0,1]])
         vector = dot(CInter,vector)
         return vector
-    def PlotVector(self,startvector,stopvector,posx=0):
-        # Method to plot paraxial vectors in 2D space
-        self.plt.plot([posx,(stopvector[0]-startvector[0])/stopvector[1]+posx],[startvector[0],stopvector[0]],'go-')
-        # Return new position at X-axis.
-        posx += (stopvector[0]-startvector[0])/stopvector[1]
+    def PlotVector(self,startvector,stopvector,posx=0,distance=0):
+        if stopvector[1] !=0:
+            # Method to plot paraxial vectors in 2D space.
+            self.plt.plot([posx,(stopvector[0]-startvector[0])/stopvector[1]+posx],[startvector[0],stopvector[0]],'g+-')
+            # Return new position at X-axis.
+            posx += (stopvector[0]-startvector[0])/stopvector[1]
+        else:
+            self.plt.plot([posx,posx+distance],[startvector[0],stopvector[0]],'g+-')
+            posx = distance
         return posx
-    def PlotLine(self,point1,point2):
+    def PlotLine(self,point1,point2,color='ro--'):
         # Definition to plot a line in between two points.
-        self.plt.plot(point1,point2,'ro--')
+        self.plt.plot(point1,point2,color)
         return True
     def PlotLens(self,CenterXY, thickness, LensHeight, rotation, alpha=0.5):
         # Definition to plot a lens.
@@ -63,6 +68,12 @@ class ParaxialMatrix():
         self.ax.add_artist(lens)        
         lens.set_clip_box(self.ax.bbox)
         lens.set_alpha(alpha)
+        return True
+    def PlotHist(self,dataset):
+        # Definition to plot a histogram.
+        self.fig2 = self.plt.figure()
+        self.bx   = self.fig2.add_subplot(1,1,1)
+        self.bx.hist(dataset,bins=1000,color='blue',normed='True')
         return True
     def ShowPlot(self):
         # Definition to plot the result.
