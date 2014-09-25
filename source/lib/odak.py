@@ -570,6 +570,7 @@ class jonescalculus():
 
 class aperture():
     def __init__(self):
+        self.plt = matplotlib.pyplot
         return
     def twoslits(self,nx,ny,X,Y,delta):
         # Creates a matrix that contains two slits
@@ -694,6 +695,7 @@ class aperture():
 
 class beams():
     def __init(self):
+        self.plt = matplotlib.pyplot
         return
     def spherical(self,nx,ny,distance,wavelength,pixeltom,focal,amplitude=1):
         # Spherical wave
