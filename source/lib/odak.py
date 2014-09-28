@@ -70,13 +70,17 @@ class ParaxialMatrix():
         lens.set_alpha(alpha)
         return True
     def InitNewPlot(self):
-        # New plor initiated.
+        # New plot initiated.
         self.fig2 = self.plt.figure()
         self.bx   = self.fig2.add_subplot(1,1,1)
         return self.bx
     def PlotHist(self,dataset,plot):
         # Definition to plot a histogram.
         plot.hist(dataset,bins=1000,color='blue',normed='True')
+        return True
+    def PlotData(self,dataset,color):
+        # Definition to plot a dataset.
+        plot.plot(dataset[0],dataset[1],color)
         return True
     def ShowPlot(self):
         # Definition to plot the result.
