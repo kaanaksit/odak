@@ -48,14 +48,14 @@ class ParaxialMatrix():
         CInter = array([[1,0,deltax],[(n1-n2)/R/n2,n1/n2,deltafi],[0,0,1]])
         vector = dot(CInter,vector)
         return vector
-    def PlotVector(self,startvector,stopvector,posx=0,distance=0):
+    def PlotVector(self,startvector,stopvector,posx=0,distance=0,color='g+-'):
         if stopvector[1] !=0:
             # Method to plot paraxial vectors in 2D space.
-            self.plt.plot([posx,(stopvector[0]-startvector[0])/stopvector[1]+posx],[startvector[0],stopvector[0]],'g+-')
+            self.plt.plot([posx,(stopvector[0]-startvector[0])/stopvector[1]+posx],[startvector[0],stopvector[0]],color)
             # Return new position at X-axis.
             posx += (stopvector[0]-startvector[0])/stopvector[1]
         else:
-            self.plt.plot([posx,posx+distance],[startvector[0],stopvector[0]],'g+-')
+            self.plt.plot([posx,posx+distance],[startvector[0],stopvector[0]],color)
             posx = distance
         return posx
     def PlotLine(self,point1,point2,color='ro--'):
@@ -69,11 +69,14 @@ class ParaxialMatrix():
         lens.set_clip_box(self.ax.bbox)
         lens.set_alpha(alpha)
         return True
-    def PlotHist(self,dataset):
-        # Definition to plot a histogram.
+    def InitNewPlot(self):
+        # New plor initiated.
         self.fig2 = self.plt.figure()
         self.bx   = self.fig2.add_subplot(1,1,1)
-        self.bx.hist(dataset,bins=1000,color='blue',normed='True')
+        return self.bx
+    def PlotHist(self,dataset,plot):
+        # Definition to plot a histogram.
+        plot.hist(dataset,bins=1000,color='blue',normed='True')
         return True
     def ShowPlot(self):
         # Definition to plot the result.
