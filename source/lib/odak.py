@@ -78,9 +78,9 @@ class ParaxialMatrix():
         # Definition to plot a histogram.
         plot.hist(dataset,bins=1000,color='blue',normed='True')
         return True
-    def PlotData(self,dataset,color):
+    def PlotData(self,dataset,color,alpha=1):
         # Definition to plot a dataset.
-        self.plt.plot(dataset[0],dataset[1],color,alpha=0.3)
+        self.plt.plot(dataset[0],dataset[1],color,alpha)
         return True
     def PlotFillData(self,dataset,color):
         # Definition to plot a dataset with fill.
