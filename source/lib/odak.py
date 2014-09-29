@@ -80,6 +80,10 @@ class ParaxialMatrix():
         return True
     def PlotData(self,dataset,color):
         # Definition to plot a dataset.
+        self.plt.plot(dataset[0],dataset[1],color,alpha=0.3)
+        return True
+    def PlotFillData(self,dataset,color):
+        # Definition to plot a dataset with fill.
         self.plt.fill(dataset[0],dataset[1],color,alpha=0.3)
         return True
     def ShowPlot(self):
