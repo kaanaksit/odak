@@ -71,16 +71,16 @@ class ParaxialMatrix():
         return True
     def InitNewPlot(self):
         # New plot initiated.
-        self.fig2 = self.plt.figure()
-        self.bx   = self.fig2.add_subplot(1,1,1)
-        return self.bx
+        NewFig  = self.plt.figure()
+        NewPlot = NewFig.add_subplot(111)
+        return NewPlot,NewFig
     def PlotHist(self,dataset,plot):
         # Definition to plot a histogram.
         plot.hist(dataset,bins=1000,color='blue',normed='True')
         return True
-    def PlotData(self,dataset,color,alpha=1):
+    def PlotData(self,dataset,color,alpha=1,linestyle='-'):
         # Definition to plot a dataset.
-        self.plt.plot(dataset[0],dataset[1],color,alpha)
+        self.plt.plot(dataset[0],dataset[1],linestyle=linestyle,color=color,alpha=alpha)
         return True
     def PlotFillData(self,dataset,color):
         # Definition to plot a dataset with fill.
