@@ -684,7 +684,6 @@ class aperture():
         self.plt.ylabel(ylabel)
         if filename != None:
             self.plt.savefig(filename)
-        self.plt.show()
         return True
     def show3d(self,obj):
         nx,ny   = obj.shape
@@ -693,7 +692,6 @@ class aperture():
         X,Y     = mgrid[0:nx,0:ny]
         surf    = ax.plot_surface(X,Y,abs(obj), rstride=1, cstride=1, cmap=matplotlib.cm.jet,linewidth=0, antialiased=False)
         fig.colorbar(surf, shrink=0.5, aspect=5)
-        self.plt.show()
         return True
     def showrow(self,obj,wavelength,pixeltom,distance):
         # Plots row crosssection of the given object
@@ -701,6 +699,9 @@ class aperture():
         a     = 5
         self.plt.figure()
         self.plt.plot(arange(-nx/2,nx/2)*pixeltom,abs(obj[nx/2,:]))
+        return True
+    def showplots(self):
+        # Definition to show the plots.
         self.plt.show()
         return True
 
@@ -769,6 +770,10 @@ class diffractions():
     def intensity(self,obj,pixeltom):
         # Definition to calcualte the intensity of the given value.
         return abs(pow(obj,2))*pow(pixeltom,2)*0.5*8.854*pow(10,-12)*299792458
+    def FWHM (self,Irow):
+        # Definition to calculate full width at half maximum of a gaussian alike function.
+        I  = Irow/sum(Irow) # Normalizing std
+        return 2*sqrt(2*log(2))*std(I)
 
 def main():
     print 'Odak by %s' % __author__
