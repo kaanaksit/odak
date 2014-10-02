@@ -732,6 +732,9 @@ class beams():
         ksi      = 1./arctan(distance/z0)
         U        = A0*waistsize/W*exp(-pow(ro,2)/pow(W,2))*exp(-1j*k*distance-1j*pow(ro,2)/2/R+1j*ksi)
         return U
+    def multiplication(self,wave,aperture):
+        # Definition to multiply a wave with an aperture.
+        return  multiply(wave,aperture)
 
 class diffractions():
     def __init__(self):
