@@ -755,9 +755,19 @@ class diffractions():
             wave = wave*qpf
         result = fftshift(ifft2(fft2(wave)*fft2(h)))
         return result
+    def lens(self,wave,wavelength,focal,pixeltom):
+        # Definition representing lens as a phase grating.
+        nu,nv  = wave.shape
+        k      = 2*pi/wavelength
+        X,Y    = mgrid[-nu/2:nu/2,-nv/2:nv/2]*pixeltom
+        Z      = pow(X,2)+pow(Y,2)
+        result = wave * exp(-1j*k*0.5/focal*Z)
+        return result
     def fresnelnumber(self,aperturesize,pixeltom,wavelength,distance):
+        # Definition to calculate the fresnel number.
         return  pow(aperturesize*pixeltom,2)/wavelength/distance
     def intensity(self,obj,pixeltom):
+        # Definition to calcualte the intensity of the given value.
         return abs(pow(obj,2))*pow(pixeltom,2)*0.5*8.854*pow(10,-12)*299792458
 
 def main():

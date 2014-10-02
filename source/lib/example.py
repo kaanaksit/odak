@@ -6,8 +6,8 @@ import sys,odak,math
 __author__  = ('Kaan Akşit')
 
 def example():
-    example_of_gaussian()
-    example_of_spherical_wave()
+#    example_of_gaussian()
+#    example_of_spherical_wave()
     example_of_fresnel_fraunhofer()
     #example_of_retroreflector()
     #example_of_jones_calculus()
@@ -216,13 +216,13 @@ def example_of_fresnel_fraunhofer():
     rectangle    = aperture.rectangle(pxx,pxy,aperturesize)
     gaussian     = aperture.gaussian(pxx,pxy,aperturesize)
     circle       = aperture.circle(pxx,pxy,aperturesize)
-    aperture.show(rectangle,onepxtom,wavelength,'Aperture')
+    aperture.show(circle,onepxtom,wavelength,'Aperture')
     # Sample Fresnel and Fraunhofer region calculation of the given aperture
     for distance in xrange(1,10):
         distance    *= 0.01
         print 'lambda*d/w = %s m' % (wavelength*distance/(aperturesize*onepxtom))
         # Calculating far field behaviour
-        output       = diffrac.fresnelfraunhofer(rectangle,wavelength,distance,onepxtom,aperturesize)
+        output       = diffrac.fresnelfraunhofer(circle,wavelength,distance,onepxtom,aperturesize)
         # Calculating the fresnel number
         fresnelno    = diffrac.fresnelnumber(aperturesize,onepxtom,wavelength,distance)
         aperture.show(diffrac.intensity(output,onepxtom),onepxtom,wavelength,'Distance: %s m Wavelength: %s m Fresnel Number: %s'% (distance,wavelength,fresnelno))   
