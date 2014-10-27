@@ -547,17 +547,23 @@ class jonescalculus():
         bfp      = array([[1,0],[0,exp(-1j*delta)]])
         bfp      = dot(rotmat.transpose(),dot(bfp,rotmat))
         return dot(bfp,input)
-    def nematicliquidcrystal(self,input,alpha,ne,n0,d,wavelength,rotation=0):
+    def LCD(self,input,alpha,ne,n0,d,wavelength,rotation=0):
+        # THIS DEFINITION IS DEFECTED, DO NOT USE IT!
         # Nematic liquid crystal, d cell thickness, extraordinary refrative index ne, ordinary refractive index n0,
         # alpha helical twist per meter in right-hand sense along the direction of wave propagation
         # alpha is calculated is by dividing cell thickness to 1 meter length
         # alpha    =  1 /d
+        #http://books.google.com/books?id=0XhtwBpMtA8C&lpg=PA208&ots=t8NlS2vuDP&dq=TN%20LC%20jones%20matrix&hl=tr&pg=PA209#v=onepage&q=TN%20LC%20jones%20matrix&f=false
         rotation = radians(rotation)
         rotmat   = array([[cos(rotation),sin(rotation)],[-sin(rotation),cos(rotation)]])
-        beta     = 2*pi*(ne-n0)/wavelength
+        gamma    = 2*pi*(ne-n0)/wavelength*d
+        desangle = 90.
+        N        = desangle/gamma
+        print gamma, N
         lrot     = array([[cos(alpha*d),-sin(alpha*d)],[sin(alpha*d),cos(alpha*d)]])
-        lretard  = array([[1,0],[0,exp(-1j*beta*d)]])
-        lc       = dot(lrot,lretard)
+        lretard  = array([[exp(-1j*gamma/2/N),0],[0,exp(1j*gamma/2/N)]])
+#        llcd     = 
+        lc       = dot(lrot,lcd)
         lc       = dot(rotmat.transpose(),dot(lc,rotmat))
         return dot(lc,input)
     def ferroliquidcrystal(self,input,tetat,ne,n0,d,wavelength,fieldsign='+',rotation=0):
@@ -577,6 +583,9 @@ class jonescalculus():
         lc       = dot(rotmat.transpose(),dot(lc,rotmat))
         return dot(lc,input)
     def electricfield(self,a1,a2):        
+        # Electric field vector is defined here.
+        # a1 is the electic field intensity at x-axis.
+        # a2 is the electric field intensity at y-axis.
         return array([[a1],[a2]])
 
 class aperture():
