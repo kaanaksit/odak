@@ -539,6 +539,14 @@ class jonescalculus():
         hwp      = array([[1,0],[0,-1]])
         hwp      = dot(rotmat.transpose(),dot(hwp,rotmat))
         return dot(hwp,input)
+    def waveplate(self,input,retardation=0,rotation=0):
+        # Waveplate with a given retardation angle.
+        rotation    = radians(rotation)
+        retardation = 2*radians(retardation)
+        rotmat      = array([[cos(rotation),sin(rotation)],[-sin(rotation),cos(rotation)]])
+        wp          = array([[1,0],[0,exp(-1j*retardation)]])
+        wp          = dot(rotmat.transpose(),dot(wp,rotmat))
+        return dot(wp,input)
     def birefringentplate(self,input,nx,ny,d,wavelength,rotation=0):
         # Birefringent plate, d thickness, nx and ny refractive indices
         rotation = radians(rotation)
