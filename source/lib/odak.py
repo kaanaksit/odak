@@ -786,7 +786,11 @@ class diffractions():
         return  pow(aperturesize*pixeltom,2)/wavelength/distance
     def intensity(self,obj,pixeltom):
         # Definition to calcualte the intensity of the given value.
-        return abs(pow(obj,2))*pow(pixeltom,2)*0.5*8.854*pow(10,-12)*299792458
+#        return abs(pow(obj,2))*pow(pixeltom,2)*0.5*8.854*pow(10,-12)*299792458
+        return abs(obj)
+    def transmittance(self,wave,trans):
+        # Definition to calculate the output of a given input wave through a transmittance function.
+        return multiply(wave,trans)
     def FWHM (self,Irow):
         # Definition to calculate full width at half maximum of a gaussian alike function.
         I  = Irow/sum(Irow) # Normalizing std

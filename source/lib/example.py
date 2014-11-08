@@ -202,32 +202,57 @@ def example_of_spherical_wave():
     return True
 
 def example_of_fresnel_fraunhofer():
-    # Fixed values are set
-    onepxtom     = pow(10,-5)
-    distance     = 0.7
+    # Fixed values are set.
+    onepxtom     = pow(10,-6)
+    # Aperture size in mm.
     wavelength   = 500*pow(10,-9)
-    aperturesize = 40
-    pxx          = 128
-    pxy          = 128
+    pxx          = 2048
+    pxy          = pxx
     diffrac      = odak.diffractions()
     aperture     = odak.aperture()
     beam         = odak.beams()
-    # Defining the aperture
-    rectangle    = aperture.rectangle(pxx,pxy,aperturesize)
-    gaussian     = aperture.gaussian(pxx,pxy,aperturesize)
-    circle       = aperture.circle(pxx,pxy,aperturesize)
-    aperture.show(circle,onepxtom,wavelength,'Aperture')
-    # Sample Fresnel and Fraunhofer region calculation of the given aperture
-    for distance in xrange(1,10):
-        distance    *= 0.01
+    # A spherical beam traveled from a point to a pinhole, with a distance in mm.
+    focal        = pow(10,-4)
+    distance     = 9.
+    distance    *= pow(10,-3)
+    spherical    = beam.spherical(pxx,pxy,distance,wavelength,onepxtom,focal,1)
+#    aperture.show(spherical,onepxtom,wavelength,'Spherical wave')
+    for i in xrange(1,20):
+        da           = i*0.01
+        aperturesize = da*pow(10,-3)/onepxtom
+        circle       = aperture.circle(pxx,pxy,aperturesize)
+    #    aperture.show(circle,onepxtom,wavelength,'Aperture')
+        # Spherical wave transmitted from a pinhole.
+        AfterPinhole = diffrac.transmittance(spherical,circle)
+    #    aperture.show(AfterPinhole,onepxtom,wavelength,'After a pinhole')
+        # Distance between pinhole and a lens in mm.
+        distance     = 43.
+        distance    *= pow(10,-3)
+        # Sample Fresnel and Fraunhofer region calculation of the given aperture
         print 'lambda*d/w = %s m' % (wavelength*distance/(aperturesize*onepxtom))
-        # Calculating far field behaviour
-        output       = diffrac.fresnelfraunhofer(circle,wavelength,distance,onepxtom,aperturesize)
-        # Calculating the fresnel number
+        # Calculating far field behaviour.
+        BeforeLens   = diffrac.fresnelfraunhofer(AfterPinhole,wavelength,distance,onepxtom,aperturesize)
+        # Calculating the fresnel number.
         fresnelno    = diffrac.fresnelnumber(aperturesize,onepxtom,wavelength,distance)
-        aperture.show(diffrac.intensity(output,onepxtom),onepxtom,wavelength,'Distance: %s m Wavelength: %s m Fresnel Number: %s'% (distance,wavelength,fresnelno))   
-        aperture.showrow(diffrac.intensity(output,onepxtom),wavelength,onepxtom,distance)
-    aperture.show3d(diffrac.intensity(output,onepxtom))
+    #    aperture.show(diffrac.intensity(BeforeLens,onepxtom),onepxtom,wavelength,'Before a lens, Distance: %s m Wavelength: %s m Fresnel Number: %s'% (distance,wavelength,fresnelno))   
+    #    aperture.showrow(diffrac.intensity(BeforeLens,onepxtom),wavelength,onepxtom,distance)
+        # Multiply it with lens transmittance function. Focal length in mm.
+        focal        = 22. 
+        focal       *= pow(10,-3)
+        AfterLens    = diffrac.lens(BeforeLens,wavelength,focal,onepxtom)
+        # Calculating far field behaviour.
+        distance     = 22.
+        distance    *= pow(10,-3)
+        aperturesize = 20.*pow(10,-3)/onepxtom
+        output       = diffrac.fresnelfraunhofer(AfterLens,wavelength,distance,onepxtom,aperturesize)
+        # Calculating the fresnel number.
+        fresnelno    = diffrac.fresnelnumber(aperturesize,onepxtom,wavelength,distance)
+        aperture.show(diffrac.intensity(output,onepxtom),onepxtom,wavelength,'Retina, Distance: %s m Wavelength: %s m Fresnel Number: %s'% (distance,wavelength,fresnelno),'normal','da=%smm.png'%da)   
+        aperture.showrow(diffrac.intensity(output,onepxtom),wavelength,onepxtom,distance)    
+        # Show a 3D plot of the output.
+    #    aperture.show3d(diffrac.intensity(output,onepxtom))
+    # Showing plots.
+#    aperture.showplots()
     return True
 
 if __name__ == '__main__':
