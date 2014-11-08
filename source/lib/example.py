@@ -248,7 +248,7 @@ def example_of_fresnel_fraunhofer():
         # Calculating the fresnel number.
         fresnelno    = diffrac.fresnelnumber(aperturesize,onepxtom,wavelength,distance)
         aperture.show(diffrac.intensity(output,onepxtom),onepxtom,wavelength,'Retina, Distance: %s m Wavelength: %s m Fresnel Number: %s'% (distance,wavelength,fresnelno),'normal','da=%smm.png'%da)   
-        aperture.showrow(diffrac.intensity(output,onepxtom),wavelength,onepxtom,distance)    
+        aperture.showrow(diffrac.intensity(output,onepxtom),wavelength,onepxtom,distance,'row_da=%smm.png' % da)    
         # Show a 3D plot of the output.
     #    aperture.show3d(diffrac.intensity(output,onepxtom))
     # Showing plots.

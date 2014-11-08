@@ -710,12 +710,14 @@ class aperture():
         surf    = ax.plot_surface(X,Y,abs(obj), rstride=1, cstride=1, cmap=matplotlib.cm.jet,linewidth=0, antialiased=False)
         fig.colorbar(surf, shrink=0.5, aspect=5)
         return True
-    def showrow(self,obj,wavelength,pixeltom,distance):
+    def showrow(self,obj,wavelength,pixeltom,distance,filename=None):
         # Plots row crosssection of the given object
         nx,ny = obj.shape
         a     = 5
         self.plt.figure()
         self.plt.plot(arange(-nx/2,nx/2)*pixeltom,abs(obj[nx/2,:]))
+        if filename != None:
+            self.plt.savefig(filename)
         return True
     def showplots(self):
         # Definition to show the plots.
