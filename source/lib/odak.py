@@ -761,19 +761,21 @@ class diffractions():
         return
     def fft(self,obj):
         return fftshift(fft2(obj))
-    def fresnelfraunhofer(self,wave,wavelength,distance,pixeltom,aperturesize):
+    def fresnelfraunhofer(self,wave,wavelength,distance,pixeltom,aperturesize,type='Fresnel'):
+        # Definitions for Fresnel impulse respone (IR), Fresnel Transfer Function (TR)
         nu,nv  = wave.shape
         k      = 2*pi/wavelength
         X,Y    = mgrid[-nu/2:nu/2,-nv/2:nv/2]*pixeltom
         Z      = pow(X,2)+pow(Y,2)
-        distancecritical = pow(aperturesize*pixeltom,2)*2/wavelength
-        print 'Critical distance of the system is %s m. Distance of the detector is %s m.' % (distancecritical,distance)
-        # Convolution kernel for free space
-        h      = exp(1j*k*distance)/sqrt(1j*wavelength*distance)*exp(1j*k*0.5/distance*Z)
-        qpf    = exp(-1j*k*0.5/distance*Z)
-        if distancecritical < distance:
-            wave = wave*qpf
-        result = fftshift(ifft2(fft2(wave)*fft2(h)))
+        if type == 'Fresnel':
+            smplng = wavelength*distance/(aperturesize*pixeltom)
+            # According to "Computational Fourier Optics" by David Vuelz.
+            if smplng < pixeltom: # Fresnel Impulse Response
+                h      = exp(1j*k*distance)/(1j*wavelength*distance)*exp(1j*k*0.5/distance*Z)
+                result = fftshift(ifft2(fft2(wave)*fft2(h)))
+            else: # Fresnel Transfer Function
+                h      = exp(1j*k*distance)*exp(-1j*pi*wavelength*distance*Z)
+                result = fftshift(ifft2(fft2(wave)*h))
         return result
     def lens(self,wave,wavelength,focal,pixeltom):
         # Definition representing lens as a phase grating.
