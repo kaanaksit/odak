@@ -777,9 +777,11 @@ class diffractions():
             if smplng < pixeltom: # Fresnel Impulse Response
                 h      = exp(1j*k*distance)/(1j*wavelength*distance)*exp(1j*k*0.5/distance*Z)
                 result = fftshift(ifft2(fft2(wave)*fft2(h)))
+                print 'IR Fresnel method'
             else: # Fresnel Transfer Function
                 h      = exp(1j*k*distance)*exp(-1j*pi*wavelength*distance*Z)
                 result = ifft2(fft2(wave)*h)
+                print 'TR Fresnel method'
         elif type == 'Fraunhofer':
             c      = 1./(1j*wavelength*distance)*exp(1j*k*0.5/distance*Z)
             result = c*ifftshift(fft2(fftshift(wave)))*pixeltom**2
