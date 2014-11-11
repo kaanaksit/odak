@@ -775,7 +775,7 @@ class diffractions():
                 result = fftshift(ifft2(fft2(wave)*fft2(h)))
             else: # Fresnel Transfer Function
                 h      = exp(1j*k*distance)*exp(-1j*pi*wavelength*distance*Z)
-                result = fftshift(ifft2(fft2(wave)*h))
+                result = ifft2(fft2(wave)*h)
         return result
     def lens(self,wave,wavelength,focal,pixeltom):
         # Definition representing lens as a phase grating.
