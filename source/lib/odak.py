@@ -725,7 +725,7 @@ class aperture():
         return True
     def ClosePlot(self):
         # Definition to kill a figure.
-        self.plt.close()
+        self.plt.close("all")
         return True
 
 class beams():
@@ -822,3 +822,4 @@ def main():
 
 if __name__ == '__main__':
     sys.exit(main())
+
