@@ -762,20 +762,23 @@ class diffractions():
     def fft(self,obj):
         return fftshift(fft2(obj))
     def fresnelfraunhofer(self,wave,wavelength,distance,pixeltom,aperturesize,type='Fresnel'):
-        # Definitions for Fresnel impulse respone (IR), Fresnel Transfer Function (TR)
+        # Definitions for Fresnel impulse respone (IR), Fresnel Transfer Function (TR), Fraunhofer diffraction.
+        # According to "Computational Fourier Optics" by David Vuelz.
         nu,nv  = wave.shape
         k      = 2*pi/wavelength
         X,Y    = mgrid[-nu/2:nu/2,-nv/2:nv/2]*pixeltom
         Z      = pow(X,2)+pow(Y,2)
         if type == 'Fresnel':
             smplng = wavelength*distance/(aperturesize*pixeltom)
-            # According to "Computational Fourier Optics" by David Vuelz.
             if smplng < pixeltom: # Fresnel Impulse Response
                 h      = exp(1j*k*distance)/(1j*wavelength*distance)*exp(1j*k*0.5/distance*Z)
                 result = fftshift(ifft2(fft2(wave)*fft2(h)))
             else: # Fresnel Transfer Function
                 h      = exp(1j*k*distance)*exp(-1j*pi*wavelength*distance*Z)
                 result = ifft2(fft2(wave)*h)
+        elif type == 'Fraunhofer':
+            c      = 1./(1j*wavelength*distance)*exp(1j*k*0.5/distance*Z)
+            result = c*ifftshift(fft2(fftshift(wave)))*pixeltom**2
         return result
     def lens(self,wave,wavelength,focal,pixeltom):
         # Definition representing lens as a phase grating.
