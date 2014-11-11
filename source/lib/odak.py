@@ -723,6 +723,10 @@ class aperture():
         # Definition to show the plots.
         self.plt.show()
         return True
+    def ClosePlot(self):
+        # Definition to kill a figure.
+        self.plt.close()
+        return True
 
 class beams():
     def __init(self):
@@ -791,7 +795,7 @@ class diffractions():
     def SuggestType(self,aperturesize,pixeltom,wavelength,distance):
         # Definition to suggest, which type of propagation would be meaningful.
         fresnelno    = self.fresnelnumber(aperturesize,pixeltom,wavelength,distance)
-        if fresnelno < 0.01:
+        if fresnelno < 0.001:
             type = 'Fraunhofer'
         else:
             type = 'Fresnel'
