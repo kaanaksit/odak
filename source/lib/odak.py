@@ -788,6 +788,15 @@ class diffractions():
         Z      = pow(X,2)+pow(Y,2)
         result = wave * exp(-1j*k*0.5/focal*Z)
         return result
+    def SuggestType(self,aperturesize,pixeltom,wavelength,distance):
+        # Definition to suggest, which type of propagation would be meaningful.
+        fresnelno    = self.fresnelnumber(aperturesize,pixeltom,wavelength,distance)
+        if fresnelno < 0.01:
+            type = 'Fraunhofer'
+        else:
+            type = 'Fresnel'
+        print 'Fresnel number: %s, Propagation type: %s' % (fresnelno,type)
+        return type,fresnelno
     def fresnelnumber(self,aperturesize,pixeltom,wavelength,distance):
         # Definition to calculate the fresnel number.
         return  pow(aperturesize*pixeltom,2)/wavelength/distance
