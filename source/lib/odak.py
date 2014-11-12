@@ -630,13 +630,15 @@ class aperture():
             for j in xrange(ny):
                 obj[i,j] = 0.5+0.5*cos(2*pi*j/grating)
         return obj
-    def lens(self,nx,ny,focal,wavelength):
+    def lens(self,nx,ny,focal,wavelength,pixeltom):
         # Creates a lens matrix
-        obj = zeros((nx,ny),dtype=complex)
-        k   = 2*pi/wavelength
-        for i in xrange(nx):
-            for j in xrange(ny):
-                obj[i,j] = exp(-1j*k*(pow(i,2)+pow(j,2))/2/focal)    
+        obj    = zeros((nx,ny),dtype=complex)
+        k      = 2*pi/wavelength
+        x      = linspace(-nx*pixeltom,nx*pixeltom,nx)
+        y      = linspace(-ny*pixeltom,ny*pixeltom,ny)
+        X,Y    = meshgrid(x,y)
+        Z      = X**2+Y**2
+        obj    = exp(-1j*k*0.5/focal*Z)
         return obj
     def gaussian(self,nx,ny,sigma):
         # Creates a 2D gaussian matrix
@@ -770,29 +772,26 @@ class diffractions():
         # According to "Computational Fourier Optics" by David Vuelz.
         nu,nv  = wave.shape
         k      = 2*pi/wavelength
-        X,Y    = mgrid[-nu/2:nu/2,-nv/2:nv/2]*pixeltom
-        Z      = pow(X,2)+pow(Y,2)
+        x      = linspace(-nu*pixeltom,nu*pixeltom,nu)
+        y      = linspace(-nv*pixeltom,nv*pixeltom,nv)
+        X,Y    = meshgrid(x,y)
+        Z      = X**2+Y**2
         if type == 'Fresnel':
             smplng = wavelength*distance/(aperturesize*pixeltom)
-            if smplng < pixeltom: # Fresnel Impulse Response
-                h      = exp(1j*k*distance)/(1j*wavelength*distance)*exp(1j*k*0.5/distance*Z)
-                result = fftshift(ifft2(fft2(wave)*fft2(h)))
+            if pixeltom < smplng: # Fresnel Impulse Response
+                h      = 1./(1j*wavelength*distance)*exp(1j*k*0.5/distance*Z)
+                h      = fft2(fftshift(h))*pixeltom**2
                 print 'IR Fresnel method'
             else: # Fresnel Transfer Function
                 h      = exp(1j*k*distance)*exp(-1j*pi*wavelength*distance*Z)
-                result = ifft2(fft2(wave)*h)
+                h      = fftshift(h)
                 print 'TR Fresnel method'
+            U1     = fft2(fftshift(wave))
+            U2     = h*U1                
+            result = ifftshift(ifft2(U2))
         elif type == 'Fraunhofer':
             c      = 1./(1j*wavelength*distance)*exp(1j*k*0.5/distance*Z)
             result = c*ifftshift(fft2(fftshift(wave)))*pixeltom**2
-        return result
-    def lens(self,wave,wavelength,focal,pixeltom):
-        # Definition representing lens as a phase grating.
-        nu,nv  = wave.shape
-        k      = 2*pi/wavelength
-        X,Y    = mgrid[-nu/2:nu/2,-nv/2:nv/2]*pixeltom
-        Z      = pow(X,2)+pow(Y,2)
-        result = wave * exp(-1j*k*0.5/focal*Z)
         return result
     def SuggestType(self,aperturesize,pixeltom,wavelength,distance):
         # Definition to suggest, which type of propagation would be meaningful.
@@ -806,10 +805,12 @@ class diffractions():
     def fresnelnumber(self,aperturesize,pixeltom,wavelength,distance):
         # Definition to calculate the fresnel number.
         return  pow(aperturesize*pixeltom,2)/wavelength/distance
-    def intensity(self,obj,pixeltom):
+    def intensity(self,obj):
         # Definition to calcualte the intensity of the given value.
-#        return abs(pow(obj,2))*pow(pixeltom,2)*0.5*8.854*pow(10,-12)*299792458
-        return abs(obj)
+        return abs(obj**2)
+    def phase(self,obj):
+        # Definition to show the phase of the given wave.
+        return angle(obj)
     def transmittance(self,wave,trans):
         # Definition to calculate the output of a given input wave through a transmittance function.
         return multiply(wave,trans)
