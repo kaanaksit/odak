@@ -14,7 +14,7 @@ from mpl_toolkits.mplot3d import axes3d
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from numpy import *
 from numpy.fft import *
-from math import radians,tan
+from math import radians,tan,pi
 
 __author__  = ('Kaan Akşit')
 
@@ -254,6 +254,15 @@ class raytracing():
         VectorOutput[1,1] = vector[1,1] - 2*a*normvector[1,1]
         VectorOutput[1,2] = vector[1,2] - 2*a*normvector[1,2]
         return VectorOutput        
+    def FindReflectNormal(self,vector0,vector1):
+        # Definition to find reflection normal in between two given vectors.
+        mu = 1
+        NormVector      = vector1.copy()
+        for k in xrange(1,3):
+            a0              = arccos(vector0[1,k])
+            a1              = arccos(vector1[1,k])
+            NormVector[1,k] = cos(a1+(pi-(a0+a1))/2.)
+        return NormVector
     def snell(self,vector,normvector,n1,n2,error=0.01):
         # Method for Snell's law
         # n1 refractive index of the medium which vector is coming from
