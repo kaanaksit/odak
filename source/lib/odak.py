@@ -182,16 +182,17 @@ class raytracing():
         Point.append((vector1[0][2][0]-distances[0]*vector1[1][2][0])[0])
         return Point,distances
     def createvectorfromtwopoints(self,(x0,y0,z0),(x1,y1,z1)):
-        # Create a vector from two given points
+        # Create a vector from two given points.
         point = array([[x0],[y0],[z0]])
-        # Distance between two points
+        # Distance between two points.
         s     = sqrt( pow((x0-x1),2) + pow((y0-y1),2) + pow((z0-z1),2) )
         alpha = (x1-x0)/s
         beta  = (y1-y0)/s
         gamma = (z1-z0)/s
         # Cosines vector
         cosin = array([[alpha],[beta],[gamma]])
-        return array([point,cosin])
+        # returns vector and the distance.
+        return array([point,cosin]),s
     def multiplytwovectors(self,vector1,vector2):
         # Multiply two vectors and return the resultant vector
         # Used method described under: 
@@ -768,7 +769,7 @@ class diffractions():
     def fft(self,obj):
         return fftshift(fft2(obj))
     def fresnelfraunhofer(self,wave,wavelength,distance,pixeltom,aperturesize,type='Fresnel'):
-        # Definitions for Fresnel impulse respone (IR), Fresnel Transfer Function (TR), Fraunhofer diffraction.
+        # Definitions for Fresnel impulse respone (IR), Fresnel Transfer Function (TF), Fraunhofer diffraction.
         # According to "Computational Fourier Optics" by David Vuelz.
         nu,nv  = wave.shape
         k      = 2*pi/wavelength
