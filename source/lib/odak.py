@@ -408,7 +408,7 @@ class raytracing():
             label = '(%.1f, %.1f, %.1f)' % (point[0], point[1], point[2])
             self.ax.text(point[0], point[1], point[2], label)
         return True
-    def plotsphericallens(self,cx=0,cy=0,cz=0,r=10,c='none',a=0.3):
+    def plotsphericallens(self,cx=0,cy=0,cz=0,r=10,c='none',a=0.3,PlotFlag=True):
         # Method to plot surfaces
         sampleno = 100
         v        = linspace(0, pi, sampleno)
@@ -416,7 +416,8 @@ class raytracing():
         x        = r * outer(cos(u), sin(v)) + cx
         y        = r * outer(sin(u), sin(v)) + cy
         z        = r * outer(ones(size(u)), cos(v)) + cz
-        self.ax.plot_surface(x, y, z, rstride=8, cstride=8, alpha=a, color=c, antialiased=True)
+        if PlotFlag == True:
+            self.ax.plot_surface(x, y, z, rstride=8, cstride=8, alpha=a, color=c, antialiased=True)
         return array([cx,cy,cz,r])
     def CalculateFocal(self,rx,ry,rz,n,ShowFocal=False):
         # Method to calculate the focal length of the lens in different axes.
