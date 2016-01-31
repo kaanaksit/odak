@@ -214,13 +214,13 @@ class raytracing():
         # Used method described under: http://www.blackpawn.com/texts/pointinpoly/default.html
         # point0, point1 and point2 are the corners of the triangle
         # point is the point to check
-        vector1 = self.createvectorfromtwopoints(pointtocheck,point0)
-        vector2 = self.createvectorfromtwopoints(pointtocheck,point1)
-        vector3 = self.createvectorfromtwopoints(pointtocheck,point2)
-        angle0  = self.anglebetweentwovector(vector1,vector2)
-        angle1  = self.anglebetweentwovector(vector2,vector3)
-        angle2  = self.anglebetweentwovector(vector3,vector1)
-        sum     = angle0+angle1+angle2
+        vector1,s = self.createvectorfromtwopoints(pointtocheck,point0)
+        vector2,s = self.createvectorfromtwopoints(pointtocheck,point1)
+        vector3,s = self.createvectorfromtwopoints(pointtocheck,point2)
+        angle0    = self.anglebetweentwovector(vector1,vector2)
+        angle1    = self.anglebetweentwovector(vector2,vector3)
+        angle2    = self.anglebetweentwovector(vector3,vector1)
+        sum       = angle0+angle1+angle2
         if sum <= 360+error and sum >= 360-error:
             return True
         else:
@@ -341,8 +341,8 @@ class raytracing():
     def findintersurface(self,vector,(point0,point1,point2),error=0.00001,numiter=100,iternotify='no'):
         # Method to find intersection point inbetween a surface and a vector
         # See http://www.jtaylor1142001.net/calcjat/Solutions/VPlanes/VP3Pts.htm
-        vector1  = self.createvectorfromtwopoints(point0,point1)
-        vector2  = self.createvectorfromtwopoints(point0,point2)
+        vector1,s  = self.createvectorfromtwopoints(point0,point1)
+        vector2,s  = self.createvectorfromtwopoints(point0,point2)
         normvec  = self.multiplytwovectors(vector1,vector2)
         k        = vector[0,0,0]
         l        = vector[0,1,0]
