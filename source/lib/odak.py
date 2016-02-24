@@ -474,11 +474,11 @@ class raytracing():
         if PlotFlag == True:
             self.ax.plot_surface(x, y, z, rstride=8, cstride=8, alpha=a, color=c, antialiased=True)
         return array([cx,cy,cz,r])
-    def CalculateSpherMesh(self,spher,sampleno=100,angle=2*pi):
+    def CalculateSpherMesh(self,spher,sampleno=100,angleu=[0,pi],anglev=[0,2*pi]):
         # Definition to calculate triangular meshed form of a spherical sufrace.
         cx = spher[0]; cy = spher[1]; cz = spher[2]; r = spher[3]
-        v           = linspace(0, pi, sampleno)
-        u           = linspace(0,angle,sampleno)
+        v           = linspace(angleu[0], angleu[1], sampleno)
+        u           = linspace(anglev[0],anglev[1],sampleno)
         tris        = zeros((sampleno,sampleno,3))
         tris[:,:,0] = r * outer(cos(u), sin(v)) + cx
         tris[:,:,1] = r * outer(sin(u), sin(v)) + cy
@@ -501,19 +501,35 @@ class raytracing():
                 self.plottriangle(tris[i,j],tris[i+1,j],tris[i,j+1])
                 self.plottriangle(tris[i+1,j+1],tris[i+1,j],tris[i,j+1])
         return tris
+    def FindInterMesh(self,vector,tris):
+        # Definition to find the first intersection of a ray with a mesh.
+        sampleno = tris.shape[0]
+        for i in xrange(0,sampleno-1):
+            for j in xrange(0,sampleno-1):
+                tri0        = [tris[i,j],tris[i+1,j],tris[i,j+1]]
+                tri1        = [tris[i+1,j+1],tris[i+1,j],tris[i,j+1]]
+                s0,normvec0 = self.findintersurface(vector,(tri0[0],tri0[1],tri0[2]))
+                s1,normvec1 = self.findintersurface(vector,(tri1[0],tri1[1],tri1[2]))
+                res0        = self.isitontriangle(normvec0[0],tri0[0],tri0[1],tri0[2])
+                res1        = self.isitontriangle(normvec1[0],tri1[0],tri1[1],tri1[2])
+                if res0 == True:
+                    return s0,normvec0
+                elif res1 == True:
+                    return s1,normvec1
+        return 0,vector
     def PlotCircle(self,center,r,c='none'):
         # Method to plot circle.
         circle = Circle((center[0], center[1]), r, facecolor=c, edgecolor=(0,0,0), linewidth=4, alpha=1)
         self.ax.add_patch(circle)
         art3d.pathpatch_2d_to_3d(circle, z=center[2], zdir='z')
-        return array([center,r]) 
+        return array([center,r])
     def PlotData(self,X,Y,Z,c='none'):
         # Method to plot the given data.
         # Gridding the data.
         xi = linspace(min(X), max(X))
-        yi = linspace(min(Y), max(Y))  
+        yi = linspace(min(Y), max(Y))
         xim, yim = meshgrid(xi, yi)
-        zi = griddata(X,Y,Z,xi,yi,interp='nn')     
+        zi = griddata(X,Y,Z,xi,yi,interp='nn')
         # Plot the resultant figure.
         self.ax  = self.fig.gca()
         self.ax.plot_surface(xim, yim, zi, rstride=2, cstride=2, cmap=cm.jet, alpha=0.3, color=c)
