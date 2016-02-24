@@ -4,6 +4,7 @@
 # Whole library can be found under https://github.com/kunguz/odak.
 
 import sys,matplotlib,scipy
+#matplotlib.use('Agg')
 import matplotlib.pyplot
 import mpl_toolkits.mplot3d.art3d as art3d
 import scipy.linalg
@@ -173,7 +174,7 @@ class raytracing():
            distances[0] = 0
            distances[1] = 0
         # Point vector created.
-        Point     = [] 
+        Point     = []
         # Intersection point at X axis.
         Point.append((vector1[0][0][0]-distances[0]*vector1[1][0][0])[0])
         # Intersection point at Y axis.
@@ -338,6 +339,49 @@ class raytracing():
             if number > numiter:
                return 0,normvec        
         return distance+shift,normvec
+    def findinteraspher(self,vector,asphere,error=0.00000001,numiter=1000,iternotify='no'):
+        # Method for finding intersection in between a vector and a spherical surface
+        # There are things to be done to fix wrong root convergence
+        number   = 0
+        distance = 1
+        olddist  = 0
+        shift    = 0
+        epsilon  = error*2
+        k        = vector[0,0,0]
+        l        = vector[0,1,0]
+        m        = vector[0,2,0]
+        FXYZ     = pow(k-asphere[0],2) + pow(l-asphere[1],2) + pow(m-asphere[2],2) - pow(asphere[3],2)
+        if abs(FXYZ) < 0.01:
+            shift = 1.5 * sphere[3]
+            k     = shift * vector[1,0] + k
+            l     = shift * vector[1,1] + l
+            m     = shift * vector[1,2] + m
+        while epsilon > error:
+            number  += 1
+            x        = olddist * vector[1,0] + k
+            y        = olddist * vector[1,1] + l
+            z        = olddist * vector[1,2] + m
+            oldFXYZ  = pow(x-asphere[0],2) + pow(y-asphere[1],2) + pow(z-asphere[2],2) - pow(asphere[3],2)
+            x        = distance * vector[1,0] + k
+            y        = distance * vector[1,1] + l
+            z        = distance * vector[1,2] + m
+            FXYZ     = pow(x-asphere[0],2) + pow(y-asphere[1],2) + pow(z-asphere[2],2) - pow(asphere[3],2)
+            # Secant method is calculated, see wikipedia article of the method for more
+            newdist  = distance - FXYZ*(distance-olddist)/(FXYZ-oldFXYZ)
+            epsilon  = abs(newdist-distance)
+            oldFXYZ  = FXYZ
+            olddist  = distance
+            distance = newdist
+            normang  = array([[(asphere[0]-x)/asphere[3]],[(asphere[1]-y)/asphere[3]],[(asphere[2]-z)/asphere[3]]])
+            normpnt  = array([x,y,z])
+            normvec  = array([normpnt,normang])
+            # Iteration reminder
+            if iternotify == 'yes':
+                print 'Iteration number: %s, Calculated distance: %s, Error: %s, Points: %s %s %s, Function:  %s' % (number,distance,epsilon,x,y,z,FXYZ)
+            # Check if the number of iterations are too much
+            if number > numiter:
+               return 0,normvec        
+        return distance+shift,normvec
     def findintersurface(self,vector,(point0,point1,point2),error=0.00001,numiter=100,iternotify='no'):
         # Method to find intersection point inbetween a surface and a vector
         # See http://www.jtaylor1142001.net/calcjat/Solutions/VPlanes/VP3Pts.htm
@@ -408,8 +452,19 @@ class raytracing():
             label = '(%.1f, %.1f, %.1f)' % (point[0], point[1], point[2])
             self.ax.text(point[0], point[1], point[2], label)
         return True
+    def plotasphericallens(self,k0=1.,k1=1.,k2=1.,cx=0,cy=0,cz=0,r=10,c='none',a=0.3,PlotFlag=True):
+        # Method to plot an aspherical lens.
+        sampleno = 100
+        v        = linspace(0, pi, sampleno)
+        u        = linspace(0,2*pi,sampleno)
+        x        = (r * outer(cos(u), sin(v)) + cx)/k0**2
+        y        = (r * outer(sin(u), sin(v)) + cy)/k1**2
+        z        = (r * outer(ones(size(u)), cos(v)) + cz)/k2**2
+        if PlotFlag == True:
+            self.ax.plot_surface(x, y, z, rstride=8, cstride=8, alpha=a, color=c, antialiased=True)
+        return array([cx,cy,cz,r,k0,k1,k2])
     def plotsphericallens(self,cx=0,cy=0,cz=0,r=10,c='none',a=0.3,PlotFlag=True):
-        # Method to plot surfaces
+        # Method to plot a spherical lens.
         sampleno = 100
         v        = linspace(0, pi, sampleno)
         u        = linspace(0,2*pi,sampleno)
@@ -419,6 +474,16 @@ class raytracing():
         if PlotFlag == True:
             self.ax.plot_surface(x, y, z, rstride=8, cstride=8, alpha=a, color=c, antialiased=True)
         return array([cx,cy,cz,r])
+    def CalculateSpherMesh(self,spher,sampleno=100,angle=2*pi):
+        # Definition to calculate triangular meshed form of a spherical sufrace.
+        cx = spher[0]; cy = spher[1]; cz = spher[2]; r = spher[3]
+        v           = linspace(0, pi, sampleno)
+        u           = linspace(0,angle,sampleno)
+        tris        = zeros((sampleno,sampleno,3))
+        tris[:,:,0] = r * outer(cos(u), sin(v)) + cx
+        tris[:,:,1] = r * outer(sin(u), sin(v)) + cy
+        tris[:,:,2] = r * outer(ones(size(u)), cos(v)) + cz
+        return tris
     def CalculateFocal(self,rx,ry,rz,n,ShowFocal=False):
         # Method to calculate the focal length of the lens in different axes.
         for a in [rx,ry]:
@@ -428,18 +493,14 @@ class raytracing():
             if ShowFocal == True:
                 print 'Focal length of the lens: ',f
         return True
-    def plotasphericallens(self,cx=0,cy=0,cz=0,rx=10,ry=10,rz=10,n=1.51,c='none'):
-        # Method to plot surfaces
-        sampleno = 50
-        v        = linspace(0, pi, sampleno)
-        u        = linspace(0,2*pi,sampleno)
-        x        = rx * outer(cos(u), sin(v)) + cx
-        y        = ry * outer(sin(u), sin(v)) + cy
-        z        = rz * outer(ones(size(u)), cos(v)) + cz
-        self.ax.plot_surface(x, y, z, rstride=6, cstride=6, color=c)
-        # Calculate the focal length of the plotted lens.
-        self.CalculateFocal(rx,ry,rz,n)
-        return array([cx,cy,cz,rx,ry,rz])
+    def PlotMesh(self,tris):
+        # Definition to plot meshes using triangles.
+        sampleno = tris.shape[0]
+        for i in xrange(0,sampleno-1):
+            for j in xrange(0,sampleno-1):
+                self.plottriangle(tris[i,j],tris[i+1,j],tris[i,j+1])
+                self.plottriangle(tris[i+1,j+1],tris[i+1,j],tris[i,j+1])
+        return tris
     def PlotCircle(self,center,r,c='none'):
         # Method to plot circle.
         circle = Circle((center[0], center[1]), r, facecolor=c, edgecolor=(0,0,0), linewidth=4, alpha=1)
@@ -459,9 +520,9 @@ class raytracing():
         return True
     def plottriangle(self,point0,point1,point2):
         # Method to plot triangular surface
-        x = array([ point0[0], point1[0], point2[0]])
-        y = array([ point0[1], point1[1], point2[1]])
-        z = array([ point0[2], point1[2], point2[2]])
+        x     = array([ point0[0], point1[0], point2[0]])
+        y     = array([ point0[1], point1[1], point2[1]])
+        z     = array([ point0[2], point1[2], point2[2]])
         verts = [zip(x, y,z)]
         self.ax.add_collection3d(Poly3DCollection(verts))
         return array([point0,point1,point2])
