@@ -59,10 +59,10 @@ def example_of_ray_tracing_2():
     vector            = ray.createvector((0,1,5),(90,90,0))
     distance,normvec  = ray.findintersurface(vector,(point0,point1,point2))
     if ray.isitontriangle(normvec[0],point0,point1,point2) == True:
-        ray.plotvector(normvec,distance)
-        ray.plotvector(vector,distance)
+        ray.plotvector(normvec,distance,'b')
+        ray.plotvector(vector,distance,'g')
         reflectvector     = ray.reflect(vector,normvec)
-        ray.plotvector(reflectvector,distance)
+        ray.plotvector(reflectvector,distance,'r')
     ray.defineplotshape((-20,20),(-20,20),(-20,20))
     ray.showplot()
     return True
