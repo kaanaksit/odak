@@ -66,7 +66,7 @@ class ParaxialMatrix():
     def PlotLens(self,CenterXY, thickness, LensHeight, rotation, alpha=0.5):
         # Definition to plot a lens.
         lens = Ellipse(xy=CenterXY, width=thickness, height=LensHeight, angle=-rotation)
-        self.ax.add_artist(lens)        
+        self.ax.add_artist(lens)
         lens.set_clip_box(self.ax.bbox)
         lens.set_alpha(alpha)
         return True
@@ -195,8 +195,8 @@ class raytracing():
         # returns vector and the distance.
         return array([point,cosin]),s
     def multiplytwovectors(self,vector1,vector2):
-        # Multiply two vectors and return the resultant vector
-        # Used method described under: 
+        # Multiply two vectors and return the resultant vector.
+        # Used method described under:
         # Cross-product: http://en.wikipedia.org/wiki/Cross_product
         angle = cross(vector1[1].transpose()[0],vector2[1].transpose()[0])
         return array([vector1[0],[[angle[0]],[angle[1]],[angle[2]]]])
@@ -210,11 +210,11 @@ class raytracing():
         angle = degrees(arccos(angle/(s1*s2)))
         return angle
     def isitontriangle(self,pointtocheck,point0,point1,point2,error=0.1):
-        # Check if the given point is insight the triangle which represented 
+        # Check if the given point is insight the triangle which represented.
         # by three corners of the triangle.
         # Used method described under: http://www.blackpawn.com/texts/pointinpoly/default.html
-        # point0, point1 and point2 are the corners of the triangle
-        # point is the point to check
+        # point0, point1 and point2 are the corners of the triangle.
+        # point is the point to check.
         vector1,s = self.createvectorfromtwopoints(pointtocheck,point0)
         vector2,s = self.createvectorfromtwopoints(pointtocheck,point1)
         vector3,s = self.createvectorfromtwopoints(pointtocheck,point2)
@@ -227,12 +227,12 @@ class raytracing():
         else:
             return False
     def transform(self,input,(alpha,beta,gamma),(x0,y0,z0)):
-        # alpha; rotation angle (euler) of x axis 
-        # beta; rotation angle (euler) of y axis
-        # gamma; rotation angle (euler) of z axis
-        # x0; x coordinate of origin measured in the reference system
-        # y0; y coordinate of origin measured in the reference system
-        # z0; z coordinate of origin measured in the reference system
+        # alpha; rotation angle (euler) of x axis.
+        # beta; rotation angle (euler) of y axis.
+        # gamma; rotation angle (euler) of z axis.
+        # x0; x coordinate of origin measured in the reference system.
+        # y0; y coordinate of origin measured in the reference system.
+        # z0; z coordinate of origin measured in the reference system.
         alpha  = radians(alpha)
         beta   = radians(beta)
         gamma  = radians(gamma)
@@ -254,7 +254,7 @@ class raytracing():
         VectorOutput[1,0] = vector[1,0] - 2*a*normvector[1,0]
         VectorOutput[1,1] = vector[1,1] - 2*a*normvector[1,1]
         VectorOutput[1,2] = vector[1,2] - 2*a*normvector[1,2]
-        return VectorOutput        
+        return VectorOutput
     def FindReflectNormal(self,vector0,vector1):
         # Definition to find reflection normal in between two given vectors.
         mu = 1
@@ -296,6 +296,10 @@ class raytracing():
         VectorOutput[1,1] = mu*vector[1,1] + to*normvector[1,1]
         VectorOutput[1,2] = mu*vector[1,2] + to*normvector[1,2]
         return VectorOutput
+    def FuncSpher(self,k,l,m,sphere):
+        # Definition to return a 3D point position in spherical definition.
+        FXYZ     = pow(k-sphere[0],2) + pow(l-sphere[1],2) + pow(m-sphere[2],2) - pow(sphere[3],2)
+        return FXYZ
     def findinterspher(self,vector,sphere,error=0.00000001,numiter=1000,iternotify='no'):
         # Method for finding intersection in between a vector and a spherical surface
         # There are things to be done to fix wrong root convergence
@@ -307,96 +311,51 @@ class raytracing():
         k        = vector[0,0,0]
         l        = vector[0,1,0]
         m        = vector[0,2,0]
-        FXYZ     = pow(k-sphere[0],2) + pow(l-sphere[1],2) + pow(m-sphere[2],2) - pow(sphere[3],2)
+        FXYZ     = self.FuncSpher(k,l,m,sphere)
         if abs(FXYZ) < 0.01:
             shift = 1.5 * sphere[3]
             k     = shift * vector[1,0] + k
             l     = shift * vector[1,1] + l
             m     = shift * vector[1,2] + m
         while epsilon > error:
-            number  += 1
-            x        = olddist * vector[1,0] + k
-            y        = olddist * vector[1,1] + l
-            z        = olddist * vector[1,2] + m
-            oldFXYZ  = pow(x-sphere[0],2) + pow(y-sphere[1],2) + pow(z-sphere[2],2) - pow(sphere[3],2)
-            x        = distance * vector[1,0] + k
-            y        = distance * vector[1,1] + l
-            z        = distance * vector[1,2] + m
-            FXYZ     = pow(x-sphere[0],2) + pow(y-sphere[1],2) + pow(z-sphere[2],2) - pow(sphere[3],2)
+            number   += 1
+            x         = olddist * vector[1,0] + k
+            y         = olddist * vector[1,1] + l
+            z         = olddist * vector[1,2] + m
+            oldFXYZ   = self.FuncSpher(x,y,z,sphere)
+            x         = distance * vector[1,0] + k
+            y         = distance * vector[1,1] + l
+            z         = distance * vector[1,2] + m
+            FXYZ      = self.FuncSpher(x,y,z,sphere)
             # Secant method is calculated, see wikipedia article of the method for more
-            newdist  = distance - FXYZ*(distance-olddist)/(FXYZ-oldFXYZ)
-            epsilon  = abs(newdist-distance)
-            oldFXYZ  = FXYZ
-            olddist  = distance
-            distance = newdist
-            normang  = array([[(sphere[0]-x)/sphere[3]],[(sphere[1]-y)/sphere[3]],[(sphere[2]-z)/sphere[3]]])
-            normpnt  = array([x,y,z])
-            normvec  = array([normpnt,normang])
+            newdist   = distance - FXYZ*(distance-olddist)/(FXYZ-oldFXYZ)
+            epsilon   = abs(newdist-distance)
+            oldFXYZ   = FXYZ
+            olddist   = distance
+            distance  = newdist
             # Iteration reminder
             if iternotify == 'yes':
                 print 'Iteration number: %s, Calculated distance: %s, Error: %s, Points: %s %s %s, Function:  %s' % (number,distance,epsilon,x,y,z,FXYZ)
             # Check if the number of iterations are too much
             if number > numiter:
-               return 0,normvec        
-        return distance+shift,normvec
-    def findinteraspher(self,vector,asphere,error=0.00000001,numiter=1000,iternotify='no'):
-        # Method for finding intersection in between a vector and a spherical surface
-        # There are things to be done to fix wrong root convergence
-        number   = 0
-        distance = 1
-        olddist  = 0
-        shift    = 0
-        epsilon  = error*2
-        k        = vector[0,0,0]
-        l        = vector[0,1,0]
-        m        = vector[0,2,0]
-        FXYZ     = pow(k-asphere[0],2) + pow(l-asphere[1],2) + pow(m-asphere[2],2) - pow(asphere[3],2)
-        if abs(FXYZ) < 0.01:
-            shift = 1.5 * sphere[3]
-            k     = shift * vector[1,0] + k
-            l     = shift * vector[1,1] + l
-            m     = shift * vector[1,2] + m
-        while epsilon > error:
-            number  += 1
-            x        = olddist * vector[1,0] + k
-            y        = olddist * vector[1,1] + l
-            z        = olddist * vector[1,2] + m
-            oldFXYZ  = pow(x-asphere[0],2) + pow(y-asphere[1],2) + pow(z-asphere[2],2) - pow(asphere[3],2)
-            x        = distance * vector[1,0] + k
-            y        = distance * vector[1,1] + l
-            z        = distance * vector[1,2] + m
-            FXYZ     = pow(x-asphere[0],2) + pow(y-asphere[1],2) + pow(z-asphere[2],2) - pow(asphere[3],2)
-            # Secant method is calculated, see wikipedia article of the method for more
-            newdist  = distance - FXYZ*(distance-olddist)/(FXYZ-oldFXYZ)
-            epsilon  = abs(newdist-distance)
-            oldFXYZ  = FXYZ
-            olddist  = distance
-            distance = newdist
-            normang  = array([[(asphere[0]-x)/asphere[3]],[(asphere[1]-y)/asphere[3]],[(asphere[2]-z)/asphere[3]]])
-            normpnt  = array([x,y,z])
-            normvec  = array([normpnt,normang])
-            # Iteration reminder
-            if iternotify == 'yes':
-                print 'Iteration number: %s, Calculated distance: %s, Error: %s, Points: %s %s %s, Function:  %s' % (number,distance,epsilon,x,y,z,FXYZ)
-            # Check if the number of iterations are too much
-            if number > numiter:
-               return 0,normvec        
+               return 0,0
+        normvec,s = self.createvectorfromtwopoints((x,y,z),(sphere[0],sphere[1],sphere[2]))
         return distance+shift,normvec
     def findintersurface(self,vector,(point0,point1,point2),error=0.00001,numiter=100,iternotify='no'):
         # Method to find intersection point inbetween a surface and a vector
         # See http://www.jtaylor1142001.net/calcjat/Solutions/VPlanes/VP3Pts.htm
         vector1,s  = self.createvectorfromtwopoints(point0,point1)
         vector2,s  = self.createvectorfromtwopoints(point0,point2)
-        normvec  = self.multiplytwovectors(vector1,vector2)
-        k        = vector[0,0,0]
-        l        = vector[0,1,0]
-        m        = vector[0,2,0]
+        normvec    = self.multiplytwovectors(vector1,vector2)
+        k          = vector[0,0,0]
+        l          = vector[0,1,0]
+        m          = vector[0,2,0]
         # See http://en.wikipedia.org/wiki/Normal_%28geometry%29
         a           = normvec[1][0]
         b           = normvec[1][1]
         c           = normvec[1][2]
         d           = -normvec[1][0]*normvec[0][0]-normvec[1][1]*normvec[0][1]-normvec[1][2]*normvec[0][2]
-        distance    = 1 
+        distance    = 1
         number      = 0
         olddistance = 0
         epsilon     = error*2
@@ -415,12 +374,12 @@ class raytracing():
             epsilon     = abs(distance-olddistance)
             olddistance = distance
             distance    = newdistance
-            normvec[0]  = array([x1,y1,z2])
             # Iteration reminder
             if iternotify == 'yes':
                 print 'Iteration number: %s, Calculated distance: %s, Error: %s, F1: %s, F2: %s, Old distance: %s ' % (number,distance,error,F1,F2,olddistance)
             if number > numiter:
-               return 0,normvec
+               return 0,0
+        normvec[0]  = array([x1,y1,z2])
         return olddistance, normvec
     def plotvector(self,vector,distance,color='g'):
         # Method to plot rays
@@ -493,13 +452,13 @@ class raytracing():
             if ShowFocal == True:
                 print 'Focal length of the lens: ',f
         return True
-    def PlotMesh(self,tris):
+    def PlotMesh(self,tris,alpha=0.3):
         # Definition to plot meshes using triangles.
         sampleno = tris.shape[0]
         for i in xrange(0,sampleno-1):
             for j in xrange(0,sampleno-1):
-                self.plottriangle(tris[i,j],tris[i+1,j],tris[i,j+1])
-                self.plottriangle(tris[i+1,j+1],tris[i+1,j],tris[i,j+1])
+                self.plottriangle(tris[i,j],tris[i+1,j],tris[i,j+1],alpha=alpha)
+                self.plottriangle(tris[i+1,j+1],tris[i+1,j],tris[i,j+1],alpha=alpha)
         return tris
     def FindInterMesh(self,vector,tris):
         # Definition to find the first intersection of a ray with a mesh.
@@ -534,13 +493,13 @@ class raytracing():
         self.ax  = self.fig.gca()
         self.ax.plot_surface(xim, yim, zi, rstride=2, cstride=2, cmap=cm.jet, alpha=0.3, color=c)
         return True
-    def plottriangle(self,point0,point1,point2):
+    def plottriangle(self,point0,point1,point2,alpha=0.3):
         # Method to plot triangular surface
         x     = array([ point0[0], point1[0], point2[0]])
         y     = array([ point0[1], point1[1], point2[1]])
         z     = array([ point0[2], point1[2], point2[2]])
         verts = [zip(x, y,z)]
-        self.ax.add_collection3d(Poly3DCollection(verts))
+        self.ax.add_collection3d(Poly3DCollection(verts,alpha=alpha))
         return array([point0,point1,point2])
     def plotcornercube(self,centerx,centery,centerz,pitch,revert=False):
         # Method to plot a single cornercube
