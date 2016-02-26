@@ -244,17 +244,19 @@ class raytracing():
         return output
     def reflect(self,vector,normvector):
         # Used method described in G.H. Spencer and M.V.R.K. Murty, "General Ray-Tracing Procedure", 1961
-        mu = 1
-        div = pow(normvector[1,0],2) + pow(normvector[1,1],2) + pow(normvector[1,2],2)
-        a = mu* (vector[1,0]*normvector[1,0] + vector[1,1]*normvector[1,1] + vector[1,2]*normvector[1,2]) / div
-        VectorOutput      = vector.copy()
-        VectorOutput[0,0] = normvector[0,0]
-        VectorOutput[0,1] = normvector[0,1]
-        VectorOutput[0,2] = normvector[0,2]
-        VectorOutput[1,0] = vector[1,0] - 2*a*normvector[1,0]
-        VectorOutput[1,1] = vector[1,1] - 2*a*normvector[1,1]
-        VectorOutput[1,2] = vector[1,2] - 2*a*normvector[1,2]
-        return VectorOutput
+        mu          = 1
+        div         = pow(normvector[1,0],2)  + pow(normvector[1,1],2) + pow(normvector[1,2],2)
+        a           = mu* ( vector[1,0]*normvector[1,0]
+                          + vector[1,1]*normvector[1,1]
+                          + vector[1,2]*normvector[1,2]) / div
+        outvec      = vector.copy()
+        outvec[0,0] = normvector[0,0]
+        outvec[0,1] = normvector[0,1]
+        outvec[0,2] = normvector[0,2]
+        outvec[1,0] = vector[1,0] - 2*a*normvector[1,0]
+        outvec[1,1] = vector[1,1] - 2*a*normvector[1,1]
+        outvec[1,2] = vector[1,2] - 2*a*normvector[1,2]
+        return outvec
     def FindReflectNormal(self,vector0,vector1):
         # Definition to find reflection normal in between two given vectors.
         mu = 1
@@ -343,44 +345,17 @@ class raytracing():
         return distance+shift,normvec
     def findintersurface(self,vector,(point0,point1,point2),error=0.00001,numiter=100,iternotify='no'):
         # Method to find intersection point inbetween a surface and a vector
-        # See http://www.jtaylor1142001.net/calcjat/Solutions/VPlanes/VP3Pts.htm
-        vector1,s  = self.createvectorfromtwopoints(point0,point1)
-        vector2,s  = self.createvectorfromtwopoints(point0,point2)
-        normvec    = self.multiplytwovectors(vector1,vector2)
-        k          = vector[0,0,0]
-        l          = vector[0,1,0]
-        m          = vector[0,2,0]
-        # See http://en.wikipedia.org/wiki/Normal_%28geometry%29
-        a           = normvec[1][0]
-        b           = normvec[1][1]
-        c           = normvec[1][2]
-        d           = -normvec[1][0]*normvec[0][0]-normvec[1][1]*normvec[0][1]-normvec[1][2]*normvec[0][2]
-        distance    = 1
-        number      = 0
-        olddistance = 0
-        epsilon     = error*2
-        while epsilon > error:
-            number     += 1
-            x1          = distance * vector[1,0] + k
-            y1          = distance * vector[1,1] + l
-            z1          = distance * vector[1,2] + m
-            x2          = olddistance * vector[1,0] + k
-            y2          = olddistance * vector[1,1] + l
-            z2          = olddistance * vector[1,2] + m
-            F1          = a*x1+b*y1+c*z1+d
-            F2          = a*x2+b*y2+c*z2+d
-            # Secant method: http://en.wikipedia.org/wiki/Secant_method
-            newdistance = distance - F1*(distance-olddistance)/(F1-F2)
-            epsilon     = abs(distance-olddistance)
-            olddistance = distance
-            distance    = newdistance
-            # Iteration reminder
-            if iternotify == 'yes':
-                print 'Iteration number: %s, Calculated distance: %s, Error: %s, F1: %s, F2: %s, Old distance: %s ' % (number,distance,error,F1,F2,olddistance)
-            if number > numiter:
-               return 0,0
-        normvec[0]  = array([x1,y1,z2])
-        return olddistance, normvec
+        # See http://geomalgorithms.com/a06-_intersect-2.html
+        vector1,s     = self.createvectorfromtwopoints(point0,point1)
+        vector2,s     = self.createvectorfromtwopoints(point1,point2)
+        normvec       = self.multiplytwovectors(vector1,vector2)
+        f             = point0-vector[0].T
+        n             = normvec[1].copy()
+        distance      = dot(n.T,f.T)/dot(n.T,vector[1])
+        normvec[0][0] = vector[0][0]+distance*vector[1][0]
+        normvec[0][1] = vector[0][1]+distance*vector[1][1]
+        normvec[0][2] = vector[0][2]+distance*vector[1][2]
+        return distance[0][0],normvec
     def plotvector(self,vector,distance,color='g'):
         # Method to plot rays
         x = array([vector[0,0,0], distance * vector[1,0] + vector[0,0,0]])
@@ -472,10 +447,10 @@ class raytracing():
                 res0        = self.isitontriangle(normvec0[0],tri0[0],tri0[1],tri0[2])
                 res1        = self.isitontriangle(normvec1[0],tri1[0],tri1[1],tri1[2])
                 if res0 == True:
-                    return s0,normvec0
+                    return s0,normvec0,tri0
                 elif res1 == True:
-                    return s1,normvec1
-        return 0,vector
+                    return s1,normvec1,tri1
+        return 0,vector,zeros((3,1))
     def PlotCircle(self,center,r,c='none'):
         # Method to plot circle.
         circle = Circle((center[0], center[1]), r, facecolor=c, edgecolor=(0,0,0), linewidth=4, alpha=1)
