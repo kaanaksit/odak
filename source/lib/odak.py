@@ -209,23 +209,26 @@ class raytracing():
         s2    = sqrt(vector1[1][0]**2+vector1[1][1]**2+vector1[1][2]**2)
         angle = degrees(arccos(angle/(s1*s2)))
         return angle
-    def isitontriangle(self,pointtocheck,point0,point1,point2,error=0.1):
-        # Check if the given point is insight the triangle which represented.
-        # by three corners of the triangle.
-        # Used method described under: http://www.blackpawn.com/texts/pointinpoly/default.html
-        # point0, point1 and point2 are the corners of the triangle.
-        # point is the point to check.
-        vector1,s = self.createvectorfromtwopoints(pointtocheck,point0)
-        vector2,s = self.createvectorfromtwopoints(pointtocheck,point1)
-        vector3,s = self.createvectorfromtwopoints(pointtocheck,point2)
-        angle0    = self.anglebetweentwovector(vector1,vector2)
-        angle1    = self.anglebetweentwovector(vector2,vector3)
-        angle2    = self.anglebetweentwovector(vector3,vector1)
-        sum       = angle0+angle1+angle2
-        if sum <= 360+error and sum >= 360-error:
+    def SameSide(self,p1,p2,a,b):
+        # Methodology taken from http://www.blackpawn.com/texts/pointinpoly/
+        ba    = subtract(b,a)
+        p1a   = subtract(p1,a)
+        p2a   = subtract(p2,a)
+        cp1   = cross(ba,p1a)
+        cp2   = cross(ba,p2a)
+        if dot(cp1,cp2) >= 0:
             return True
-        else:
-            return False
+        return False
+    def isitontriangle(self,pointtocheck,point0,point1,point2,error=0.001):
+        # Check if the given point is insight the triangle which represented.
+        # point0, point1 and point2 are the corners of the triangle.
+        pointtocheck = pointtocheck.reshape(3)
+        side0        = self.SameSide(pointtocheck,point0,point1,point2)
+        side1        = self.SameSide(pointtocheck,point1,point0,point2)
+        side2        = self.SameSide(pointtocheck,point2,point0,point1)
+        if side0 == True and side1 == True and side2 == True:
+            return True
+        return False
     def transform(self,input,(alpha,beta,gamma),(x0,y0,z0)):
         # alpha; rotation angle (euler) of x axis.
         # beta; rotation angle (euler) of y axis.
@@ -346,9 +349,10 @@ class raytracing():
     def findintersurface(self,vector,(point0,point1,point2),error=0.00001,numiter=100,iternotify='no'):
         # Method to find intersection point inbetween a surface and a vector
         # See http://geomalgorithms.com/a06-_intersect-2.html
-        vector1,s     = self.createvectorfromtwopoints(point0,point1)
-        vector2,s     = self.createvectorfromtwopoints(point1,point2)
-        normvec       = self.multiplytwovectors(vector1,vector2)
+        vector0,s     = self.createvectorfromtwopoints(point0,point1)
+        vector1,s     = self.createvectorfromtwopoints(point1,point2)
+        vector2,s     = self.createvectorfromtwopoints(point0,point2)
+        normvec       = self.multiplytwovectors(vector0,vector2)
         f             = point0-vector[0].T
         n             = normvec[1].copy()
         distance      = dot(n.T,f.T)/dot(n.T,vector[1])
@@ -443,14 +447,14 @@ class raytracing():
                 tri0        = [tris[i,j],tris[i+1,j],tris[i,j+1]]
                 tri1        = [tris[i+1,j+1],tris[i+1,j],tris[i,j+1]]
                 s0,normvec0 = self.findintersurface(vector,(tri0[0],tri0[1],tri0[2]))
-                s1,normvec1 = self.findintersurface(vector,(tri1[0],tri1[1],tri1[2]))
                 res0        = self.isitontriangle(normvec0[0],tri0[0],tri0[1],tri0[2])
-                res1        = self.isitontriangle(normvec1[0],tri1[0],tri1[1],tri1[2])
                 if res0 == True:
                     return s0,normvec0,tri0
-                elif res1 == True:
+                s1,normvec1 = self.findintersurface(vector,(tri1[0],tri1[1],tri1[2]))
+                res1        = self.isitontriangle(normvec1[0],tri1[0],tri1[1],tri1[2])
+                if res1 == True:
                     return s1,normvec1,tri1
-        return 0,vector,zeros((3,1))
+        return 0,None,None
     def PlotCircle(self,center,r,c='none'):
         # Method to plot circle.
         circle = Circle((center[0], center[1]), r, facecolor=c, edgecolor=(0,0,0), linewidth=4, alpha=1)
