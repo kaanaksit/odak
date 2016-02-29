@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import numpy
+import numpy,time
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
@@ -10,22 +10,26 @@ __version__ = '0.1'
 
 # Class for OpenGL drawing.
 class draw():
-    def __init__(self):
-        self.list  = []
-        self.cache = []
-        self.sex   = 0.
-        self.sey   = 0.
-        self.sez   = 0.
-        self.ex    = 3.
-        self.ey    = 3.
-        self.ez    = -3.
-        self.cx    = 0.
-        self.cy    = 0.
-        self.cz    = 0.
-        self.wx    = 100.
-        self.wy    = 100.
-        self.wz    = 100.
-        self.step  = 10.
+    def __init__(self,q=None):
+        # Queue for multiprocessing.
+        self.q      = q
+        self.delay0 = 1
+        # 3D related.
+        self.list   = []
+        self.cache  = []
+        self.sex    = 0.
+        self.sey    = 0.
+        self.sez    = 0.
+        self.ex     = 3.
+        self.ey     = 3.
+        self.ez     = -3.
+        self.cx     = 0.
+        self.cy     = 0.
+        self.cz     = 0.
+        self.wx     = 100.
+        self.wy     = 100.
+        self.wz     = 100.
+        self.step   = 10.
     def axis(self,length):
         # Definition to draw an arrow with a cone at the top.
         glPushMatrix()
@@ -97,21 +101,24 @@ class draw():
         self.LookFrom()
         self.Draw3Axes()
         self.list = list(self.cache)
+#        print len(self.list),len(self.cache)
         for item in self.list:
             if item[0] == 'vector':
                self.DrawVector(item[1],item[2],color=item[3])
         glFlush()
         return True
-    def update(self):
+    def UpdateScreen(self,dt):
         # Definition to update screen.
         glutPostRedisplay()
+        glutTimerFunc(self.delay,self.UpdateScreen,0)
         return True
     def add(self,item):
         # Definition to add item to draw list.
+        print '%s: New item %s is added.' % (time.ctime(),item[0])
         self.cache.append(item)
-        self.update()
         return True
     def keyboard(self,key,x,y):
+        print 'Pressed key is %s.' % key
         if key == 'w':
            self.ex += self.step
         elif key == 's':
@@ -136,9 +143,9 @@ class draw():
            self.cz += self.step
         elif key == 'm':
            self.cz -= self.step
-        self.update()
         return True
-    def CreateWindow(self,res=[640,480],name='Odak'):
+    def CreateWindow(self,res=[640,480],delay=100,name='Odak'):
+        self.delay = delay
         glutInit()
         glutInitWindowSize(res[0],res[1])
         glutCreateWindow(name)
@@ -147,8 +154,19 @@ class draw():
         # Call back functions.
         glutDisplayFunc(self.displayFun)
         glutKeyboardFunc(self.keyboard)
+        glutTimerFunc(self.delay,self.UpdateScreen,0)
+        if self.q != None:
+            glutTimerFunc(self.delay0,self.QueueUpdate,0)
         glutMainLoop()
         return
+    def QueueUpdate(self,dt):
+        # Definition for adding incoming items from other processes.
+        if self.q.empty() == False:
+            item = self.q.get()
+            self.add(item)
+        glutTimerFunc(self.delay0,self.QueueUpdate,0)
+        return True
+
 
 if __name__ == '__main__':
     pass

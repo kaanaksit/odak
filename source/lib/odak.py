@@ -95,6 +95,9 @@ class ParaxialMatrix():
 class raytracing():
     def __init__(self):
         # See "General Ray tracing procedure" from G.H. Spencerand M.V.R.K Murty for the theoratical explanation
+        pass
+    def PlotInit(self):
+        # Definition to initiate plot.
         self.plt = matplotlib.pyplot
         # New figure created.
         self.fig = self.plt.figure(figsize=(17, 13))
@@ -102,7 +105,7 @@ class raytracing():
         self.ax  = self.fig.gca(projection='3d')
         # Enabling the grid in the figure.
         self.ax.grid(True, color='k', linewidth=2)
-        return
+        return True
     def SetPlotFontSize(self,family='normal',weight='normal',size='22'):
         # Definition to set the font type, size and weight in plots.
         font = {'family' : family,
