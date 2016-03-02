@@ -142,12 +142,16 @@ class raytracing():
         angles.append(degrees(arccos( (Point2[2]-Point1[2])/distance )))
         # Angles are returned.
         return angles
-    def finddistancebetweentwopoints(self,Point1,Point2):
+    def finddistancebetweentwopoints(self,Point1,Point2,detail=False):
         # Function to find the distance between two points if there was a line intersecting at both of them.
         distancex = Point1[0]-Point2[0]
         distancey = Point1[1]-Point2[1]
         distancez = Point1[2]-Point2[2]
         distance  = sqrt(pow(distancex,2)+pow(distancey,2)+pow(distancez,2))
+        if detail == False:
+            return distance
+        elif detail == True:
+            return distance,distancex,distancey,distancez
         return distance
     def createvector(self,(x0,y0,z0),(alpha,beta,gamma)):
         # Create a vector with the given points and angles in each direction
@@ -349,7 +353,7 @@ class raytracing():
                return 0,0
         normvec,s = self.createvectorfromtwopoints((x,y,z),(sphere[0],sphere[1],sphere[2]))
         return distance+shift,normvec
-    def findintersurface(self,vector,(point0,point1,point2),error=0.00001,numiter=100,iternotify='no'):
+    def findintersurface(self,vector,(point0,point1,point2)):
         # Method to find intersection point inbetween a surface and a vector
         # See http://geomalgorithms.com/a06-_intersect-2.html
         vector0,s     = self.createvectorfromtwopoints(point0,point1)

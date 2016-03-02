@@ -26,9 +26,9 @@ class draw():
         self.cx     = 0.
         self.cy     = 0.
         self.cz     = 0.
-        self.wx     = 100.
-        self.wy     = 100.
-        self.wz     = 100.
+        self.wx     = 150.
+        self.wy     = 150.
+        self.wz     = 150.
         self.step   = 10.
     def axis(self,length):
         # Definition to draw an arrow with a cone at the top.
@@ -57,11 +57,11 @@ class draw():
         self.axis(length)
         glPopMatrix()
         return True
-    def DrawTriangle(self,point0,point1,point2,color=[0.,0.,1.]):
+    def DrawTriangle(self,point0,point1,point2,color=[1.,1.,1.]):
         # Definition to draw a triangle.
-        self.DrawLine(point0,point1,color)
-        self.DrawLine(point1,point2,color)
-        self.DrawLine(point2,point0,color)
+        self.DrawLine(point0,point1,color=color)
+        self.DrawLine(point1,point2,color=color)
+        self.DrawLine(point2,point0,color=color)
         return True
     def DrawLine(self,p0,p1,color=[0.,0.,1.]):
         # Definition to draw a line.
@@ -101,21 +101,25 @@ class draw():
         self.LookFrom()
         self.Draw3Axes()
         self.list = list(self.cache)
-#        print len(self.list),len(self.cache)
         for item in self.list:
             if item[0] == 'vector':
                self.DrawVector(item[1],item[2],color=item[3])
+            elif item[0] == 'triangle':
+               self.DrawTriangle(item[1],item[2],item[3])
         glFlush()
         return True
     def UpdateScreen(self,dt):
         # Definition to update screen.
         glutPostRedisplay()
-        glutTimerFunc(self.delay,self.UpdateScreen,0)
+        if self.update == True:
+            glutTimerFunc(self.delay,self.UpdateScreen,0)
         return True
     def add(self,item):
         # Definition to add item to draw list.
-        print '%s: New item %s is added.' % (time.ctime(),item[0])
+        #print '%s: New item %s is added.' % (time.ctime(),item[0])
         self.cache.append(item)
+        if self.update == False:
+            self.UpdateScreen(0)
         return True
     def keyboard(self,key,x,y):
         print 'Pressed key is %s.' % key
@@ -143,9 +147,15 @@ class draw():
            self.cz += self.step
         elif key == 'm':
            self.cz -= self.step
+        elif key == '9':
+           sys.exit()
+        if self.update == False:
+            self.UpdateScreen(0)
         return True
-    def CreateWindow(self,res=[640,480],delay=100,name='Odak'):
-        self.delay = delay
+    def CreateWindow(self,res=[640,480],processes=None,delay=100,name='Odak',update=True):
+        self.plist  = processes
+        self.delay  = delay
+        self.update = update
         glutInit()
         glutInitWindowSize(res[0],res[1])
         glutCreateWindow(name)
@@ -154,11 +164,22 @@ class draw():
         # Call back functions.
         glutDisplayFunc(self.displayFun)
         glutKeyboardFunc(self.keyboard)
-        glutTimerFunc(self.delay,self.UpdateScreen,0)
+        if self.update == True:
+            glutTimerFunc(self.delay,self.UpdateScreen,0)
         if self.q != None:
             glutTimerFunc(self.delay0,self.QueueUpdate,0)
+        if self.plist != None:
+            glutTimerFunc(100,self.ProcessCheck,0)
         glutMainLoop()
         return
+    def ProcessCheck(self,dt):
+        # Definition to check if processes are alive.
+        pflag = False
+        for p in self.plist:
+           pflag = pflag or p.is_alive()
+        print 'All processes alive: %s' % pflag
+        glutTimerFunc(1000,self.ProcessCheck,0)
+        return True
     def QueueUpdate(self,dt):
         # Definition for adding incoming items from other processes.
         if self.q.empty() == False:
@@ -166,7 +187,6 @@ class draw():
             self.add(item)
         glutTimerFunc(self.delay0,self.QueueUpdate,0)
         return True
-
 
 if __name__ == '__main__':
     pass
