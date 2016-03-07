@@ -12,24 +12,15 @@ __version__ = '0.1'
 class draw():
     def __init__(self,q=None):
         # Queue for multiprocessing.
-        self.q      = q
-        self.delay0 = 1
+        self.q               = q
+        self.delay0          = 1
         # 3D related.
-        self.list   = []
-        self.cache  = []
-        self.sex    = 0.
-        self.sey    = 0.
-        self.sez    = 0.
-        self.ex     = 3.
-        self.ey     = 3.
-        self.ez     = -3.
-        self.cx     = 0.
-        self.cy     = 0.
-        self.cz     = 0.
-        self.wx     = 150.
-        self.wy     = 150.
-        self.wz     = 150.
-        self.step   = 10.
+        self.list            = []
+        self.cache           = []
+        self.g_fViewDistance = 200.
+        self.g_nearPlane     = 1.
+        self.g_farPlane      = 6000.
+        self.action          = ''
     def axis(self,length):
         # Definition to draw an arrow with a cone at the top.
         glPushMatrix()
@@ -57,15 +48,19 @@ class draw():
         self.axis(length)
         glPopMatrix()
         return True
-    def DrawTriangle(self,point0,point1,point2,color=[1.,1.,1.]):
+    def DrawTriangle(self,p0,p1,p2,color=[1.,1.,1.]):
         # Definition to draw a triangle.
-        self.DrawLine(point0,point1,color=color)
-        self.DrawLine(point1,point2,color=color)
-        self.DrawLine(point2,point0,color=color)
+        type = GL_LINE_LOOP
+        glBegin(type)
+        glColor3f(color[0],color[1],color[2])
+        glVertex3f(p0[0], p0[1], p0[2])
+        glVertex3f(p1[0], p1[1], p1[2])
+        glVertex3f(p2[0], p2[1], p2[2])
+        glEnd()
         return True
-    def DrawLine(self,p0,p1,color=[0.,0.,1.]):
+    def DrawLine(self,p0,p1,color=[0.,0.,1.],type=GL_LINES):
         # Definition to draw a line.
-        glBegin(GL_LINES)
+        glBegin(type)
         glColor3f(color[0],color[1],color[2])
         glVertex3f(p0[0], p0[1], p0[2])
         glVertex3f(p1[0], p1[1], p1[2])
@@ -82,23 +77,20 @@ class draw():
         glClear(GL_COLOR_BUFFER_BIT)
         self.threeAxis(length)
         return True
-    def SizeOfView(self):
-        # Determine the viewing window.
-        glOrtho(self.cx-self.wx,self.cx+self.wx,self.cy-self.wy,self.cy+self.wy,self.cz-self.wz,self.cz+self.wz)
-        return True
-    def LookFrom(self):
-        gluLookAt(self.sex, self.sey, self.sez,
-                  self.ey, self.ez, self.ex,
-                  0.0, 1.0, 0.0)
-        return True
     def displayFun(self):
         # Display callback definition.
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        glLoadIdentity()
+        gluLookAt(0, 0, -self.g_fViewDistance, 0, 0, 0, -.1, 0, 0)
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
-        self.SizeOfView()
+        gluPerspective(self.zoom, float(self.g_Width)/float(self.g_Height), self.g_nearPlane, self.g_farPlane)
         glMatrixMode(GL_MODELVIEW)
-        glLoadIdentity()
-        self.LookFrom()
+        self.PolarView()
+        self.scene()
+        glutSwapBuffers()
+        return True
+    def scene(self):
         self.Draw3Axes()
         self.list = list(self.cache)
         for item in self.list:
@@ -106,7 +98,6 @@ class draw():
                self.DrawVector(item[1],item[2],color=item[3])
             elif item[0] == 'triangle':
                self.DrawTriangle(item[1],item[2],item[3])
-        glFlush()
         return True
     def UpdateScreen(self,dt):
         # Definition to update screen.
@@ -114,71 +105,134 @@ class draw():
         if self.update == True:
             glutTimerFunc(self.delay,self.UpdateScreen,0)
         return True
+    def ClearScreen(self):
+        # Definition to clear the screen.
+        self.list  = []
+        self.cache = []
+        self.UpdateScreen(0)
+        return True
     def add(self,item):
         # Definition to add item to draw list.
         #print '%s: New item %s is added.' % (time.ctime(),item[0])
+        if item == 'clear':
+            print item
+            return self.ClearScreen()
         self.cache.append(item)
         if self.update == False:
             self.UpdateScreen(0)
         return True
-    def keyboard(self,key,x,y):
-        print 'Pressed key is %s.' % key
-        if key == 'w':
-           self.ex += self.step
-        elif key == 's':
-           self.ex -= self.step
-        elif key == 'a':
-           self.ey += self.step
-        elif key == 'd':
-           self.ey -= self.step
-        elif key == 'f':
-           self.ez += self.step
-        elif key == 'c':
-           self.ez -= self.step
-        elif key == 'y':
-           self.cy -= self.step
-        elif key == 'h':
-           self.cy += self.step
-        elif key == 'g':
-           self.cx += self.step
-        elif key == 'j':
-           self.cx -= self.step
-        elif key == 'n':
-           self.cz += self.step
-        elif key == 'm':
-           self.cz -= self.step
-        elif key == '9':
-           sys.exit()
-        if self.update == False:
-            self.UpdateScreen(0)
+    def init(self):
+        glEnable(GL_NORMALIZE)
+        glLightfv(GL_LIGHT0,GL_POSITION,[ .0, 10.0, 10., 0. ] )
+        glLightfv(GL_LIGHT0,GL_AMBIENT,[ .0, .0, .0, 1.0 ]);
+        glLightfv(GL_LIGHT0,GL_DIFFUSE,[ 1.0, 1.0, 1.0, 1.0 ]);
+        glLightfv(GL_LIGHT0,GL_SPECULAR,[ 1.0, 1.0, 1.0, 1.0 ]);
+        glEnable(GL_LIGHT0)
+#        glEnable(GL_LIGHTING)
+        glEnable(GL_DEPTH_TEST)
+        glDepthFunc(GL_LESS)
+        glShadeModel(GL_SMOOTH)
+        self.ResetView()
+    def ResetView(self):
+        # Taken from http://carloluchessa.blogspot.com/2012/09/simple-viewer-in-pyopengl.html
+        self.zoom    = 5.
+        self.xRotate = 10.
+        self.yRotate = 0.
+        self.zRotate = 0.
+        self.xTrans  = 1200.
+        self.yTrans  = 0.
+        self.zTrans  = 0.
+        self.UpdateScreen(0)
         return True
-    def CreateWindow(self,res=[640,480],processes=None,delay=100,name='Odak',update=True):
-        self.plist  = processes
-        self.delay  = delay
-        self.update = update
+    def mouse(self,button,state,x,y):
+        # Taken from http://carloluchessa.blogspot.com/2012/09/simple-viewer-in-pyopengl.html
+        if (button==GLUT_LEFT_BUTTON):
+            if (glutGetModifiers() == GLUT_ACTIVE_SHIFT):
+                self.action = "MOVE_EYE_2"
+            else:
+                self.action = "MOVE_EYE"
+        elif (button==GLUT_MIDDLE_BUTTON):
+            self.action = "TRANS"
+        elif (button==GLUT_RIGHT_BUTTON):
+            self.action = "ZOOM"
+        self.xStart = x
+        self.yStart = y
+        return
+    def keyboard(self,key, x, y):
+        if(key=='r'): self.ResetView()
+        if(key=='q'): exit(0)
+        self.UpdateScreen(0)
+    def PolarView(self):
+        # Taken from http://carloluchessa.blogspot.com/2012/09/simple-viewer-in-pyopengl.html
+        glTranslatef( self.yTrans/100., 0.0, 0.0 )
+        glTranslatef(  0.0, -self.xTrans/100., 0.0)
+        glTranslatef(  0.0, 0.0, -self.zTrans/100.)
+        glRotatef( -self.zRotate, 0.0, 0.0, 1.0)
+        glRotatef( -self.xRotate, 1.0, 0.0, 0.0)
+        glRotatef( -self.yRotate, .0, 1.0, 0.0)
+        return True
+    def motion(self,x,y):
+        # Taken from http://carloluchessa.blogspot.com/2012/09/simple-viewer-in-pyopengl.html
+        if (self.action=="MOVE_EYE"):
+            self.xRotate += x - self.xStart
+            self.yRotate -= y - self.yStart
+        elif (self.action=="MOVE_EYE_2"):
+            self.zRotate += y - self.yStart
+        elif (self.action=="TRANS"):
+            self.xTrans += x - self.xStart
+            self.yTrans += y - self.yStart
+        elif (self.action=="ZOOM"):
+            self.zoom -= y - self.yStart
+            if self.zoom > 150.:
+                self.zoom = 150.
+            elif self.zoom < 1.1:
+                self.zoom = 1.1
+        self.xStart = x
+        self.yStart = y
+        self.UpdateScreen(0)
+        return True
+    def reshape(self,width, height):
+        g_Width  = width
+        g_Height = height
+        glViewport(0, 0, self.g_Width, self.g_Height)
+        return True
+    def printHelp(self):
+         print """\n\n
+                -------------------------------------------------------------------\n
+                Left Mousebutton       - move eye position (+ Shift for third axis)\n
+                Middle Mousebutton     - translate the scene\n
+                Right Mousebutton      - move up / down to zoom in / out\n
+                Key                - reset viewpoint\n
+                Key                - exit the program\n
+                -------------------------------------------------------------------\n
+                \n"""
+    def CreateWindow(self,res=[640,480],delay=100,name='Odak',update=True):
+        self.delay    = delay
+        self.update   = update
+        self.g_Width  = res[0]
+        self.g_Height = res[1]
+
         glutInit()
-        glutInitWindowSize(res[0],res[1])
-        glutCreateWindow(name)
         glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)
-        glClearColor(0.0,0.0,0.0,0.0)
+        glutInitWindowSize(self.g_Width,self.g_Height)
+        glutInitWindowPosition (0 + 4, self.g_Height / 4)
+        glutCreateWindow(name)
+
+        self.init()
+
         # Call back functions.
+        glutReshapeFunc(self.reshape)
         glutDisplayFunc(self.displayFun)
+        glutMouseFunc(self.mouse)
+        glutMotionFunc(self.motion)
         glutKeyboardFunc(self.keyboard)
-        if self.update == True:
-            glutTimerFunc(self.delay,self.UpdateScreen,0)
+
+#        if self.update == True:
+#            glutTimerFunc(self.delay,self.UpdateScreen,0)
         if self.q != None:
             glutTimerFunc(self.delay0,self.QueueUpdate,0)
-        if self.plist != None:
-            glutTimerFunc(100,self.ProcessCheck,0)
+
         glutMainLoop()
-        return
-    def ProcessCheck(self,dt):
-        # Definition to check if processes are alive.
-        pflag = False
-        for p in self.plist:
-           pflag = pflag or p.is_alive()
-        print 'All processes alive: %s' % pflag
-        glutTimerFunc(1000,self.ProcessCheck,0)
         return True
     def QueueUpdate(self,dt):
         # Definition for adding incoming items from other processes.

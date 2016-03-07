@@ -194,9 +194,14 @@ class raytracing():
         point = array([[x0],[y0],[z0]])
         # Distance between two points.
         s     = sqrt( pow((x0-x1),2) + pow((y0-y1),2) + pow((z0-z1),2) )
-        alpha = (x1-x0)/s
-        beta  = (y1-y0)/s
-        gamma = (z1-z0)/s
+        if s != 0:
+            alpha = (x1-x0)/s
+            beta  = (y1-y0)/s
+            gamma = (z1-z0)/s
+        elif s == 0:
+            alpha = float('nan')
+            beta  = float('nan')
+            gamma = float('nan')
         # Cosines vector
         cosin = array([[alpha],[beta],[gamma]])
         # returns vector and the distance.
@@ -446,22 +451,28 @@ class raytracing():
                 self.plottriangle(tris[i,j],tris[i+1,j],tris[i,j+1],alpha=alpha)
                 self.plottriangle(tris[i+1,j+1],tris[i+1,j],tris[i,j+1],alpha=alpha)
         return tris
-    def FindInterMesh(self,vector,tris):
+    def FindInterMesh(self,vector,tris,RangeWindow=None):
         # Definition to find the first intersection of a ray with a mesh.
         sampleno = tris.shape[0]
-        for i in xrange(0,sampleno-1):
-            for j in xrange(0,sampleno-1):
+        if RangeWindow == None:
+            limin = 0; limax=sampleno-1
+            ljmin = 0; ljmax=sampleno-1
+        else:
+            limin = RangeWindow[0][0]; limax = RangeWindow[0][1]
+            ljmin = RangeWindow[1][0]; ljmax = RangeWindow[1][1]
+        for i in xrange(limin,limax):
+            for j in xrange(ljmin,ljmax):
                 tri0        = [tris[i,j],tris[i+1,j],tris[i,j+1]]
                 tri1        = [tris[i+1,j+1],tris[i+1,j],tris[i,j+1]]
                 s0,normvec0 = self.findintersurface(vector,(tri0[0],tri0[1],tri0[2]))
                 res0        = self.isitontriangle(normvec0[0],tri0[0],tri0[1],tri0[2])
                 if res0 == True:
-                    return s0,normvec0,tri0
+                    return s0,normvec0,tri0,[i,j]
                 s1,normvec1 = self.findintersurface(vector,(tri1[0],tri1[1],tri1[2]))
                 res1        = self.isitontriangle(normvec1[0],tri1[0],tri1[1],tri1[2])
                 if res1 == True:
-                    return s1,normvec1,tri1
-        return 0,None,None
+                    return s1,normvec1,tri1,[i,j]
+        return 0,None,None,RangeWindow
     def PlotCircle(self,center,r,c='none'):
         # Method to plot circle.
         circle = Circle((center[0], center[1]), r, facecolor=c, edgecolor=(0,0,0), linewidth=4, alpha=1)
