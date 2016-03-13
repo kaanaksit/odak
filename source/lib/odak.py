@@ -142,6 +142,39 @@ class raytracing():
         angles.append(degrees(arccos( (Point2[2]-Point1[2])/distance )))
         # Angles are returned.
         return angles
+    def GenerateBSpline(self, cv, n=100, degree=3, periodic=False):
+        # Definition to generate a bspline.
+        # Taken from http://stackoverflow.com/questions/34803197/fast-b-spline-algorithm-with-numpy-scipy
+        # CV: control points.
+        # n: number of samples.
+        # degree: curve degree.
+        # periodic: True - curve closed, False - curve open.
+        n     = n**2
+        # If periodic, extend the point array by count+degree+1
+        cv    = asarray(cv)
+        count = len(cv)
+        if periodic:
+            factor, fraction = divmod(count+degree+1, count)
+            cv = np.concatenate((cv,) * factor + (cv[:fraction],))
+            count = len(cv)
+            degree = np.clip(degree,1,degree)
+        # If opened, prevent degree from exceeding count-1
+        else:
+            degree = np.clip(degree,1,count-1)
+        # Calculate knot vector
+        kv = None
+        if periodic:
+           kv = np.arange(0-degree,count+degree+degree-1,dtype='int')
+        else:
+           kv = np.array([0]*degree + range(count-degree+1) + [count-degree]*degree,dtype='int')
+        # Calculate query range
+        u = np.linspace(periodic,(count-degree),n)
+        # Calculate result
+        arange = np.arange(len(u))
+        points = np.zeros((len(u),cv.shape[1]))
+        for i in xrange(cv.shape[1]):
+            points[arange,i] = si.splev(u, (kv,cv[:,i],degree))
+        return points
     def finddistancebetweentwopoints(self,Point1,Point2,detail=False):
         # Function to find the distance between two points if there was a line intersecting at both of them.
         distancex = Point1[0]-Point2[0]
@@ -317,6 +350,14 @@ class raytracing():
         # Definition to return a 3D point position in spherical definition.
         FXYZ     = pow(k-sphere[0],2) + pow(l-sphere[1],2) + pow(m-sphere[2],2) - pow(sphere[3],2)
         return FXYZ
+    def FuncNormSpher(self,x0,y0,z0,sphere):
+        # Definition to return normal of a sphere.
+        # Derivatives.
+        gradx = 2*(x0-sphere[0])/sphere[3]**2
+        grady = 2*(y0-sphere[1])/sphere[3]**2
+        gradz = 2*(z0-sphere[2])/sphere[3]**2
+        alpha = degrees(arctan(gradx))+90; beta = degrees(arctan(grady))+90; gamma = degrees(arctan(gradz))+90
+        return self.createvector((x0,y0,z0),(alpha,beta,gamma))
     def findinterspher(self,vector,sphere,error=0.00000001,numiter=1000,iternotify='no'):
         # Method for finding intersection in between a vector and a spherical surface
         # There are things to be done to fix wrong root convergence
@@ -356,7 +397,8 @@ class raytracing():
             # Check if the number of iterations are too much
             if number > numiter:
                return 0,0
-        normvec,s = self.createvectorfromtwopoints((x,y,z),(sphere[0],sphere[1],sphere[2]))
+#        normvec,s = self.createvectorfromtwopoints((x,y,z),(sphere[0],sphere[1],sphere[2]))
+        normvec = self.FuncNormSpher(x,y,z,sphere)
         return distance+shift,normvec
     def findintersurface(self,vector,(point0,point1,point2)):
         # Method to find intersection point inbetween a surface and a vector
@@ -402,17 +444,6 @@ class raytracing():
             label = '(%.1f, %.1f, %.1f)' % (point[0], point[1], point[2])
             self.ax.text(point[0], point[1], point[2], label)
         return True
-    def plotasphericallens(self,k0=1.,k1=1.,k2=1.,cx=0,cy=0,cz=0,r=10,c='none',a=0.3,PlotFlag=True):
-        # Method to plot an aspherical lens.
-        sampleno = 100
-        v        = linspace(0, pi, sampleno)
-        u        = linspace(0,2*pi,sampleno)
-        x        = (r * outer(cos(u), sin(v)) + cx)/k0**2
-        y        = (r * outer(sin(u), sin(v)) + cy)/k1**2
-        z        = (r * outer(ones(size(u)), cos(v)) + cz)/k2**2
-        if PlotFlag == True:
-            self.ax.plot_surface(x, y, z, rstride=8, cstride=8, alpha=a, color=c, antialiased=True)
-        return array([cx,cy,cz,r,k0,k1,k2])
     def plotsphericallens(self,cx=0,cy=0,cz=0,r=10,c='none',a=0.3,PlotFlag=True):
         # Method to plot a spherical lens.
         sampleno = 100
@@ -424,6 +455,16 @@ class raytracing():
         if PlotFlag == True:
             self.ax.plot_surface(x, y, z, rstride=8, cstride=8, alpha=a, color=c, antialiased=True)
         return array([cx,cy,cz,r])
+    def CalculateParaboloidMesh(self,spher,sampleno=100,angleu=[0,pi],anglev=[0,2*pi]):
+        # Definition to calculate triangular meshed form of a spherical sufrace.
+        cx = spher[0]; cy = spher[1]; cz = spher[2]; r = spher[3]
+        v           = linspace(angleu[0], angleu[1], sampleno)
+        u           = linspace(anglev[0],anglev[1],sampleno)
+        tris        = zeros((sampleno,sampleno,3))
+        tris[:,:,0] = r * outer(cos(u), sin(v)) + cx
+        tris[:,:,1] = r * outer(sin(u), sin(v)) + cy
+        tris[:,:,2] = r * outer(ones(size(u)), cos(v)) + cz
+        return tris
     def CalculateSpherMesh(self,spher,sampleno=100,angleu=[0,pi],anglev=[0,2*pi]):
         # Definition to calculate triangular meshed form of a spherical sufrace.
         cx = spher[0]; cy = spher[1]; cz = spher[2]; r = spher[3]
@@ -451,7 +492,7 @@ class raytracing():
                 self.plottriangle(tris[i,j],tris[i+1,j],tris[i,j+1],alpha=alpha)
                 self.plottriangle(tris[i+1,j+1],tris[i+1,j],tris[i,j+1],alpha=alpha)
         return tris
-    def FindInterMesh(self,vector,tris,RangeWindow=None):
+    def FindInterMesh(self,vector,tris,RangeWindow=None,s=2):
         # Definition to find the first intersection of a ray with a mesh.
         sampleno = tris.shape[0]
         if RangeWindow == None:
@@ -467,12 +508,12 @@ class raytracing():
                 s0,normvec0 = self.findintersurface(vector,(tri0[0],tri0[1],tri0[2]))
                 res0        = self.isitontriangle(normvec0[0],tri0[0],tri0[1],tri0[2])
                 if res0 == True:
-                    return s0,normvec0,tri0,[i,j]
+                    return s0,normvec0,tri0,[[i-s,i+s],[j-s,j+s]]
                 s1,normvec1 = self.findintersurface(vector,(tri1[0],tri1[1],tri1[2]))
                 res1        = self.isitontriangle(normvec1[0],tri1[0],tri1[1],tri1[2])
                 if res1 == True:
-                    return s1,normvec1,tri1,[i,j]
-        return 0,None,None,RangeWindow
+                    return s1,normvec1,tri1,[[i-s,i+s],[j-s,j+s]]
+        return 0,None,None,None
     def PlotCircle(self,center,r,c='none'):
         # Method to plot circle.
         circle = Circle((center[0], center[1]), r, facecolor=c, edgecolor=(0,0,0), linewidth=4, alpha=1)
@@ -831,7 +872,7 @@ class diffractions():
                 h      = fftshift(h)
                 print 'TR Fresnel method'
             U1     = fft2(fftshift(wave))
-            U2     = h*U1                
+            U2     = h*U1
             result = ifftshift(ifft2(U2))
         elif type == 'Fraunhofer':
             c      = 1./(1j*wavelength*distance)*exp(1j*k*0.5/distance*Z)
