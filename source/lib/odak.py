@@ -95,6 +95,7 @@ class ParaxialMatrix():
 class raytracing():
     def __init__(self):
         # See "General Ray tracing procedure" from G.H. Spencerand M.V.R.K Murty for the theoratical explanation
+        seterr(divide='ignore', invalid='ignore')
         pass
     def PlotInit(self):
         # Definition to initiate plot.
@@ -348,19 +349,22 @@ class raytracing():
         return VectorOutput
     def FuncSpher(self,k,l,m,sphere):
         # Definition to return a 3D point position in spherical definition.
-        FXYZ     = pow(k-sphere[0],2) + pow(l-sphere[1],2) + pow(m-sphere[2],2) - pow(sphere[3],2)
-        return FXYZ
+        return pow(k-sphere[0],2) + pow(l-sphere[1],2) + pow(m-sphere[2],2) - pow(sphere[3],2)
     def FuncNormSpher(self,x0,y0,z0,sphere):
         # Definition to return normal of a sphere.
         # Derivatives.
         gradx = 2*(x0-sphere[0])/sphere[3]**2
         grady = 2*(y0-sphere[1])/sphere[3]**2
         gradz = 2*(z0-sphere[2])/sphere[3]**2
+        # Perpendicular to tangent surface.
         alpha = degrees(arctan(gradx))+90; beta = degrees(arctan(grady))+90; gamma = degrees(arctan(gradz))+90
+        # Return a normal vector.
         return self.createvector((x0,y0,z0),(alpha,beta,gamma))
     def findinterspher(self,vector,sphere,error=0.00000001,numiter=1000,iternotify='no'):
-        # Method for finding intersection in between a vector and a spherical surface
-        # There are things to be done to fix wrong root convergence
+        # Definition to return intersection of a ray with a sphere.
+        return self.FindInterFunc(vector,sphere,self.FuncSpher,self.FuncNormSpher,error=error,numiter=numiter,iternotify=iternotify)
+    def FindInterFunc(self,vector,SurfParam,Func,FuncNorm,error=0.00000001,numiter=1000,iternotify='no'):
+        # Method for finding intersection in between a vector and a parametric surface
         number   = 0
         distance = 1
         olddist  = 0
@@ -369,7 +373,7 @@ class raytracing():
         k        = vector[0,0,0]
         l        = vector[0,1,0]
         m        = vector[0,2,0]
-        FXYZ     = self.FuncSpher(k,l,m,sphere)
+        FXYZ     = Func(k,l,m,SurfParam)
         if abs(FXYZ) < 0.01:
             shift = 1.5 * sphere[3]
             k     = shift * vector[1,0] + k
@@ -377,18 +381,14 @@ class raytracing():
             m     = shift * vector[1,2] + m
         while epsilon > error:
             number   += 1
-            x         = olddist * vector[1,0] + k
-            y         = olddist * vector[1,1] + l
-            z         = olddist * vector[1,2] + m
-            oldFXYZ   = self.FuncSpher(x,y,z,sphere)
+            oldFXYZ   = FXYZ
             x         = distance * vector[1,0] + k
             y         = distance * vector[1,1] + l
             z         = distance * vector[1,2] + m
-            FXYZ      = self.FuncSpher(x,y,z,sphere)
+            FXYZ      = Func(x,y,z,SurfParam)
             # Secant method is calculated, see wikipedia article of the method for more
             newdist   = distance - FXYZ*(distance-olddist)/(FXYZ-oldFXYZ)
             epsilon   = abs(newdist-distance)
-            oldFXYZ   = FXYZ
             olddist   = distance
             distance  = newdist
             # Iteration reminder
@@ -397,8 +397,7 @@ class raytracing():
             # Check if the number of iterations are too much
             if number > numiter:
                return 0,0
-#        normvec,s = self.createvectorfromtwopoints((x,y,z),(sphere[0],sphere[1],sphere[2]))
-        normvec = self.FuncNormSpher(x,y,z,sphere)
+        normvec = FuncNorm(x,y,z,SurfParam)
         return distance+shift,normvec
     def findintersurface(self,vector,(point0,point1,point2)):
         # Method to find intersection point inbetween a surface and a vector
