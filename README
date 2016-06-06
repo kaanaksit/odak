@@ -13,5 +13,12 @@ Currently available methods inside source/lib/odak.py
 - Methods for diverging and converging spherical wave
 - Methods for diverging and converging gaussian beam
 - Methods for Jones Calculus: Linear polarizers, circular polarizers, quarter wave plates, liquid crystal cells (Nematic and ferroelectric) and birefringent plate
-- Methods for ray tracing, plotting rays, snell's law and reflecting
+- Methods for ray tracing, snell's law and reflecting using:
+ * planar surfaces,
+ * spherical surfaces,
+ * quadratic surfaces,
+ * meshed surfaces.
+- Methods for displaying using:
+ * Matplotlib
+ * Old school OpenGL
 - Methods for paraxial matrix theory: free space propagation, plotting paraxial rays
