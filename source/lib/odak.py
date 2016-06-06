@@ -193,9 +193,9 @@ class raytracing():
         alpha = cos(radians(alpha))
         beta  = cos(radians(beta))
         gamma = cos(radians(gamma))
-        # Cosines vector
+        # Cosines vector.
         cosin = array([[alpha],[beta],[gamma]])
-        return array([point,cosin])
+        return array([point.reshape(3,1),cosin.reshape(3,1)])
     def CalculateIntersectionOfTwoVectors(self,vector1,vector2):
         # Method to calculate the intersection of two vectors.
         A = array([
@@ -347,6 +347,9 @@ class raytracing():
         VectorOutput[1,1] = mu*vector[1,1] + to*normvector[1,1]
         VectorOutput[1,2] = mu*vector[1,2] + to*normvector[1,2]
         return VectorOutput
+    def FuncQuad(self,k,l,m,quad):
+        # Definition to return a 3D point position in quadratic surface definition.
+        return pow((k-quad[0])/quad[4],2) + pow((l-quad[1])/quad[5],2) + pow((m-quad[2])/quad[6],2) - pow(quad[3],2)
     def FuncSpher(self,k,l,m,sphere):
         # Definition to return a 3D point position in spherical definition.
         return pow(k-sphere[0],2) + pow(l-sphere[1],2) + pow(m-sphere[2],2) - pow(sphere[3],2)
@@ -360,6 +363,19 @@ class raytracing():
         alpha = degrees(arctan(gradx))+90; beta = degrees(arctan(grady))+90; gamma = degrees(arctan(gradz))+90
         # Return a normal vector.
         return self.createvector((x0,y0,z0),(alpha,beta,gamma))
+    def FuncNormQuad(self,x0,y0,z0,quad):
+        # Definition to return normal of a quadratic surface.
+        # Derivatives.
+        gradx = 2/quad[4]*(x0-quad[0])/quad[3]**2
+        grady = 2/quad[5]*(y0-quad[1])/quad[3]**2
+        gradz = 2/quad[6]*(z0-quad[2])/quad[3]**2
+        # Perpendicular to tangent surface.
+        alpha = degrees(arctan(gradx))+90; beta = degrees(arctan(grady))+90; gamma = degrees(arctan(gradz))+90
+        # Return a normal vector.
+        return self.createvector((x0,y0,z0),(alpha,beta,gamma))
+    def FindInterQuad(self,vector,quad,error=0.00000001,numiter=1000,iternotify='no'):
+        # Definition to return intersection of a ray with a quadratic surface.
+        return self.FindInterFunc(vector,quad,self.FuncQuad,self.FuncNormQuad,error=error,numiter=numiter,iternotify=iternotify)
     def findinterspher(self,vector,sphere,error=0.00000001,numiter=1000,iternotify='no'):
         # Definition to return intersection of a ray with a sphere.
         return self.FindInterFunc(vector,sphere,self.FuncSpher,self.FuncNormSpher,error=error,numiter=numiter,iternotify=iternotify)
