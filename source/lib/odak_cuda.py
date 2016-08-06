@@ -4,50 +4,68 @@
 # Whole library can be found under https://github.com/kunguz/odak.
 import sys,os,time
 import numpy as np
+import cuda_core
 import pycuda.driver as cuda
+import pycuda.gpuarray as gpuarray
 import pycuda.autoinit
 from pycuda.compiler import SourceModule
 
 __author__  = ('Kaan Akşit')
 
-mod = SourceModule("""
-  __global__ void doublify(float *a)
-  {
-    int idx = threadIdx.x + threadIdx.y*4;
-    a[idx] *= 2;
-  }
-  """)
-
-# Definition to transfer numpy arrays to GPU's memory.
-def TranToGPU(a):
-    a     = a.astype(np.float32)
-    a_gpu = cuda.mem_alloc(a.nbytes)
-    cuda.memcpy_htod(a_gpu,a)
-    return a_gpu
-
-# Definition to apply a function to a numpy array on GPU's memory.
-def ApplyGPUFunc(a_gpu,mod,FuncName,blockno=(4,4,1)):
-    func  = mod.get_function(FuncName)
-    func(a_gpu, block=blockno)
-    return a_gpu
-
-# Definition to transfer numpy arrays from GPU's memory.
-def TranFromGPU(a_gpu,a):
-    a_res = np.empty_like(a.astype(np.float32))
-    cuda.memcpy_dtoh(a_res,a_gpu)
-    return a_res
+# 3D Ray tracing library ported to CUDA from CPU, original work is in:
+# https://github.com/kunguz/odak/blob/master/source/lib/odak.py#L95
+class raytracing():
+    # Initialize.
+    def __init__(self):
+        self.kernel  = cuda_core.kernel
+        self.cudaray = SourceModule(self.kernel)
+        return
+    # Definition to transfer numpy arrays to GPU's memory.
+    def TranToGPU(self,a):
+#        a     = a.astype(np.float32)
+#        a_gpu = cuda.mem_alloc(a.nbytes)
+#        cuda.memcpy_htod(a_gpu,a)
+        a_gpu = gparray.sum(a_gpu)
+        return a_gpu
+    # Definition to transfer numpy arrays from GPU's memory.
+    def TranFromGPU(self,a_gpu,a):
+        a_res = np.empty_like(a.astype(np.float32))
+        cuda.memcpy_dtoh(a_res,a_gpu)
+        return a_res
+    # Definition to apply a function to a numpy array on GPU's memory.
+    def finddistancebetweentwopoints(self,p1_gpu,p2_gpu,blockno=(3,1,1)):
+        # Subtract points from each other.
+        func     = self.cudaray.get_function("subtract_vector")
+        dist     = np.zeros((3,1))
+        dist_gpu = self.TranToGPU(dist)
+        func(p1_gpu,p2_gpu,dist_gpu,block=blockno)
+        # Element-wise second power.
+        func     = self.cudaray.get_function("second_power")
+        func(dist_gpu,dist_gpu,block=blockno)
+        # Sum all the vector.
+        dist     = gpuarray.sum(dist_gpu)
+        return dist
 
 # Main definition.
 def main():
-    a = np.ones((4,4))
-    for i in xrange(0,5):
-        a_gpu_0 = TranToGPU(a)
-        a_gpu_1 = ApplyGPUFunc(a_gpu_0,mod,"doublify",blockno=(4,4,1))
-        a_res   = TranFromGPU(a_gpu_1,a)
-        print a_res
+    # Define ray tracing envorinment.
+    ray = raytracing()
+    # Dummy points in space.
+    p1       = np.array([1.,4.,2.])
+    p2       = np.array([6.,1.,5.])
+    # Move them to GPU.
+    p1_gpu   = ray.TranToGPU(p1)
+    p2_gpu   = ray.TranToGPU(p2)
+    # Calculate the distance between them on GPU.
+    dist_gpu = ray.finddistancebetweentwopoints(p1_gpu,p2_gpu)
+    print dist_gpu
+    # Move it back to the memory from GPU.
+    dist     = ray.TranFromGPU(dist_gpu,np.zeros((3,1)))
+    print dist
     print 'Odak by %s' % __author__
     return True
 
 if __name__ == '__main__':
     sys.exit(main())
+
 
