@@ -176,17 +176,9 @@ class raytracing():
         for i in xrange(cv.shape[1]):
             points[arange,i] = si.splev(u, (kv,cv[:,i],degree))
         return points
-    def finddistancebetweentwopoints(self,Point1,Point2,detail=False):
+    def finddistancebetweentwopoints(self,Point1,Point2):
         # Function to find the distance between two points if there was a line intersecting at both of them.
-        distancex = Point1[0]-Point2[0]
-        distancey = Point1[1]-Point2[1]
-        distancez = Point1[2]-Point2[2]
-        distance  = sqrt(pow(distancex,2)+pow(distancey,2)+pow(distancez,2))
-        if detail == False:
-            return distance
-        elif detail == True:
-            return distance,distancex,distancey,distancez
-        return distance
+        return sqrt(sum((array(Point1)-array(Point2))**2))
     def createvector(self,(x0,y0,z0),(alpha,beta,gamma)):
         # Create a vector with the given points and angles in each direction
         point = array([[x0],[y0],[z0]])
@@ -215,13 +207,10 @@ class raytracing():
            distances[0] = 0
            distances[1] = 0
         # Point vector created.
-        Point     = []
-        # Intersection point at X axis.
-        Point.append((vector1[0][0][0]-distances[0]*vector1[1][0][0])[0])
-        # Intersection point at Y axis.
-        Point.append((vector1[0][1][0]-distances[0]*vector1[1][1][0])[0])
-        # Intersection point at Z axis.
-        Point.append((vector1[0][2][0]-distances[0]*vector1[1][2][0])[0])
+        Point = array([vector1[0][0][0]-distances[0]*vector1[1][0][0],
+                       vector1[0][1][0]-distances[0]*vector1[1][1][0],
+                       vector1[0][2][0]-distances[0]*vector1[1][2][0]
+                      ])
         return Point,distances
     def createvectorfromtwopoints(self,(x0,y0,z0),(x1,y1,z1)):
         # Create a vector from two given points.
@@ -407,9 +396,6 @@ class raytracing():
             epsilon   = abs(newdist-distance)
             olddist   = distance
             distance  = newdist
-            # Iteration reminder
-            if iternotify == 'yes':
-                print 'Iteration number: %s, Calculated distance: %s, Error: %s, Points: %s %s %s, Function:  %s' % (number,distance,epsilon,x,y,z,FXYZ)
             # Check if the number of iterations are too much
             if number > numiter:
                return 0,0
@@ -630,7 +616,7 @@ class jonescalculus():
         rotation = radians(rotation)
         rotmat   = array([[cos(rotation),sin(rotation)],[-sin(rotation),cos(rotation)]])
         qwp = array([[1,0],[0,-1j]])
-        qwp = dot(rotmat.transpose(),dot(qwp,rotmat))        
+        qwp = dot(rotmat.transpose(),dot(qwp,rotmat))
         return dot(qwp,input)
     def halfwaveplate(self,input,rotation=0):
         # Half wave plate
@@ -687,10 +673,10 @@ class jonescalculus():
         if fieldsign == '+':
             lc = dot(dot(lrot1,lretard),lrot2)
         elif fieldsign == '-':
-            lc = dot(dot(lrot2,lretard),lrot1)    
+            lc = dot(dot(lrot2,lretard),lrot1)
         lc       = dot(rotmat.transpose(),dot(lc,rotmat))
         return dot(lc,input)
-    def electricfield(self,a1,a2):        
+    def electricfield(self,a1,a2):
         # Electric field vector is defined here.
         # a1 is the electic field intensity at x-axis.
         # a2 is the electric field intensity at y-axis.
@@ -706,14 +692,14 @@ class aperture():
         for i in range(int(nx/2-X/2),int(nx/2+X/2)):
             for j in range(int(ny/2+delta/2-Y/2),int(ny/2+delta/2+Y/2)):
                 obj[ny/2-abs(ny/2-j),i] = 1
-                obj[j,i] = 1      
+                obj[j,i] = 1
         return obj
     def rectangle(self,nx,ny,side):
         # Creates a matrix that contains rectangle
         obj=zeros((nx,ny),dtype=complex)
         for i in range(int(nx/2-side/2),int(nx/2+side/2)):
             for j in range(int(ny/2-side/2),int(ny/2+side/2)):
-                obj[j,i] = 1 
+                obj[j,i] = 1
         return obj
     def circle(self,nx,ny,radius):
         # Creates a matrix that contains circle
@@ -721,7 +707,7 @@ class aperture():
         for i in range(int(nx/2-radius/2),int(nx/2+radius/2)):
             for j in range(int(ny/2-radius/2),int(ny/2+radius/2)):
                 if (abs(i-nx/2)**2+abs(j-ny/2)**2)**(0.5)< radius/2:
-                    obj[j,i] = 1 
+                    obj[j,i] = 1
         return obj
     def sinamgrating(self,nx,ny,grating):
         # Creates a sinuosidal grating matrix
@@ -744,7 +730,7 @@ class aperture():
         # Creates a 2D gaussian matrix
         obj = zeros((nx,ny),dtype=complex)
         for i in xrange(nx):
-            for j in xrange(ny):   
+            for j in xrange(ny):
                 obj[i,j] = 1/pi/pow(sigma,2)*exp(-float(pow(i-nx/2,2)+pow(j-ny/2,2))/2/pow(sigma,2))
         return obj
     def retroreflector(self,nx,ny,wavelength,pitch,type='normal'):
@@ -754,20 +740,20 @@ class aperture():
         part  = zeros((pitch,int(pitch/2)))
         for i in xrange(int(sqrt(3)*pitch/6)):
             for j in xrange(int(pitch/2)):
-                if float(j)/(int(sqrt(3)*pitch/6)-i) < sqrt(3): 
+                if float(j)/(int(sqrt(3)*pitch/6)-i) < sqrt(3):
                     part[i,j]       = int(sqrt(3)*pitch/6)-i
                     part[pitch-i-1,int(pitch/2)-j-1] = part[i,j]
         for i in xrange(int(pitch)):
             for j in xrange(int(pitch/2)):
                 if j != 0:
                     if float(j)/(int(pitch)-i) < 0.5 and (int(sqrt(3)*pitch/6)-i)/float(j) < 1./sqrt(3):
-                        # Distance to plane determines the level of the amplitude 
-                        # Plane as a line y = slope*x+ pitch 
+                        # Distance to plane determines the level of the amplitude
+                        # Plane as a line y = slope*x+ pitch
                         # Perpendicula line  y = -(1/slope)*x+n
                         slope     = -0.5
                         n         = j + (1/slope) * (i)
                         x1        = (n - pitch/2)/(slope+1/slope)
-                        y1        = -(1/slope)*x1+n 
+                        y1        = -(1/slope)*x1+n
                         part[i,j] = int(sqrt(3)*pitch/6) - sqrt( pow(i-x1,2) + pow(j-y1,2) )
                         part[pitch-i-1,int(pitch/2)-j-1] = part[i,j]
                 else:
@@ -783,7 +769,7 @@ class aperture():
         part  = append(left,right,axis=1)
         obj   = tile(part,(nx/pitch,ny/pitch))
         for i in xrange(nx/pitch/2):
-           obj[(2*i+1)*pitch:(2*i+1)*pitch+pitch,:] = roll(obj[(2*i+1)*pitch:(2*i+1)*pitch+pitch,:],pitch/2)    
+           obj[(2*i+1)*pitch:(2*i+1)*pitch+pitch,:] = roll(obj[(2*i+1)*pitch:(2*i+1)*pitch+pitch,:],pitch/2)
         k     = 2*pi/wavelength
         D     = 5
         obj   = pow(obj,3)*exp(1j*k*obj)
@@ -839,7 +825,7 @@ class beams():
         distance = abs(focal-distance)
         k        = 2*pi/wavelength
         X,Y      = mgrid[-nx/2:nx/2,-ny/2:ny/2]*pixeltom
-        r        = sqrt(pow(X,2)+pow(Y,2)+pow(distance,2)) 
+        r        = sqrt(pow(X,2)+pow(Y,2)+pow(distance,2))
         U        = amplitude/r*exp(-1j*k*r)
         return U
     def gaussian(self,nx,ny,distance,wavelength,pixeltom,amplitude,waistsize,focal=0):
