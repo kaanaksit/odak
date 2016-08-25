@@ -336,9 +336,32 @@ class raytracing():
         VectorOutput[1,1] = mu*vector[1,1] + to*normvector[1,1]
         VectorOutput[1,2] = mu*vector[1,2] + to*normvector[1,2]
         return VectorOutput
-    def FuncQuad(self,k,l,m,quad):
+    def FuncPoly2nd(self,k,l,m,poly):
+        # Definition to return a 3D point position in a second order polynomial surface.
+        # a = sqrt(x^2+y^2)
+        # k2 x (a)^2 + k1 x a + k0 a - z =0
+        a = sqrt((k-poly[0])**2+(l-poly[1])**2)
+        return poly[5]*a**2+poly[4]*a+poly[3]-m+poly[2]
+    def FuncEllipsoid(self,k,l,m,ellipsoid):
         # Definition to return a 3D point position in quadratic surface definition.
-        return pow((k-quad[0])/quad[4],2) + pow((l-quad[1])/quad[5],2) + pow((m-quad[2])/quad[6],2) - pow(quad[3],2)
+        return pow((k-ellipsoid[0])/ellipsoid[4],2) + pow((l-ellipsoid[1])/ellipsoid[5],2) + pow((m-ellipsoid[2])/ellipsoid[6],2) - pow(ellipsoid[3],2)
+    def FuncNormPoly2nd(self,x0,y0,z0,poly2nd):
+        # Definition to return normal of a sphere.
+        # Derivatives.
+        # m = x^2+y^2
+        # a = sqrt(m)
+        m     = (x0-poly2nd[0])**2+(y0-poly2nd[1])**2
+        a     = sqrt(m)
+        dadx  = 0.5*1./a*(2*x0-2*poly2nd[0])
+        dady  = 0.5*1./a*(2*y0-2*poly2nd[1])
+        dzda  = 2*poly2nd[5]*a + poly2nd[4]
+        gradx = dzda*dadx
+        grady = dzda*dady
+        gradz = -1
+        # Perpendicular to tangent surface.
+        alpha = degrees(arctan(gradx))+90; beta = degrees(arctan(grady))+90; gamma = degrees(arctan(gradz))+90
+        # Return a normal vector.
+        return self.createvector((x0,y0,z0),(alpha,beta,gamma))
     def FuncSpher(self,k,l,m,sphere):
         # Definition to return a 3D point position in spherical definition.
         return pow(k-sphere[0],2) + pow(l-sphere[1],2) + pow(m-sphere[2],2) - pow(sphere[3],2)
@@ -352,19 +375,22 @@ class raytracing():
         alpha = degrees(arctan(gradx))+90; beta = degrees(arctan(grady))+90; gamma = degrees(arctan(gradz))+90
         # Return a normal vector.
         return self.createvector((x0,y0,z0),(alpha,beta,gamma))
-    def FuncNormQuad(self,x0,y0,z0,quad):
+    def FuncNormEllipsoid(self,x0,y0,z0,ellipsoid):
         # Definition to return normal of a quadratic surface.
         # Derivatives.
-        gradx = 2/quad[4]*(x0-quad[0])/quad[3]**2
-        grady = 2/quad[5]*(y0-quad[1])/quad[3]**2
-        gradz = 2/quad[6]*(z0-quad[2])/quad[3]**2
+        gradx = 2/ellipsoid[4]*(x0-ellipsoid[0])/ellipsoid[3]**2
+        grady = 2/ellipsoid[5]*(y0-ellipsoid[1])/ellipsoid[3]**2
+        gradz = 2/ellipsoid[6]*(z0-ellipsoid[2])/ellipsoid[3]**2
         # Perpendicular to tangent surface.
         alpha = degrees(arctan(gradx))+90; beta = degrees(arctan(grady))+90; gamma = degrees(arctan(gradz))+90
         # Return a normal vector.
         return self.createvector((x0,y0,z0),(alpha,beta,gamma))
-    def FindInterQuad(self,vector,quad,error=0.00000001,numiter=1000,iternotify='no'):
+    def FindInterPoly2nd(self,vector,poly2nd,error=0.00000001,numiter=1000,iternotify='no'):
         # Definition to return intersection of a ray with a quadratic surface.
-        return self.FindInterFunc(vector,quad,self.FuncQuad,self.FuncNormQuad,error=error,numiter=numiter,iternotify=iternotify)
+        return self.FindInterFunc(vector,poly2nd,self.FuncPoly2nd,self.FuncNormPoly2nd,error=error,numiter=numiter,iternotify=iternotify)
+    def FindInterEllipsoid(self,vector,ellipsoid,error=0.00000001,numiter=1000,iternotify='no'):
+        # Definition to return intersection of a ray with a quadratic surface.
+        return self.FindInterFunc(vector,ellipsoid,self.FuncEllipsoid,self.FuncNormEllipsoid,error=error,numiter=numiter,iternotify=iternotify)
     def findinterspher(self,vector,sphere,error=0.00000001,numiter=1000,iternotify='no'):
         # Definition to return intersection of a ray with a sphere.
         return self.FindInterFunc(vector,sphere,self.FuncSpher,self.FuncNormSpher,error=error,numiter=numiter,iternotify=iternotify)
