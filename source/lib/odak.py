@@ -406,7 +406,7 @@ class raytracing():
         m        = vector[0,2,0]
         FXYZ     = Func(k,l,m,SurfParam)
         if abs(FXYZ) < 0.01:
-            shift  = 1.5 * sphere[3]
+            shift  = 1.5 * SurfParam[3]
             k     += shift * vector[1,0]
             l     += shift * vector[1,1]
             m     += shift * vector[1,2]
