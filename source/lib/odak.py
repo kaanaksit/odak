@@ -190,23 +190,32 @@ class raytracing():
         cosin = array([[alpha],[beta],[gamma]])
         return array([point.reshape(3,1),cosin.reshape(3,1)])
     def CalculateIntersectionOfTwoVectors(self,vector1,vector2):
+        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        # REVISIT THIS ONE IN THE FUTURE, THERE ARE STIL SOME BUGS HERE!!!!!!
+        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         # Method to calculate the intersection of two vectors.
         A = array([
                    [vector1[1][0][0], vector2[1][0][0] ],
                    [vector1[1][1][0], vector2[1][1][0] ],
                    [vector1[1][2][0], vector2[1][2][0] ]
                   ])
-        B = array(
-                  [vector1[0][0]-vector2[0][0],
+        B = array([
+                   vector1[0][0]-vector2[0][0],
                    vector1[0][1]-vector2[0][1],
                    vector1[0][2]-vector2[0][2]
                   ])
+        # Removing the zero rows.
+        ids = []
+        for i in xrange(0,A.shape[0]):
+            if A[i,0] == 0 and A[i,1] == 0:
+               ids.append(i)
+        A = delete(A,ids,axis=0)
+        B = delete(B,ids,axis=0)
         # LU decomposition solution.
-        distances = scipy.linalg.solve(A[:][0:2], B[:][0:2])
+        distances = scipy.linalg.solve(A, B)
         # Check if the given solution matches the initial condition at the third equation.
-        if int(abs(dot(A[:][2],distances))) != int(abs(B[:][2])):
-           distances[0] = 0
-           distances[1] = 0
+        if allclose(dot(A,distances),B) == False:
+           distances = [0,0]
         # Point vector created.
         Point = array([vector1[0][0][0]-distances[0]*vector1[1][0][0],
                        vector1[0][1][0]-distances[0]*vector1[1][1][0],
