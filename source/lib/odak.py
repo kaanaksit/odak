@@ -3,8 +3,9 @@
 
 # Whole library can be found under https://github.com/kunguz/odak.
 
-import sys,matplotlib,scipy
-#matplotlib.use('Agg')
+import sys,scipy
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot
 import mpl_toolkits.mplot3d.art3d as art3d
 import scipy.linalg
