@@ -391,16 +391,20 @@ class raytracing():
     def FindInterEllipsoid(self,vector,ellipsoid,error=0.00000001,numiter=1000,iternotify='no'):
         # Definition to return intersection of a ray with a quadratic surface.
         return self.FindInterFunc(vector,ellipsoid,self.FuncEllipsoid,self.FuncNormEllipsoid,error=error,numiter=numiter,iternotify=iternotify)
-    def findinterspher(self,vector,sphere,error=0.00000001,numiter=1000,iternotify='no'):
+    def findinterspher(self,vector,sphere,init=None,error=0.00000001,numiter=1000,iternotify='no'):
         # Definition to return intersection of a ray with a sphere.
-        return self.FindInterFunc(vector,sphere,self.FuncSpher,self.FuncNormSpher,error=error,numiter=numiter,iternotify=iternotify)
-    def FindInterFunc(self,vector,SurfParam,Func,FuncNorm,error=0.00000001,numiter=1000,iternotify='no'):
+        return self.FindInterFunc(vector,sphere,self.FuncSpher,self.FuncNormSpher,init=init,error=error,numiter=numiter,iternotify=iternotify)
+    def FindInterFunc(self,vector,SurfParam,Func,FuncNorm,init=None,error=0.00000001,numiter=1000,iternotify='no'):
         # Method for finding intersection in between a vector and a parametric surface
         number   = 0
         distance = 1
         olddist  = 0
-        shift    = 0
-        epsilon  = error*2
+        shift = 0
+        if init == None:
+            distance = 0
+        else:
+            distance = init
+        epsilon = error*2
         k        = vector[0,0,0]
         l        = vector[0,1,0]
         m        = vector[0,2,0]
