@@ -5,7 +5,7 @@
 
 import sys,scipy
 import matplotlib
-matplotlib.use('Agg')
+#matplotlib.use('Agg')
 import matplotlib.pyplot
 import mpl_toolkits.mplot3d.art3d as art3d
 import scipy.linalg
@@ -401,10 +401,10 @@ class raytracing():
         olddist  = 0
         shift = 0
         if init == None:
-            distance = 0
+            distance = 1.
         else:
             distance = init
-        epsilon = error*2
+        epsilon  = error*2
         k        = vector[0,0,0]
         l        = vector[0,1,0]
         m        = vector[0,2,0]
