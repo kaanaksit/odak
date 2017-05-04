@@ -9,6 +9,7 @@ import matplotlib
 import matplotlib.pyplot
 import mpl_toolkits.mplot3d.art3d as art3d
 import scipy.linalg
+from datetime import datetime
 from matplotlib.mlab import griddata
 from matplotlib import cm
 from matplotlib.patches import Circle, PathPatch, Ellipse
@@ -19,6 +20,13 @@ from numpy.fft import *
 from math import radians,tan,pi
 
 __author__  = ('Kaan Akşit')
+debug = True
+
+
+# Definition to prompt.
+def prompt(txt,who='odak',debug=True):
+    if debug == True:
+        print('[%s] [%s] %s' % (str(datetime.now()),who,txt))
 
 class ParaxialMatrix():
     def __init__(self):
@@ -180,7 +188,10 @@ class raytracing():
     def finddistancebetweentwopoints(self,Point1,Point2):
         # Function to find the distance between two points if there was a line intersecting at both of them.
         return sqrt(sum((array(Point1)-array(Point2))**2))
-    def createvector(self,(x0,y0,z0),(alpha,beta,gamma)):
+    def createvector(self,x0y0z0,abg):
+        # Due to Python 2 -> Python 3.
+        x0,y0,z0         = x0y0z0
+        alpha,beta,gamma = abg
         # Create a vector with the given points and angles in each direction
         point = array([[x0],[y0],[z0]])
         alpha = cos(radians(alpha))
@@ -212,7 +223,10 @@ class raytracing():
                        vector1[0][2][0]-distances[0]*vector1[1][2][0]
                       ])
         return Point,distances
-    def createvectorfromtwopoints(self,(x0,y0,z0),(x1,y1,z1)):
+    def createvectorfromtwopoints(self,x0y0z0,x1y1z1):
+        # Because of Python 2 -> Python 3.
+        x0,y0,z0 = x0y0z0
+        x1,y1,z1 = x1y1z1
         # Create a vector from two given points.
         point = array([[x0],[y0],[z0]])
         # Distance between two points.
@@ -264,7 +278,11 @@ class raytracing():
         if side0 == True and side1 == True and side2 == True:
             return True
         return False
-    def transform(self,input,(alpha,beta,gamma),(x0,y0,z0)):
+#    def transform(self,input,(alpha,beta,gamma),(x0,y0,z0)):
+    def transform(self,input,abg,x0y0z0):
+        # Because of Python 2 -> Python 3.
+        alpha,beta,gamma = abg
+        x0,y0,z0         = x0y0z0
         # alpha; rotation angle (euler) of x axis.
         # beta; rotation angle (euler) of y axis.
         # gamma; rotation angle (euler) of z axis.
@@ -431,7 +449,9 @@ class raytracing():
                return 0,0
         normvec = FuncNorm(x,y,z,SurfParam)
         return distance+shift,normvec
-    def findintersurface(self,vector,(point0,point1,point2)):
+    def findintersurface(self,vector,p0,p1,p2):
+        # Because of Python 2 -> Python 3.
+        point0,point1,point2 = p0p1p2
         # Method to find intersection point inbetween a surface and a vector
         # See http://geomalgorithms.com/a06-_intersect-2.html
         vector0,s     = self.createvectorfromtwopoints(point0,point1)
@@ -506,14 +526,13 @@ class raytracing():
         tris[:,:,1] = r * outer(sin(u), sin(v)) + cy
         tris[:,:,2] = r * outer(ones(size(u)), cos(v)) + cz
         return tris
-    def CalculateFocal(self,rx,ry,rz,n,ShowFocal=False):
+    def CalculateFocal(self,rx,ry,rz,n):
         # Method to calculate the focal length of the lens in different axes.
         for a in [rx,ry]:
             R         = (pow(a,2)+pow(rz,2))/(2*rz)
             LensMaker = (n-1)*(-2/R+(n-1)*rz*2/(n*R))
             f         = pow(LensMaker,-1)
-            if ShowFocal == True:
-                print 'Focal length of the lens: ',f
+            prompt('Focal length of the lens: %' % f)
         return True
     def PlotMesh(self,tris,alpha=0.3):
         # Definition to plot meshes using triangles.
@@ -593,7 +612,11 @@ class raytracing():
         self.plottriangle(point10,point11,point12)
         self.plottriangle(point20,point21,point22)
         return array([point00,point01,point02]),array([point10,point11,point12]),array([point20,point21,point22])
-    def defineplotshape(self,(xmin,xmax),(ymin,ymax),(zmin,zmax)):
+    def defineplotshape(self,xminxmax,yminymax,zminzmax):
+        # Because of Python 2 -> Python 3.
+        xmin,xmax = xminxmax
+        ymin,ymax = yminxmax
+        zmin,zmax = zminxmax
         # Method to define plot shape.
         self.ax.set_xlim3d(xmin,xmax)
         self.ax.set_ylim3d(ymin,ymax)
@@ -683,7 +706,7 @@ class jonescalculus():
         gamma    = 2*pi*(ne-n0)/wavelength*d
         desangle = 90.
         N        = desangle/gamma
-        print gamma, N
+        prompt('%s %s' % (gamma, N))
         lrot     = array([[cos(alpha*d),-sin(alpha*d)],[sin(alpha*d),cos(alpha*d)]])
         lretard  = array([[exp(-1j*gamma/2/N),0],[0,exp(1j*gamma/2/N)]])
 #        llcd     = 
@@ -897,11 +920,11 @@ class diffractions():
             if pixeltom < smplng: # Fresnel Impulse Response
                 h      = 1./(1j*wavelength*distance)*exp(1j*k*0.5/distance*Z)
                 h      = fft2(fftshift(h))*pixeltom**2
-                print 'IR Fresnel method'
+                prompt('IR Fresnel method')
             else: # Fresnel Transfer Function
                 h      = exp(1j*k*distance)*exp(-1j*pi*wavelength*distance*Z)
                 h      = fftshift(h)
-                print 'TR Fresnel method'
+                prompt('TR Fresnel method')
             U1     = fft2(fftshift(wave))
             U2     = h*U1
             result = ifftshift(ifft2(U2))
@@ -916,7 +939,7 @@ class diffractions():
             type = 'Fraunhofer'
         else:
             type = 'Fresnel'
-        print 'Fresnel number: %s, Propagation type: %s' % (fresnelno,type)
+        prompt('Fresnel number: %s, Propagation type: %s' % (fresnelno,type))
         return type,fresnelno
     def fresnelnumber(self,aperturesize,pixeltom,wavelength,distance):
         # Definition to calculate the fresnel number.
@@ -936,7 +959,7 @@ class diffractions():
         return 2*sqrt(2*log(2))*std(I)
 
 def main():
-    print 'Odak by %s' % __author__
+    prompt('Odak by %s' % __author__)
     return True
 
 if __name__ == '__main__':
