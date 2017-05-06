@@ -188,6 +188,13 @@ class raytracing():
     def finddistancebetweentwopoints(self,Point1,Point2):
         # Function to find the distance between two points if there was a line intersecting at both of them.
         return sqrt(sum((array(Point1)-array(Point2))**2))
+    def sphericaltocartesian(self,point,r,psi,teta):
+        # Function to convert from spherical coordinates to cartesian coordinates.
+        return array([
+                      point[0]+r*sin(radians(psi))*cos(radians(teta)),
+                      point[1]+r*sin(radians(psi))*sin(radians(teta)),
+                      point[2]+r*cos(radians(teta))
+                     ])
     def createvector(self,x0y0z0,abg):
         # Due to Python 2 -> Python 3.
         x0,y0,z0         = x0y0z0
