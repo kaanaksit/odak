@@ -352,7 +352,7 @@ class raytracing():
            #print 'Iteration number: %s, Error: %s' % (num,error)
            # Iteration limiter
            if num > 5000:
-              return vector
+              return False
         VectorOutput      = vector.copy()
         VectorOutput[0,0] = normvector[0,0]
         VectorOutput[0,1] = normvector[0,1]
@@ -456,9 +456,7 @@ class raytracing():
                return 0,0
         normvec = FuncNorm(x,y,z,SurfParam)
         return distance+shift,normvec
-    def findintersurface(self,vector,p0,p1,p2):
-        # Because of Python 2 -> Python 3.
-        point0,point1,point2 = p0p1p2
+    def findintersurface(self,vector,point0,point1,point2):
         # Method to find intersection point inbetween a surface and a vector
         # See http://geomalgorithms.com/a06-_intersect-2.html
         vector0,s     = self.createvectorfromtwopoints(point0,point1)
