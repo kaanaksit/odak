@@ -456,7 +456,8 @@ class raytracing():
                return 0,0
         normvec = FuncNorm(x,y,z,SurfParam)
         return distance+shift,normvec
-    def findintersurface(self,vector,point0,point1,point2):
+    def findintersurface(self,vector,points):
+        point0,point1,point2 = points
         # Method to find intersection point inbetween a surface and a vector
         # See http://geomalgorithms.com/a06-_intersect-2.html
         vector0,s     = self.createvectorfromtwopoints(point0,point1)
