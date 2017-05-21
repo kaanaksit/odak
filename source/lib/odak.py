@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# Whole library can be found under https://github.com/kunguz/odak.
+# Whole library can be found under https://github.com/kunguz/odak,
 
 import sys,scipy
 import matplotlib
