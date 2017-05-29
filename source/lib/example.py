@@ -11,14 +11,16 @@ def example():
     #example_of_fresnel_fraunhofer()
     #example_of_retroreflector()
     #example_of_jones_calculus()
-    #example_of_ray_tracing()
     #example_of_paraxial_matrix()
+
+    example_of_ray_tracing()
     example_of_ray_tracing_2()
     #example_of_ray_tracing_3()
     return True
 
 def example_of_ray_tracing_3():
     ray         = odak.raytracing()
+    ray.PlotInit()
     # Be careful points and pitch must be float
     pitch       = 10.
     cornercube0 = ray.plotcornercube(0,0,0,pitch,revert=False)
@@ -89,6 +91,7 @@ def example_of_paraxial_matrix():
 def example_of_ray_tracing():
     n         = 1
     ray       = odak.raytracing()
+    ray.PlotInit()
 #    rotvec = ray.transform(vector,(45,0,0),(0.5,1,0))
 #    print 'Output vector: \n %s' % rotvec
     spherical = ray.plotsphericallens(20,0,0,10)
