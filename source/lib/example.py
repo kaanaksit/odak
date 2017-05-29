@@ -51,6 +51,7 @@ def example_of_ray_tracing_3():
 
 def example_of_ray_tracing_2():
     ray               = odak.raytracing()
+    ray.PlotInit()
     point             = (0,math.sqrt(3)/2,1)
     point0            = (1,0,1)
     point1            = (0,1,0)

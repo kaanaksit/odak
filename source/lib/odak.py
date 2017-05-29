@@ -621,8 +621,8 @@ class raytracing():
     def defineplotshape(self,xminxmax,yminymax,zminzmax):
         # Because of Python 2 -> Python 3.
         xmin,xmax = xminxmax
-        ymin,ymax = yminxmax
-        zmin,zmax = zminxmax
+        ymin,ymax = yminymax
+        zmin,zmax = zminzmax
         # Method to define plot shape.
         self.ax.set_xlim3d(xmin,xmax)
         self.ax.set_ylim3d(ymin,ymax)
