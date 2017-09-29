@@ -182,7 +182,7 @@ class raytracing():
         # Calculate result
         arange = np.arange(len(u))
         points = np.zeros((len(u),cv.shape[1]))
-        for i in xrange(cv.shape[1]):
+        for i in range(cv.shape[1]):
             points[arange,i] = si.splev(u, (kv,cv[:,i],degree))
         return points
     def finddistancebetweentwopoints(self,Point1,Point2):
@@ -324,7 +324,7 @@ class raytracing():
         # Definition to find reflection normal in between two given vectors.
         mu = 1
         NormVector      = vector1.copy()
-        for k in xrange(1,3):
+        for k in range(1,3):
             a0              = arccos(vector0[1,k])
             a1              = arccos(vector1[1,k])
             NormVector[1,k] = cos(a1+(pi-(a0+a1))/2.)
@@ -543,8 +543,8 @@ class raytracing():
     def PlotMesh(self,tris,alpha=0.3):
         # Definition to plot meshes using triangles.
         sampleno = tris.shape[0]
-        for i in xrange(0,sampleno-1):
-            for j in xrange(0,sampleno-1):
+        for i in range(0,sampleno-1):
+            for j in range(0,sampleno-1):
                 self.plottriangle(tris[i,j],tris[i+1,j],tris[i,j+1],alpha=alpha)
                 self.plottriangle(tris[i+1,j+1],tris[i+1,j],tris[i,j+1],alpha=alpha)
         return tris
@@ -557,8 +557,8 @@ class raytracing():
         else:
             limin = RangeWindow[0][0]; limax = RangeWindow[0][1]
             ljmin = RangeWindow[1][0]; ljmax = RangeWindow[1][1]
-        for i in xrange(limin,limax):
-            for j in xrange(ljmin,ljmax):
+        for i in range(limin,limax):
+            for j in range(ljmin,ljmax):
                 tri0        = [tris[i,j],tris[i+1,j],tris[i,j+1]]
                 tri1        = [tris[i+1,j+1],tris[i+1,j],tris[i,j+1]]
                 s0,normvec0 = self.findintersurface(vector,(tri0[0],tri0[1],tri0[2]))
@@ -771,8 +771,8 @@ class aperture():
     def sinamgrating(self,nx,ny,grating):
         # Creates a sinuosidal grating matrix
         obj=zeros((nx,ny),dtype=complex)
-        for i in xrange(nx):
-            for j in xrange(ny):
+        for i in range(nx):
+            for j in range(ny):
                 obj[i,j] = 0.5+0.5*cos(2*pi*j/grating)
         return obj
     def lens(self,nx,ny,focal,wavelength,pixeltom):
@@ -788,8 +788,8 @@ class aperture():
     def gaussian(self,nx,ny,sigma):
         # Creates a 2D gaussian matrix
         obj = zeros((nx,ny),dtype=complex)
-        for i in xrange(nx):
-            for j in xrange(ny):
+        for i in range(nx):
+            for j in range(ny):
                 obj[i,j] = 1/pi/pow(sigma,2)*exp(-float(pow(i-nx/2,2)+pow(j-ny/2,2))/2/pow(sigma,2))
         return obj
     def retroreflector(self,nx,ny,wavelength,pitch,type='normal'):
@@ -797,13 +797,13 @@ class aperture():
            nx = max([nx,ny])
            ny = nx
         part  = zeros((pitch,int(pitch/2)))
-        for i in xrange(int(sqrt(3)*pitch/6)):
-            for j in xrange(int(pitch/2)):
+        for i in range(int(sqrt(3)*pitch/6)):
+            for j in range(int(pitch/2)):
                 if float(j)/(int(sqrt(3)*pitch/6)-i) < sqrt(3):
                     part[i,j]       = int(sqrt(3)*pitch/6)-i
                     part[pitch-i-1,int(pitch/2)-j-1] = part[i,j]
-        for i in xrange(int(pitch)):
-            for j in xrange(int(pitch/2)):
+        for i in range(int(pitch)):
+            for j in range(int(pitch/2)):
                 if j != 0:
                     if float(j)/(int(pitch)-i) < 0.5 and (int(sqrt(3)*pitch/6)-i)/float(j) < 1./sqrt(3):
                         # Distance to plane determines the level of the amplitude
@@ -827,7 +827,7 @@ class aperture():
         right = part[::-1]
         part  = append(left,right,axis=1)
         obj   = tile(part,(nx/pitch,ny/pitch))
-        for i in xrange(nx/pitch/2):
+        for i in range(nx/pitch/2):
            obj[(2*i+1)*pitch:(2*i+1)*pitch+pitch,:] = roll(obj[(2*i+1)*pitch:(2*i+1)*pitch+pitch,:],pitch/2)
         k     = 2*pi/wavelength
         D     = 5
