@@ -453,7 +453,7 @@ class raytracing():
             distance  = newdist
             # Check if the number of iterations are too much
             if number > numiter:
-               return 0,0
+               return False,False
         normvec = FuncNorm(x,y,z,SurfParam)
         return distance+shift,normvec
     def findintersurface(self,vector,points):
