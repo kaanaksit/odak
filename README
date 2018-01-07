@@ -1,4 +1,4 @@
-Wave optics and ray tracing library for Python
+Wave optics and ray tracing framework for Python
 
 Author: Kaan Akşit
 Licence: GPLV2
@@ -22,3 +22,17 @@ Currently available methods inside source/lib/odak.py
  * Matplotlib
  * Old school OpenGL
 - Methods for paraxial matrix theory: free space propagation, plotting paraxial rays
+
+Citation
+--------
+If you use Falcor in a research project leading to a publication, please cite the project.
+The BibTex entry is
+
+@Misc{kaan10,  
+   author =      {Kaan Ak\c{s}it},  
+   title =       {Odak Framework: Wave optics and ray tracing},  
+   year =        {2012},  
+   month =       {07},  
+   url =         {https://github.com/kunguz/odak},  
+   note=         {\url{https://github.com/kunguz/odak}}  
+}
