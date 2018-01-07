@@ -28,7 +28,7 @@ Citation
 If you use Falcor in a research project leading to a publication, please cite the project.
 The BibTex entry is
 
-@Misc{kaan10,  
+@Misc{kaan12,  
    author =      {Kaan Ak\c{s}it},  
    title =       {Odak Framework: Wave optics and ray tracing},  
    year =        {2012},  
