@@ -471,6 +471,13 @@ class raytracing():
         normvec[0][1] = vector[0][1]+distance*vector[1][1]
         normvec[0][2] = vector[0][2]+distance*vector[1][2]
         return distance[0][0],normvec
+    def propagateray(self,vector,distance):
+        # Method to propagate a ray.
+        return np.array([
+                         vector[0][0]+distance*vector[1][0],
+                         vector[0][1]+distance*vector[1][1],
+                         vector[0][2]+distance*vector[1][2]
+                        ])
     def plotvector(self,vector,distance,color='g'):
         # Method to plot rays
         x = array([vector[0,0,0], distance * vector[1,0] + vector[0,0,0]])
