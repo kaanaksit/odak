@@ -25,7 +25,7 @@ Currently available methods inside source/lib/odak.py
 
 Citation
 --------
-If you use Falcor in a research project leading to a publication, please cite the project.
+If you use Odak in a research project leading to a publication, please cite the project.
 The BibTex entry is
 
 @Misc{kaan12,  
