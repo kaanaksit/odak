@@ -1,6 +1,7 @@
 # Wave optics and ray tracing framework for Python
 
 Author: Kaan Akşit
+
 Licence: GPLV2
 
 Dependency: matplotlib, numpy
