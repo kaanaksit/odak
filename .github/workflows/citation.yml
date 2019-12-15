@@ -23,8 +23,8 @@ jobs:
           git commit -m "Updating plain text citation entry." -a
       - name: Check if there is a change.
         run: check_flag=`git diff HEAD~1 citations/odak.bib`
-      - if: check_flag != ''
-        name: Push changes
+      - name: Push changes
+        if: $check_flag != ''
         uses: ad-m/github-push-action@master
         with:
              github_token: ${{ secrets.GITHUB_TOKEN }}
