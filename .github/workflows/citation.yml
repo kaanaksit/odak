@@ -1,0 +1,27 @@
+name: Generate plain text citation entry
+on: 
+   push:
+     branches:
+       -odak_v0.1
+
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    steps:
+#      - name: Update
+#        run: sudo apt-get update && sudo apt-get dist-upgrade -y
+#      - name: Install dependencies
+#        run: sudo apt-get -qq install -y bibtexconv
+      - name: Set up Git repository
+        uses: actions/checkout@v1
+      - name: Generate plain text citation entry.
+        run: bibtexconv citations/odak.bib </usr/share/doc/bibtexconv/examples/text-example.export >citations/odak.txt -check-urls
+      - name: Commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "Updating plain text citation entry." -a
+      - name: Push changes
+          uses: ad-m/github-push-action@master
+          with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
