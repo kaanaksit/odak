@@ -5,7 +5,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
-      name             = "Odak",
+      name             = "odak",
       version          = "0.1",
       author           = "Kaan Akşit",
       author_email     = "kunguz@gmail.com",
@@ -31,4 +31,5 @@ setup(
                           "Programming Language :: Python",
                           "License :: OSI Approved :: Apache Software License",
                          ],
+      python_requires='>=3.7.5',
       )
