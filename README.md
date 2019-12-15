@@ -11,7 +11,7 @@ pip3 install odak
 ```
 
 ## Citing
-If you use Odak in a research project leading to a publication, please acknowledge this fact by citing using our ready-made [bibtex citation entry](citations/odak.bib) or [plain text citation entry](citations/odak.txt).
+If you use Odak in a research project leading to a publication, please acknowledge this fact by using our ready-made [bibtex citation entry](citations/odak.bib) or [plain text citation entry](citations/odak.txt).
 
 ## License
 This project is licensed under the Apache License - see the [LICENSE](LICENSE.txt) file for details.
