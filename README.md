@@ -1,5 +1,5 @@
 # Odak
-Odak (pronounced "O-dawec") is the fundamental Python library needed for scientific computing in optical sciences. It includes modules for geometric raytracing and wave optics.
+Odak (pronounced "O-dawec") is the fundamental Python library for scientific computing in optical sciences. Odak includes modules for geometric raytracing and wave optics.
 
 ## Getting Started
 

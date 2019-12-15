@@ -1,6 +1,6 @@
 from odak import math
 from odak import np
-from odak.tools.rotations import rotate_a_point
+from odak.tools.transformation import rotate_point
 
 def create_ray(x0y0z0,abg):
     """
