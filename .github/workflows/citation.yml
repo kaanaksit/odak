@@ -5,7 +5,7 @@ on:
        -odak_v0.1
 
 jobs:
-  build_latex:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Update
