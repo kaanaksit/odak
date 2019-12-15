@@ -1,8 +1,8 @@
 name: Generate plain text citation entry
-on: push
-#   push:
-#     branches:
-#       -odak_v0.1
+on:
+   push:
+     branches:
+       -next
 
 jobs:
   build:
