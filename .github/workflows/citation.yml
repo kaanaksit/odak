@@ -20,11 +20,10 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git commit -m "Updating plain text citation entry." -a
+          git commit -m "Updating plain text citation entry." -a || echo "Nothing to update"
       - name: Check if there is a change.
         run: check_flag=`git diff HEAD~1 citations/odak.bib`
       - name: Push changes
-        if: $check_flag != ''
         uses: ad-m/github-push-action@master
         with:
              github_token: ${{ secrets.GITHUB_TOKEN }}
