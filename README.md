@@ -9,10 +9,8 @@ You may have used Odak in between 2012-2020 time frame, if you are looking for v
 Odak can be installed using [pip](https://pypi.org/project/pip):
 
 ```bash
-pip install -i https://test.pypi.org/simple/ odak
+pip3 install -i https://test.pypi.org/simple/ odak
 ```
-
-
 
 ## Citing
 If you use Odak in a research project leading to a publication, please acknowledge this fact by using our ready-made [bibtex citation entry](citations/odak.bib) or [plain text citation entry](citations/odak.txt).
