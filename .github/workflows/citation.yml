@@ -13,7 +13,7 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get -qq install -y bibtexconv
       - name: Set up Git repository
-        uses: actions/checkout@odak_v0.1
+        uses: actions/checkout@v1
       - name: Generate plain text citation entry.
         run: bibtexconv citations/odak.bib </usr/share/doc/bibtexconv/examples/text-example.export >citations/odak.txt -check-urls
       - name: Commit files
@@ -22,6 +22,6 @@ jobs:
           git config --local user.name "GitHub Action"
           git commit -m "Updating plain text citation entry." -a
       - name: Push changes
-        uses: ad-m/github-push-action@odak_v0.1
+        uses: ad-m/github-push-action@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
