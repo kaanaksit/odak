@@ -24,7 +24,7 @@ jobs:
       - name: Check if there is a change.
         run: check_flag=`git diff HEAD~1 citations/odak.bib`
       - if: check_flag != ''
-           #name: Push changes
-           uses: ad-m/github-push-action@master
-           with:
-                github_token: ${{ secrets.GITHUB_TOKEN }}
+        name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+             github_token: ${{ secrets.GITHUB_TOKEN }}
