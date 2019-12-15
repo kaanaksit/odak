@@ -1,19 +1,6 @@
-"""
-Raytracing
-==========
-
-Provides necessary definitions for geometric optics. See "General Ray tracing procedure" from G.H. Spencerand M.V.R.K Murty for the theoratical explanation.
-
-"""
-#!/usr/bin/env python
-# coding: utf-8
-
-# Standard libraries.
-import os
-import sys
-import math
-import numpy as np
-
+from odak import math
+from odak import np
+from odak.tools.rotations import rotate_a_point
 
 def create_ray(x0y0z0,abg):
     """
@@ -141,31 +128,31 @@ def reflect(input_ray,normal):
     """
     Definition to reflect an incoming ray from a surface defined by a surface normal. Used method described in G.H. Spencer and M.V.R.K. Murty, "General Ray-Tracing Procedure", 1961.
 
-      Parameters
-      ----------
-      input_ray    : ndarray
-                     A vector/ray.
-      normal       : ndarray
-                     A surface normal.
+    Parameters
+    ----------
+    input_ray    : ndarray
+                   A vector/ray.
+    normal       : ndarray
+                   A surface normal.
 
-      Returns
-      ----------
-      output_ray   : ndarray
-                     Array that contains starting points and cosines of a reflected ray.
-      """
-      mu               = 1
-      div              = pow(normal[1,0],2)  + pow(normal[1,1],2) + pow(normal[1,2],2)
-      a                = mu* ( input_ray[1][0]*normal[1][0]
-                             + input_ray[1][1]*normal[1][1]
-                             + input_ray[1][2]*normal[1][2]) / div
-      output_ray       = input_ray.copy()
-      output_ray[0][0] = normal[0][0]
-      output_ray[0][1] = normal[0][1]
-      output_ray[0][2] = normal[0][2]
-      output_ray[1][0] = input_ray[1][0] - 2*a*normal[1][0]
-      output_ray[1][1] = input_ray[1][1] - 2*a*normal[1][1]
-      output_ray[1][2] = input_ray[1][2] - 2*a*normal[1][2]
-      return output_ray
+    Returns
+    ----------
+    output_ray   : ndarray
+                   Array that contains starting points and cosines of a reflected ray.
+    """
+    mu               = 1
+    div              = pow(normal[1,0],2)  + pow(normal[1,1],2) + pow(normal[1,2],2)
+    a                = mu* ( input_ray[1][0]*normal[1][0]
+                           + input_ray[1][1]*normal[1][1]
+                           + input_ray[1][2]*normal[1][2]) / div
+    output_ray       = input_ray.copy()
+    output_ray[0][0] = normal[0][0]
+    output_ray[0][1] = normal[0][1]
+    output_ray[0][2] = normal[0][2]
+    output_ray[1][0] = input_ray[1][0] - 2*a*normal[1][0]
+    output_ray[1][1] = input_ray[1][1] - 2*a*normal[1][1]
+    output_ray[1][2] = input_ray[1][2] - 2*a*normal[1][2]
+    return output_ray
 
 def define_plane(point,angles=[0.,0.,0.]):
     """
@@ -192,129 +179,3 @@ def define_plane(point,angles=[0.,0.,0.]):
         plane[i],_,_,_  = rotate_point(plane[i],angles=angles)
         plane[i]        = plane[i]+point
     return plane
-
-def angle_to_radians(angle):
-    """
-    Definition to convert angles to radians.
-
-    Parameters
-    ----------
-    angle        : float
-                   Angle in degrees.
-
-    Returns
-    ----------
-    radians      : float
-                   Angle in radians.
-    """
-    radians = np.float(angle)*np.pi/180.
-    return radians
-
-def rotmatx(angle):
-    """
-    Definition to generate a rotation matrix along X axis.
-
-    Parameters
-    ----------
-    angles       : list
-                   Rotation angles in degrees.
-
-    Returns
-    ----------
-    rotx         : ndarray
-                    Rotation matrix along X axis.
-    """
-    angle = np.float(angle)
-    angle = angle_to_radians(angle)
-    rotx  = np.array([
-                      [1.,            0.  ,           0.],
-                      [0.,  math.cos(angle), -math.sin(angle)],
-                      [0.,  math.sin(angle), math.cos(angle)]
-                     ],dtype=np.float)
-    return rotx
-
-def rotmaty(angle):
-    """
-    Definition to generate a rotation matrix along Y axis.
-
-    Parameters
-    ----------
-    angles       : list
-                   Rotation angles in degrees.
-
-    Returns
-    ----------
-    roty         : ndarray
-                   Rotation matrix along Y axis.
-    """
-    angle = angle_to_radians(angle)
-    roty  = np.array([
-                      [math.cos(angle),  0., math.sin(angle)],
-                      [0.,             1.,            0.],
-                      [-math.sin(angle), 0., math.cos(angle)]
-                     ],dtype=np.float)
-    return roty
-
-def rotmatz(angle):
-    """
-    Definition to generate a rotation matrix along Z axis.
-
-    Parameters
-    ----------
-    angles       : list
-                   Rotation angles in degrees.
-
-    Returns
-    ----------
-    rotz         : ndarray
-                   Rotation matrix along Z axis.
-    """
-    angle = angle_to_radians(angle)
-    rotz  = np.array([
-                      [ math.cos(angle), -math.sin(angle), 0.],
-                      [ math.sin(angle),  math.cos(angle), 0.],
-                      [            0.,            0., 1.]
-                     ],dtype=np.float)
-    return rotz
-
-def rotate_point(point,angles=[0,0,0],mode='XYZ'):
-    """
-    Definition to rotate a given point.
-
-    Parameters
-    ----------
-    point        : ndarray
-                   A point.
-    angles       : list
-                   Rotation angles in degrees.
-    mode         : str
-                   Rotation mode determines ordering of the rotations at each axis. There are XYZ,YXZ,ZXY and ZYX modes.
-
-    Returns
-    ----------
-    result       : ndarray
-                   Result of the rotation
-    rotx         : ndarray
-                   Rotation matrix along X axis.
-    roty         : ndarray
-                   Rotation matrix along Y axis.
-    rotz         : ndarray
-                   Rotation matrix along Z axis.
-    """
-    rotx   = rotmatx(angles[0])
-    roty   = rotmaty(angles[1])
-    rotz   = rotmatz(angles[2])
-    if mode == 'XYZ':
-        result = np.dot(rotz,np.dot(roty,np.dot(rotx,point)))
-    elif mode == 'XZY':
-        result = np.dot(roty,np.dot(rotz,np.dot(rotx,point)))
-    elif mode == 'YXZ':
-        result = np.dot(rotz,np.dot(rotx,np.dot(roty,point)))
-    elif mode == 'ZXY':
-        result = np.dot(roty,np.dot(rotx,np.dot(rotz,point)))
-    elif mode == 'ZYX':
-        result = np.dot(rotx,np.dot(roty,np.dot(rotz,point)))
-    return result,rotx,roty,rotz
-
-if __name__ == '__main__':
-    pass

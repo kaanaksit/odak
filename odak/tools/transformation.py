@@ -1,8 +1,4 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# Standard libraries.
-import os,sys,math
+import math
 import numpy as np
 
 def rotmatx(angle):
@@ -110,6 +106,3 @@ def rotate_point(point,angles=[0,0,0],mode='XYZ'):
     elif mode == 'ZYX':
         result = np.dot(rotx,np.dot(roty,np.dot(rotz,point)))
     return result,rotx,roty,rotz
-
-if __name__ == '__main__':
-    pass
