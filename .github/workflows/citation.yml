@@ -13,7 +13,7 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get -qq install -y bibtexconv git
       - name: Generate plain text citation entry.
-        run: bibtexconv citations/odak.bib </usr/share/doc/bibtexconv/examples/text-example.export >citations/odak.txt -check-urls
+        run: bibtexconv citations/odak.bib </usr/share/doc/bibtexconv/examples/text-example.export >citations/odak.txt
       - name: Commit files
         run: |
           git config --local user.email "action@github.com"
