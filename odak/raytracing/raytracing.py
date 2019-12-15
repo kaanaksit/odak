@@ -1,20 +1,19 @@
+"""
+Raytracing
+==========
+
+Provides necessary definitions for geometric optics. See "General Ray tracing procedure" from G.H. Spencerand M.V.R.K Murty for the theoratical explanation.
+
+"""
 #!/usr/bin/env python
 # coding: utf-8
 
 # Standard libraries.
-import os,sys,math
+import os
+import sys
+import math
 import numpy as np
 
-# Other libraries.
-sys.path.append('./')
-
-# Globals.
-global __author__
-global __title__
-
-__author__  = ('Kaan Akşit')
-__title__   = 'Odak raytracing'
-# See "General Ray tracing procedure" from G.H. Spencerand M.V.R.K Murty for the theoratical explanation.
 
 def create_ray(x0y0z0,abg):
     """

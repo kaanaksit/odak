@@ -2,7 +2,7 @@ name: Generate plain text citation entry
 on:
    push:
      branches:
-       -next
+       - "next"
 
 jobs:
   build:
