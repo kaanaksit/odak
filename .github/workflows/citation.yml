@@ -8,10 +8,10 @@ jobs:
   build_latex:
     runs-on: ubuntu-latest
     steps:
-#      - name: Update
-#        run: sudo apt-get update && sudo apt-get dist-upgrade -y
-#      - name: Install dependencies
-#        run: sudo apt-get -qq install -y bibtexconv
+      - name: Update
+        run: sudo apt-get update && sudo apt-get dist-upgrade -y
+      - name: Install dependencies
+        run: sudo apt-get -qq install -y bibtexconv
       - name: Set up Git repository
         uses: actions/checkout@v1
       - name: Generate plain text citation entry.
