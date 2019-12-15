@@ -24,6 +24,6 @@ jobs:
           git config --local user.name "GitHub Action"
           git commit -m "Updating plain text citation entry." -a
       - name: Push changes
-        uses: ad-m/github-push-action@odak_v0.1
+        uses: kunguz/odak@odak_v0.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
