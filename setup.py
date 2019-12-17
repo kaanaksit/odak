@@ -20,7 +20,8 @@ setup(
       packages         = [
                           'odak',
                           'odak/raytracing',
-                          'odak/tools'
+                          'odak/tools',
+                          'odak/oldschool'
                          ],
       long_description = read('README.md'),
       classifiers      = [
