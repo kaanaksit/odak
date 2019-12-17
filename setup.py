@@ -17,6 +17,9 @@ setup(
       license          = "",
       keywords         = "example documentation tutorial",
       url              = "https://github.com/kunguz/odak",
+      install_requires = [
+                          "numpy",
+                         ],
       packages         = [
                           'odak',
                           'odak/raytracing',
