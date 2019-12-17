@@ -1,7 +1,6 @@
-# Odak
-
 ![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)
 
+# Odak
 Odak (pronounced "O-dawec") is the fundamental Python library for scientific computing in optical sciences. Odak includes modules for geometric raytracing and wave optics.
 
 ## Citing
