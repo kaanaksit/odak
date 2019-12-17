@@ -12,7 +12,11 @@
 import sys
 import argparse
 
+def test_odak_import():
+    import odak
+    assert True=True
+
 if __name__ == '__main__':
 
-    import odak
-    sys.exit(1)
+    
+    sys.exit(test_odak_import())
