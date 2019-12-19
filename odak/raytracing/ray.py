@@ -1,4 +1,3 @@
-from odak import math
 from odak import np
 from odak.tools.transformation import rotate_point
 
@@ -23,9 +22,9 @@ def create_ray(x0y0z0,abg):
     alpha,beta,gamma = abg
     # Create a vector with the given points and angles in each direction
     point            = np.array([x0,y0,z0],dtype=np.float)
-    alpha            = math.cos(np.radians(alpha))
-    beta             = math.cos(np.radians(beta))
-    gamma            = math.cos(np.radians(gamma))
+    alpha            = np.cos(np.radians(alpha))
+    beta             = np.cos(np.radians(beta))
+    gamma            = np.cos(np.radians(gamma))
     # Cosines vector.
     cosines          = np.array([alpha,beta,gamma],dtype=np.float)
     ray              = np.array([point,cosines],dtype=np.float)
@@ -46,8 +45,6 @@ def create_ray_from_two_points(x0y0z0,x1y1z1):
     ----------
     ray          : ndarray
                    Array that contains starting points and cosines of a created ray.
-    s            : float
-                   Total optical path differences in between start and end points of a created ray.
     """
     # Because of Python 2 -> Python 3.
     x0,y0,z0  = x0y0z0
@@ -57,7 +54,7 @@ def create_ray_from_two_points(x0y0z0,x1y1z1):
     # Create a vector from two given points.
     point     = np.array([x0,y0,z0],dtype=np.float)
     # Distance between two points.
-    s         = math.sqrt( (x0-x1)**2 + (y0-y1)**2 + (z0-z1)**2 )
+    s         = np.sqrt( (x0-x1)**2 + (y0-y1)**2 + (z0-z1)**2 )
     if s != 0:
         alpha = (x1-x0)/s
         beta  = (y1-y0)/s
@@ -70,7 +67,7 @@ def create_ray_from_two_points(x0y0z0,x1y1z1):
     cosines   = np.array([alpha,beta,gamma],dtype=np.float)
     # Returns vector and the distance.
     ray       = np.array([point,cosines],dtype=np.float)
-    return ray,s
+    return ray
 
 def multiply_two_vectors(vector1,vector2):
     """
@@ -88,7 +85,7 @@ def multiply_two_vectors(vector1,vector2):
     ray          : ndarray
                    Array that contains starting points and cosines of a created ray.
     """
-    angle  = np.cross(vector1[1],vector2[1])
+    angle  = np.cross(vector1[1].T,vector2[1].T)
     angle  = np.asarray(angle)
     ray    = np.array([vector1[0],angle],dtype=np.float)
     return ray
@@ -112,9 +109,9 @@ def find_intersection_w_surface(ray,points):
                    Distance in between starting point of a ray with it's intersection with a planar surface.
     """
     point0,point1,point2 = points
-    vector0,s            = create_ray_from_two_points(point0,point1)
-    vector1,s            = create_ray_from_two_points(point1,point2)
-    vector2,s            = create_ray_from_two_points(point0,point2)
+    vector0              = create_ray_from_two_points(point0,point1)
+    vector1              = create_ray_from_two_points(point1,point2)
+    vector2              = create_ray_from_two_points(point0,point2)
     normal               = multiply_two_vectors(vector0,vector2)
     f                    = point0-ray[0]
     n                    = normal[1].copy()
