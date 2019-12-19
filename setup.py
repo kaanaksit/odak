@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
       name             = "odak",
-      version          = "0.1",
+      version          = "0.11",
       author           = "Kaan Akşit",
       author_email     = "kunguz@gmail.com",
       description      = (

@@ -1,6 +1,7 @@
 from odak import np
 from odak.tools.vector import cross_product
 from odak.raytracing.ray import create_ray_from_two_points
+from odak.raytracing.primitives import is_it_on_triangle
 
 def reflect(input_ray,normal):
     """ 
@@ -32,13 +33,13 @@ def reflect(input_ray,normal):
     output_ray[1][2] = input_ray[1][2] - 2*a*normal[1][2]
     return output_ray
 
-def find_intersection_w_surface(ray,points):
+def intersect_w_surface(ray,points):
     """
     Definition to find intersection point inbetween a surface and a ray. For more see: http://geomalgorithms.com/a06-_intersect-2.html
 
     Parameters
     ----------
-    vector       : ndarray
+    ray          : ndarray
                    A vector/ray.
     points       : ndarray
                    Set of points in X,Y and Z to define a planar surface.
@@ -55,6 +56,10 @@ def find_intersection_w_surface(ray,points):
     vector1              = create_ray_from_two_points(point1,point2)
     vector2              = create_ray_from_two_points(point0,point2)
     normal               = cross_product(vector0,vector2)
+    if np.sum(np.isnan(normal)) > 0 or np.sum(np.isinf(normal)) > 0:
+        normal = cross_product(vector0,vector1)
+    if np.sum(np.isnan(normal)) > 0 or np.sum(np.isinf(normal)) > 0:
+        normal = cross_product(vector1,vector2)
     f                    = point0-ray[0].T
     n                    = normal[1].copy()
     distance             = np.dot(n.T,f.T)/np.dot(n.T,ray[1])
@@ -63,3 +68,25 @@ def find_intersection_w_surface(ray,points):
     normal[0][2]         = ray[0][2]+distance*ray[1][2]
     return normal,distance
 
+def intersect_w_triangle(ray,triangle):
+    """
+    Definition to find intersection point of a ray with a triangle. Returns False for each variable if there the ray doesn't intersect with a triangle.
+
+    Parameters
+    ----------
+    ray          : ndarray
+                   A vector/ray.
+    triangle     : ndarray
+                   Set of points in X,Y and Z to define a single triangle.
+
+    Returns
+    ----------
+    normal       : ndarray
+                   Surface normal at the point of intersection.
+    distance     : float
+                   Distance in between a starting point of a ray and the intersection point with a given triangle.
+    """
+    normal,distance = intersect_w_surface(ray,triangle)
+    if is_it_on_triangle(normal[0],triangle[0],triangle[1],triangle[2]) == False:
+        return False,False
+    return normal,distance
