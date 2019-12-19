@@ -3,6 +3,7 @@
 import sys
 import numpy as np
 import odak
+import odak.raytracing
 
 def test_ray_intersect_w_a_surface():
     # Create a ray.
