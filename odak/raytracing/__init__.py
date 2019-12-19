@@ -6,3 +6,5 @@ Provides necessary definitions for geometric optics. See "General Ray tracing pr
 """
 # To get sub-modules.
 from .ray import *
+from .primitives import *
+from .boundary import *

@@ -16,7 +16,7 @@ def rotmatx(angle):
                     Rotation matrix along X axis.
     """
     angle = np.float(angle)
-    angle = angle_to_radians(angle)
+    angle = np.radians(angle)
     rotx  = np.array([
                       [1.,            0.  ,           0.],
                       [0.,  math.cos(angle), -math.sin(angle)],
@@ -38,7 +38,7 @@ def rotmaty(angle):
     roty         : ndarray
                    Rotation matrix along Y axis.
     """
-    angle = angle_to_radians(angle)
+    angle = np.radians(angle)
     roty  = np.array([
                       [math.cos(angle),  0., math.sin(angle)],
                       [0.,             1.,            0.],
@@ -60,7 +60,7 @@ def rotmatz(angle):
     rotz         : ndarray
                    Rotation matrix along Z axis.
     """
-    angle = angle_to_radians(angle)
+    angle = np.radians(angle)
     rotz  = np.array([
                       [ math.cos(angle), -math.sin(angle), 0.],
                       [ math.sin(angle),  math.cos(angle), 0.],

@@ -19,11 +19,12 @@ def test_ray_intersect_w_a_surface():
     print('Starting point of the created ray: %s' % ray[0])
     print('Angles of the created ray: %s' % ray[1])
     # Intersection with the surface.
-    surface_points     = [
-                          [10.,10.,1000.],
-                          [ 0.,10.,1000.],
-                          [ 0., 0.,1000.]
-                         ] # <-- Three points on a surface.
+    surface_center     = [ 0., 0.,1000.]
+    surface_angles     = [ 0., 0., 0.]
+    surface_points     = odak.raytracing.define_plane(
+                                                      surface_center,
+                                                      surface_angles
+                                                     )
     print('Points to define surface: %s %s %s' % (surface_points[0],surface_points[1],surface_points[2]))
     normal,distance    = odak.raytracing.find_intersection_w_surface(
                                                                      ray,
