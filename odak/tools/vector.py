@@ -18,7 +18,6 @@ def cross_product(vector1,vector2):
     """
     angle  = np.cross(vector1[1].T,vector2[1].T)
     angle  = np.asarray(angle)
-    angle /= np.amax(angle)
     ray    = np.array([vector1[0],angle],dtype=np.float)
     return ray
 
@@ -46,7 +45,7 @@ def same_side(p1,p2,a,b):
         return True
     return False
 
-def  distance_between_two_points(point1,point2):
+def distance_between_two_points(point1,point2):
     """
     Definition to calculate distance between two given points.
 

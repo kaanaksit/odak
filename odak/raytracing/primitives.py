@@ -28,6 +28,17 @@ def define_plane(point,angles=[0.,0.,0.]):
         plane[i]        = plane[i]+point
     return plane
 
+def center_of_triangle(triangle):
+    """
+    Definition to calculate center of a triangle.
+    """
+    center = [
+              np.mean(np.array(triangle)[2][:]),
+              np.mean(np.array(triangle)[1][:]),
+              np.mean(np.array(triangle)[0][:])
+             ]
+    return center
+
 def is_it_on_triangle(pointtocheck,point0,point1,point2):
     """
     Definition to check if a given point is inside a triangle. If the given point is inside a defined triangle, this definition returns True.
@@ -51,3 +62,29 @@ def is_it_on_triangle(pointtocheck,point0,point1,point2):
     if side0 == True and side1 == True and side2 == True:
         return True
     return False
+
+def define_circle(center,radius,angles):
+    """
+    Definition to describe a circle in a single variable packed form.
+
+    Parameters
+    ----------
+    center  : float
+              Center of a circle to be defined.
+    radius  : float
+              Radius of a circle to be defined.
+    angles  : float
+              Angular tilt of a circle.
+
+    Returns
+    ----------
+    circle  : list
+              Single variable packed form.
+    """
+    points  = define_plane(center,angles=angles)
+    circle  = [
+               points,
+               center,
+               radius
+              ]
+    return circle
