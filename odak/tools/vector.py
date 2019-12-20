@@ -23,7 +23,7 @@ def cross_product(vector1,vector2):
     return ray
 
 def same_side(p1,p2,a,b):
-     """
+    """
     Definition to figure which side a point is on with respect to a line and a point. See http://www.blackpawn.com/texts/pointinpoly/ for more. If p1 and p2 are on the sameside, this definition returns True.
 
     Parameters
