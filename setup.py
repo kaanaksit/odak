@@ -24,7 +24,6 @@ setup(
                           'odak',
                           'odak/raytracing',
                           'odak/tools',
-                          'odak/test',
                           'odak/oldschool'
                          ],
       long_description = read('README.md'),
