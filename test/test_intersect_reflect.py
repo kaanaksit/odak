@@ -2,23 +2,6 @@ import odak.raytracing as raytracer
 import sys
 
 def detector_to_light_source(detector_location,triangle,light_source):
-    """
-    This definition describe an optical path from a given pinhole detector to a given triangle then from that triangle to a light source. The definition returns False if the path isn't feasible.
-
-    Parameters
-    ----------
-    detector_location     : list
-                            Pinhole detector location in X,Y,Z.
-    triangle              : list
-                            Points that described a triangle in X,Y,Z.
-    light_source          : list
-                            Light source described in packed single variable form (see odak.raytracing.define_circle).
-
-    Returns
-    ----------
-    opl                   : float
-                            Total optical path length.
-    """
     center_of_triangle        = raytracer.center_of_triangle(triangle)
     ray_detector_triangle     = raytracer.create_ray_from_two_points(
                                                                      detector_location,
