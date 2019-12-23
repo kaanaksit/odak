@@ -2,7 +2,7 @@
 ![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)
 ![Build status](https://travis-ci.com/kunguz/odak.svg?branch=next)
 
-Odak (pronounced "O-dawec") is the fundamental library for scientific computing in optical sciences. Odak includes modules for geometric [3D raytracing](odak/raytracing/ray.py), 2D paraxial raytracing, Jones calculus, beam propagation, and wave optics.
+Odak (pronounced "O-dawec") is the fundamental library for scientific computing in optical sciences. Odak includes modules for geometric [3D raytracing](odak/raytracing/), 2D paraxial raytracing, Jones calculus, beam propagation, and wave optics.
 
 ## Getting Started
 
