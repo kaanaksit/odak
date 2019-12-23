@@ -14,7 +14,7 @@ pip3 install -i https://test.pypi.org/simple/ odak
 ```
 
 ### Usage
-It is easy as in this recorded session. Import it to your code and start designing Optics!
+It is easy as in this recorded session. Import it to your code and start designing your next in Optics!
 
 [![asciicast](https://asciinema.org/a/290015.svg)](https://asciinema.org/a/290015)
 
