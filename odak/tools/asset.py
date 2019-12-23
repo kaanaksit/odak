@@ -14,8 +14,8 @@ def read_PLY(fn):
     Returns
     ----------
     mesh        : ndarray
-                  Meshes from a given PLY file.
-   """
+                  Meshes from a given PLY file. Note that the mesh coming out of this function isn't always structured in the right order and with the size of (MxN)x3. You can use numpy's reshape to restructure it to mxnx3 if you know what you are doing.
+    """
     with open(fn,'rb') as f:
         plydata = PlyData.read(f)
     mesh = plydata.elements[0].data
@@ -59,5 +59,4 @@ def write_PLY(points,savefn='example.ply'):
     el1       = PlyElement.describe(pnts, 'vertex', comments=['Vertex data'])
     el2       = PlyElement.describe(tris, 'face', comments=['Face data'])
     PlyData([el1,el2],text="True").write(savefn)
-    return True
 
