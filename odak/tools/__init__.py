@@ -8,3 +8,4 @@ Provides necessary definitions for general tools used across the library.
 from .transformation import *
 from .vector import *
 from .sample import *
+from .asset import *
