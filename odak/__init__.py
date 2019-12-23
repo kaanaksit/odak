@@ -6,3 +6,5 @@ Odak is the fundamental Python library needed for scientific computing in optica
 """
 import sys
 import numpy as np
+import odak.tools
+import odak.raytracing
