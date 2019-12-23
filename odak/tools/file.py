@@ -1,4 +1,5 @@
 import subprocess
+import os
 from odak import np
 from PIL import Image
 
@@ -74,7 +75,6 @@ def shell_command(cmd):
                     True if succesful.
 
     """
-    print('Last command executed: ', cmd)
     proc  = subprocess.Popen(
                              cmd,
                              cwd='.',
@@ -85,4 +85,17 @@ def shell_command(cmd):
     except subprocess.TimeoutExpired:
         proc.kill()
         outs, errs = proc.communicate()
+    return True
+
+def check_directory(directory):
+    """
+    Definition to check if a directory exist. If it doesn't exist, this definition will create one.
+
+    Parameters
+    ----------
+    directory     : str
+                    Full directory path.
+    """
+    if not os.path.exists(directory):
+       os.makedirs(directory)
     return True

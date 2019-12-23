@@ -106,3 +106,31 @@ def rotate_point(point,angles=[0,0,0],mode='XYZ'):
     elif mode == 'ZYX':
         result = np.dot(rotx,np.dot(roty,np.dot(rotz,point)))
     return result,rotx,roty,rotz
+
+def tilt_towards(location,lookat):
+    """
+    Definition to tilt surface normal of a plane towards a point.
+
+    Parameters
+    ----------
+    location     : list
+                   Center of the plane to be tilted.
+
+    Returns
+    ----------
+    lookat       : list
+                   Rotation angles in degrees.
+    """
+    dx     = location[0]-lookat[0]
+    dy     = location[1]-lookat[1]
+    dz     = location[2]-lookat[2]
+    dist   = np.sqrt(dx**2+dy**2+dz**2)
+    phi    = np.atan2(dy,dx)
+    theta  = np.acos(dz/dist)
+    angles = [
+               0,
+               np.degrees(theta),
+               np.degrees(phi)
+              ]
+    return angles
+
