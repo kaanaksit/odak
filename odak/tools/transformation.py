@@ -125,8 +125,8 @@ def tilt_towards(location,lookat):
     dy     = location[1]-lookat[1]
     dz     = location[2]-lookat[2]
     dist   = np.sqrt(dx**2+dy**2+dz**2)
-    phi    = np.atan2(dy,dx)
-    theta  = np.acos(dz/dist)
+    phi    = np.arctan2(dy,dx)
+    theta  = np.arccos(dz/dist)
     angles = [
                0,
                np.degrees(theta),
