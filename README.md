@@ -16,7 +16,7 @@ pip3 install -i https://test.pypi.org/simple/ odak
 ### Usage
 It is easy as in this recorded session. Import it to your code and start using it!
 
-[![asciicast](https://asciinema.org/a/290009.svg)](https://asciinema.org/a/290009)
+[![asciicast](https://asciinema.org/a/290014.svg)](https://asciinema.org/a/290014)
 
 ## Citing
 If you use Odak in a research project leading to a publication, please acknowledge this fact by using our ready-made [bibtex citation entry](citations/odak.bib) or [plain text citation entry](citations/odak.txt).
