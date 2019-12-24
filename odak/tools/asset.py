@@ -30,7 +30,45 @@ def read_PLY(fn):
     triangles = np.array(triangles)
     return triangles
 
-def write_PLY(points,savefn='example.ply'):
+def write_PLY(triangles,savefn='output.ply'):
+    """
+    Definition to generate a PLY file from given points.
+
+    Parameters
+    ----------
+    triangles   : ndarray
+                  List of triangles with the size of Mx3x3.
+    savefn      : string
+                  Filename for a PLY file.
+    """
+    tris  = []
+    pnts  = []
+    color = [255,255,255]
+    for tri_id in range(triangles.shape[0]):
+       tris.append(
+                   (
+                    [3*tri_id,3*tri_id+1,3*tri_id+2], 
+                    color[0],
+                    color[1],
+                    color[2]
+                   )
+                  )
+       for i in range(0,3):
+           pnts.append(
+                       (
+                        triangles[tri_id][i][0],
+                        triangles[tri_id][i][1],
+                        triangles[tri_id][i][2]
+                       )
+                      )
+    tris   = np.asarray(tris, dtype=[('vertex_indices', 'i4', (3,)),('red', 'u1'), ('green', 'u1'),('blue', 'u1')])
+    pnts   = np.asarray(pnts, dtype=[('x', 'f4'), ('y', 'f4'), ('z', 'f4')])
+    # Save mesh.
+    el1       = PlyElement.describe(pnts, 'vertex', comments=['Vertex data'])
+    el2       = PlyElement.describe(tris, 'face', comments=['Face data'])
+    PlyData([el1,el2],text="True").write(savefn)
+
+def write_PLY_from_points(points,savefn='output.ply'):
     """
     Definition to generate a PLY file from given points.
 
@@ -56,9 +94,9 @@ def write_PLY(points,savefn='example.ply'):
             pnt  = (roi[0][idx][idy]    , roi[1][idx][idy]    , zz[idx][idy])
             pnts.append(pnt)
     m = samples[0]*samples[1]
+    color = [255,255,255]
     for idx in range(0,samples[0]-1):
         for idy in range(0,samples[1]-1):
-            color = [255,255,255]
             tris.append(([idy+(idx+1)*samples[0], idy+idx*samples[0]  , idy+1+idx*samples[0]], color[0], color[1], color[2]))
             tris.append(([idy+(idx+1)*samples[0], idy+1+idx*samples[0], idy+1+(idx+1)*samples[0]], color[0], color[1], color[2]))
     tris   = np.asarray(tris, dtype=[('vertex_indices', 'i4', (3,)),('red', 'u1'), ('green', 'u1'),('blue', 'u1')])
