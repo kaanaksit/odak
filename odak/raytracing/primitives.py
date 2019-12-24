@@ -31,11 +31,16 @@ def define_plane(point,angles=[0.,0.,0.]):
 def center_of_triangle(triangle):
     """
     Definition to calculate center of a triangle.
+
+    Parameters
+    ----------
+    triangle      : ndarray
+                    An array that contains three points defining a triangle (Mx3).
     """
     center = [
-              np.mean(np.array(triangle)[2][:]),
-              np.mean(np.array(triangle)[1][:]),
-              np.mean(np.array(triangle)[0][:])
+              np.mean(triangle[:,0]),
+              np.mean(triangle[:,1]),
+              np.mean(triangle[:,2])
              ]
     return center
 

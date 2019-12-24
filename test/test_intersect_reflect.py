@@ -1,4 +1,5 @@
 import odak.raytracing as raytracer
+import numpy as np
 import sys
 
 def detector_to_light_source(detector_location,triangle,light_source):
@@ -26,11 +27,13 @@ def detector_to_light_source(detector_location,triangle,light_source):
 
 def test():
     detector_location = [2.,0.,0.]
-    triangle          = [
-                         [ 10., 10., 10.],
-                         [  0., 10., 10.],
-                         [  0.,  0., 10.]
-                        ]
+    triangle          = np.array(
+                                 [
+                                  [ 10., 10., 10.],
+                                  [  0., 10., 10.],
+                                  [  0.,  0., 10.]
+                                 ]
+                                )
     circle_center     = [0.,0.,0.]
     circle_angles     = [0.,0.,0.]
     circle_radius     = 15.

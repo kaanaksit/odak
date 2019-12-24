@@ -13,14 +13,22 @@ def read_PLY(fn):
 
     Returns
     ----------
-    mesh        : ndarray
-                  Meshes from a given PLY file. Note that the mesh coming out of this function isn't always structured in the right order and with the size of (MxN)x3. You can use numpy's reshape to restructure it to mxnx3 if you know what you are doing.
+    triangles   : ndarray
+                  Triangles from a given PLY file. Note that the triangles coming out of this function isn't always structured in the right order and with the size of (MxN)x3. You can use numpy's reshape to restructure it to mxnx3 if you know what you are doing.
     """
     with open(fn,'rb') as f:
         plydata = PlyData.read(f)
-    mesh = plydata.elements[0].data
-    mesh = np.array(mesh.tolist())
-    return mesh
+    triangle_ids = np.vstack(plydata['face'].data['vertex_indices'])
+    triangles    = []
+    for vertex_ids in triangle_ids:
+        triangle = [
+                    plydata['vertex'][vertex_ids[0]].tolist(),
+                    plydata['vertex'][vertex_ids[1]].tolist(),
+                    plydata['vertex'][vertex_ids[2]].tolist()
+                   ]
+        triangles.append(triangle)
+    triangles = np.array(triangles)
+    return triangles
 
 def write_PLY(points,savefn='example.ply'):
     """
