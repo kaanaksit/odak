@@ -68,7 +68,7 @@ def rotmatz(angle):
                      ],dtype=np.float)
     return rotz
 
-def rotate_point(point,angles=[0,0,0],mode='XYZ'):
+def rotate_point(point,angles=[0,0,0],mode='XYZ',origin=[0,0,0]):
     """
     Definition to rotate a given point. Note that rotation is always with respect to 0,0,0.
 
@@ -80,6 +80,8 @@ def rotate_point(point,angles=[0,0,0],mode='XYZ'):
                    Rotation angles in degrees. 
     mode         : str
                    Rotation mode determines ordering of the rotations at each axis. There are XYZ,YXZ,ZXY and ZYX modes.
+    origin       : list
+                   Reference point for a rotation.
 
     Returns
     ----------
@@ -92,6 +94,7 @@ def rotate_point(point,angles=[0,0,0],mode='XYZ'):
     rotz         : ndarray
                    Rotation matrix along Z axis.
     """
+    point -= np.asarray(origin)
     rotx   = rotmatx(angles[0])
     roty   = rotmaty(angles[1])
     rotz   = rotmatz(angles[2])
@@ -105,6 +108,7 @@ def rotate_point(point,angles=[0,0,0],mode='XYZ'):
         result = np.dot(roty,np.dot(rotx,np.dot(rotz,point)))
     elif mode == 'ZYX':
         result = np.dot(rotx,np.dot(roty,np.dot(rotz,point)))
+    point += np.asarray(origin)
     return result,rotx,roty,rotz
 
 def tilt_towards(location,lookat):
