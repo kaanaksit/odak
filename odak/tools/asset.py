@@ -1,15 +1,22 @@
 import plyfile
 from plyfile import PlyData, PlyElement
 from odak import np
+from .transformation import rotate_point
 
-def read_PLY(fn):
+def read_PLY(fn,offset=[0,0,0],angles=[0.,0.,0.],mode='XYZ'):
     """
-    Definition to read a PLY file and extract meshes from a given PLY file.
+    Definition to read a PLY file and extract meshes from a given PLY file. Note that rotation is always with respect to 0,0,0.
 
     Parameters
     ----------
-    fn          : string
-                  Filename of a PLY file.
+    fn           : string
+                   Filename of a PLY file.
+    offset       : ndarray
+                   Offset in X,Y,Z.
+    angles       : list
+                   Rotation angles in degrees.
+    mode         : str
+                   Rotation mode determines ordering of the rotations at each axis. There are XYZ,YXZ,ZXY and ZYX modes.                  
 
     Returns
     ----------
@@ -21,11 +28,14 @@ def read_PLY(fn):
     triangle_ids = np.vstack(plydata['face'].data['vertex_indices'])
     triangles    = []
     for vertex_ids in triangle_ids:
-        triangle = [
-                    plydata['vertex'][vertex_ids[0]].tolist(),
-                    plydata['vertex'][vertex_ids[1]].tolist(),
-                    plydata['vertex'][vertex_ids[2]].tolist()
-                   ]
+        triangle     = [
+                        rotate_point(plydata['vertex'][vertex_ids[0]].tolist(),angles=angles)[0],
+                        rotate_point(plydata['vertex'][vertex_ids[1]].tolist(),angles=angles)[0],
+                        rotate_point(plydata['vertex'][vertex_ids[2]].tolist(),angles=angles)[0]
+                       ]
+        triangle[0] += np.asarray(offset)
+        triangle[1] += np.asarray(offset)
+        triangle[2] += np.asarray(offset)
         triangles.append(triangle)
     triangles = np.array(triangles)
     return triangles

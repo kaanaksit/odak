@@ -70,14 +70,14 @@ def rotmatz(angle):
 
 def rotate_point(point,angles=[0,0,0],mode='XYZ'):
     """
-    Definition to rotate a given point.
+    Definition to rotate a given point. Note that rotation is always with respect to 0,0,0.
 
     Parameters
     ----------
     point        : ndarray
                    A point.
     angles       : list
-                   Rotation angles in degrees.
+                   Rotation angles in degrees. 
     mode         : str
                    Rotation mode determines ordering of the rotations at each axis. There are XYZ,YXZ,ZXY and ZYX modes.
 
