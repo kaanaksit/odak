@@ -1,12 +1,20 @@
 import odak.raytracing as raytracer
 import sys
 import numpy as np
-from odak.tools.asset import read_PLY,write_PLY
+import odak
+from odak.visualize import PLY_object
 
 def test():
-    triangles = read_PLY('./test/sample.ply')
-    # write_PLY has to be fixed. Currently not working as intended.
-    write_PLY(triangles,savefn='output.ply')
+    cad = odak.visualize.PLY_object()
+    for i in np.linspace(-10,10,5):
+        for j in np.linspace(-10,10,5):
+            color = [
+                     np.int(np.random.rand()*255),
+                     np.int(np.random.rand()*255),
+                     np.int(np.random.rand()*255)
+                    ]
+            cad.draw_a_ray([0.,0.,0.],[i,j,50.],color=color)
+    cad.save_PLY(savefn='out.ply')
     assert True==True
 
 if __name__ == '__main__':

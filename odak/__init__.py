@@ -9,3 +9,4 @@ import numpy as np
 import odak.tools
 import odak.raytracing
 import odak.wave
+import odak.visualize
