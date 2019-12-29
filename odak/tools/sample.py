@@ -63,17 +63,18 @@ def batch_of_rays(entry,exit):
     rays       : ndarray
                  Generated batch of rays.
     """
-    norays = [0,0]
+    norays = np.array([0,0])
     if len(entry.shape) == 1:
         entry = entry.reshape((1,3))
     if len(exit.shape) == 1:
         exit = exit.reshape((1,3))
-    norays = np.amax([entry.shape[0],exit.shape[0]])
+    norays = np.amax(np.asarray([entry.shape[0],exit.shape[0]]))
     if norays > exit.shape[0]:
         exit = np.repeat(exit,norays,axis=0)
     elif norays > entry.shape[0]:
         entry = np.repeat(entry,norays,axis=0)
     rays   = []
+    norays = int(norays)
     for i in range(norays):
         rays.append(
                     create_ray_from_two_points(

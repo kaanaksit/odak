@@ -23,6 +23,7 @@ def define_plane(point,angles=[0.,0.,0.]):
                       [  0., 10., 0.],
                       [  0.,  0., 0.]
                      ])
+    point = np.asarray(point)
     for i in range(0,plane.shape[0]):
         plane[i],_,_,_  = rotate_point(plane[i],angles=angles)
         plane[i]        = plane[i]+point
@@ -61,6 +62,7 @@ def is_it_on_triangle(pointtocheck,point0,point1,point2):
     """
     # point0, point1 and point2 are the corners of the triangle.
     pointtocheck = np.asarray(pointtocheck).reshape(3)
+    point0 = np.asarray(point0); point1 = np.asarray(point1); point2 = np.asarray(point2)
     side0        = same_side(pointtocheck,point0,point1,point2)
     side1        = same_side(pointtocheck,point1,point0,point2)
     side2        = same_side(pointtocheck,point2,point0,point1)

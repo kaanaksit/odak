@@ -29,10 +29,11 @@ def read_PLY(fn,offset=[0,0,0],angles=[0.,0.,0.],mode='XYZ'):
     triangles    = []
     for vertex_ids in triangle_ids:
         triangle     = [
-                        rotate_point(plydata['vertex'][vertex_ids[0]].tolist(),angles=angles)[0],
-                        rotate_point(plydata['vertex'][vertex_ids[1]].tolist(),angles=angles)[0],
-                        rotate_point(plydata['vertex'][vertex_ids[2]].tolist(),angles=angles)[0]
+                        rotate_point(plydata['vertex'][int(vertex_ids[0])].tolist(),angles=angles)[0],
+                        rotate_point(plydata['vertex'][int(vertex_ids[1])].tolist(),angles=angles)[0],
+                        rotate_point(plydata['vertex'][int(vertex_ids[2])].tolist(),angles=angles)[0]
                        ]
+        triangle     = np.asarray(triangle)
         triangle[0] += np.asarray(offset)
         triangle[1] += np.asarray(offset)
         triangle[2] += np.asarray(offset)
@@ -66,13 +67,18 @@ def write_PLY(triangles,savefn='output.ply'):
        for i in range(0,3):
            pnts.append(
                        (
-                        triangles[tri_id][i][0],
-                        triangles[tri_id][i][1],
-                        triangles[tri_id][i][2]
+                        float(triangles[tri_id][i][0]),
+                        float(triangles[tri_id][i][1]),
+                        float(triangles[tri_id][i][2])
                        )
                       )
-    tris   = np.asarray(tris, dtype=[('vertex_indices', 'i4', (3,)),('red', 'u1'), ('green', 'u1'),('blue', 'u1')])
-    pnts   = np.asarray(pnts, dtype=[('x', 'f4'), ('y', 'f4'), ('z', 'f4')])
+    if np.__name__ == 'cupy':
+        import numpy as np_cpu
+        tris   = np_cpu.asarray(tris, dtype=[('vertex_indices', 'i4', (3,)),('red', 'u1'), ('green', 'u1'),('blue', 'u1')])
+        pnts   = np_cpu.asarray(pnts, dtype=[('x', 'f4'), ('y', 'f4'), ('z', 'f4')])
+    else:
+        tris   = np.asarray(tris, dtype=[('vertex_indices', 'i4', (3,)),('red', 'u1'), ('green', 'u1'),('blue', 'u1')])
+        pnts   = np.asarray(pnts, dtype=[('x', 'f4'), ('y', 'f4'), ('z', 'f4')])
     # Save mesh.
     el1       = PlyElement.describe(pnts, 'vertex', comments=['Vertex data'])
     el2       = PlyElement.describe(tris, 'face', comments=['Face data'])

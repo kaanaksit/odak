@@ -1,5 +1,5 @@
 import math
-import numpy as np
+from odak import np
 
 def rotmatx(angle):
     """
@@ -94,6 +94,7 @@ def rotate_point(point,angles=[0,0,0],mode='XYZ',origin=[0,0,0]):
     rotz         : ndarray
                    Rotation matrix along Z axis.
     """
+    point  = np.asarray(point)
     point -= np.asarray(origin)
     rotx   = rotmatx(angles[0])
     roty   = rotmaty(angles[1])

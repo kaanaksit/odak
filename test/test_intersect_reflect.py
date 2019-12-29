@@ -1,6 +1,6 @@
 import odak.raytracing as raytracer
-import numpy as np
 import sys
+from odak import np
 
 def detector_to_light_source(detector_location,triangle,light_source):
     center_of_triangle        = raytracer.center_of_triangle(triangle)
