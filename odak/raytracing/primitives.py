@@ -36,13 +36,12 @@ def center_of_triangle(triangle):
     Parameters
     ----------
     triangle      : ndarray
-                    An array that contains three points defining a triangle (Mx3).
+                    An array that contains three points defining a triangle (Mx3). It can also parallel process many triangles (NxMx3).
     """
-    center = [
-              np.mean(triangle[:,0]),
-              np.mean(triangle[:,1]),
-              np.mean(triangle[:,2])
-             ]
+    if len(triangle.shape) == 2:
+        center = np.mean(triangle,axis=0)
+    if len(triangle.shape) == 3:
+        center = np.mean(triangle,axis=1)
     return center
 
 def is_it_on_triangle(pointtocheck,point0,point1,point2):

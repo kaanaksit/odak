@@ -1,7 +1,7 @@
 from odak import np
 from odak.tools.vector import cross_product,distance_between_two_points
 from odak.raytracing.ray import create_ray_from_two_points
-from odak.raytracing.primitives import is_it_on_triangle
+from odak.raytracing.primitives import is_it_on_triangle,center_of_triangle
 
 def reflect(input_ray,normal):
     """ 
@@ -60,29 +60,38 @@ def intersect_w_surface(ray,points):
     normal[0][2]         = ray[0][2]+distance*ray[1][2]
     return normal,distance
 
-def get_triangle_normal(triangle):
+def get_triangle_normal(triangle,triangle_center=None):
     """
     Definition to calculate surface normal of a triangle.
 
     Parameters
     ----------
-    triangle     : ndarray
-                   Set of points in X,Y and Z to define a planar surface.
+    triangle        : ndarray
+                      Set of points in X,Y and Z to define a planar surface (3,3). It can also be list of triangles (mx3x3).
+    triangle_center : ndarray
+                      Center point of the given triangle. See odak.raytracing.center_of_triangle for more. In many scenarios you can accelerate things by precomputing triangle centers.
 
     Returns
     ----------
-    normal       : ndarray
-                   Surface normal at the point of intersection.
+    normal          : ndarray
+                      Surface normal at the point of intersection.
     """
-    point0,point1,point2 = triangle
-    vector0              = create_ray_from_two_points(point0,point1)
-    vector1              = create_ray_from_two_points(point1,point2)
-    vector2              = create_ray_from_two_points(point0,point2)
-    normal               = cross_product(vector0,vector2)
-    if np.sum(np.isnan(normal)) > 0 or np.sum(np.isinf(normal)) > 0:
-        normal = cross_product(vector0,vector1)
-    if np.sum(np.isnan(normal)) > 0 or np.sum(np.isinf(normal)) > 0:
-        normal = cross_product(vector1,vector2)
+    if len(triangle.shape) == 2:
+        normal    = np.zeros((2,3))
+        direction = np.cross(triangle[0]-triangle[1],triangle[2]-triangle[1])
+        if type(triangle_center) == type(None):
+            normal[0] = center_of_triangle(triangle)
+        else:
+            normal[0] = triangle_center
+        normal[1] = direction/np.sum(direction)
+    elif len(triangle.shape) == 3:
+        normal      = np.zeros((triangle.shape[0],2,3))
+        direction   = np.cross(triangle[:,0]-triangle[:,1],triangle[:,2]-triangle[:,1])
+        if type(triangle_center) == type(None):
+            normal[:,0] = center_of_triangle(triangle)
+        else:
+            normal[:,0] = triangle_center
+        normal[:,1] = direction/np.sum(direction,axis=1)[0]
     return normal
 
 def intersect_w_circle(ray,circle):

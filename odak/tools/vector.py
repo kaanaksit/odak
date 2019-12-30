@@ -61,5 +61,10 @@ def distance_between_two_points(point1,point2):
     distance    : float
                   Distance in between given two points.
     """
-    distance = np.sqrt(np.sum((np.array(point1)-np.array(point2))**2))
+    point1 = np.asarray(point1)
+    point2 = np.asarray(point2)
+    if len(point1.shape) == 1 and len(point2.shape) == 1:
+        distance = np.sqrt(np.sum((point1-point2)**2))
+    elif len(point1.shape) == 2 or len(point2.shape) == 2:
+        distance = np.sqrt(np.sum((point1-point2)**2,axis=1))
     return distance
