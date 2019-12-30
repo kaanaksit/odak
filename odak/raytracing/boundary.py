@@ -57,6 +57,7 @@ def intersect_w_surface(ray,points):
     normal[0][0]         = ray[0][0]+distance*ray[1][0]
     normal[0][1]         = ray[0][1]+distance*ray[1][1]
     normal[0][2]         = ray[0][2]+distance*ray[1][2]
+    distance             = np.abs(distance)
     return normal,distance
 
 def get_triangle_normal(triangle,triangle_center=None):
