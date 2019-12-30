@@ -36,9 +36,9 @@ def save_image(fn,img,cmin=0,cmax=255):
     input_img                 *= 255
     input_img                  = input_img.astype(np.uint8)
     if colorflag==True:
-       result_img = Image.fromarray(input_img)
+       result_img = Image.fromarray(np.asnumpy(input_img))
     elif colorflag == False:
-       result_img = Image.fromarray(input_img).convert("L")
+       result_img = Image.fromarray(np.asnumpy(input_img)).convert("L")
     result_img.save(fn)
     return True
 

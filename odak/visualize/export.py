@@ -24,8 +24,8 @@ class PLY_object():
                       List that contains red, green and blue color channel values (8 bit).
         """
         import numpy as np_cpu
-        point0    = np_cpu.reshape(np.asarray(point0),(3))
-        point1    = np_cpu.reshape(np.asarray(point1),(3))
+        point0    = np_cpu.reshape(np_cpu.array(point0),(3))
+        point1    = np_cpu.reshape(np_cpu.array(point1),(3))
         if type(self.pnts) == type(None):
             a = 0
         elif type(self.pnts) != type(None):
