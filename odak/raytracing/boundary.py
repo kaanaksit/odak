@@ -52,8 +52,7 @@ def intersect_w_surface(ray,points):
                    Distance in between starting point of a ray with it's intersection with a planar surface.
     """
     normal               = get_triangle_normal(points)
-    point0,point1,point2 = points
-    f                    = np.asarray(point0)-ray[0]
+    f                    = points[0]-ray[0]
     distance             = np.dot(normal[1],f)/np.dot(normal[1],ray[1])
     normal[0][0]         = ray[0][0]+distance*ray[1][0]
     normal[0][1]         = ray[0][1]+distance*ray[1][1]
@@ -76,23 +75,18 @@ def get_triangle_normal(triangle,triangle_center=None):
     normal          : ndarray
                       Surface normal at the point of intersection.
     """
-    triangle = np.asarray(triangle)
+    triangle  = np.asarray(triangle)
     if len(triangle.shape) == 2:
-        normal    = np.zeros((2,3))
-        direction = np.cross(triangle[0]-triangle[1],triangle[2]-triangle[1])
-        if type(triangle_center) == type(None):
-            normal[0] = center_of_triangle(triangle)
-        else:
-            normal[0] = triangle_center
-        normal[1] = direction/np.sum(direction)
-    elif len(triangle.shape) == 3:
-        normal      = np.zeros((triangle.shape[0],2,3))
-        direction   = np.cross(triangle[:,0]-triangle[:,1],triangle[:,2]-triangle[:,1])
-        if type(triangle_center) == type(None):
-            normal[:,0] = center_of_triangle(triangle)
-        else:
-            normal[:,0] = triangle_center
-        normal[:,1] = direction/np.sum(direction,axis=1)[0]
+        triangle  = triangle.reshape((1,3,3))
+    normal    = np.zeros((triangle.shape[0],2,3))
+    direction = np.cross(triangle[:,0]-triangle[:,1],triangle[:,2]-triangle[:,1])
+    if type(triangle_center) == type(None):
+        normal[:,0] = center_of_triangle(triangle)
+    else:
+        normal[:,0] = triangle_center
+    normal[:,1] = direction/np.sum(direction,axis=1)[0]
+    if normal.shape[0] == 1:
+        normal = normal.reshape((2,3))
     return normal
 
 def intersect_w_circle(ray,circle):

@@ -15,10 +15,10 @@ def test():
                                       center=[0.,0.,100.],
                                       angles=[0.,0.,0.]
                                      )
-    rays                = batch_of_rays(
-                                        sample_entry_points,
-                                        sample_exit_points
-                                       )
+    rays                = raytracer.create_ray_from_two_points(
+                                                               sample_entry_points,
+                                                               sample_exit_points
+                                                              )
     assert True==True
 
 if __name__ == '__main__':

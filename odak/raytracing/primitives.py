@@ -39,9 +39,8 @@ def center_of_triangle(triangle):
                     An array that contains three points defining a triangle (Mx3). It can also parallel process many triangles (NxMx3).
     """
     if len(triangle.shape) == 2:
-        center = np.mean(triangle,axis=0)
-    if len(triangle.shape) == 3:
-        center = np.mean(triangle,axis=1)
+        triangle = triangle.reshape((1,3,3))
+    center = np.mean(triangle,axis=1)
     return center
 
 def is_it_on_triangle(pointtocheck,point0,point1,point2):
