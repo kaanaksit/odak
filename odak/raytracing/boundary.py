@@ -76,6 +76,7 @@ def get_triangle_normal(triangle,triangle_center=None):
     normal          : ndarray
                       Surface normal at the point of intersection.
     """
+    triangle = np.asarray(triangle)
     if len(triangle.shape) == 2:
         normal    = np.zeros((2,3))
         direction = np.cross(triangle[0]-triangle[1],triangle[2]-triangle[1])
