@@ -19,6 +19,9 @@ def reflect(input_ray,normal):
     output_ray   : ndarray
                    Array that contains starting points and cosines of a reflected ray.
     """
+    input_ray = np.asarray(input_ray)
+    normal    = np.asarray(normal)
+    print(normal.shape)
     if len(input_ray.shape) == 2:
         input_ray = input_ray.reshape((1,2,3))
     if len(normal.shape) == 2:
@@ -54,6 +57,7 @@ def intersect_w_surface(ray,points):
     distance     : float
                    Distance in between starting point of a ray with it's intersection with a planar surface.
     """
+    points               = np.asarray(points)
     normal               = get_triangle_normal(points)
     if len(ray.shape) == 2:
         ray = ray.reshape((1,2,3))
@@ -70,7 +74,7 @@ def intersect_w_surface(ray,points):
     if normal.shape[0] == 1:
         normal   = normal.reshape((2,3))
         distance = distance.reshape((1))
-    if distance.shape[0] == 1:
+    if distance.shape[0] == 1 and len(distance.shape) > 1:
         distance = distance.reshape((distance.shape[1]))
     return normal,distance
 
@@ -149,5 +153,5 @@ def intersect_w_triangle(ray,triangle):
     """
     normal,distance = intersect_w_surface(ray,triangle)
     if is_it_on_triangle(normal[0],triangle[0],triangle[1],triangle[2]) == False:
-        return False,False
+        return 0,0
     return normal,distance

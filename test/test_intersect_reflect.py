@@ -12,6 +12,8 @@ def detector_to_light_source(detector_location,triangle,light_source):
                                                                ray_detector_triangle,
                                                                triangle
                                                               )
+    if d_det_tri == 0:
+        return 0
     ray_reflection            = raytracer.reflect(
                                                   ray_detector_triangle,
                                                   normal_triangle
@@ -20,8 +22,8 @@ def detector_to_light_source(detector_location,triangle,light_source):
                                                              ray_reflection,
                                                              light_source
                                                             )
-    if type(normal_source) == type(False):
-        return False
+    if d_tri_sou == 0:
+        return 0
     opl                       = d_det_tri + d_tri_sou
     return opl
 
