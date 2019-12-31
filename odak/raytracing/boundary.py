@@ -21,7 +21,6 @@ def reflect(input_ray,normal):
     """
     input_ray = np.asarray(input_ray)
     normal    = np.asarray(normal)
-    print(normal.shape)
     if len(input_ray.shape) == 2:
         input_ray = input_ray.reshape((1,2,3))
     if len(normal.shape) == 2:
