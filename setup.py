@@ -26,6 +26,7 @@ setup(
                           'odak/tools',
                           'odak/wave',
                           'odak/visualize',
+                          'odak/manager',
                           'odak/oldschool'
                          ],
       long_description = read('README.md'),

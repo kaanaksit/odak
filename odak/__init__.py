@@ -13,3 +13,4 @@ import odak.tools
 import odak.raytracing
 import odak.wave
 import odak.visualize
+import odak.manager
