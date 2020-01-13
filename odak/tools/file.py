@@ -62,7 +62,7 @@ def load_image(fn):
     image = Image.open(fn)
     return np.array(image)
 
-def shell_command(cmd,cwd='.',timeout=10000000000000000):
+def shell_command(cmd,cwd='.',timeout=None):
     """
     Definition to initiate shell commands.
 
