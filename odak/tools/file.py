@@ -62,7 +62,7 @@ def load_image(fn):
     image = Image.open(fn)
     return np.array(image)
 
-def shell_command(cmd,cwd='.'):
+def shell_command(cmd,cwd='.',timeout=0):
     """
     Definition to initiate shell commands.
 
@@ -72,6 +72,8 @@ def shell_command(cmd,cwd='.'):
                    Command to be executed.
     cwd          : str
                    Working directory.
+    timeout      : int
+                   Timeout if the process isn't complete in the given number of seconds.
 
 
     Returns
@@ -86,7 +88,7 @@ def shell_command(cmd,cwd='.'):
                              stdout=subprocess.PIPE
                             )
     try:
-        outs, errs = proc.communicate(timeout=300)
+        outs, errs = proc.communicate(timeout=0)
     except subprocess.TimeoutExpired:
         proc.kill()
         outs, errs = proc.communicate()
