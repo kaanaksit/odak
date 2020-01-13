@@ -62,7 +62,7 @@ def load_image(fn):
     image = Image.open(fn)
     return np.array(image)
 
-def shell_command(cmd):
+def shell_command(cmd,cwd='.'):
     """
     Definition to initiate shell commands.
 
@@ -70,6 +70,9 @@ def shell_command(cmd):
     ----------
     cmd          : str
                    Command to be executed.
+    cwd          : str
+                   Working directory.
+
 
     Returns
     ----------
@@ -79,7 +82,7 @@ def shell_command(cmd):
     """
     proc  = subprocess.Popen(
                              cmd,
-                             cwd='.',
+                             cwd=cwd,
                              stdout=subprocess.PIPE
                             )
     try:
