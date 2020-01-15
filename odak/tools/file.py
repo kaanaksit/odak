@@ -1,5 +1,6 @@
 import subprocess
 import os
+import json
 from odak import np
 from PIL import Image
 
@@ -106,3 +107,38 @@ def check_directory(directory):
     if not os.path.exists(directory):
        os.makedirs(directory)
     return True
+
+def save_dictionary(settings,filename):
+    """
+    Definition to load a dictionary (JSON) file.
+
+
+    Parameters
+    ----------
+    settings      : dict
+                    Dictionary read from the file.
+    filename      : str
+                    Filename.
+    """
+    with open(cache_fn,'w',encoding='utf-8') as f:
+        json.dump(settings,f,ensure_ascii=False, indent=4)
+    return settings
+
+def load_dictionary(filename):
+    """
+    Definition to load a dictionary (JSON) file.
+
+
+    Parameters
+    ----------
+    filename      : str
+                    Filename.
+
+    Returns
+    ----------
+    settings      : dict
+                    Dictionary read from the file.
+
+    """
+    settings = json.load(open(filename))
+    return settings
