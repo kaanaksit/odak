@@ -134,8 +134,8 @@ def tilt_towards(location,lookat):
     theta  = np.arccos(dz/dist)
     angles = [
                0,
-               np.degrees(theta),
-               np.degrees(phi)
-              ]
+               np.degrees(theta).tolist(),
+               np.degrees(phi).tolist()
+             ]
     return angles
 
