@@ -63,24 +63,29 @@ def load_image(fn):
     image = Image.open(fn)
     return np.array(image)
 
-def shell_command(cmd,cwd='.',timeout=None):
+def shell_command(cmd,cwd='.',timeout=None,check=True):
     """
     Definition to initiate shell commands.
 
     Parameters
     ----------
-    cmd          : str
-                   Command to be executed.
+    cmd          : list
+                   Command to be executed. 
     cwd          : str
                    Working directory.
     timeout      : int
                    Timeout if the process isn't complete in the given number of seconds.
-
+    check        : bool
+                   Set it to True to return the results and to enable timeout.
 
     Returns
     ----------
-    bool         :  bool
-                    True if succesful.
+    proc         : subprocess.Popen
+                   Generated process.
+    outs         : str
+                   Outputs of the executed command, returns None when check is set to False.
+    errs         : str
+                   Errors of the executed command, returns None when check is set to False.
 
     """
     proc  = subprocess.Popen(
@@ -88,12 +93,14 @@ def shell_command(cmd,cwd='.',timeout=None):
                              cwd=cwd,
                              stdout=subprocess.PIPE
                             )
+    if check == False:
+        return proc,None,None
     try:
         outs, errs = proc.communicate(timeout=timeout)
     except subprocess.TimeoutExpired:
         proc.kill()
         outs, errs = proc.communicate()
-    return True
+    return proc,outs,errs
 
 def check_directory(directory):
     """

@@ -26,6 +26,7 @@ setup(
                           'odak/tools',
                           'odak/wave',
                           'odak/visualize',
+                          'odak/visualize/blender',
                           'odak/manager',
                           'odak/oldschool'
                          ],

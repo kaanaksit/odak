@@ -1,7 +1,7 @@
 """
-``odak.tools``
+``odak.visualizes``
 ===================
-Provides necessary definitions for general tools used across the library.
+Provides necessary definitions for visualization.
 
 """
 # To get sub-modules.
