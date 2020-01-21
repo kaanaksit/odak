@@ -1,9 +1,8 @@
-import os,sys,math
-import numpy as np
+import math
 import bpy
 import mathutils
 from mathutils import Vector
-
+from odak import np
 
 def set_rotation(input_obj,angle):
     input_obj.rotation_euler[0] = np.radians(angle[0])
@@ -38,10 +37,10 @@ def import_ply(filename,location=[0,0,0],angle=[0,0,0],scale=[1,1,1]):
                      Created blender object.
     """
     bpy.ops.import_mesh.ply(filepath=filename)
-    ply_object                   =  bpy.context.object
-    ply_object.scale[0] = scale[0]
-    ply_object.scale[1] = scale[1]
-    ply_object.scale[2] = scale[2]
+    ply_object             = bpy.context.object
+    ply_object.scale[0]    = scale[0]
+    ply_object.scale[1]    = scale[1]
+    ply_object.scale[2]    = scale[2]
     ply_object.location[0] = location[0]
     ply_object.location[1] = location[1]
     ply_object.location[2] = location[2]
