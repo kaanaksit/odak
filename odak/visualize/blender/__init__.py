@@ -41,4 +41,5 @@ def init(headless=False):
                server_fn
               ]
     proc,outs,errs = tools.shell_command(cmd,check=False)
+    time.sleep(2)
     return proc

@@ -2,7 +2,7 @@ import math
 import bpy
 import mathutils
 from mathutils import Vector
-from odak import np
+import numpy as np
 
 def set_rotation(input_obj,angle):
     input_obj.rotation_euler[0] = np.radians(angle[0])
@@ -135,40 +135,33 @@ def render(fn):
     bpy.ops.render.render(use_viewport = True, write_still=True)
     return True
 
-def prepare(resolution=[1920,1080],camera_fov=40.0,camera_location=[0.,0.,-15.],clip=[0.1,100000000.],device='GPU',intensity=2.,world_color=[0.3,0.3,0.3]):
+def prepare(resolution=[1920,1080],camera_fov=40.0,camera_location=[0.,0.,-15.],camera_lookat=[0.,0.,0.],clip=[0.1,100000000.],device='GPU',intensity=2.,world_color=[0.3,0.3,0.3]):
     """
     Definition to prepare Blender for renderings.
     """
-    bpy.context.scene.render.engine              = 'CYCLES'
-    bpy.data.cameras["Camera"].lens_unit         = 'FOV'
-    bpy.data.cameras["Camera"].angle             = np.radians(camera_fov)
-    bpy.data.cameras["Camera"].clip_start        = clip[0]
-    bpy.data.cameras["Camera"].clip_end          = clip[1]
-    bpy.data.objects["Camera"].location[0]       = camera_location[0]
-    bpy.data.objects["Camera"].location[1]       = camera_location[1]
-    bpy.data.objects["Camera"].location[2]       = camera_location[2]
+    bpy.context.scene.render.engine                           = 'CYCLES'
+    bpy.context.view_layer.objects["Camera"].data.lens_unit   = 'FOV'
+    bpy.context.view_layer.objects["Camera"].data.angle       = np.radians(camera_fov)
+    bpy.context.view_layer.objects["Camera"].data.clip_start  = clip[0]
+    bpy.context.view_layer.objects["Camera"].data.clip_end    = clip[1]
+    bpy.context.view_layer.objects["Camera"].location[0]      = camera_location[0]
+    bpy.context.view_layer.objects["Camera"].location[1]      = camera_location[1]
+    bpy.context.view_layer.objects["Camera"].location[2]      = camera_location[2]
 
-    #dx                                           = camera_location[0]-camera_lookat[0]
-    #dy                                           = camera_location[1]-camera_lookat[1]
-    #dz                                           = camera_location[2]-camera_lookat[2]
-    #dist                                         = math.sqrt(dx**2+dy**2+dz**2)
-    #phi                                          = math.atan2(dy,dx)
-    #theta                                        = math.acos(dz/dist)
-    #camera_angles                                = [
-    #                                                0,
-    #                                                np.degrees(theta),
-    #                                                np.degrees(phi)
-    #                                               ]
-    ###########################################
-    # EXPERIMENTAL
-    ###########################################
-    camera_angles = [180,0,180]
-    ###########################################
-    ###########################################
-
-    bpy.data.objects["Camera"].rotation_euler[0] = np.radians(camera_angles[0])
-    bpy.data.objects["Camera"].rotation_euler[1] = np.radians(camera_angles[1])
-    bpy.data.objects["Camera"].rotation_euler[2] = np.radians(camera_angles[2])
+    dx                                           = camera_location[0]-camera_lookat[0]
+    dy                                           = camera_location[1]-camera_lookat[1]
+    dz                                           = camera_location[2]-camera_lookat[2]
+    dist                                         = math.sqrt(dx**2+dy**2+dz**2)
+    phi                                          = math.atan2(dy,dx)
+    theta                                        = math.acos(dz/dist)
+    camera_angles                                = [
+                                                    0,
+                                                    np.degrees(theta),
+                                                    np.degrees(phi)
+                                                   ]
+    bpy.context.view_layer.objects["Camera"].rotation_euler[0] = np.radians(camera_angles[0])
+    bpy.context.view_layer.objects["Camera"].rotation_euler[1] = np.radians(camera_angles[1])
+    bpy.context.view_layer.objects["Camera"].rotation_euler[2] = np.radians(camera_angles[2])
     bpy.data.scenes["Scene"].render.resolution_x = resolution[0]
     bpy.data.scenes["Scene"].render.resolution_y = resolution[1]
     bpy.data.scenes["Scene"].cycles.device       = device

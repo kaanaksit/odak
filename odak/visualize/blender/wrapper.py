@@ -48,11 +48,44 @@ def import_ply(filename,location=[0,0,0],angle=[0,0,0],scale=[1,1,1]):
 
     Returns
     ----------
-    ply_object     : blender object
-                     Created blender object.
+    cmd             : str
+                      Command sent by a client.
     """
     cmd = [
            'import_ply(filename="%s",location=%s,angle=%s,scale=%s)' % (filename,location,angle,scale),
+          ]
+    print(cmd)
+    send_msg(cmd)
+    return cmd
+
+def prepare(resolution=[1920,1080],camera_fov=40.0,camera_location=[0.,0.,-15.],camera_lookat=[0.,0.,0.],clip=[0.1,100000000.],device='GPU',intensity=2.,world_color=[0.3,0.3,0.3]):
+    """
+    Definition to prepare the viewport in Blender.
+
+    Parameters
+    ----------
+    resolution      : list
+                      Resolution of the viewport.
+    camera_fov      : float
+                      Viewport field of view in angles.
+    camera_location : list
+                      Viewport location in XYZ.
+    clip            : list
+                      Clipping planes near and far.
+    device          : str
+                      Device to be used for rendering CPU or GPU.
+    intensity       : float
+                      World's illumination intensity.
+    world_color     : list
+                      RGB color of the world's illumination.
+ 
+    Returns
+    ----------
+    cmd             : str
+                      Command sent by a client.
+    """ 
+    cmd = [
+           'prepare(resolution=%s,camera_fov=%s,camera_location=%s,camera_lookat=%s,clip=%s,device="%s",intensity=%s,world_color=%s)' % (resolution,camera_fov,camera_location,camera_lookat,clip,device,intensity,world_color),
           ]
     print(cmd)
     send_msg(cmd)
