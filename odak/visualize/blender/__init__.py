@@ -7,6 +7,7 @@ This is your adapter to visualize things on blender.
 import odak.tools as tools
 import os,sys,time
 import socket
+from .wrapper import *
 
 def init(headless=False):
     """
@@ -41,5 +42,3 @@ def init(headless=False):
               ]
     proc,outs,errs = tools.shell_command(cmd,check=False)
     return proc
-
-

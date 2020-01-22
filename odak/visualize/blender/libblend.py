@@ -37,7 +37,7 @@ def import_ply(filename,location=[0,0,0],angle=[0,0,0],scale=[1,1,1]):
                      Created blender object.
     """
     bpy.ops.import_mesh.ply(filepath=filename)
-    ply_object             = bpy.context.object
+    ply_object             = bpy.context.view_layer.objects.active
     ply_object.scale[0]    = scale[0]
     ply_object.scale[1]    = scale[1]
     ply_object.scale[2]    = scale[2]
@@ -379,8 +379,8 @@ def cylinder_between(start_loc,end_loc,r=0.1,objname='cylinder',color=[0.,0.5,0.
     cylinder.name   = objname
     phi             = math.atan2(dy, dx)
     theta           = math.acos(dz/dist)
-    bpy.context.object.rotation_euler[1] = theta
-    bpy.context.object.rotation_euler[2] = phi
+    bpy.context.view_layer.object.rotation_euler[1] = theta
+    bpy.context.view_layer.object.rotation_euler[2] = phi
     mat             = bpy.data.materials.new('diffuse_texture')
     mat.use_nodes   = True
     clear_material(mat)
@@ -390,5 +390,5 @@ def cylinder_between(start_loc,end_loc,r=0.1,objname='cylinder',color=[0.,0.5,0.
     diffuse.inputs[0].default_value = [color[0],color[1],color[2],color[3]]
     output          = matnodes.new('ShaderNodeOutputMaterial')
     link            = links.new(diffuse.outputs['BSDF'], output.inputs['Surface'])
-    bpy.context.object.data.materials.append(mat)
+    bpy.context.view_layer.object.data.materials.append(mat)
     return cylinder
