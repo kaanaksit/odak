@@ -127,12 +127,31 @@ def reflect_ray(input_ray,normal,intersection):
                        ]
     return p0,p1
 
-def render(fn):
+def quit():
+    """
+    Definition to quit blender.
+    """
+    bpy.ops.wm.quit_blender()
+
+def render(fn,exit=False):
+    """
+    Definition to render a scene, and save it as a PNG file.
+
+    Parameters
+    ----------
+    fn             : str
+                     Filename.
+    exit           : bool
+                     When set to True blender exits upon rendering completion.
+    """
     bpy.context.scene.render.image_settings.file_format   = 'PNG'
     bpy.context.scene.render.filepath                     = fn
+    print(fn)
     bpy.data.scenes["Scene"].render.resolution_percentage = 100
     print('Device: %s' % bpy.data.scenes["Scene"].cycles.device)
     bpy.ops.render.render(use_viewport = True, write_still=True)
+    if exit == True:
+        quit()
     return True
 
 def prepare(resolution=[1920,1080],camera_fov=40.0,camera_location=[0.,0.,-15.],camera_lookat=[0.,0.,0.],clip=[0.1,100000000.],device='GPU',intensity=2.,world_color=[0.3,0.3,0.3]):
@@ -173,8 +192,15 @@ def prepare(resolution=[1920,1080],camera_fov=40.0,camera_location=[0.,0.,-15.],
     return camera_angles
 
 def delete_object(label):
-    bpy.data.objects[label].select_set(True)
-    bpy.ops.object.delete()
+    """
+    Definition to delete an object from the scene.
+
+    Parameters
+    ----------
+    label          : str
+                     String that identifies the object to be deleted.
+    """
+    bpy.data.objects.remove(bpy.context.scene.objects[label], do_unlink = True)
 
 # Clear all nodes in a mat
 def clear_material( material ):

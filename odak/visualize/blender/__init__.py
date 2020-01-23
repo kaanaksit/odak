@@ -43,3 +43,17 @@ def init(headless=False):
     proc,outs,errs = tools.shell_command(cmd,check=False)
     time.sleep(2)
     return proc
+
+def check(proc):
+    """
+    Definition to check if blender is still alive and wait for completion. Once completed, this definition kills the process.
+
+    Parameters
+    ----------
+    proc         : subprocess.Popen
+                   Process to be monitored, see init() in odak.visualizer.blender to create one.
+
+    """
+    while proc.poll() == None:
+        pass
+    proc.kill()

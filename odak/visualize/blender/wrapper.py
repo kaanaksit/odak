@@ -90,3 +90,58 @@ def prepare(resolution=[1920,1080],camera_fov=40.0,camera_location=[0.,0.,-15.],
     print(cmd)
     send_msg(cmd)
     return cmd
+
+def delete_the_cube():
+    """
+    Definitioni to delete the default cube that appears every time one starts blender.
+
+    Returns
+    ----------
+    cmd             : str
+                      Command sent by a client.   Returns
+    """
+    cmd = [
+           'delete_object("Cube")'
+          ]
+    print(cmd)
+    send_msg(cmd)
+    return cmd
+
+def render(fn,exit=False):
+    """
+    Definition to render a scene, and save it as a PNG file.
+
+    Parameters
+    ----------
+    fn             : str
+                     Filename.
+
+    Returns
+    ----------
+    cmd            : str
+                     Command sent by a client.   
+    exit           : bool                      
+                     When set to True blender exits upon rendering completion.                      
+    """
+    cmd = [
+           'render("%s",exit=%s)' % (fn,exit),
+          ]
+    print(cmd)
+    send_msg(cmd)
+    return cmd
+
+def quit():
+    """
+    Definition to quit blender.
+
+    Returns
+    ----------
+    cmd             : str
+                      Command sent by a client.   
+    """
+    cmd = [
+           'quit',
+          ]
+    print(cmd)
+    send_msg(cmd)
+    return cmd
