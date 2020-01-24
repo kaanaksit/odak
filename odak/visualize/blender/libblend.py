@@ -159,13 +159,13 @@ def prepare(resolution=[1920,1080],camera_fov=40.0,camera_location=[0.,0.,-15.],
     Definition to prepare Blender for renderings.
     """
     bpy.context.scene.render.engine                           = 'CYCLES'
-    bpy.context.view_layer.objects["Camera"].data.lens_unit   = 'FOV'
-    bpy.context.view_layer.objects["Camera"].data.angle       = np.radians(camera_fov)
-    bpy.context.view_layer.objects["Camera"].data.clip_start  = clip[0]
-    bpy.context.view_layer.objects["Camera"].data.clip_end    = clip[1]
-    bpy.context.view_layer.objects["Camera"].location[0]      = camera_location[0]
-    bpy.context.view_layer.objects["Camera"].location[1]      = camera_location[1]
-    bpy.context.view_layer.objects["Camera"].location[2]      = camera_location[2]
+    bpy.context.scene.objects["Camera"].data.lens_unit   = 'FOV'
+    bpy.context.scene.objects["Camera"].data.angle       = np.radians(camera_fov)
+    bpy.context.scene.objects["Camera"].data.clip_start  = clip[0]
+    bpy.context.scene.objects["Camera"].data.clip_end    = clip[1]
+    bpy.context.scene.objects["Camera"].location[0]      = camera_location[0]
+    bpy.context.scene.objects["Camera"].location[1]      = camera_location[1]
+    bpy.context.scene.objects["Camera"].location[2]      = camera_location[2]
 
     dx                                           = camera_location[0]-camera_lookat[0]
     dy                                           = camera_location[1]-camera_lookat[1]
@@ -178,9 +178,9 @@ def prepare(resolution=[1920,1080],camera_fov=40.0,camera_location=[0.,0.,-15.],
                                                     np.degrees(theta),
                                                     np.degrees(phi)
                                                    ]
-    bpy.context.view_layer.objects["Camera"].rotation_euler[0] = np.radians(camera_angles[0])
-    bpy.context.view_layer.objects["Camera"].rotation_euler[1] = np.radians(camera_angles[1])
-    bpy.context.view_layer.objects["Camera"].rotation_euler[2] = np.radians(camera_angles[2])
+    bpy.context.scene.objects["Camera"].rotation_euler[0] = np.radians(camera_angles[0])
+    bpy.context.scene.objects["Camera"].rotation_euler[1] = np.radians(camera_angles[1])
+    bpy.context.scene.objects["Camera"].rotation_euler[2] = np.radians(camera_angles[2])
     bpy.data.scenes["Scene"].render.resolution_x = resolution[0]
     bpy.data.scenes["Scene"].render.resolution_y = resolution[1]
     bpy.data.scenes["Scene"].cycles.device       = device
@@ -269,7 +269,7 @@ def create_plane(objname,location,size=[1.,1.]):
                                                       enter_editmode=False,
                                                       location=location
                                                      )
-    plane          = bpy.context.active_object
+    plane          = bpy.context.render_layer.obkects.active
     plane.name     = objname
     plane.scale[1] = size[1]/size[0]
     return plane
@@ -298,7 +298,7 @@ def create_circle(objname,location,radius=1.):
                                                       location=location,
                                                       fill_type='TRIFAN'
                                                      )
-    circle         = bpy.context.active_object
+    circle         = bpy.context.render_layer.obkects.active
     circle.name    = objname
     return circle
 
@@ -394,12 +394,12 @@ def cylinder_between(start_loc,end_loc,r=0.1,objname='cylinder',color=[0.,0.5,0.
                                                           depth = dist,
                                                           location = (dx/2 + x1, dy/2 + y1, dz/2 + z1)
                                                          )
-    cylinder        = bpy.context.active_object
+    cylinder        = bpy.context.render_layer.obkects.active
     cylinder.name   = objname
     phi             = math.atan2(dy, dx)
     theta           = math.acos(dz/dist)
-    bpy.context.view_layer.object.rotation_euler[1] = theta
-    bpy.context.view_layer.object.rotation_euler[2] = phi
+    bpy.context.scene.object.rotation_euler[1] = theta
+    bpy.context.scene.object.rotation_euler[2] = phi
     mat             = bpy.data.materials.new('diffuse_texture')
     mat.use_nodes   = True
     clear_material(mat)
@@ -409,5 +409,5 @@ def cylinder_between(start_loc,end_loc,r=0.1,objname='cylinder',color=[0.,0.5,0.
     diffuse.inputs[0].default_value = [color[0],color[1],color[2],color[3]]
     output          = matnodes.new('ShaderNodeOutputMaterial')
     link            = links.new(diffuse.outputs['BSDF'], output.inputs['Surface'])
-    bpy.context.view_layer.object.data.materials.append(mat)
+    bpy.context.scene.object.data.materials.append(mat)
     return cylinder
