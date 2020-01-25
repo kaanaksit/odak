@@ -10,7 +10,7 @@ import socket
 from subprocess import Popen, PIPE
 from .wrapper import *
 
-def init(headless=False):
+def init(headless=False,blend_fn=''):
     """
     Definition to start a blender server. This has been tested with a Blender 2.8. Blender server runs on port 8082 on your local machine.
 
@@ -18,6 +18,8 @@ def init(headless=False):
     ----------
     headless      : bool
                     To set blender to headless mode set it to True.
+    blend_fn      : str
+                    Filename.
 
     Returns
     ----------
@@ -32,14 +34,16 @@ def init(headless=False):
         cmd = [
                'blender',
                '-P',
-               server_fn 
+               server_fn,
+               blend_fn
               ]
     elif headless == True:
         cmd = [
                'blender',
                '-b',
                '-P',
-               server_fn
+               server_fn,
+               blend_fn
               ]
     proc,outs,errs = tools.shell_command(cmd,check=False)
     time.sleep(2)
