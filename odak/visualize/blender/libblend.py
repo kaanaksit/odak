@@ -394,12 +394,12 @@ def cylinder_between(start_loc,end_loc,r=0.1,objname='cylinder',color=[0.,0.5,0.
                                                           depth = dist,
                                                           location = (dx/2 + x1, dy/2 + y1, dz/2 + z1)
                                                          )
-    cylinder        = bpy.context.render_layer.obkects.active
+    cylinder        = bpy.context.view_layer.objects.active
     cylinder.name   = objname
     phi             = math.atan2(dy, dx)
     theta           = math.acos(dz/dist)
-    bpy.context.scene.object.rotation_euler[1] = theta
-    bpy.context.scene.object.rotation_euler[2] = phi
+    cylinder.rotation_euler[1] = theta
+    cylinder.rotation_euler[2] = phi
     mat             = bpy.data.materials.new('diffuse_texture')
     mat.use_nodes   = True
     clear_material(mat)
@@ -409,5 +409,5 @@ def cylinder_between(start_loc,end_loc,r=0.1,objname='cylinder',color=[0.,0.5,0.
     diffuse.inputs[0].default_value = [color[0],color[1],color[2],color[3]]
     output          = matnodes.new('ShaderNodeOutputMaterial')
     link            = links.new(diffuse.outputs['BSDF'], output.inputs['Surface'])
-    bpy.context.scene.object.data.materials.append(mat)
+    cylinder.data.materials.append(mat)
     return cylinder

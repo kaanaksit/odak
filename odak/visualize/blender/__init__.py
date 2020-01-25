@@ -7,6 +7,7 @@ This is your adapter to visualize things on blender.
 import odak.tools as tools
 import os,sys,time
 import socket
+from subprocess import Popen, PIPE
 from .wrapper import *
 
 def init(headless=False):

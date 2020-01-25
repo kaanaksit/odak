@@ -130,6 +130,36 @@ def render(fn,exit=False):
     send_msg(cmd)
     return cmd
 
+def cylinder_between(start_loc,end_loc,r=0.1,objname='cylinder',color=[0.,0.5,0.,0.]):
+    """ 
+    Definition to create a cylinder in between two points with a certain radius.
+
+    Parameters
+    ----------
+    stat_loc       : list
+                     List that contains X,Y and Z start location.
+    end_loc        : list
+                     List that contains X,Y and Z end location.
+    r              : float
+                     Radius of the cylinder.
+    objname        : str
+                     Label of the object to be created.
+    color          : list
+                     Color of the cylinder (RGBA)
+
+    Returns
+    ----------
+    obj            : blender object
+                     Created cylinder.
+    """
+    cmd = [
+           'cylinder_between(%s,%s,r=%s,objname="%s",color=%s)' %(start_loc,end_loc,r,objname,color)
+          ]
+    print(cmd)
+    send_msg(cmd)
+    return cmd
+
+
 def quit():
     """
     Definition to quit blender.
