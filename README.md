@@ -24,7 +24,7 @@ python3 setup.py install
 ### Usage
 It is easy as in this recorded session. Import it to your code and start designing your next in Optics!
 
-[![asciicast](https://asciinema.org/a/290015.svg)](https://asciinema.org/a/290015)
+![alt tag](recordings/example.gif)
 
 ### Examples
 Work in progress.
