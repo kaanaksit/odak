@@ -68,7 +68,7 @@ def rotmatz(angle):
                      ],dtype=np.float)
     return rotz
 
-def rotate_point(point,angles=[0,0,0],mode='XYZ',origin=[0,0,0]):
+def rotate_point(point,angles=[0,0,0],mode='XYZ',origin=[0,0,0],offset=[0,0,0]):
     """
     Definition to rotate a given point. Note that rotation is always with respect to 0,0,0.
 
@@ -82,6 +82,8 @@ def rotate_point(point,angles=[0,0,0],mode='XYZ',origin=[0,0,0]):
                    Rotation mode determines ordering of the rotations at each axis. There are XYZ,YXZ,ZXY and ZYX modes.
     origin       : list
                    Reference point for a rotation.
+    offset       : list
+                   Shift with the given offset.
 
     Returns
     ----------
@@ -110,7 +112,40 @@ def rotate_point(point,angles=[0,0,0],mode='XYZ',origin=[0,0,0]):
     elif mode == 'ZYX':
         result = np.dot(rotx,np.dot(roty,np.dot(rotz,point)))
     point += np.asarray(origin)
+    point += np.asarray(offset)
     return result,rotx,roty,rotz
+
+def rotate_points(points,angles=[0,0,0],mode='XYZ',origin=[0,0,0],offset=[0,0,0]):
+    """
+    Definition to rotate points.
+
+    Parameters
+    ----------
+    points       : ndarray
+                   Points.
+    angles       : list
+                   Rotation angles in degrees. 
+    mode         : str
+                   Rotation mode determines ordering of the rotations at each axis. There are XYZ,YXZ,ZXY and ZYX modes.
+    origin       : list
+                   Reference point for a rotation.
+    offset       : list
+                   Shift with the given offset.
+
+    Returns
+    ----------
+    result       : ndarray
+                   Result of the rotation   
+    """
+    for id_point,point in enumerate(points):
+        points[id_point] = rotate_point(
+                                        point,
+                                        angles=angles,
+                                        offset=offset,
+                                        mode=mode,
+                                        origin=origin
+                                       )
+    return points
 
 def tilt_towards(location,lookat):
     """

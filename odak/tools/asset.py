@@ -29,14 +29,11 @@ def read_PLY(fn,offset=[0,0,0],angles=[0.,0.,0.],mode='XYZ'):
     triangles    = []
     for vertex_ids in triangle_ids:
         triangle     = [
-                        rotate_point(plydata['vertex'][int(vertex_ids[0])].tolist(),angles=angles)[0],
-                        rotate_point(plydata['vertex'][int(vertex_ids[1])].tolist(),angles=angles)[0],
-                        rotate_point(plydata['vertex'][int(vertex_ids[2])].tolist(),angles=angles)[0]
+                        rotate_point(plydata['vertex'][int(vertex_ids[0])].tolist(),angles=angles,offset=offset)[0],
+                        rotate_point(plydata['vertex'][int(vertex_ids[1])].tolist(),angles=angles,offset=offset)[0],
+                        rotate_point(plydata['vertex'][int(vertex_ids[2])].tolist(),angles=angles,offset=offset)[0]
                        ]
         triangle     = np.asarray(triangle)
-        triangle[0] += np.asarray(offset)
-        triangle[1] += np.asarray(offset)
-        triangle[2] += np.asarray(offset)
         triangles.append(triangle)
     triangles = np.array(triangles)
     return triangles
