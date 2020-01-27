@@ -111,8 +111,8 @@ def rotate_point(point,angles=[0,0,0],mode='XYZ',origin=[0,0,0],offset=[0,0,0]):
         result = np.dot(roty,np.dot(rotx,np.dot(rotz,point)))
     elif mode == 'ZYX':
         result = np.dot(rotx,np.dot(roty,np.dot(rotz,point)))
-    point += np.asarray(origin)
-    point += np.asarray(offset)
+    result += np.asarray(origin)
+    result += np.asarray(offset)
     return result,rotx,roty,rotz
 
 def rotate_points(points,angles=[0,0,0],mode='XYZ',origin=[0,0,0],offset=[0,0,0]):
