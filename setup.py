@@ -23,6 +23,7 @@ setup(
       packages         = [
                           'odak',
                           'odak/raytracing',
+                          'odak/jones',
                           'odak/tools',
                           'odak/wave',
                           'odak/visualize',

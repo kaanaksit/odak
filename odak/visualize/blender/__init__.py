@@ -33,17 +33,17 @@ def init(headless=False,blend_fn=''):
     if headless == False:
         cmd = [
                'blender',
+               blend_fn,
                '-P',
                server_fn,
-               blend_fn
               ]
     elif headless == True:
         cmd = [
                'blender',
+               blend_fn,
                '-b',
                '-P',
                server_fn,
-               blend_fn
               ]
     proc,outs,errs = tools.shell_command(cmd,check=False)
     time.sleep(2)

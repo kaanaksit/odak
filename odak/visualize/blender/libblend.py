@@ -187,8 +187,11 @@ def prepare(resolution=[1920,1080],camera_fov=40.0,camera_location=[0.,0.,-15.],
     bpy.data.worlds["World"].use_nodes           = True
     bpy.data.worlds["World"].node_tree.nodes['Background'].inputs[0].default_value[:3] = world_color
     bpy.data.worlds["World"].node_tree.nodes['Background'].inputs[1].default_value     = intensity
-    delete_object('Cube')
-    delete_object('Light')
+    try:
+        delete_object('Cube')
+        delete_object('Light')
+    except:
+        pass
     return camera_angles
 
 def delete_object(label):
