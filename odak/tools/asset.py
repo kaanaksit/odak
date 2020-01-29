@@ -23,9 +23,13 @@ def read_PLY(fn,offset=[0,0,0],angles=[0.,0.,0.],mode='XYZ'):
     triangles   : ndarray
                   Triangles from a given PLY file. Note that the triangles coming out of this function isn't always structured in the right order and with the size of (MxN)x3. You can use numpy's reshape to restructure it to mxnx3 if you know what you are doing.
     """
+    if np.__name__ != 'numpy':
+        import numpy as np_ply
+    else:
+        np_ply = np
     with open(fn,'rb') as f:
         plydata = PlyData.read(f)
-    triangle_ids = np.vstack(plydata['face'].data['vertex_indices'])
+    triangle_ids = np_ply.vstack(plydata['face'].data['vertex_indices'])
     triangles    = []
     for vertex_ids in triangle_ids:
         triangle     = [
@@ -33,9 +37,10 @@ def read_PLY(fn,offset=[0,0,0],angles=[0.,0.,0.],mode='XYZ'):
                         rotate_point(plydata['vertex'][int(vertex_ids[1])].tolist(),angles=angles,offset=offset)[0],
                         rotate_point(plydata['vertex'][int(vertex_ids[2])].tolist(),angles=angles,offset=offset)[0]
                        ]
-        triangle     = np.asarray(triangle)
+        triangle     = np_ply.asarray(triangle)
         triangles.append(triangle)
-    triangles = np.array(triangles)
+    triangles = np_ply.array(triangles)
+    triangles = np.asarray(triangles,dtype=np.float)
     return triangles
 
 def write_PLY(triangles,savefn='output.ply'):
