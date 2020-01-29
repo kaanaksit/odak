@@ -137,16 +137,23 @@ def rotate_points(points,angles=[0,0,0],mode='XYZ',origin=[0,0,0],offset=[0,0,0]
     result       : ndarray
                    Result of the rotation   
     """
-    result = np.copy(points)
-    for id_point,point in enumerate(points):
-        rotated_point,_,_,_  = rotate_point(
-                                            point,
-                                            angles=angles,
-                                            offset=offset,
-                                            mode=mode,
-                                            origin=origin
-                                           )
-        result[id_point] = rotated_point
+    points  = np.asarray(points)
+    points -= np.array(origin)
+    rotx    = rotmatx(angles[0])
+    roty    = rotmaty(angles[1])
+    rotz    = rotmatz(angles[2])
+    if mode == 'XYZ':
+        result = np.dot(rotz,np.dot(roty,np.dot(rotx,points.T))).T
+    elif mode == 'XZY':
+        result = np.dot(roty,np.dot(rotz,np.dot(rotx,points.T))).T
+    elif mode == 'YXZ':
+        result = np.dot(rotz,np.dot(rotx,np.dot(roty,points.T))).T
+    elif mode == 'ZXY':
+        result = np.dot(roty,np.dot(rotx,np.dot(rotz,points.T))).T
+    elif mode == 'ZYX':
+        result = np.dot(rotx,np.dot(roty,np.dot(rotz,points.T))).T
+    result += np.array(origin)
+    result += np.array(offset)
     return result
 
 def tilt_towards(location,lookat):
