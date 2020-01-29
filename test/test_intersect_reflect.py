@@ -39,17 +39,17 @@ def test():
     circle_center     = [0.,0.,0.]
     circle_angles     = [0.,0.,0.]
     circle_radius     = 15.
-    circle = raytracer.define_circle(
-                                     angles=circle_angles,
-                                     center=circle_center,
-                                     radius=circle_radius
-                                    )
+    circle            = raytracer.define_circle(
+                                                angles=circle_angles,
+                                                center=circle_center,
+                                                radius=circle_radius
+                                               )
 
-    opl    = detector_to_light_source(
-                                      detector_location,
-                                      triangle,
-                                      circle
-                                     )
+    opl               = detector_to_light_source(
+                                                 detector_location,
+                                                 triangle,
+                                                 circle
+                                                )
     assert True==True
 
 if __name__ == '__main__':

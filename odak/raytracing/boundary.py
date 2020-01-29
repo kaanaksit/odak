@@ -64,7 +64,7 @@ def intersect_w_surface(ray,points):
         points = points.reshape((1,3,3))
     if len(normal.shape) == 2:
         normal = normal.reshape((1,2,3))
-    f                    = points[:,0]-ray[:,0]
+    f                    = normal[:,0]-ray[:,0]
     distance             = np.dot(normal[:,1],f.T)/np.dot(normal[:,1],ray[:,1].T)
     n                    = np.int(np.amax(np.array([ray.shape[0],normal.shape[0]])))
     normal               = np.zeros((n,2,3))
