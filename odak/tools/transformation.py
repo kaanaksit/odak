@@ -138,6 +138,9 @@ def rotate_points(points,angles=[0,0,0],mode='XYZ',origin=[0,0,0],offset=[0,0,0]
                    Result of the rotation   
     """
     points  = np.asarray(points)
+    if angles[0] == 0 and angles[1] == 0 and angles[2] ==0:
+        result = offset + points
+        return result
     points -= np.array(origin)
     rotx    = rotmatx(angles[0])
     roty    = rotmaty(angles[1])
