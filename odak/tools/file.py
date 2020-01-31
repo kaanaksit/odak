@@ -1,8 +1,18 @@
 import subprocess
 import os
 import json
+import scipy.misc
 from odak import np
 from PIL import Image
+
+def resize_image(img,target_size):
+    if np.__name__ == 'cupy':
+        import numpy
+        img = np.asnumpy(img)
+    img = scipy.misc.imresize(img, (target_size[0],target_size[1]))
+    if np.__name__ == 'cupy':
+        img = np.asarray(img)
+    return img
 
 def save_image(fn,img,cmin=0,cmax=255):
     """
