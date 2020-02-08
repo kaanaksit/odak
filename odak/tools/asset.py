@@ -98,15 +98,19 @@ def write_PLY_from_points(points,savefn='output.ply'):
                   Filename for a PLY file.
 
     """
+    if np.__name__ != 'numpy':
+        import numpy as np_ply
+    else:
+        np_ply = np
     # Generate equation
-    roi     = np.zeros((2,points.shape[0],points.shape[1]))
-    roi[0]  = np.copy(points[:,:,0])
-    roi[1]  = np.copy(points[:,:,1])
-    zz      = np.copy(points[:,:,2])
+    roi     = np_ply.zeros((2,points.shape[0],points.shape[1]))
+    roi[0]  = np_ply.copy(points[:,:,0])
+    roi[1]  = np_ply.copy(points[:,:,1])
+    zz      = np_ply.copy(points[:,:,2])
     samples = [points.shape[0],points.shape[1]]
     # Generate vertices.
-    pnts   = []
-    tris   = []
+    pnts    = []
+    tris    = []
     for idx in range(0,samples[0]):
         for idy in range(0,samples[1]):
             pnt  = (roi[0][idx][idy]    , roi[1][idx][idy]    , zz[idx][idy])
@@ -117,10 +121,10 @@ def write_PLY_from_points(points,savefn='output.ply'):
         for idy in range(0,samples[1]-1):
             tris.append(([idy+(idx+1)*samples[0], idy+idx*samples[0]  , idy+1+idx*samples[0]], color[0], color[1], color[2]))
             tris.append(([idy+(idx+1)*samples[0], idy+1+idx*samples[0], idy+1+(idx+1)*samples[0]], color[0], color[1], color[2]))
-    tris   = np.asarray(tris, dtype=[('vertex_indices', 'i4', (3,)),('red', 'u1'), ('green', 'u1'),('blue', 'u1')])
-    pnts   = np.asarray(pnts, dtype=[('x', 'f4'), ('y', 'f4'), ('z', 'f4')])
+    tris    = np_ply.asarray(tris, dtype=[('vertex_indices', 'i4', (3,)),('red', 'u1'), ('green', 'u1'),('blue', 'u1')])
+    pnts    = np_ply.asarray(pnts, dtype=[('x', 'f4'), ('y', 'f4'), ('z', 'f4')])
     # Save mesh.
-    el1       = PlyElement.describe(pnts, 'vertex', comments=['Vertex data'])
-    el2       = PlyElement.describe(tris, 'face', comments=['Face data'])
+    el1     = PlyElement.describe(pnts, 'vertex', comments=['Vertex data'])
+    el2     = PlyElement.describe(tris, 'face', comments=['Face data'])
     PlyData([el1,el2],text="True").write(savefn)
 
