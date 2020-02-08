@@ -103,17 +103,13 @@ def write_PLY_from_points(points,savefn='output.ply'):
     else:
         np_ply = np
     # Generate equation
-    roi     = np_ply.zeros((2,points.shape[0],points.shape[1]))
-    roi[0]  = np_ply.copy(points[:,:,0])
-    roi[1]  = np_ply.copy(points[:,:,1])
-    zz      = np_ply.copy(points[:,:,2])
     samples = [points.shape[0],points.shape[1]]
     # Generate vertices.
     pnts    = []
     tris    = []
     for idx in range(0,samples[0]):
         for idy in range(0,samples[1]):
-            pnt  = (roi[0][idx][idy]    , roi[1][idx][idy]    , zz[idx][idy])
+            pnt  = (points[idx,idy,0],points[idx,idy,1],points[idx,idy,2])
             pnts.append(pnt)
     m = samples[0]*samples[1]
     color = [255,255,255]
