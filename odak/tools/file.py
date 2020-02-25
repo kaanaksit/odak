@@ -123,6 +123,7 @@ def check_directory(directory):
     """
     if not os.path.exists(directory):
        os.makedirs(directory)
+       return False
     return True
 
 def save_dictionary(settings,filename):
