@@ -20,7 +20,7 @@ def read_PLY(fn,offset=[0,0,0],angles=[0.,0.,0.],mode='XYZ'):
 
     Returns
     ----------
-    triangles   : ndarray
+    triangles    : ndarray
                   Triangles from a given PLY file. Note that the triangles coming out of this function isn't always structured in the right order and with the size of (MxN)x3. You can use numpy's reshape to restructure it to mxnx3 if you know what you are doing.
     """
     if np.__name__ != 'numpy':
@@ -42,6 +42,35 @@ def read_PLY(fn,offset=[0,0,0],angles=[0.,0.,0.],mode='XYZ'):
     triangles = np_ply.array(triangles)
     triangles = np.asarray(triangles,dtype=np.float)
     return triangles
+
+def read_PLY_point_cloud(filename):
+    """
+    Definition to read a PLY file as a point cloud.
+
+    Parameters
+    ----------
+    filename     : str
+                   Filename of a PLY file.
+
+    Returns
+    ----------
+    point_cloud  : ndarray
+                   An array filled with poitns from the PLY file.
+    """
+    plydata      = PlyData.read(filename)
+    if np.__name__ != 'numpy':
+        import numpy as np_ply
+        point_clouds      = np_ply.zeros((plydata['vertex'][:].shape[0],3))
+        point_clouds[:,0] = np_ply.asarray(plydata['vertex']['x'][:])
+        point_clouds[:,1] = np_ply.asarray(plydata['vertex']['y'][:])
+        point_clouds[:,2] = np_ply.asarray(plydata['vertex']['z'][:])
+        point_clouds      = np.asarray(point_clouds)
+    else:
+        point_clouds      = np.zeros((plydata['vertex'][:].shape[0],3))
+        point_clouds[:,0] = np.asarray(plydata['vertex']['x'][:])
+        point_clouds[:,1] = np.asarray(plydata['vertex']['y'][:])
+        point_clouds[:,2] = np.asarray(plydata['vertex']['z'][:])
+    return point_clouds
 
 def write_PLY(triangles,savefn='output.ply'):
     """
