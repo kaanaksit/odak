@@ -64,7 +64,7 @@ def read_PLY_point_cloud(filename):
         point_cloud[:,0] = np_ply.asarray(plydata['vertex']['x'][:])
         point_cloud[:,1] = np_ply.asarray(plydata['vertex']['y'][:])
         point_cloud[:,2] = np_ply.asarray(plydata['vertex']['z'][:])
-        point_cloud      = np.asarray(point_clouds)
+        point_cloud      = np.asarray(point_cloud)
     else:
         point_cloud      = np.zeros((plydata['vertex'][:].shape[0],3))
         point_cloud[:,0] = np.asarray(plydata['vertex']['x'][:])
