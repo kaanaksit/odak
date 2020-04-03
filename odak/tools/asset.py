@@ -60,16 +60,16 @@ def read_PLY_point_cloud(filename):
     plydata      = PlyData.read(filename)
     if np.__name__ != 'numpy':
         import numpy as np_ply
-        point_clouds      = np_ply.zeros((plydata['vertex'][:].shape[0],3))
-        point_clouds[:,0] = np_ply.asarray(plydata['vertex']['x'][:])
-        point_clouds[:,1] = np_ply.asarray(plydata['vertex']['y'][:])
-        point_clouds[:,2] = np_ply.asarray(plydata['vertex']['z'][:])
-        point_clouds      = np.asarray(point_clouds)
+        point_cloud      = np_ply.zeros((plydata['vertex'][:].shape[0],3))
+        point_cloud[:,0] = np_ply.asarray(plydata['vertex']['x'][:])
+        point_cloud[:,1] = np_ply.asarray(plydata['vertex']['y'][:])
+        point_cloud[:,2] = np_ply.asarray(plydata['vertex']['z'][:])
+        point_cloud      = np.asarray(point_clouds)
     else:
-        point_clouds      = np.zeros((plydata['vertex'][:].shape[0],3))
-        point_clouds[:,0] = np.asarray(plydata['vertex']['x'][:])
-        point_clouds[:,1] = np.asarray(plydata['vertex']['y'][:])
-        point_clouds[:,2] = np.asarray(plydata['vertex']['z'][:])
+        point_cloud      = np.zeros((plydata['vertex'][:].shape[0],3))
+        point_cloud[:,0] = np.asarray(plydata['vertex']['x'][:])
+        point_cloud[:,1] = np.asarray(plydata['vertex']['y'][:])
+        point_cloud[:,2] = np.asarray(plydata['vertex']['z'][:])
     return point_clouds
 
 def write_PLY(triangles,savefn='output.ply'):
