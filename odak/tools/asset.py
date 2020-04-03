@@ -70,7 +70,7 @@ def read_PLY_point_cloud(filename):
         point_cloud[:,0] = np.asarray(plydata['vertex']['x'][:])
         point_cloud[:,1] = np.asarray(plydata['vertex']['y'][:])
         point_cloud[:,2] = np.asarray(plydata['vertex']['z'][:])
-    return point_clouds
+    return point_cloud
 
 def write_PLY(triangles,savefn='output.ply'):
     """
