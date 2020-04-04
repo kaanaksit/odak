@@ -33,4 +33,4 @@ We prepared a bunch of test routines, which can also play a role in guidance dur
 If you use Odak in a research project leading to a publication, please acknowledge this fact by using our ready-made [bibtex citation entry](citations/odak.bib) or [plain text citation entry](citations/odak.txt).
 
 ## Contributing
-Perhaps the best way is checking the issues section as a starter. If you have a specific point in mind and can't find it in the issues section, starting an issue accordingly is an another good starting point. If you think you have bigger plans in mind, here is my [email](kunguz@gmail.com).
+Perhaps the best way is checking the issues section as a starter. If you have a specific point in mind and can't find it in the issues section, starting an issue accordingly is an another good starting point. If you think you have bigger plans in mind, here is my kunguz at gmail dot com.
