@@ -2,6 +2,40 @@ from odak import np
 from .transformation import rotate_point
 from odak.raytracing import create_ray_from_two_points
 
+def sphere_sample(no=[10,10],radius=1.,center=[0.,0.,0.]):
+    """
+    Definition to generate a regular sample set on the surface of a sphere.
+
+    Parameters
+    ----------
+    no          : list
+                  Number of samples.
+    radius      : float
+                  Radius of a sphere.
+    center      : list
+                  Center of a sphere.
+
+    Returns
+    ----------
+    samples     : ndarray
+                  Samples generated.
+    """
+    samples = []
+    for i in range(0,no[0]):
+        psi    = 2*np.pi/no[0]*i
+        for j in range(0,no[1]):
+            teta   = 2*np.pi/no[1]*j
+            sample = np.array(
+                              [
+                               center[0]+radius*np.sin(psi)*np.cos(teta),
+                               center[1]+radius*np.sin(psi)*np.sin(teta),
+                               center[2]+radius*np.cos(psi)
+                              ]
+                             )
+            samples.append(sample)
+    samples = np.asarray(samples)
+    return samples
+
 def grid_sample(no=[10,10],size=[100.,100.],center=[0.,0.,0.],angles=[0.,0.,0.]):
     """
     Definition to generate samples over a surface.
