@@ -1,6 +1,7 @@
 import subprocess
 import os
 import json
+import pathlib
 import scipy.misc
 from odak import np
 from PIL import Image
@@ -160,3 +161,31 @@ def load_dictionary(filename):
     """
     settings = json.load(open(filename))
     return settings
+
+def list_files(path,key='*.*',recursive=True):
+    """
+    Definition to list files in a given path with a given key.
+
+    Parameters
+    ----------
+    path        : str
+                  Path to a folder.
+    key         : str
+                  Key used for scanning a path.
+    recursive   : bool
+                  If set True, scan the path recursively.
+
+    Returns
+    ----------
+    files_list  : ndarray
+                  list of files found in a given path.
+    """
+    if recursive == True:
+        search_result = pathlib.Path(path).rglob(key)
+    elif recursive == False:
+        search_result = pathlib.Path(path).glob(key)
+    files_list = []
+    for item in search_result:
+        files_list.append(str(item))
+    return files_list
+
