@@ -5,8 +5,7 @@ This is your adapter to visualize things on blender.
 
 """
 import odak.tools as tools
-import os,sys,time
-import socket
+import os,time
 from subprocess import Popen, PIPE
 from .wrapper import *
 

@@ -1,5 +1,4 @@
 import bpy,queue
-import functools
 import threading
 import os,socket,traceback,sys
 sys.path.append('%s' % os.path.dirname(os.path.realpath(__file__)))

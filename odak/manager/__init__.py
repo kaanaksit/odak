@@ -7,7 +7,6 @@ Provides necessary definition for submitting, running and gathering compute.
 
 import dispy
 from tqdm import tqdm
-from tqdm import trange
 
 class agent():
     def __init__(self,compute,cluster=False,depends=[]):

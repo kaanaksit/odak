@@ -1,4 +1,3 @@
-import plyfile
 from plyfile import PlyData, PlyElement
 from odak import np
 from .transformation import rotate_point
@@ -140,7 +139,6 @@ def write_PLY_from_points(points,savefn='output.ply'):
         for idy in range(0,samples[1]):
             pnt  = (points[idx,idy,0],points[idx,idy,1],points[idx,idy,2])
             pnts.append(pnt)
-    m = samples[0]*samples[1]
     color = [255,255,255]
     for idx in range(0,samples[0]-1):
         for idy in range(0,samples[1]-1):
@@ -152,4 +150,3 @@ def write_PLY_from_points(points,savefn='output.ply'):
     el1     = PlyElement.describe(pnts, 'vertex', comments=['Vertex data'])
     el2     = PlyElement.describe(tris, 'face', comments=['Face data'])
     PlyData([el1,el2],text="True").write(savefn)
-

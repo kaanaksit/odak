@@ -1,6 +1,5 @@
 from odak import np
-from odak.tools.vector import cross_product,distance_between_two_points
-from odak.raytracing.ray import create_ray_from_two_points
+from odak.tools.vector import distance_between_two_points
 from odak.raytracing.primitives import is_it_on_triangle,center_of_triangle
 
 def reflect(input_ray,normal):
@@ -33,7 +32,7 @@ def reflect(input_ray,normal):
     n               = np.int(np.amax(np.array([normal.shape[0],input_ray.shape[0]])))
     output_ray      = np.zeros((n,2,3))
     output_ray[:,0] = normal[:,0]
-    output_ray[:,1] = input_ray[:,1]-2*normal[:,1]
+    output_ray[:,1] = input_ray[:,1]-2*a*normal[:,1]
     if output_ray.shape[0] == 1:
        output_ray = output_ray.reshape((2,3))
     return output_ray
