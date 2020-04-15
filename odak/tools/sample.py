@@ -2,6 +2,30 @@ from odak import np
 from .transformation import rotate_point
 from odak.raytracing import create_ray_from_two_points
 
+
+def random_sample_point_cloud(point_cloud,no,p=None):
+    """
+    Definition to pull a subset of points from a point cloud with a given probability.
+
+    Parameters
+    ----------
+    point_cloud  : ndarray
+                   Point cloud array.
+    no           : list
+                   Number of samples.
+    p            : list
+                   Probability list in the same size as no.
+
+    Returns
+    ----------
+    subset       : ndarray
+                   Subset of the given point cloud.
+    """
+    choice = np.random.choice(point_cloud.shape[0],no,p)
+    subset = point_cloud[choice,:]
+    return subset 
+
+
 def sphere_sample(no=[10,10],radius=1.,center=[0.,0.,0.]):
     """
     Definition to generate a regular sample set on the surface of a sphere.
