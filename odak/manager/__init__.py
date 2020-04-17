@@ -5,11 +5,13 @@ Provides necessary definition for submitting, running and gathering compute.
 
 """
 
+import threading
 import dispy
 from tqdm import tqdm
+from odak.tools import shell_command
 
 class agent():
-    def __init__(self,compute,cluster=False,depends=[]):
+    def __init__(self,compute,cluster=False,depends=[],server=False):
         """
         Class to submit and run task(s), same class gathers results at the end of a compute.
  
@@ -21,13 +23,23 @@ class agent():
                          Set it to True to distribute your job across a cluster or multi CPU cores ofa computer. When set to True, make sure that dispynode.py is running, see https://pgiri.github.io/dispy/dispynode.html .Set it to False to run your tasks locally with a single CPU core of a computer.
         depends        : list
                          List of modules, default is an empty list. Use this only when cluster flag is set to True.
+        server         : bool
+                         Set it to True to start a dispynode on your local machine.
         """
         self.cluster = cluster
         self.compute = compute
         self.depends = depends
+        self.server  = server
         self.results = []
         self.jobs    = []
         if self.cluster == True:
+            if self.server == True:
+                cmd                = ['dispynode.py',]
+                self.server_thread = threading.Thread(
+                                                      target=shell_command,
+                                                      args=(cmd,)
+                                                     )
+                self.server_thread.start()
             self.job_cluster = dispy.JobCluster(self.compute,depends=self.depends)
 
     def submit(self,args):
@@ -57,7 +69,8 @@ class agent():
                         Returns results from compute with a list.
         """
         print('Progress of the submitted jobs:')
-        pbar = tqdm(total=len(self.jobs))
+        pbar         = tqdm(total=len(self.jobs))
+        self.results = []
         if self.cluster == False:
            for job in self.jobs:
                arguments = job
@@ -82,4 +95,6 @@ class agent():
         Definition to close the cluster.
         """
         self.cluster.close()
+        if self.server == True:
+            self.server_thread.join()
         return True
