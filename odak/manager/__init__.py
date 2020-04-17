@@ -23,8 +23,7 @@ class agent():
                          Set it to True to distribute your job across a cluster or multi CPU cores ofa computer. When set to True, make sure that dispynode.py is running, see https://pgiri.github.io/dispy/dispynode.html .Set it to False to run your tasks locally with a single CPU core of a computer.
         depends        : list
                          List of modules, default is an empty list. Use this only when cluster flag is set to True.
-        server         : bool
-                         Set it to True to start a dispynode on your local machine.
+
         """
         self.cluster = cluster
         self.compute = compute
@@ -33,13 +32,6 @@ class agent():
         self.results = []
         self.jobs    = []
         if self.cluster == True:
-            if self.server == True:
-                cmd                = ['dispynode.py',]
-                self.server_thread = threading.Thread(
-                                                      target=shell_command,
-                                                      args=(cmd,)
-                                                     )
-                self.server_thread.start()
             self.job_cluster = dispy.JobCluster(self.compute,depends=self.depends)
 
     def submit(self,args):
@@ -95,6 +87,4 @@ class agent():
         Definition to close the cluster.
         """
         self.cluster.close()
-        if self.server == True:
-            self.server_thread.join()
         return True
