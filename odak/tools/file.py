@@ -99,11 +99,11 @@ def shell_command(cmd,cwd='.',timeout=None,check=True):
                    Errors of the executed command, returns None when check is set to False.
 
     """
-    proc  = subprocess.Popen(
-                             cmd,
-                             cwd=cwd,
-                             stdout=subprocess.PIPE
-                            )
+    proc = subprocess.Popen(
+                            cmd,
+                            cwd=cwd,
+                            stdout=subprocess.PIPE
+                           )
     if check == False:
         return proc,None,None
     try:

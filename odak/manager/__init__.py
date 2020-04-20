@@ -10,6 +10,18 @@ import dispy
 from tqdm import tqdm
 from odak.tools import shell_command
 
+def start_server():
+    """
+    Definition to start a dispynode.py.
+    """
+    cmd = [
+           'dispynode.py',
+           '--clean',
+           '--daemon'
+          ]
+    shell_command(cmd)
+    return True
+
 class agent():
     def __init__(self,compute,cluster=False,depends=[],server=False):
         """
@@ -33,6 +45,9 @@ class agent():
         self.jobs    = []
         if self.cluster == True:
             self.job_cluster = dispy.JobCluster(self.compute,depends=self.depends)
+        if self.server == True:
+            self.server_thread = threading.Thread(target=start_server)
+            self.server_thread.start()
 
     def submit(self,args):
         """
@@ -82,9 +97,9 @@ class agent():
            self.job_cluster.print_status()
         return self.results
 
-    def close():
+    def close(self):
         """
         Definition to close the cluster.
         """
-        self.cluster.close()
+        self.job_cluster.close()
         return True
