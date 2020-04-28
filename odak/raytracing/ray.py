@@ -36,9 +36,9 @@ def create_ray_from_two_points(x0y0z0,x1y1z1):
     Parameters
     ----------
     x0y0z0       : list
-                   List that contains X,Y and Z start locations of a ray (3). It can also be a list of points as well (mx3).
+                   List that contains X,Y and Z start locations of a ray (3). It can also be a list of points as well (mx3). This is the starting point.
     x1y1z1       : list
-                   List that contains X,Y and Z ending locations of a ray (3). It can also be a list of points as well (mx3).
+                   List that contains X,Y and Z ending locations of a ray (3). It can also be a list of points as well (mx3). This is the end point.
 
     Returns
     ----------
@@ -51,9 +51,9 @@ def create_ray_from_two_points(x0y0z0,x1y1z1):
         x0y0z0 = x0y0z0.reshape((1,3))
     if len(x1y1z1.shape) == 1:
         x1y1z1 = x1y1z1.reshape((1,3))
-    xdiff        = x0y0z0[:,0]-x1y1z1[:,0]
-    ydiff        = x0y0z0[:,1]-x1y1z1[:,1]
-    zdiff        = x0y0z0[:,2]-x1y1z1[:,2]
+    xdiff        = x1y1z1[:,0]-x0y0z0[:,0]
+    ydiff        = x1y1z1[:,1]-x0y0z0[:,1]
+    zdiff        = x1y1z1[:,2]-x0y0z0[:,2]
     s            = np.sqrt(xdiff**2+ydiff**2+zdiff**2)
     s[s==0]      = np.NaN
     cosines      = np.zeros((xdiff.shape[0],3))
@@ -67,3 +67,51 @@ def create_ray_from_two_points(x0y0z0,x1y1z1):
         ray = ray.reshape((2,3))
     return ray
 
+def create_ray_from_angles(point,angles):
+    """
+    Definition to create a ray from a point and angles.
+
+    Parameters
+    ----------
+    point      : ndarray
+                 Point in X,Y and Z.
+    angles     : ndarray
+                 Angles with X,Y,Z axes.
+
+    Returns
+    ----------
+    ray        : ndarray
+                 Created ray.
+    """
+    cosines = np.array(
+                       [
+                        np.cos(angles[0]),
+                        np.cos(angles[1]),
+                        np.cos(angles[2])
+                       ],
+                       dtype=np.float
+                      )
+    ray     = np.array([point,cosines],dtype=np.float)
+    return ray
+
+def propagate_a_ray(ray,distance):
+    """
+    Definition to propagate a ray at a certain given distance.
+
+    Parameters
+    ----------
+    ray        : ndarray
+                 A ray.
+    distance   : float
+                 Distance.
+
+    Returns
+    ----------
+    new_ray    : ndarray
+                 Propagated ray.
+    """
+    new_ray      = np.copy(ray)
+    new_ray[0,0] = distance*new_ray[1,0] + new_ray[0,0]
+    new_ray[0,1] = distance*new_ray[1,1] + new_ray[0,1]
+    new_ray[0,2] = distance*new_ray[1,2] + new_ray[0,2]
+    return new_ray

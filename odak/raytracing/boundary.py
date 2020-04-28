@@ -1,6 +1,7 @@
 from odak import np
 from odak.tools.vector import distance_between_two_points
-from odak.raytracing.primitives import is_it_on_triangle,center_of_triangle
+from odak.raytracing.primitives import is_it_on_triangle,center_of_triangle,sphere_function
+from odak.raytracing.ray import create_ray_from_angles,propagate_a_ray
 
 def reflect(input_ray,normal):
     """ 
@@ -153,3 +154,162 @@ def intersect_w_triangle(ray,triangle):
     if is_it_on_triangle(normal[0],triangle[0],triangle[1],triangle[2]) == False:
         return 0,0
     return normal,distance
+
+def get_sphere_normal(point,sphere):
+    """
+    Definition to get a normal of a point on a given sphere.
+
+    Parameters
+    ----------
+    point         : ndarray
+                    Point in X,Y,Z.
+    sphere        : ndarray
+                    Center defined in X,Y,Z and radius.
+
+    Returns
+    ----------
+    normal_vector : ndarray
+                    Normal vector.
+    """
+    grad          = np.array(
+                             [
+                              2*(point[0]-sphere[0])/sphere[3]**2,
+                              2*(point[1]-sphere[1])/sphere[3]**2,
+                              2*(point[2]-sphere[2])/sphere[3]**2
+                             ]
+                            )
+    angles        = np.array(
+                             [
+                              np.arctan(grad[0])+np.pi/2.,
+                              np.arctan(grad[1])+np.pi/2.,
+                              np.arctan(grad[2])+np.pi/2.
+                             ]
+                            )
+    normal_vector = create_ray_from_angles(point,angles)
+    return normal_vector
+
+def intersection_kernel_for_parametric_surfaces(distance,ray,parametric_surface,surface_function):
+    """
+    Definition for the intersection kernel when dealing with parametric surfaces.
+
+    Parameters
+    ----------
+    distance           : float
+                         Distance.
+    ray                : ndarray
+                         Ray.
+    parametric_surface : ndarray
+                         Array that defines a parametric surface.
+    surface_function   : ndarray
+                         Function to evaluate a point against a parametric surface.
+
+    Returns
+    ----------
+    point              : ndarray
+                         Location in X,Y,Z after propagation.
+    error              : float
+                         Error.
+    """
+    new_ray = propagate_a_ray(ray,distance)
+    point   = new_ray[0]
+    error   = surface_function(new_ray[0],parametric_surface)
+    return error,point
+
+def propagate_parametric_intersection_error(distance,error):
+    """
+    Definition to propagate the error in parametric intersection to find the next distance to try.
+
+    Parameters
+    ----------
+    distance     : list
+                   List that contains the new and the old distance.
+    error        : list
+                   List that contains the new and the old error.
+    
+    Returns
+    ----------
+    distance     : list
+                   New distance.
+    error        : list
+                   New error.
+    """
+    new_distance = distance[1]-error[1]*(distance[1]-distance[0])/(error[1]-error[0])
+    distance[0]  = distance[1]
+    distance[1]  = np.abs(new_distance)
+    error[0]     = error[1]
+    return distance,error
+
+def intersect_parametric(ray,parametric_surface,surface_function,surface_normal_function,target_error=0.00000001,iter_no_limit=1000):
+    """
+    Definition to intersect a ray with a parametric surface.
+
+    Parameters
+    ----------
+    ray                     : ndarray
+                              Ray.
+    parametric_surface      : ndarray
+                              Parameters of the surfaces.
+    surface_function        : function
+                              Function to evaluate a point against a surface.
+    surface_normal_function : function
+                              Function to calculate surface normal for a given point on a surface.
+    target_error            : float
+                              Target error that defines the precision.  
+    iter_no_limit           : int
+                              Maximum number of iterations.
+
+    Returns
+    ----------
+    distance                : float
+                              Propagation distance.
+    normal                  : ndarray
+                              Ray that defines a surface normal for the intersection..
+
+    """
+    error        = [150,100]
+    distance     = [0,0.1]
+    iter_no      = 0
+    while np.abs(error[1]) > target_error:
+        error[1],point = intersection_kernel_for_parametric_surfaces(
+                                                                     distance[1],
+                                                                     ray,
+                                                                     parametric_surface,
+                                                                     surface_function
+                                                                    )
+        distance,error = propagate_parametric_intersection_error(
+                                                                 distance,
+                                                                 error
+                                                                )
+        if iter_no < iter_no_limit:
+            return False,False
+    normal = surface_normal_function(
+                                     point,
+                                     parametric_surface
+                                    )
+    return distance[1],normal
+
+def intersect_w_sphere(ray,sphere):
+    """
+    Definition to intersect a ray with a sphere.
+
+    Parameters
+    ----------
+    ray        : ndarray
+                 A ray definition.
+    sphere     : ndarray
+                 A sphere defined with a center in XYZ and radius of curvature.
+
+    Returns
+    ----------
+    distance   : float
+                 Total optical propagation distance.
+    normal     : ndarray
+                 A ray defining surface normal at the point of intersection.
+    """
+    distance,normal = intersect_parametric(
+                                           ray,
+                                           sphere,
+                                           sphere_function,
+                                           get_sphere_normal
+                                          )
+    return distance,normal

@@ -93,3 +93,41 @@ def define_circle(center,radius,angles):
                radius
               ]
     return circle
+
+def define_sphere(center,radius):
+    """
+    A definition to define a sphere.
+
+    Parameters
+    ----------
+    center     : ndarray
+                 Center of a sphere in X,Y,Z.
+    radius     : float
+                 Radius of the sphere.
+
+    Returns
+    ----------
+    sphere     : ndarray
+                 Single variable packed form.
+    """
+    sphere = np.array([center[0],center[1],center[2],radius])
+    return sphere
+
+def sphere_function(point,sphere):
+    """
+    Definition of a sphere function. Evaluate a point against a sphere function.
+
+    Parameters
+    ----------
+    sphere     : ndarray
+                 Sphere parameters, XYZ center and radius.
+    point      : ndarray
+                 Point in XYZ.
+
+    Return
+    ----------
+    result     : float
+                 Result of the evaluation. Zero if point is on sphere.
+    """
+    result = (point[0]-sphere[0])**2 + (point[1]-sphere[1])**2 + (point[2]-sphere[2])**2 - sphere[3]**2
+    return result
