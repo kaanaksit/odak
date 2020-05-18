@@ -129,5 +129,7 @@ def sphere_function(point,sphere):
     result     : float
                  Result of the evaluation. Zero if point is on sphere.
     """
-    result = (point[0]-sphere[0])**2 + (point[1]-sphere[1])**2 + (point[2]-sphere[2])**2 - sphere[3]**2
+    if len(point.shape) == 1:
+        point = point.reshape((1,3)) 
+    result = (point[:,0]-sphere[0])**2 + (point[:,1]-sphere[1])**2 + (point[:,2]-sphere[2])**2 - sphere[3]**2
     return result

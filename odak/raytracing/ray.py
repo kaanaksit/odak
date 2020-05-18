@@ -83,15 +83,17 @@ def create_ray_from_angles(point,angles):
     ray        : ndarray
                  Created ray.
     """
+    if len(point.shape) == 1:
+        point  = point.reshape((1,3))
+        angles = angles.reshape((1,3))
     cosines = np.array(
-                       [
-                        np.cos(angles[0]),
-                        np.cos(angles[1]),
-                        np.cos(angles[2])
-                       ],
+                       np.cos(angles),
                        dtype=np.float
                       )
     ray     = np.array([point,cosines],dtype=np.float)
+    ray     = ray.reshape(ray.shape[1],ray.shape[0],ray.shape[2])
+    if ray.shape[0] == 1:
+        ray = ray.reshape((2,3))
     return ray
 
 def propagate_a_ray(ray,distance):
@@ -110,8 +112,12 @@ def propagate_a_ray(ray,distance):
     new_ray    : ndarray
                  Propagated ray.
     """
-    new_ray      = np.copy(ray)
-    new_ray[0,0] = distance*new_ray[1,0] + new_ray[0,0]
-    new_ray[0,1] = distance*new_ray[1,1] + new_ray[0,1]
-    new_ray[0,2] = distance*new_ray[1,2] + new_ray[0,2]
+    if len(ray.shape) == 2:
+        ray = ray.reshape((1,2,3))
+    new_ray        = np.copy(ray)
+    new_ray[:,0,0] = distance*new_ray[:,1,0] + new_ray[:,0,0]
+    new_ray[:,0,1] = distance*new_ray[:,1,1] + new_ray[:,0,1]
+    new_ray[:,0,2] = distance*new_ray[:,1,2] + new_ray[:,0,2]
+    if new_ray.shape[0] == 1:
+        new_ray = new_ray.reshape((2,3))
     return new_ray

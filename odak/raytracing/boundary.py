@@ -171,20 +171,18 @@ def get_sphere_normal(point,sphere):
     normal_vector : ndarray
                     Normal vector.
     """
+    if len(point.shape) == 1:
+        point = point.reshape((1,3))
     grad          = np.array(
                              [
-                              2*(point[0]-sphere[0])/sphere[3]**2,
-                              2*(point[1]-sphere[1])/sphere[3]**2,
-                              2*(point[2]-sphere[2])/sphere[3]**2
+                              2*(point[:,0]-sphere[0])/sphere[3]**2,
+                              2*(point[:,1]-sphere[1])/sphere[3]**2,
+                              2*(point[:,2]-sphere[2])/sphere[3]**2                              
                              ]
                             )
     angles        = np.array(
-                             [
-                              np.arctan(grad[0])+np.pi/2.,
-                              np.arctan(grad[1])+np.pi/2.,
-                              np.arctan(grad[2])+np.pi/2.
-                             ]
-                            )
+                             np.arctan(grad)+np.pi/2.
+                            ).T
     normal_vector = create_ray_from_angles(point,angles)
     return normal_vector
 
@@ -211,8 +209,10 @@ def intersection_kernel_for_parametric_surfaces(distance,ray,parametric_surface,
                          Error.
     """
     new_ray = propagate_a_ray(ray,distance)
-    point   = new_ray[0]
-    error   = surface_function(new_ray[0],parametric_surface)
+    if len(new_ray) == 2:
+        new_ray = new_ray.reshape((1,2,3))
+    point   = new_ray[:,0]
+    error   = surface_function(point,parametric_surface)
     return error,point
 
 def propagate_parametric_intersection_error(distance,error):
@@ -266,21 +266,24 @@ def intersect_parametric(ray,parametric_surface,surface_function,surface_normal_
                               Ray that defines a surface normal for the intersection..
 
     """
+    if len(ray.shape) == 2:
+        ray = ray.reshape((1,2,3))
     error        = [150,100]
     distance     = [0,0.1]
     iter_no      = 0
-    while np.abs(error[1]) > target_error:
-        error[1],point = intersection_kernel_for_parametric_surfaces(
-                                                                     distance[1],
-                                                                     ray,
-                                                                     parametric_surface,
-                                                                     surface_function
-                                                                    )
-        distance,error = propagate_parametric_intersection_error(
-                                                                 distance,
-                                                                 error
-                                                                )
-        if iter_no < iter_no_limit:
+    while np.abs(np.amax(error[1])) > target_error:
+        error[1],point  = intersection_kernel_for_parametric_surfaces(
+                                                                      distance[1],
+                                                                      ray,
+                                                                      parametric_surface,
+                                                                      surface_function
+                                                                     )
+        distance,error  = propagate_parametric_intersection_error(
+                                                                  distance,
+                                                                  error
+                                                                 )
+        iter_no        += 1
+        if iter_no > iter_no_limit:
             return False,False
     normal = surface_normal_function(
                                      point,
