@@ -1,0 +1,9 @@
+{
+    "item"                : "LA1024",
+    "type"                : "Plano-Convex lens",
+    "units"               : "mm",
+    "diameter"            : 2.0,
+    "center thickness"    : 1.0,
+    "radius of curvature" : 2.1,
+    "coating"             : "uncoated"
+}
