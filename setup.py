@@ -34,6 +34,7 @@ setup(
                              ],
       package_dir          = {'odak': 'odak'},
       package_data         = {'odak': ['catalog/data/*.json']},
+      data_files           = [('', ['LICENSE.txt'])],
       long_description     = read('README.md'),
       classifiers          = [
                               "Development Status :: 2 - Pre-Alpha",
