@@ -28,7 +28,7 @@ def same_side(p1,p2,a,b):
     Parameters
     ----------
     p1          : list
-                  Point to check.
+                  Point(s) to check.
     p2          : list
                   This is the point check against.
     a           : list
@@ -41,7 +41,10 @@ def same_side(p1,p2,a,b):
     p2a   = np.subtract(p2,a)
     cp1   = np.cross(ba,p1a)
     cp2   = np.cross(ba,p2a)
-    if np.dot(cp1,cp2) >= 0:
+    test  = np.dot(cp1,cp2)
+    if len(p1.shape) > 1:
+        return test>=0
+    if test >= 0:
         return True
     return False
 

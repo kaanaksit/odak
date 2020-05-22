@@ -1,10 +1,43 @@
 {
+
    "LA1024"          : {
                         "type"                : "Plano-Convex lens",
                         "units"               : "mm",
                         "diameter"            : 2.0,
-                        "center thickness"    : 1.0,
                         "radius of curvature" : 2.1,
-                        "coating"             : "uncoated"
+                        "center thickness"    : 1.0,
+                        "coating"             : "uncoated",
+			"material"            : "BK-7"
+		       },
+
+   "LA1026"          : {
+                        "type"                : "Plano-Convex lens",
+                        "units"               : "mm",
+                        "diameter"            : 2.0,
+                        "radius of curvature" : 3.1,
+                        "center thickness"    : 1.0,
+                        "coating"             : "uncoated",
+			"material"            : "BK-7"
+		       },
+
+   "LA1036"          : {
+                        "type"                : "Plano-Convex lens",
+                        "units"               : "mm",
+                        "diameter"            : 3.0,
+                        "radius of curvature" : 3.1,
+                        "center thickness"    : 1.5,
+                        "coating"             : "uncoated",
+			"material"            : "BK-7"
+		       },
+
+   "LA1039"          : {
+                        "type"                : "Plano-Convex lens",
+                        "units"               : "mm",
+                        "diameter"            : 3.0,
+                        "radius of curvature" : 4.7,
+                        "center thickness"    : 1.5,
+                        "coating"             : "uncoated",
+			"material"            : "BK-7"
 		       }
+
 }

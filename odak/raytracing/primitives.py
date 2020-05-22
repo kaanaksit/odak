@@ -22,7 +22,7 @@ def define_plane(point,angles=[0.,0.,0.]):
                       [ 10., 10., 0.],
                       [  0., 10., 0.],
                       [  0.,  0., 0.]
-                     ])
+                     ],dtype=np.float)
     point = np.asarray(point)
     for i in range(0,plane.shape[0]):
         plane[i],_,_,_  = rotate_point(plane[i],angles=angles)
@@ -110,7 +110,7 @@ def define_sphere(center,radius):
     sphere     : ndarray
                  Single variable packed form.
     """
-    sphere = np.array([center[0],center[1],center[2],radius])
+    sphere = np.array([center[0],center[1],center[2],radius],dtype=np.float)
     return sphere
 
 def sphere_function(point,sphere):

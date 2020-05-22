@@ -130,6 +130,8 @@ def intersect_w_circle(ray,circle):
         normal = normal.reshape((1,2,3))
     distance_to_center                     = distance_between_two_points(normal[:,0],circle[1])
     distance[np.nonzero(distance_to_center>circle[2])] = 0
+    if len(ray.shape) == 2:
+        normal = normal.reshape((2,3))
     return normal,distance
 
 def intersect_w_triangle(ray,triangle):
@@ -239,7 +241,7 @@ def propagate_parametric_intersection_error(distance,error):
     error[0]     = error[1]
     return distance,error
 
-def intersect_parametric(ray,parametric_surface,surface_function,surface_normal_function,target_error=0.00000001,iter_no_limit=1000):
+def intersect_parametric(ray,parametric_surface,surface_function,surface_normal_function,target_error=0.00000001,iter_no_limit=100000):
     """
     Definition to intersect a ray with a parametric surface.
 
@@ -263,15 +265,14 @@ def intersect_parametric(ray,parametric_surface,surface_function,surface_normal_
     distance                : float
                               Propagation distance.
     normal                  : ndarray
-                              Ray that defines a surface normal for the intersection..
-
+                              Ray that defines a surface normal for the intersection.
     """
     if len(ray.shape) == 2:
         ray = ray.reshape((1,2,3))
     error        = [150,100]
     distance     = [0,0.1]
     iter_no      = 0
-    while np.abs(np.amax(error[1])) > target_error:
+    while np.abs(np.max(np.asarray(error[1]))) > target_error:
         error[1],point  = intersection_kernel_for_parametric_surfaces(
                                                                       distance[1],
                                                                       ray,
@@ -304,10 +305,10 @@ def intersect_w_sphere(ray,sphere):
 
     Returns
     ----------
-    distance   : float
-                 Total optical propagation distance.
     normal     : ndarray
                  A ray defining surface normal at the point of intersection.
+    distance   : float
+                 Total optical propagation distance.
     """
     distance,normal = intersect_parametric(
                                            ray,
@@ -315,4 +316,4 @@ def intersect_w_sphere(ray,sphere):
                                            sphere_function,
                                            get_sphere_normal
                                           )
-    return distance,normal
+    return normal,distance
