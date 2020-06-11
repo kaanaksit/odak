@@ -1,4 +1,5 @@
 from odak import np
+from odak.tools import rotate_points
 
 def create_ray(x0y0z0,abg):
     """
@@ -67,7 +68,7 @@ def create_ray_from_two_points(x0y0z0,x1y1z1):
         ray = ray.reshape((2,3))
     return ray
 
-def create_ray_from_angles(point,angles):
+def create_ray_from_angles(point,angles,mode='XYZ'):
     """
     Definition to create a ray from a point and angles.
 
@@ -76,7 +77,9 @@ def create_ray_from_angles(point,angles):
     point      : ndarray
                  Point in X,Y and Z.
     angles     : ndarray
-                 Angles with X,Y,Z axes.
+                 Angles with X,Y,Z axes in degrees. All zeros point Z axis.
+    mode       : str
+                 Rotation mode determines ordering of the rotations at each axis. There are XYZ,YXZ    ,ZXY and ZYX modes.
 
     Returns
     ----------
@@ -85,14 +88,10 @@ def create_ray_from_angles(point,angles):
     """
     if len(point.shape) == 1:
         point  = point.reshape((1,3))
-        angles = angles.reshape((1,3))
-    cosines  = np.array(
-                        np.cos(angles),
-                        dtype=np.float
-                       )
-    ray      = np.zeros((point.shape[0],2,3),dtype=np.float)
-    ray[:,0] = point
-    ray[:,1] = cosines
+    new_point       = np.zeros(point.shape)
+    new_point[:,2] += 5.
+    new_point       = rotate_points(new_point,angles,mode=mode,offset=point[:,0])
+    ray             = create_ray_from_two_points(point,new_point)
     if ray.shape[0] == 1:
         ray = ray.reshape((2,3))
     return ray
@@ -119,7 +118,6 @@ def propagate_a_ray(ray,distance):
     new_ray[:,0,0] = distance*new_ray[:,1,0] + new_ray[:,0,0]
     new_ray[:,0,1] = distance*new_ray[:,1,1] + new_ray[:,0,1]
     new_ray[:,0,2] = distance*new_ray[:,1,2] + new_ray[:,0,2]
-#    print(ray[:,0],distance,new_ray[:,0])
     if new_ray.shape[0] == 1:
         new_ray = new_ray.reshape((2,3))
     return new_ray

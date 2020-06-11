@@ -1,6 +1,7 @@
 from odak import np
+from odak.raytracing import create_ray_from_angles
 from odak.tools.transformation import rotate_point
-from odak.tools.vector import same_side
+from odak.tools.vector import same_side,point_to_ray_distance
 
 def define_plane(point,angles=[0.,0.,0.]):
     """ 
@@ -96,14 +97,14 @@ def define_circle(center,radius,angles):
 
 def define_sphere(center,radius):
     """
-    A definition to define a sphere.
+    Definition to define a sphere.
 
     Parameters
     ----------
     center     : ndarray
                  Center of a sphere in X,Y,Z.
     radius     : float
-                 Radius of the sphere.
+                 Radius of a sphere.
 
     Returns
     ----------
@@ -129,7 +130,69 @@ def sphere_function(point,sphere):
     result     : float
                  Result of the evaluation. Zero if point is on sphere.
     """
+    point = np.asarray(point)
     if len(point.shape) == 1:
         point = point.reshape((1,3)) 
     result = (point[:,0]-sphere[0])**2 + (point[:,1]-sphere[1])**2 + (point[:,2]-sphere[2])**2 - sphere[3]**2
+    return result
+
+def define_cylinder(center,radius,rotation=[0.,0.,0.]):
+    """
+    Definition to define a cylinder
+
+    Parameters
+    ----------
+    center     : ndarray
+                 Center of a cylinder in X,Y,Z.
+    radius     : float
+                 Radius of a cylinder along X axis.
+    rotation   : list
+                 Direction angles in degrees for the orientation of a cylinder.
+
+    Returns
+    ----------
+    cylinder   : ndarray
+                 Single variable packed form.
+    """
+    cylinder_ray = create_ray_from_angles(np.asarray(center),np.asarray(rotation))
+    cylinder     = np.array(
+                            [
+                             center[0],
+                             center[1],
+                             center[2],
+                             radius,
+                             center[0]+cylinder_ray[1,0],
+                             center[1]+cylinder_ray[1,1],
+                             center[2]+cylinder_ray[1,2]
+                            ],
+                            dtype=np.float
+                            )
+    return cylinder
+
+def cylinder_function(point,cylinder):
+    """
+    Definition of a cylinder function. Evaluate a point against a cylinder function. Inspired from https://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html
+
+    Parameters
+    ----------
+    sphere     : ndarray
+                 Sphere parameters, XYZ center and radius.
+    point      : ndarray
+                 Point in XYZ.
+
+    Return
+    ----------
+    result     : float
+                 Result of the evaluation. Zero if point is on sphere.
+    """
+    point = np.asarray(point)
+    if len(point.shape) == 1:
+        point = point.reshape((1,3))
+    distance = point_to_ray_distance(
+                                     point,
+                                     np.array([cylinder[0],cylinder[1],cylinder[2]],dtype=np.float),
+                                     np.array([cylinder[4],cylinder[5],cylinder[6]],dtype=np.float)
+                                    )
+    r        = cylinder[3]
+    result   = distance-r**2
     return result

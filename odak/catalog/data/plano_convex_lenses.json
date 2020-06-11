@@ -6,6 +6,7 @@
                         "diameter"            : 2.0,
                         "radius of curvature" : 2.1,
                         "center thickness"    : 1.0,
+			"edge thickness"      : 0.7,
                         "coating"             : "uncoated",
 			"material"            : "BK-7"
 		       },
@@ -16,6 +17,7 @@
                         "diameter"            : 2.0,
                         "radius of curvature" : 3.1,
                         "center thickness"    : 1.0,
+			"edge thickness"      : 0.8,
                         "coating"             : "uncoated",
 			"material"            : "BK-7"
 		       },
@@ -26,6 +28,7 @@
                         "diameter"            : 3.0,
                         "radius of curvature" : 3.1,
                         "center thickness"    : 1.5,
+			"edge thickness"      : 1.0,
                         "coating"             : "uncoated",
 			"material"            : "BK-7"
 		       },
@@ -36,6 +39,7 @@
                         "diameter"            : 3.0,
                         "radius of curvature" : 4.7,
                         "center thickness"    : 1.5,
+			"edge thickness"      : 1.2,
                         "coating"             : "uncoated",
 			"material"            : "BK-7"
 		       }

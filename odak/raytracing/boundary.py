@@ -1,7 +1,7 @@
 from odak import np
-from odak.tools.vector import distance_between_two_points
-from odak.raytracing.primitives import is_it_on_triangle,center_of_triangle,sphere_function
-from odak.raytracing.ray import create_ray_from_angles,propagate_a_ray
+from odak.tools.vector import distance_between_two_points,closest_point_to_a_ray
+from odak.raytracing.primitives import is_it_on_triangle,center_of_triangle,sphere_function,cylinder_function
+from odak.raytracing.ray import create_ray_from_two_points,propagate_a_ray
 
 def reflect(input_ray,normal):
     """ 
@@ -164,7 +164,7 @@ def get_sphere_normal(point,sphere):
     Parameters
     ----------
     point         : ndarray
-                    Point in X,Y,Z.
+                    Point on sphere in X,Y,Z.
     sphere        : ndarray
                     Center defined in X,Y,Z and radius.
 
@@ -175,17 +175,27 @@ def get_sphere_normal(point,sphere):
     """
     if len(point.shape) == 1:
         point = point.reshape((1,3))
-    grad          = np.array(
-                             [
-                              2*(point[:,0]-sphere[0])/sphere[3]**2,
-                              2*(point[:,1]-sphere[1])/sphere[3]**2,
-                              2*(point[:,2]-sphere[2])/sphere[3]**2                              
-                             ]
-                            )
-    angles        = np.array(
-                             np.arctan(grad)+np.pi/2.
-                            ).T
-    normal_vector = create_ray_from_angles(point,angles)
+    normal_vector = create_ray_from_two_points(point,sphere[0:3])
+    return normal_vector
+
+def get_cylinder_normal(point,cylinder):
+    """
+    Parameters
+    ----------
+    point         : ndarray
+                    Point on a cylinder defined in X,Y,Z.
+
+    Returns
+    ----------
+    normal_vector : ndarray
+                    Normal vector.
+    """
+    cylinder_ray  = create_ray_from_two_points(cylinder[0:3],cylinder[4:7])
+    closest_point = closest_point_to_a_ray(
+                                           point,
+                                           cylinder_ray
+                                          )
+    normal_vector = create_ray_from_two_points(closest_point,point)
     return normal_vector
 
 def intersection_kernel_for_parametric_surfaces(distance,ray,parametric_surface,surface_function):
@@ -213,8 +223,8 @@ def intersection_kernel_for_parametric_surfaces(distance,ray,parametric_surface,
     new_ray = propagate_a_ray(ray,distance)
     if len(new_ray) == 2:
         new_ray = new_ray.reshape((1,2,3))
-    point   = new_ray[:,0]
-    error   = surface_function(point,parametric_surface)
+    point = new_ray[:,0]
+    error = surface_function(point,parametric_surface)
     return error,point
 
 def propagate_parametric_intersection_error(distance,error):
@@ -286,11 +296,39 @@ def intersect_parametric(ray,parametric_surface,surface_function,surface_normal_
         iter_no        += 1
         if iter_no > iter_no_limit:
             return False,False
+        if np.isnan(np.sum(point)):
+            return False,False
     normal = surface_normal_function(
                                      point,
                                      parametric_surface
                                     )
     return distance[1],normal
+
+def intersect_w_cylinder(ray,cylinder):
+    """
+    Definition to intersect a ray with a cylinder.
+
+    Parameters
+    ----------
+    ray        : ndarray
+                 A ray definition.
+    cylinder   : ndarray
+                 A cylinder defined with a center in XYZ and radius of curvature.
+
+    Returns
+    ----------
+    normal     : ndarray
+                 A ray defining surface normal at the point of intersection.
+    distance   : float
+                 Total optical propagation distance.
+    """
+    distance,normal = intersect_parametric(
+                                           ray,
+                                           cylinder,
+                                           cylinder_function,
+                                           get_cylinder_normal
+                                          )
+    return normal,distance
 
 def intersect_w_sphere(ray,sphere):
     """
