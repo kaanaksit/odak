@@ -104,5 +104,22 @@ def closest_point_to_a_ray(point,ray):
     return closest_point
 
 def point_to_ray_distance(point,ray_point_0,ray_point_1):
+    """
+    Definition to find point's closest distance to a line represented with two points.
+
+    Parameters
+    ----------
+    point       : ndarray
+                  Point to be tested.
+    ray_point_0 : ndarray
+                  First point to represent a line.
+    ray_point_1 : ndarray
+                  Second point to represent a line.
+
+    Returns
+    ----------
+    distance    : float
+                  Calculated distance.
+    """
     distance = np.sum(np.cross((point-ray_point_0),(point-ray_point_1))**2)/np.sum((ray_point_1-ray_point_0)**2)
     return distance
