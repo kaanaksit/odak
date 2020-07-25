@@ -44,20 +44,14 @@ def sphere_sample(no=[10,10],radius=1.,center=[0.,0.,0.]):
     samples     : ndarray
                   Samples generated.
     """
-    samples = []
-    for i in range(0,no[0]):
-        psi    = 2*np.pi/no[0]*i
-        for j in range(0,no[1]):
-            teta   = 2*np.pi/no[1]*j
-            sample = np.array(
-                              [
-                               center[0]+radius*np.sin(psi)*np.cos(teta),
-                               center[1]+radius*np.sin(psi)*np.sin(teta),
-                               center[2]+radius*np.cos(psi)
-                              ]
-                             )
-            samples.append(sample)
-    samples = np.asarray(samples)
+    samples        = np.zeros((no[0],no[1],3))
+    psi,teta       = np.mgrid[0:no[0],0:no[1]]
+    psi            = 2*np.pi/no[0]*psi
+    teta           = 2*np.pi/no[1]*teta
+    samples[:,:,0] = center[0]+radius*np.sin(psi)*np.cos(teta)
+    samples[:,:,1] = center[0]+radius*np.sin(psi)*np.sin(teta)
+    samples[:,:,2] = center[0]+radius*np.cos(psi)
+    samples        = samples.reshape((no[0]*no[1],3))
     return samples
 
 def box_volume_sample(no=[10,10,10],size=[100.,100.,100.],center=[0.,0.,0.],angles=[0.,0.,0.]):
