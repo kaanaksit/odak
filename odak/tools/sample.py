@@ -108,29 +108,16 @@ def grid_sample(no=[10,10],size=[100.,100.],center=[0.,0.,0.],angles=[0.,0.,0.])
     samples     : ndarray
                   Samples generated.
     """
-    samples = np.zeros((no[0],no[1],3))
-    step    = [
-               size[0]/no[0],
-               size[1]/no[1]
-              ]
-    for i in range(no[0]):
-        for j in range(no[1]):
-            point           = np.array(
-                                       [
-                                        i*step[0]+step[0]/2.-size[0]/2.,
-                                        j*step[1]+step[1]/2.-size[1]/2.,
-                                        0.
-                                       ]
-                                      )
-            point,_,_,_     = rotate_point(
-                                           point,
-                                           angles=angles,
-                                          )
-            point[0]       += center[0]
-            point[1]       += center[1]
-            point[2]       += center[2]
-            samples[i,j,:]  = point
-    samples = samples.reshape((samples.shape[0]*samples.shape[1],samples.shape[2]))
+    samples        = np.zeros((no[0],no[1],3))
+    step           = [
+                      size[0]/no[0],
+                      size[1]/no[1]
+                     ]
+    x,y            = np.mgrid[0:no[0],0:no[1]]
+    samples[:,:,0] = x*step[0]+step[0]/2.-size[0]/2.
+    samples[:,:,1] = y*step[1]+step[1]/2.-size[1]/2.
+    samples        = samples.reshape((samples.shape[0]*samples.shape[1],samples.shape[2]))
+    samples        = rotate_points(samples,angles=angles,offset=center)
     return samples
 
 def batch_of_rays(entry,exit):
