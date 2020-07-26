@@ -1,5 +1,5 @@
 from odak import np
-from .transformation import rotate_point
+from .transformation import rotate_points,rotate_point
 from odak.raytracing import create_ray_from_two_points
 
 
@@ -74,31 +74,18 @@ def box_volume_sample(no=[10,10,10],size=[100.,100.,100.],center=[0.,0.,0.],angl
     samples     : ndarray
                   Samples generated.
     """
-    samples = np.zeros((no[0],no[1],no[2],3))
-    step    = [
-               size[0]/no[0],
-               size[1]/no[1],
-               size[2]/no[2]
-              ]
-    for i in range(no[0]):
-        for j in range(no[1]):
-            for k in range(no[2]):
-                point             = np.array(
-                                             [
-                                              i*step[0]+step[0]/2.-size[0]/2.,
-                                              j*step[1]+step[1]/2.-size[1]/2.,
-                                              k*step[2]+step[2]/2.-size[2]/2.
-                                             ]
-                                            )
-                point,_,_,_       = rotate_point(
-                                                 point,
-                                                 angles=angles,
-                                                )
-                point[0]         += center[0]
-                point[1]         += center[1]
-                point[2]         += center[2]
-                samples[i,j,k,:]  = point
-    samples = samples.reshape((samples.shape[0]*samples.shape[1]*samples.shape[2],samples.shape[3]))
+    samples          = np.zeros((no[0],no[1],no[2],3))
+    x,y,z            = np.mgrid[0:no[0],0:no[1],0:no[2]]
+    step             = [
+                        size[0]/no[0],
+                        size[1]/no[1],
+                        size[2]/no[2]
+                       ]
+    samples[:,:,:,0] = x*step[0]+step[0]/2.-size[0]/2.
+    samples[:,:,:,1] = y*step[1]+step[1]/2.-size[1]/2.
+    samples[:,:,:,2] = z*step[2]+step[2]/2.-size[2]/2.
+    samples          = samples.reshape((samples.shape[0]*samples.shape[1]*samples.shape[2],samples.shape[3]))
+    samples          = rotate_points(samples,angles=angles,offset=center)
     return samples
 
 def grid_sample(no=[10,10],size=[100.,100.],center=[0.,0.,0.],angles=[0.,0.,0.]):
