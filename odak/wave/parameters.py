@@ -24,7 +24,7 @@ def electric_field_per_plane_wave(amplitude,opd,k,phase=0,w=0,t=0):
     field        : complex
                    A complex number that provides the resultant field in the complex form A*e^(j(wt+phi)).
     """
-    field = amplitude/opd**2*np.exp(1j*(w*t+opd*k))
+    field = amplitude/opd**2*np.exp(1j*(-w*t+opd*k))
     return field
 
 def calculate_phase(field):
