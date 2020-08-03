@@ -1,5 +1,4 @@
 # Odak
-![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)
 ![Build status](https://travis-ci.com/kunguz/odak.svg?branch=master)
 [![Documentation Status](https://readthedocs.org/projects/odak/badge/?version=latest)](https://odak.readthedocs.io/en/latest/?badge=latest)
 
