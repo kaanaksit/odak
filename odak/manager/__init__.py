@@ -101,5 +101,6 @@ class agent():
         """
         Definition to close the cluster.
         """
-        self.job_cluster.close()
+        if self.cluster == True:
+            self.job_cluster.close()
         return True
