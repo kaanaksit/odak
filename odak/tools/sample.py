@@ -28,7 +28,7 @@ def random_sample_point_cloud(point_cloud,no,p=None):
 
 def sphere_sample(no=[10,10],radius=1.,center=[0.,0.,0.]):
     """
-    Definition to generate a regular sample set on the surface of a sphere.
+    Definition to generate a regular sample set on the surface of a sphere using polar coordinates.
 
     Parameters
     ----------
@@ -51,6 +51,39 @@ def sphere_sample(no=[10,10],radius=1.,center=[0.,0.,0.]):
     samples[:,:,0] = center[0]+radius*np.sin(psi)*np.cos(teta)
     samples[:,:,1] = center[0]+radius*np.sin(psi)*np.sin(teta)
     samples[:,:,2] = center[0]+radius*np.cos(psi)
+    samples        = samples.reshape((no[0]*no[1],3))
+    return samples
+
+def sphere_sample_uniform(no=[10,10],radius=1.,center=[0.,0.,0.]):
+    """
+    Definition to generate an uniform sample set on the surface of a sphere using polar coordinates.
+
+    Parameters
+    ----------
+    no          : list
+                  Number of samples.
+    radius      : float
+                  Radius of a sphere.
+    center      : list
+                  Center of a sphere.
+
+    Returns
+    ----------
+    samples     : ndarray
+                  Samples generated.
+
+    """
+    samples        = np.zeros((no[0],no[1],3))
+    row            = np.arange(0,no[0])
+    psi,teta       = np.mgrid[0:no[0],0:no[1]]
+    for psi_id in range(0,no[0]):
+        psi[psi_id] = np.roll(row,psi_id,axis=0)
+        teta[psi_id] = np.roll(row,-psi_id,axis=0)
+    psi            = 2*np.pi/no[0]*psi
+    teta           = 2*np.pi/no[1]*teta
+    samples[:,:,0] = center[0]+radius*np.sin(psi)*np.cos(teta)
+    samples[:,:,1] = center[1]+radius*np.sin(psi)*np.sin(teta)
+    samples[:,:,2] = center[2]+radius*np.cos(psi)
     samples        = samples.reshape((no[0]*no[1],3))
     return samples
 
