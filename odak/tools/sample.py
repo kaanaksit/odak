@@ -26,7 +26,7 @@ def random_sample_point_cloud(point_cloud,no,p=None):
     return subset 
 
 
-def sphere_sample(no=[10,10],radius=1.,center=[0.,0.,0.]):
+def sphere_sample(no=[10,10],radius=1.,center=[0.,0.,0.],k=[1,2]):
     """
     Definition to generate a regular sample set on the surface of a sphere using polar coordinates.
 
@@ -38,6 +38,8 @@ def sphere_sample(no=[10,10],radius=1.,center=[0.,0.,0.]):
                   Radius of a sphere.
     center      : list
                   Center of a sphere.
+    k           : list
+                  Multipliers for gathering samples. If you set k=[1,2] it will draw samples from a perfect sphere.
 
     Returns
     ----------
@@ -46,15 +48,15 @@ def sphere_sample(no=[10,10],radius=1.,center=[0.,0.,0.]):
     """
     samples        = np.zeros((no[0],no[1],3))
     psi,teta       = np.mgrid[0:no[0],0:no[1]]
-    psi            = 2*np.pi/no[0]*psi
-    teta           = 2*np.pi/no[1]*teta
+    psi            = k[0]*np.pi/no[0]*psi
+    teta           = k[1]*np.pi/no[1]*teta
     samples[:,:,0] = center[0]+radius*np.sin(psi)*np.cos(teta)
     samples[:,:,1] = center[0]+radius*np.sin(psi)*np.sin(teta)
     samples[:,:,2] = center[0]+radius*np.cos(psi)
     samples        = samples.reshape((no[0]*no[1],3))
     return samples
 
-def sphere_sample_uniform(no=[10,10],radius=1.,center=[0.,0.,0.]):
+def sphere_sample_uniform(no=[10,10],radius=1.,center=[0.,0.,0.],k=[1,2]):
     """
     Definition to generate an uniform sample set on the surface of a sphere using polar coordinates.
 
@@ -66,6 +68,9 @@ def sphere_sample_uniform(no=[10,10],radius=1.,center=[0.,0.,0.]):
                   Radius of a sphere.
     center      : list
                   Center of a sphere.
+    k           : list
+                  Multipliers for gathering samples. If you set k=[1,2] it will draw samples from a perfect sphere.
+
 
     Returns
     ----------
@@ -79,8 +84,8 @@ def sphere_sample_uniform(no=[10,10],radius=1.,center=[0.,0.,0.]):
     for psi_id in range(0,no[0]):
         psi[psi_id] = np.roll(row,psi_id,axis=0)
         teta[psi_id] = np.roll(row,-psi_id,axis=0)
-    psi            = 2*np.pi/no[0]*psi
-    teta           = 2*np.pi/no[1]*teta
+    psi            = k[0]*np.pi/no[0]*psi
+    teta           = k[1]*np.pi/no[1]*teta
     samples[:,:,0] = center[0]+radius*np.sin(psi)*np.cos(teta)
     samples[:,:,1] = center[1]+radius*np.sin(psi)*np.sin(teta)
     samples[:,:,2] = center[2]+radius*np.cos(psi)
