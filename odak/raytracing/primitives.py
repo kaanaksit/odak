@@ -1,6 +1,6 @@
 from odak import np
 from odak.raytracing import create_ray_from_angles
-from odak.tools.transformation import rotate_point
+from odak.tools.transformation import rotate_point,rotate_points
 from odak.tools.vector import same_side,point_to_ray_distance
 
 def define_plane(point,angles=[0.,0.,0.]):
@@ -29,6 +29,44 @@ def define_plane(point,angles=[0.,0.,0.]):
         plane[i],_,_,_  = rotate_point(plane[i],angles=angles)
         plane[i]        = plane[i]+point
     return plane
+
+def bring_plane_to_origin(point,plane,shape=[10.,10.],center=[0.,0.,0.],angles=[0.,0.,0.],mode='XYZ'):
+    """
+    Definition to bring points back to reference origin with respect to a plane.
+
+    Parameters
+    ----------
+    point              : ndarray
+                         Point(s) to be tested.
+    shape              : list
+                         Dimensions of the rectangle along X and Y axes.
+    center             : list
+                         Center of the rectangle.
+    angles             : list
+                         Rotation angle of the rectangle.
+    mode               : str
+                         Rotation mode of the rectangle, for more see odak.tools.rotate_point and odak.tools.rotate_points.
+
+    Returns
+    ----------
+    transformed_points : ndarray
+                         Point(s) that are brought back to reference origin with respect to given plane.
+    """
+    if point.shape[0] == 3:
+        point = point.reshape((1,3))
+    reverse_mode       = mode[::-1]
+    angles             = [-angles[0],-angles[1],-angles[2]]
+    center             = np.asarray(center).reshape((1,3))
+    transformed_points = point-center
+    transformed_points = rotate_points(
+                                       transformed_points,
+                                       angles=angles,
+                                       mode=reverse_mode,
+                                      )
+    if transformed_points.shape[0] == 1:
+        transformed_points = transformed.points.reshape((3,))
+    return transformed_points
+
 
 def center_of_triangle(triangle):
     """

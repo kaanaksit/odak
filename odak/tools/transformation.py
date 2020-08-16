@@ -18,9 +18,9 @@ def rotmatx(angle):
     angle = np.float(angle)
     angle = np.radians(angle)
     rotx  = np.array([
-                      [1.,            0.  ,           0.],
+                      [1.,               0.,               0.],
                       [0.,  math.cos(angle), -math.sin(angle)],
-                      [0.,  math.sin(angle), math.cos(angle)]
+                      [0.,  math.sin(angle),  math.cos(angle)]
                      ],dtype=np.float)
     return rotx
 
@@ -41,7 +41,7 @@ def rotmaty(angle):
     angle = np.radians(angle)
     roty  = np.array([
                       [math.cos(angle),  0., math.sin(angle)],
-                      [0.,             1.,            0.],
+                      [0.,               1.,              0.],
                       [-math.sin(angle), 0., math.cos(angle)]
                      ],dtype=np.float)
     return roty
@@ -64,7 +64,7 @@ def rotmatz(angle):
     rotz  = np.array([
                       [ math.cos(angle), -math.sin(angle), 0.],
                       [ math.sin(angle),  math.cos(angle), 0.],
-                      [            0.,            0., 1.]
+                      [              0.,               0., 1.]
                      ],dtype=np.float)
     return rotz
 
