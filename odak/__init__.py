@@ -5,7 +5,8 @@ Odak is the fundamental Python library needed for scientific computing in optica
 
 """
 try:
-    import cupy as np
+#    import cupy as np
+    import numpy as np
 except:
     import numpy as np
 import odak.tools
