@@ -167,10 +167,12 @@ def tilt_towards(location,lookat):
     ----------
     location     : list
                    Center of the plane to be tilted.
+    lookat       : list
+                   Tilt towards this point.
 
     Returns
     ----------
-    lookat       : list
+    angles       : list
                    Rotation angles in degrees.
     """
     dx     = location[0]-lookat[0]

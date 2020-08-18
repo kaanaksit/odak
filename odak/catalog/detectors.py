@@ -133,8 +133,8 @@ class plane_detector():
                                )
         detector_ids[0,:] = (detector_ids[0,:]>=1)*detector_ids[0,:]
         detector_ids[1,:] = (detector_ids[1,:]>=1)*detector_ids[1,:]
-        detector_ids[0,:] = (detector_ids[0,:]<=self.settings["resolution"][0]+1)*detector_ids[0,:]
-        detector_ids[1,:] = (detector_ids[1,:]<=self.settings["resolution"][1]+1)*detector_ids[1,:]
+        detector_ids[0,:] = (detector_ids[0,:]<self.settings["resolution"][0]+1)*detector_ids[0,:]
+        detector_ids[1,:] = (detector_ids[1,:]<self.settings["resolution"][1]+1)*detector_ids[1,:]
         cache             = np.zeros(
                                      (
                                       self.settings["resolution"][0]+1,

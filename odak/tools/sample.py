@@ -2,7 +2,6 @@ from odak import np
 from .transformation import rotate_points,rotate_point
 from odak.raytracing import create_ray_from_two_points
 
-
 def random_sample_point_cloud(point_cloud,no,p=None):
     """
     Definition to pull a subset of points from a point cloud with a given probability.
@@ -134,8 +133,8 @@ def circular_sample(no=[10,10],radius=10.,center=[0.,0.,0.],angles=[0.,0.,0.]):
     ----------
     no          : list
                   Number of samples.
-    size        : list
-                  Physical size of the surface.
+    radius      : float
+                  Radius of the circle.
     center      : list
                   Center location of the surface.
     angles      : list
@@ -146,12 +145,13 @@ def circular_sample(no=[10,10],radius=10.,center=[0.,0.,0.],angles=[0.,0.,0.]):
     samples     : ndarray
                   Samples generated.
     """
-    samples         = np.zeros((no[0],no[1],3))
-    r_angles,r      = np.mgrid[0:no[0],0:no[1]]
-    r               = r/np.amax(r)*radius-radius/2.
+    samples         = np.zeros((no[0]+1,no[1]+1,3))
+    r_angles,r      = np.mgrid[0:no[0]+1,0:no[1]+1]
+    r               = r/np.amax(r)*radius
     r_angles        = r_angles/np.amax(r_angles)*np.pi*2
     samples[:,:,0]  = r*np.cos(r_angles)
     samples[:,:,1]  = r*np.sin(r_angles)
+    samples         = samples[1:no[0]+1,1:no[1]+1,:]
     samples         = samples.reshape((samples.shape[0]*samples.shape[1],samples.shape[2]))
     samples         = rotate_points(samples,angles=angles,offset=center)
     return samples
