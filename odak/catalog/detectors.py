@@ -1,16 +1,29 @@
 from odak import np
-import os
 import odak.catalog
+from odak.wave import calculate_phase,calculate_amplitude,calculate_intensity
 from odak.raytracing.primitives import define_plane,bring_plane_to_origin
 from odak.raytracing.boundary import intersect_w_surface
 
 class plane_detector():
+    """
+    A class to represent a plane detector. This is generally useful in raytracing and wave calculations.
+    """
     def __init__(self,field=None,resolution=[1000,1000],shape=[10.,10.],center=[0.,0.,0.],angles=[0.,0.,0.]):
         """
         Class to represent a simple planar detector.
 
         Parameters
         ----------
+        field       : ndarray
+                      Initial field to be loaded.
+        resolution  : list
+                      Resolution of the detector.
+        shape       : list
+                      Shape of the detector.
+        center      : list
+                      Center of the detector.
+        angles      : list
+                      Rotation angles of the detector.
         """
         self.settings   = {
                            'resolution'    : resolution,
@@ -32,6 +45,52 @@ class plane_detector():
                                   ),
                                   dtype=np.complex64
                                   )
+    def get_field(self):
+        """
+        A definition to return the field measured on the detector.
+
+        Returns
+        ----------
+        field       : ndarray
+                      A copy of the field measured by the detector.
+        """
+        return np.copy(self.field)
+
+    def get_intensity(self):
+        """
+        A definition to return the intensity of the field.
+
+        Returns
+        ---------
+        intensity   : ndarray
+                      Intensity of the field measured by the detector.
+        """
+        intensity = wave.calculate_intensity(self.field)
+        return intensity
+
+    def get_amplitude(self):
+        """
+        A definition to return the amplitude of the field.
+
+        Returns
+        ---------
+        amplitude   : ndarray
+                      Amplitude of the field measured by the detector.
+        """
+        amplitude = wave.calculate_amplitude(self.field)
+        return amplitude
+
+    def get_phase(self):
+        """
+        A definition to return the phase of the field.
+
+        Returns
+        ---------
+        phase       : ndarray
+                      Phase of the field measured by the detector.
+        """
+        phase = wave.calculate_phase(self.field)
+        return phase
 
     def raytrace(self,ray,field=1,channel=0):
         """
@@ -44,7 +103,7 @@ class plane_detector():
         field        : ndarray
                        Field(s) to be used for calculating contribution of rays to the detector.
         channel      : list
-                       Which color channel to contribute to in the detector plane. Default is zero.
+                       Which color channel to contribute to in the detector plane. Default is zero. One can use a list to select multiple channels separately.
  
         Returns
         ----------

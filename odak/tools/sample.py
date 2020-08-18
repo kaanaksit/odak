@@ -126,6 +126,36 @@ def box_volume_sample(no=[10,10,10],size=[100.,100.,100.],center=[0.,0.,0.],angl
     samples          = rotate_points(samples,angles=angles,offset=center)
     return samples
 
+def circular_sample(no=[10,10],radius=10.,center=[0.,0.,0.],angles=[0.,0.,0.]):
+    """
+    Definition to generate samples inside a circle over a surface.
+
+    Parameters
+    ----------
+    no          : list
+                  Number of samples.
+    size        : list
+                  Physical size of the surface.
+    center      : list
+                  Center location of the surface.
+    angles      : list
+                  Tilt of the surface.
+
+    Returns
+    ----------
+    samples     : ndarray
+                  Samples generated.
+    """
+    samples         = np.zeros((no[0],no[1],3))
+    r_angles,r      = np.mgrid[0:no[0],0:no[1]]
+    r               = r/np.amax(r)*radius-radius/2.
+    r_angles        = r_angles/np.amax(r_angles)*np.pi*2
+    samples[:,:,0]  = r*np.cos(r_angles)
+    samples[:,:,1]  = r*np.sin(r_angles)
+    samples         = samples.reshape((samples.shape[0]*samples.shape[1],samples.shape[2]))
+    samples         = rotate_points(samples,angles=angles,offset=center)
+    return samples
+
 def grid_sample(no=[10,10],size=[100.,100.],center=[0.,0.,0.],angles=[0.,0.,0.]):
     """
     Definition to generate samples over a surface.

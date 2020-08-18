@@ -8,6 +8,9 @@ from odak.raytracing.primitives import define_sphere,define_circle
 from odak.raytracing.boundary import intersect_w_circle,intersect_w_sphere
 
 class plano_convex_lens():
+    """
+    A class to represent a plano-convex lens. This is generally useful for raytracing and wave calculations.
+    """
     def __init__(self,item='LA1024',location=[0.,0.,0.],rotation=[0.,0.,0.],wavelength=0.000532,meduium='air'):
         """
         Class to represent plano-convex lens.

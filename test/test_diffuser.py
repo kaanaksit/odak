@@ -20,11 +20,19 @@ def test():
                                                                sample_entry_points,
                                                                sample_exit_points
                                                               )
+    diffuser            = catalog.diffusers.thin_diffuser(
+                                                          shape=[50,50],
+                                                          center=[0.,0.,100.],
+                                                          angles=[0.,0.,0.],
+                                                          diffusion_no=[4,4],
+                                                          diffusion_angles=[10.,10.]
+                                                         )
+    diffuser.raytrace(rays)
     detector            = catalog.detectors.plane_detector(
                                                            resolution=[5,5],
                                                            shape=[50,50],
                                                            center=[0.,0.,200.],
-                                                           angles=[0.,10.,0.]
+                                                           angles=[0.,10.,0.],
                                                           )
     normals,distances   = detector.raytrace(rays)
     print(detector.get_field())
