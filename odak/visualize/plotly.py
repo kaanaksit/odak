@@ -43,7 +43,7 @@ class plotshow():
                               )
         self.fig.show()
 
-    def add_plot(self,data_x,data_y=None,label=''):
+    def add_plot(self,data_x,data_y=None,label='',mode='lines+markers'):
         """
         Definition to add data to the plot.
 
@@ -55,6 +55,8 @@ class plotshow():
                       Y axis data to be plotted.
         label       : str
                       Label of the plot.  
+        mode        : str
+                      Mode for the plot, it can be either lines+markers, lines or markers.
         """
         if type(data_y) == None:
            data_y = np.arange(0,data_x.shape[0])
@@ -62,7 +64,7 @@ class plotshow():
                            go.Scatter(
                                       x=data_x,
                                       y=data_y,
-                                      mode='lines+markers',
+                                      mode=mode,
                                       name=label
                                      ),
                            row=1,
