@@ -4,6 +4,70 @@ from plotly.subplots import make_subplots
 from odak import np
 from odak.wave.parameters import calculate_phase,calculate_amplitude,calculate_intensity
 
+class plotshow():
+    """
+    A class for general purpose 1D plotting using plotly.
+    """
+    def __init__(self,subplot_titles=['plot']):
+        """
+        Class for plotting detectors.
+
+        Parameters
+        ----------
+        subplot_titles : list
+                         Titles of plots.
+        """
+        self.settings   = {
+                           'subplot titles' : subplot_titles,
+                           'color scale'    : 'Portland'
+                          }
+        self.fig = make_subplots(
+                                 rows=1,
+                                 cols=1,
+                                 specs=[
+                                        [
+                                         {"type": "xy"},
+                                        ],
+                                       ],
+                                 subplot_titles=subplot_titles
+                                )
+    def show(self):
+        """
+        Definition to show the plot.
+        """
+        self.fig.update_layout(
+                               scene = dict(
+                                            aspectmode  = 'manual',
+                                            aspectratio = dict(x=1.,y=1.,z=1.),
+                                           ),
+                              )
+        self.fig.show()
+
+    def add_plot(self,data_x,data_y=None,label=''):
+        """
+        Definition to add data to the plot.
+
+        Parameters
+        ----------
+        data_x      : ndarray
+                      X axis data to be plotted.
+        data_y      : ndarray
+                      Y axis data to be plotted.
+        label       : str
+                      Label of the plot.  
+        """
+        if type(data_y) == None:
+           data_y = np.arange(0,data_x.shape[0])
+        self.fig.add_trace(
+                           go.Scatter(
+                                      x=data_x,
+                                      y=data_y,
+                                      mode='lines+markers',
+                                      name=label
+                                     ),
+                           row=1,
+                           col=1
+                          )
 
 class detectorshow():
     """
