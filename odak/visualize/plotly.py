@@ -2,6 +2,94 @@ import plotly.graph_objects as go
 import sys
 from plotly.subplots import make_subplots
 from odak import np
+from odak.wave.parameters import calculate_phase,calculate_amplitude,calculate_intensity
+
+
+class detectorshow():
+    """
+    A class for visualizing detectors using plotly.
+    """
+    def __init__(self,subplot_titles=['Amplitude','Phase','Intensity'],title='detector'):
+        """
+        Class for plotting detectors.
+
+        Parameters
+        ----------
+        subplot_titles : list
+                         Titles of plots.
+        """
+        self.settings   = {
+                           'title'          : title,
+                           'subplot titles' : subplot_titles,
+                           'color scale'    : 'Portland'
+                          }
+        self.fig = make_subplots(
+                                 rows=1,
+                                 cols=3,
+                                 specs=[
+                                        [
+                                         {"type": "xy"},
+                                         {"type": "xy"},
+                                         {"type": "xy"}
+                                        ],
+                                       ],
+                                 subplot_titles=subplot_titles
+                                )
+    def show(self):
+        """
+        Definition to show the plot.
+        """
+        self.fig.update_layout(
+                               scene = dict(
+                                            aspectmode  = 'manual',
+                                            aspectratio = dict(x=1.,y=1.,z=1.),
+                                           ),
+                              )
+        self.fig.show()
+
+    def add_field(self,field):
+        """
+        Definition to add a point to the figure.
+
+        Parameters
+        ----------
+        field          : ndarray
+                         Field to be displayed.
+        """
+        amplitude = calculate_amplitude(field)
+        phase     = calculate_phase(field,deg=True)
+        intensity = calculate_intensity(field)
+        if np.__name__ == 'cupy':
+            amplitude = np.asnumpy(amplitude)
+            phase     = np.asnumpy(phase)
+            intensity = np.asnumpy(intensity)
+        self.fig.add_trace(
+                           go.Heatmap(
+                                      z=amplitude,
+                                      colorscale=self.settings['color scale']
+                                     ),
+                           row=1,
+                           col=1
+                          )
+
+        self.fig.add_trace(
+                           go.Heatmap(
+                                      z=phase,
+                                      colorscale=self.settings['color scale']
+                                     ),
+                           row=1,
+                           col=2
+                          )
+
+        self.fig.add_trace(
+                           go.Heatmap(
+                                      z=intensity,
+                                      colorscale=self.settings['color scale']
+                                     ),
+                           row=1,
+                           col=3
+                          )
+
 
 class rayshow():
     """
@@ -54,6 +142,12 @@ class rayshow():
         """
         Definition to show the plot.
         """
+        self.fig.update_layout(
+                               scene = dict(
+                                            aspectmode  = 'manual',
+                                            aspectratio = dict(x=1.,y=1.,z=1.),
+                                           ),
+                              )
         self.fig.show()
 
     def add_point(self,point,row=1,column=1):

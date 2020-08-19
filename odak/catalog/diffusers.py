@@ -3,7 +3,7 @@ import odak.catalog
 from odak.raytracing.primitives import define_plane,bring_plane_to_origin
 from odak.raytracing.boundary import intersect_w_surface
 from odak.wave.parameters import wavenumber
-from odak.tools.sample import circular_sample
+from odak.tools.sample import circular_uniform_sample
 from odak.tools.transformation import rotate_points,tilt_towards
 from odak.raytracing.ray import create_ray_from_two_points
 
@@ -11,7 +11,7 @@ class thin_diffuser():
     """
     A class to represent a thin diffuser. This is generally useful for raytracing and wave calculations.
     """
-    def __init__(self,phase=None,shape=[10.,10.],center=[0.,0.,0.],angles=[0.,0.,0.],diffusion_angle=5.,diffusion_no=[3,3]):
+    def __init__(self,phase=None,shape=[10.,10.],center=[0.,0.,0.],angles=[0.,0.,0.],diffusion_angle=5.,diffusion_no=[3,3],name='diffuser'):
         """
         Class to represent a simple planar detector.
 
@@ -24,13 +24,14 @@ class thin_diffuser():
         center           : list
                            Center of the detector.
         angles           : list
-                           Rotation angles of the detector.
+                           Rotation angles of the detector in degrees.
         diffusion angles : list
                            Full angle of diffusion along two axes.
         diffusion_no     : list
                            Number of rays to be generated along two axes at each diffusion.
         """
         self.settings           = {
+                                   'name'                     : name,
                                    'center'                   : center,
                                    'angles'                   : angles,
                                    'rotation mode'            : 'XYZ',
@@ -43,11 +44,11 @@ class thin_diffuser():
                                                angles=self.settings['angles']
                                               )
         self.k                  = wavenumber(0.05)
-        self.diffusion_points   = circular_sample(
-                                                  no=self.settings["number of diffusion rays"],
-                                                  radius=np.cos(np.radians(self.settings["diffusion angle"]/2.)),
-                                                  center=[0.,0.,1.]
-                                                 )
+        self.diffusion_points   = circular_uniform_sample(
+                                                          no=self.settings["number of diffusion rays"],
+                                                          radius=np.tan(np.radians(self.settings["diffusion angle"]/2.)),
+                                                          center=[0.,0.,1.]
+                                                         )
         
     def raytrace(self,ray):
         """

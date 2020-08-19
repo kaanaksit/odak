@@ -1,14 +1,15 @@
-from odak import np
 import odak.catalog
 from odak.wave import calculate_phase,calculate_amplitude,calculate_intensity
 from odak.raytracing.primitives import define_plane,bring_plane_to_origin
 from odak.raytracing.boundary import intersect_w_surface
+from odak.visualize.plotly import detectorshow
+from odak import np
 
 class plane_detector():
     """
     A class to represent a plane detector. This is generally useful in raytracing and wave calculations.
     """
-    def __init__(self,field=None,resolution=[1000,1000],shape=[10.,10.],center=[0.,0.,0.],angles=[0.,0.,0.]):
+    def __init__(self,field=None,resolution=[1000,1000],shape=[10.,10.],center=[0.,0.,0.],angles=[0.,0.,0.],name='detector'):
         """
         Class to represent a simple planar detector.
 
@@ -26,6 +27,7 @@ class plane_detector():
                       Rotation angles of the detector.
         """
         self.settings   = {
+                           'name'          : name,
                            'resolution'    : resolution,
                            'center'        : center,
                            'angles'        : angles,
@@ -45,6 +47,22 @@ class plane_detector():
                                   ),
                                   dtype=np.complex64
                                   )
+            self.clear_detector()
+
+    def clear_detector(self):
+        """
+        A definition to clear the field accumulated on the detector.
+        """
+        self.field = np.zeros(self.field.shape,dtype=np.complex64)
+
+    def plot_field(self,channel=0):
+        """
+        A definition to plot the field measured on the detector using plotly.
+        """
+        self.fig = detectorshow()
+        self.fig.add_field(self.field[:,:,channel])
+        self.fig.show()
+
     def get_field(self):
         """
         A definition to return the field measured on the detector.
@@ -92,7 +110,7 @@ class plane_detector():
         phase = wave.calculate_phase(self.field)
         return phase
 
-    def raytrace(self,ray,field=1,channel=0):
+    def raytrace(self,ray,field=100.,channel=0):
         """
         A definition to calculate the intersection between given ray(s) and the detector. If a ray contributes to the detector, field will be taken into account in calculating the field over the planar detector.
  
@@ -143,10 +161,27 @@ class plane_detector():
                                      ),
                                      dtype=np.complex64
                                     )
-        cache[
-              detector_ids[0],
-              detector_ids[1],
-              channel
-             ]           += field
-        self.field       += cache[1::,1::,:]
+
+        ##################################################################
+        # This solution is far from ideal. There has to be a better way. #
+        ##################################################################
+        for detector_id in range(0,detector_ids.shape[1]):
+            x           = detector_ids[0,detector_id]
+            y           = detector_ids[1,detector_id]
+            r2          = distance[detector_id]**2
+            if type(field) == type(1.):
+                cache[x,y] += field/r2
+            else:
+                cache[x,y] += field[x,y]/r2
+        ##################################################################
+        # This solution isn't working at all as two same ids are         #
+        # interpretted as one.                                           #
+        ##################################################################
+        #cache[
+        #       detector_ids[0],
+        #       detector_ids[1],
+        #       channel
+        #      ]           += field
+        ##################################################################
+        self.field      += cache[1::,1::,:]
         return normal,distance

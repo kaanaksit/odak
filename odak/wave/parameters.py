@@ -52,7 +52,7 @@ def electric_field_per_plane_wave(amplitude,opd,k,phase=0,w=0,t=0):
     field = amplitude*np.exp(1j*(-w*t+opd*k+phase))/opd**2
     return field
 
-def calculate_phase(field):
+def calculate_phase(field,deg=False):
     """
     Definition to calculate phase of a single or multiple given electric field(s).
 
@@ -60,13 +60,15 @@ def calculate_phase(field):
     ----------
     field        : ndarray.complex or complex
                    Electric fields or an electric field.
+    deg          : bool
+                   If set True, the angles will be returned in degrees.
 
     Returns
     ----------
     phase        : float
                    Phase or phases of electric field(s) in radians.
     """
-    phase = np.angle(field)
+    phase = np.angle(field,deg=deg)
     return phase
 
 def calculate_amplitude(field):

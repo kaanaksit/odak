@@ -156,6 +156,37 @@ def circular_sample(no=[10,10],radius=10.,center=[0.,0.,0.],angles=[0.,0.,0.]):
     samples         = rotate_points(samples,angles=angles,offset=center)
     return samples
 
+def circular_uniform_sample(no=[10,50],radius=10.,center=[0.,0.,0.],angles=[0.,0.,0.]):
+    """
+    Definition to generate sample inside a circle uniformly.
+
+    Parameters
+    ----------
+    no          : list
+                  Number of samples.
+    radius      : float
+                  Radius of the circle.
+    center      : list
+                  Center location of the surface.
+    angles      : list
+                  Tilt of the surface.
+
+    Returns
+    ----------
+    samples     : ndarray
+                  Samples generated.
+    """
+    samples = np.empty((0,3))
+    for i in range(0,no[0]):
+        r = i/no[0]*radius
+        ang_no = no[1]*i/no[0]
+        for j in range(0,int(no[1]*i/no[0])):
+            angle   = j/ang_no*2*np.pi
+            point   = np.array([r*np.cos(angle),r*np.sin(angle),0])
+            samples = np.vstack((samples,point))
+    samples = rotate_points(samples,angles=angles,offset=center)
+    return samples
+
 def grid_sample(no=[10,10],size=[100.,100.],center=[0.,0.,0.],angles=[0.,0.,0.]):
     """
     Definition to generate samples over a surface.
