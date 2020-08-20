@@ -7,7 +7,7 @@ Provides necessary definitions for geometric optics. See "General Ray tracing pr
 # To get sub-modules.
 from .parameters import *
 
-def rayleigh_resolution(diameter,focal=None,wavelength=0.0005,value='angular'):
+def rayleigh_resolution(diameter,focal=None,wavelength=0.0005):
     """
     Definition to calculate rayleigh resolution limit of a lens with a certain focal length and an aperture. Lens is assumed to be focusing a plane wave at a focal distance.
 
