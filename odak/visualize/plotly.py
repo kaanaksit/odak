@@ -92,20 +92,15 @@ class surfaceshow():
                                       surfacecolor=data_z,
                                       colorscale=self.settings['color scale'],
                                       opacity=opacity,
-                                      contours= {'z':{'show':contour}}
+                                      contours= {
+                                                 'z':{
+                                                      'show':contour,
+                                                     },
+                                                }
                                      ),
                            row=1,
                            col=1,
                           )
-    def save_image(self,filename,format='png',width=1000,height=1000,scale=1):
-        image_bytes   = self.fig.to_image(
-                                          format=format,
-                                          width=width,
-                                          height=height,
-                                          scale=scale
-                                         )
-        image_to_save = Image(image_bytes)
-        print(dir(image_to_save))
 
 class plotshow():
     """
