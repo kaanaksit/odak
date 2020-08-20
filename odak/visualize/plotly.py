@@ -4,11 +4,114 @@ from plotly.subplots import make_subplots
 from odak import np
 from odak.wave.parameters import calculate_phase,calculate_amplitude,calculate_intensity
 
+class surfaceshow():
+    """
+    A class for general purpose surface plotting using plotly.
+    """
+    def __init__(self,title='plot',labels=['x','y','z'],types=['linear','linear','linear'],font_size=12,tick_no=[10,10,10]):
+        """
+        Class for plotting detectors.
+
+        Parameters
+        ----------
+        title         : str
+                        Title of the plot.
+        labels        : list
+                        Labels for x and y axes.
+        types         : list
+                        Types of axes, it can be `linear`, `log`, `data`, or `category`. For more see ploty.layout.scene.xaxis.type.
+        font_size     : int
+                        Font size.
+        tick_no       : list
+                        Number of ticks along each axis.
+        """
+        self.settings   = {
+                           'title'              : title,
+                           'color scale'        : 'Portland',
+                           'x label'            : labels[0],
+                           'y label'            : labels[1],
+                           'z label'            : labels[2],
+                           'x axis type'        : types[0],
+                           'y axis type'        : types[1],
+                           'z axis type'        : types[2],
+                           'font size'          : font_size,
+                           'x axis tick number' : tick_no[0],
+                           'y axis tick number' : tick_no[1],
+                           'z axis tick number' : tick_no[2],
+                          }
+        self.fig = make_subplots(
+                                 rows=1,
+                                 cols=1,
+                                 specs=[
+                                        [
+                                         {"type": "scene"},
+                                        ],
+                                       ],
+                                )
+    def show(self):
+        """
+        Definition to show the plot.
+        """
+        self.fig.update_layout(
+                               scene = dict(
+                                            aspectmode  = 'manual',
+                                            aspectratio = dict(x=1.,y=1.,z=1.),
+                                            xaxis=dict(title=self.settings['x label'],type=self.settings['x axis type'],nticks=self.settings['x axis tick number']),
+                                            yaxis=dict(title=self.settings['y label'],type=self.settings['y axis type'],nticks=self.settings['y axis tick number']),
+                                            zaxis=dict(title=self.settings['z label'],type=self.settings['z axis type'],nticks=self.settings['z axis tick number']),
+                                           ),
+                               title = self.settings['title'],
+                               font  = dict(
+                                            size=self.settings['font size'],
+                                           )
+                              )
+        self.fig.show()
+
+    def add_surface(self,data_x,data_y,data_z,label='',mode='lines+markers',opacity=1.,contour=False):
+        """
+        Definition to add data to the plot.
+
+        Parameters
+        ----------
+        data_x      : ndarray
+                      X axis data to be plotted.
+        data_y      : ndarray
+                      Y axis data to be plotted.
+        label       : str
+                      Label of the plot.  
+        mode        : str
+                      Mode for the plot, it can be either lines+markers, lines or markers.
+        opacity     : float
+                      Opacity of the plot. The value must be between one to zero. Zero is fully trasnparent, while one is opaque.
+        """
+        self.fig.add_trace(
+                           go.Surface(
+                                      x=data_x,
+                                      y=data_y,
+                                      z=data_z,
+                                      surfacecolor=data_z,
+                                      colorscale=self.settings['color scale'],
+                                      opacity=opacity,
+                                      contours= {'z':{'show':contour}}
+                                     ),
+                           row=1,
+                           col=1,
+                          )
+    def save_image(self,filename,format='png',width=1000,height=1000,scale=1):
+        image_bytes   = self.fig.to_image(
+                                          format=format,
+                                          width=width,
+                                          height=height,
+                                          scale=scale
+                                         )
+        image_to_save = Image(image_bytes)
+        print(dir(image_to_save))
+
 class plotshow():
     """
     A class for general purpose 1D plotting using plotly.
     """
-    def __init__(self,subplot_titles=['plot']):
+    def __init__(self,subplot_titles=['plot'],labels=['x','y']):
         """
         Class for plotting detectors.
 
@@ -16,10 +119,14 @@ class plotshow():
         ----------
         subplot_titles : list
                          Titles of plots.
+        labels         : list
+                         Labels for x and y axes.
         """
         self.settings   = {
                            'subplot titles' : subplot_titles,
-                           'color scale'    : 'Portland'
+                           'color scale'    : 'Portland',
+                           'x label'        : labels[0],
+                           'y label'        : labels[1]
                           }
         self.fig = make_subplots(
                                  rows=1,
@@ -41,6 +148,10 @@ class plotshow():
                                             aspectratio = dict(x=1.,y=1.,z=1.),
                                            ),
                               )
+        self.fig.layout = go.Layout(
+                                    xaxis=dict(title=self.settings['x label']),
+                                    yaxis=dict(title=self.settings['y label'])
+                                   )
         self.fig.show()
 
     def add_plot(self,data_x,data_y=None,label='',mode='lines+markers'):
@@ -65,7 +176,7 @@ class plotshow():
                                       x=data_x,
                                       y=data_y,
                                       mode=mode,
-                                      name=label
+                                      name=label,
                                      ),
                            row=1,
                            col=1
