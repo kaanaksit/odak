@@ -271,7 +271,7 @@ class rayshow():
     """
     A class for visualizing rays using plotly.
     """
-    def __init__(self,rows=1,columns=1,subplot_titles=["Ray visualization"],opacity=0.5,line_width=1.,marker_size=1.):
+    def __init__(self,rows=1,columns=1,subplot_titles=["Ray visualization"],opacity=0.5,line_width=1.,marker_size=1.,color_scale='Inferno'):
         """
         Class for plotting rays.
 
@@ -289,10 +289,12 @@ class rayshow():
                          Line width of the lines.
         marker_size    : float
                          Marker size of the markers.
+        color_scale    : str
+                         Color scale to be used. 
         """
         self.settings  = {
                           'rows'           : rows,
-                          'color scale'    : 'Blues',
+                          'color scale'    : color_scale,
                           'columns'        : columns,
                           'subplot titles' : subplot_titles,
                           'opacity'        : opacity,

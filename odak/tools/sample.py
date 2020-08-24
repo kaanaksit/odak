@@ -209,12 +209,12 @@ def grid_sample(no=[10,10],size=[100.,100.],center=[0.,0.,0.],angles=[0.,0.,0.])
     """
     samples        = np.zeros((no[0],no[1],3))
     step           = [
-                      size[0]/no[0],
-                      size[1]/no[1]
+                      size[0]/(no[0]-1),
+                      size[1]/(no[1]-1)
                      ]
     x,y            = np.mgrid[0:no[0],0:no[1]]
-    samples[:,:,0] = x*step[0]+step[0]/2.-size[0]/2.
-    samples[:,:,1] = y*step[1]+step[1]/2.-size[1]/2.
+    samples[:,:,0] = x*step[0]-size[0]/2.
+    samples[:,:,1] = y*step[1]-size[1]/2.
     samples        = samples.reshape((samples.shape[0]*samples.shape[1],samples.shape[2]))
     samples        = rotate_points(samples,angles=angles,offset=center)
     return samples
