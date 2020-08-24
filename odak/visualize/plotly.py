@@ -84,6 +84,10 @@ class surfaceshow():
         opacity     : float
                       Opacity of the plot. The value must be between one to zero. Zero is fully trasnparent, while one is opaque.
         """
+        if np.__name__ == 'cupy':
+            data_x        = np.asnumpy(data_x)
+            data_y        = np.asnumpy(data_y)
+            data_z        = np.asnumpy(data_z)
         self.fig.add_trace(
                            go.Surface(
                                       x=data_x,
@@ -267,7 +271,7 @@ class rayshow():
     """
     A class for visualizing rays using plotly.
     """
-    def __init__(self,rows=1,columns=1,subplot_titles=["Ray visualization"],color='red',opacity=0.5,line_width=1.,marker_size=1.):
+    def __init__(self,rows=1,columns=1,subplot_titles=["Ray visualization"],opacity=0.5,line_width=1.,marker_size=1.):
         """
         Class for plotting rays.
 
@@ -279,8 +283,6 @@ class rayshow():
                          Number of columns.
         subplot_titles : list
                          Titles of plots.
-        color          : str
-                         Color.
         opacity        : float
                          Opacity of the markers or lines.
         line_width     : float
@@ -290,9 +292,9 @@ class rayshow():
         """
         self.settings  = {
                           'rows'           : rows,
+                          'color scale'    : 'Blues',
                           'columns'        : columns,
                           'subplot titles' : subplot_titles,
-                          'color'          : color,
                           'opacity'        : opacity,
                           'line width'     : line_width,
                           'marker size'    : marker_size
@@ -322,7 +324,7 @@ class rayshow():
                               )
         self.fig.show()
 
-    def add_point(self,point,row=1,column=1):
+    def add_point(self,point,row=1,column=1,color='red'):
         """
         Definition to add a point to the figure.
 
@@ -346,7 +348,7 @@ class rayshow():
                                         mode='markers',
                                         marker=dict(
                                                     size=self.settings["marker size"],
-                                                    color=self.settings["color"],
+                                                    color=color,
                                                     opacity=self.settings["opacity"]
                                                    ),
                                        ),
@@ -354,7 +356,7 @@ class rayshow():
                            col=column
                           )
 
-    def add_line(self,point_start,point_end,row=1,column=1):
+    def add_line(self,point_start,point_end,row=1,column=1,color='red'):
         """
         Definition to add a ray to the figure.
 
@@ -368,6 +370,8 @@ class rayshow():
                          Row number of the figure.
         column         : int
                          Column number of the figure.
+        color          : str
+                         Color of the lune to be drawn.
         """
         if np.__name__ == 'cupy':
             point_start = np.asnumpy(point_start)
@@ -397,7 +401,7 @@ class rayshow():
                                             mode='lines',
                                             line=dict(
                                                       width=self.settings["line width"],
-                                                      color=self.settings["color"],
+                                                      color=color,
                                                      ),
                                             opacity=self.settings["opacity"]
                                            ),
@@ -405,3 +409,46 @@ class rayshow():
                                col=column
                               )
 
+    def add_surface(self,data_x,data_y,data_z,surface_color,row=1,column=1,label='',mode='lines+markers',opacity=1.,contour=False):
+        """
+        Definition to add data to the plot.
+
+        Parameters
+        ----------
+        data_x        : ndarray
+                        X axis data to be plotted.
+        data_y        : ndarray
+                        Y axis data to be plotted.
+        data_z        : ndarray
+                        Z axis data to be plotted.
+        surface_color : ndarray
+                        Colors of the surface.
+        label         : str
+                        Label of the plot.  
+        mode          : str
+                        Mode for the plot, it can be either lines+markers, lines or markers.
+        opacity       : float
+                        Opacity of the plot. The value must be between one to zero. Zero is fully trasnparent, while one is opaque.
+        """
+        if np.__name__ == 'cupy':
+            data_x        = np.asnumpy(data_x)
+            data_y        = np.asnumpy(data_y)
+            data_z        = np.asnumpy(data_z)
+            surface_color = np.asnumpy(surface_color)
+        self.fig.add_trace(
+                           go.Surface(
+                                      x=data_x,
+                                      y=data_y,
+                                      z=data_z,
+                                      surfacecolor=surface_color,
+                                      colorscale=self.settings['color scale'],
+                                      opacity=opacity,
+                                      contours= {
+                                                 'z':{
+                                                      'show':contour,
+                                                     },
+                                                }
+                                     ),
+                           row=row,
+                           col=column,
+                          )

@@ -3,6 +3,7 @@ from odak.wave import calculate_phase,calculate_amplitude,calculate_intensity
 from odak.raytracing.primitives import define_plane,bring_plane_to_origin
 from odak.raytracing.boundary import intersect_w_surface
 from odak.visualize.plotly import detectorshow
+from odak.tools.sample import grid_sample
 from odak import np
 
 class plane_detector():
@@ -54,6 +55,40 @@ class plane_detector():
         A definition to clear the field accumulated on the detector.
         """
         self.field = np.zeros(self.field.shape,dtype=np.complex64)
+
+    def plot_detector(self,figure,channel=0):
+        """ 
+        Definition to plot detector to a odak.visualize.plotly.rayshow().
+
+        Parameters
+        ----------
+        figure      : odak.visualize.plotly.rayshow()
+                      Figure to plot the diffuser.
+        channel     : int
+                      A channel of the current field. 
+        """
+        points    = grid_sample(
+                                no=[self.settings['resolution'][0],self.settings['resolution'][1]],
+                                size=self.settings["shape"],
+                                center=self.settings["center"],
+                                angles=self.settings["angles"]
+                               )
+        points    = points.reshape(
+                                   (
+                                    self.settings['resolution'][0],
+                                    self.settings['resolution'][1],
+                                    3
+                                   )
+                                  )
+        intensity = calculate_intensity(self.field[:,:,channel])
+        figure.add_surface(
+                           data_x=points[:,:,0],
+                           data_y=points[:,:,1],
+                           data_z=points[:,:,2],
+                           surface_color=intensity,
+                           opacity=0.5,
+                           contour=False
+                          )
 
     def plot_field(self,channel=0):
         """

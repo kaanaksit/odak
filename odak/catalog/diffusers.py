@@ -3,7 +3,7 @@ import odak.catalog
 from odak.raytracing.primitives import define_plane,bring_plane_to_origin
 from odak.raytracing.boundary import intersect_w_surface
 from odak.wave.parameters import wavenumber
-from odak.tools.sample import circular_uniform_sample
+from odak.tools.sample import circular_uniform_sample,grid_sample
 from odak.tools.transformation import rotate_points,tilt_towards
 from odak.raytracing.ray import create_ray_from_two_points
 
@@ -49,10 +49,49 @@ class thin_diffuser():
                                                           radius=np.tan(np.radians(self.settings["diffusion angle"]/2.)),
                                                           center=[0.,0.,1.]
                                                          )
-        
+    def plot_diffuser(self,figure):
+        """
+        Definition to plot diffuser to a odak.visualize.plotly.rayshow().
+
+        Parameters
+        ----------
+        figure      : odak.visualize.plotly.rayshow()
+                      Figure to plot the diffuser.
+        """
+        points = grid_sample(
+                             no=[10,10],
+                             size=self.settings["shape"],
+                             center=self.settings["center"],
+                             angles=self.settings["angles"]
+                            )
+        points = points.reshape((10,10,3))
+        figure.add_surface(
+                           data_x=points[:,:,0],
+                           data_y=points[:,:,1],
+                           data_z=points[:,:,2],
+                           surface_color=np.zeros(points[:,:,2].shape),
+                           opacity=0.5,
+                           contour=False
+                          )
+
     def raytrace(self,ray):
         """
+        Definition to raytrace the diffuser.
 
+
+        Parameters
+        ----------
+        ray         : ndarray
+                      Ray(s).
+
+        Returns
+        ----------
+        new_rays    : ndarray
+                      Diffusion rays.
+        normal      : ndarray
+                      Surface normals
+        distance    : ndarray 
+                      Distance ray(s) has/have travelled until to the point of diffusion.
         """
         if len(ray.shape) == 2:
             ray = ray.reshape((1,ray.shape[0],ray.shape[1]))
