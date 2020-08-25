@@ -156,6 +156,37 @@ def circular_sample(no=[10,10],radius=10.,center=[0.,0.,0.],angles=[0.,0.,0.]):
     samples         = rotate_points(samples,angles=angles,offset=center)
     return samples
 
+def circular_uniform_random_sample(no=[10,50],radius=10.,center=[0.,0.,0.],angles=[0.,0.,0.]):
+    """ 
+    Definition to generate sample inside a circle uniformly but randomly.
+
+    Parameters
+    ----------
+    no          : list
+                  Number of samples.
+    radius      : float
+                  Radius of the circle.
+    center      : list
+                  Center location of the surface.
+    angles      : list
+                  Tilt of the surface.
+
+    Returns
+    ----------
+    samples     : ndarray
+                  Samples generated.
+    """
+    samples = np.empty((0,3))
+    rs      = np.sqrt(np.random.uniform(0,1,no[0]))
+    angs    = np.random.uniform(0,2*np.pi,no[1])
+    for i in rs:
+        for angle in angs:
+            r       = radius*i
+            point   = np.array([r*np.cos(angle),r*np.sin(angle),0])
+            samples = np.vstack((samples,point))
+    samples = rotate_points(samples,angles=angles,offset=center)
+    return samples
+
 def circular_uniform_sample(no=[10,50],radius=10.,center=[0.,0.,0.],angles=[0.,0.,0.]):
     """
     Definition to generate sample inside a circle uniformly.

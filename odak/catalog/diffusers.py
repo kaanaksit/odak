@@ -13,7 +13,7 @@ class thin_diffuser():
     """
     def __init__(self,phase=None,shape=[10.,10.],center=[0.,0.,0.],angles=[0.,0.,0.],diffusion_angle=5.,diffusion_no=[3,3],name='diffuser'):
         """
-        Class to represent a simple planar detector.
+        Class to represent a simple thin diffuser with a random phase.
 
         Parameters
         ----------
@@ -49,6 +49,13 @@ class thin_diffuser():
                                                           radius=np.tan(np.radians(self.settings["diffusion angle"]/2.)),
                                                           center=[0.,0.,1.]
                                                          )
+        if type(phase) == type(None):
+           self.surface_points = grid_sample(
+                                             no=[100,100],
+                                             size=self.settings["shape"],
+                                             center=self.settings["center"],
+                                             angles=self.settings["angles"]
+                                            )
     def plot_diffuser(self,figure):
         """
         Definition to plot diffuser to a odak.visualize.plotly.rayshow().

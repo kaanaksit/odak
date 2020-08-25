@@ -56,7 +56,7 @@ class plane_detector():
         """
         self.field = np.zeros(self.field.shape,dtype=np.complex64)
 
-    def plot_detector(self,figure,channel=0):
+    def plot_detector(self,figure,channel=0,plot_type='intensity'):
         """ 
         Definition to plot detector to a odak.visualize.plotly.rayshow().
 
@@ -66,6 +66,8 @@ class plane_detector():
                       Figure to plot the diffuser.
         channel     : int
                       A channel of the current field. 
+        plot_type   : str
+                      Plot type, it can be either phase, amplitude or intensity.
         """
         points    = grid_sample(
                                 no=[self.settings['resolution'][0],self.settings['resolution'][1]],
@@ -80,12 +82,17 @@ class plane_detector():
                                     3
                                    )
                                   )
-        intensity = calculate_intensity(self.field[:,:,channel])
+        if plot_type == 'phase':
+           values = self.get_phase()
+        elif plot_type == 'amplitude':
+           values = self.get_amplitude()
+        elif plot_type == 'intensity':
+           values = self.get_intensity()
         figure.add_surface(
                            data_x=points[:,:,0],
                            data_y=points[:,:,1],
                            data_z=points[:,:,2],
-                           surface_color=intensity,
+                           surface_color=values[:,:,channel],
                            opacity=0.5,
                            contour=False
                           )
@@ -118,7 +125,7 @@ class plane_detector():
         intensity   : ndarray
                       Intensity of the field measured by the detector.
         """
-        intensity = wave.calculate_intensity(self.field)
+        intensity = calculate_intensity(self.field)
         return intensity
 
     def get_amplitude(self):
@@ -130,7 +137,7 @@ class plane_detector():
         amplitude   : ndarray
                       Amplitude of the field measured by the detector.
         """
-        amplitude = wave.calculate_amplitude(self.field)
+        amplitude = calculate_amplitude(self.field)
         return amplitude
 
     def get_phase(self):
@@ -142,10 +149,10 @@ class plane_detector():
         phase       : ndarray
                       Phase of the field measured by the detector.
         """
-        phase = wave.calculate_phase(self.field)
+        phase = calculate_phase(self.field)
         return phase
 
-    def raytrace(self,ray,field=100.,channel=0):
+    def raytrace(self,ray,field=None,channel=0):
         """
         A definition to calculate the intersection between given ray(s) and the detector. If a ray contributes to the detector, field will be taken into account in calculating the field over the planar detector.
  
@@ -204,8 +211,8 @@ class plane_detector():
             x           = detector_ids[0,detector_id]
             y           = detector_ids[1,detector_id]
             r2          = distance[detector_id]**2
-            if type(field) == type(1.):
-                cache[x,y] += field/r2
+            if type(field) == type(None):
+                cache[x,y] += 1000./r2
             else:
                 cache[x,y] += field[x,y]/r2
         ##################################################################
