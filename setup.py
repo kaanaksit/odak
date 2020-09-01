@@ -29,6 +29,7 @@ setup(
                               'odak/visualize',
                               'odak/visualize/blender',
                               'odak/manager',
+                              'odak/measurement',
                               'odak/catalog',
                               'odak/oldschool'
                              ],
