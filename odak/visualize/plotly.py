@@ -8,7 +8,7 @@ class surfaceshow():
     """
     A class for general purpose surface plotting using plotly.
     """
-    def __init__(self,title='plot',labels=['x','y','z'],types=['linear','linear','linear'],font_size=12,tick_no=[10,10,10]):
+    def __init__(self,title='plot',shape=[1000,1000],labels=['x','y','z'],types=['linear','linear','linear'],font_size=12,tick_no=[10,10,10],margin=[65,50,65,90],camera=[1.87,0.88,-0.64],colorbarlength=0.75):
         """
         Class for plotting detectors.
 
@@ -24,6 +24,10 @@ class surfaceshow():
                         Font size.
         tick_no       : list
                         Number of ticks along each axis.
+        margin        : list
+                        Margins in plotting.
+        camera        : list
+                        Scene camera location along X,Y,Z axes.
         """
         self.settings   = {
                            'title'              : title,
@@ -38,6 +42,11 @@ class surfaceshow():
                            'x axis tick number' : tick_no[0],
                            'y axis tick number' : tick_no[1],
                            'z axis tick number' : tick_no[2],
+                           'width'              : shape[0],
+                           'height'             : shape[1],
+                           'margin'             : margin,
+                           'camera'             : camera,
+                           'colorbar length'    : colorbarlength,
                           }
         self.fig = make_subplots(
                                  rows=1,
@@ -48,22 +57,48 @@ class surfaceshow():
                                         ],
                                        ],
                                 )
+
+    def save_image(self,filename):
+        """
+        Definition to save the figure.
+
+        Parameters
+        ----------
+        filename    : str
+                      Filename.
+        """
+        self.fig.write_image(filename)
+
     def show(self):
         """
         Definition to show the plot.
         """
         self.fig.update_layout(
-                               scene = dict(
-                                            aspectmode  = 'manual',
-                                            aspectratio = dict(x=1.,y=1.,z=1.),
-                                            xaxis=dict(title=self.settings['x label'],type=self.settings['x axis type'],nticks=self.settings['x axis tick number']),
-                                            yaxis=dict(title=self.settings['y label'],type=self.settings['y axis type'],nticks=self.settings['y axis tick number']),
-                                            zaxis=dict(title=self.settings['z label'],type=self.settings['z axis type'],nticks=self.settings['z axis tick number']),
-                                           ),
-                               title = self.settings['title'],
-                               font  = dict(
-                                            size=self.settings['font size'],
-                                           )
+                               autosize = False,
+                               width    = self.settings['width'],
+                               height   = self.settings['height'],
+                               scene    = dict(
+                                               aspectmode  = 'manual',
+                                               aspectratio = dict(x=1.,y=1.,z=1.),
+                                               xaxis=dict(title=self.settings['x label'],type=self.settings['x axis type'],nticks=self.settings['x axis tick number']),
+                                               yaxis=dict(title=self.settings['y label'],type=self.settings['y axis type'],nticks=self.settings['y axis tick number']),
+                                               zaxis=dict(title=self.settings['z label'],type=self.settings['z axis type'],nticks=self.settings['z axis tick number']),
+                                              ),
+                               title    = self.settings['title'],
+                               font     = dict(
+                                               size=self.settings['font size'],
+                                              ),
+                               margin   = dict(
+                                               l=self.settings['margin'][0],
+                                               r=self.settings['margin'][1],
+                                               b=self.settings['margin'][2],
+                                               t=self.settings['margin'][3]
+                                              ),
+                               scene_camera_eye=dict(
+                                                     x=self.settings['camera'][0],
+                                                     y=self.settings['camera'][1],
+                                                     z=self.settings['camera'][2]
+                                                    ),
                               )
         self.fig.show()
 
@@ -96,6 +131,7 @@ class surfaceshow():
                                       surfacecolor=data_z,
                                       colorscale=self.settings['color scale'],
                                       opacity=opacity,
+                                      colorbar=dict(len=self.settings['colorbar length']),
                                       contours= {
                                                  'z':{
                                                       'show':contour,
