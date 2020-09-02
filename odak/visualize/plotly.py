@@ -16,6 +16,8 @@ class surfaceshow():
         ---------- 
         title          : str
                          Title of the plot.
+        shape          : list
+                         Resolution of the figure to be generated.
         labels         : list
                          Labels for x and y axes.
         types          : list
@@ -148,22 +150,21 @@ class plotshow():
     """
     A class for general purpose 1D plotting using plotly.
     """
-    def __init__(self,subplot_titles=['plot'],font_size=16,labels=['x','y'],margin=[65,50,65,90],camera=[1.87,0.88,-0.64],colorbarlength=0.75):
+    def __init__(self,subplot_titles=['plot'],shape=[1000,1000],font_size=16,labels=['x','y'],margin=[65,50,65,90],colorbarlength=0.75):
         """
         Class for plotting detectors.
 
         Parameters
         ----------
-        font_size      : int
-                         Font size.
         subplot_titles : list
                          Titles of plots.
+                         Resolution of the figure to be generated.
+        font_size      : int
+                         Font size.                       
         labels         : list
                          Labels for x and y axes.
         margin         : list
                          Margins in plotting.
-        camera         : list
-                         Scene camera location along X,Y,Z axes.
         colorbarlength : float
                          Length of the colorbar.                         
         """
@@ -174,9 +175,9 @@ class plotshow():
                            'x label'            : labels[0],
                            'y label'            : labels[1],
                            'margin'             : margin,
-                           'camera'             : camera,
                            'colorbar length'    : colorbarlength,
-                          
+                           'width'              : shape[0],
+                           'height'             : shape[1],
                           }
         self.fig = make_subplots(
                                  rows=1,
@@ -192,11 +193,18 @@ class plotshow():
         """
         Definition to show the plot.
         """
+        self.fig.layout = go.Layout(
+                                    xaxis=dict(title=self.settings['x label']),
+                                    yaxis=dict(title=self.settings['y label'])
+                                   )      
         self.fig.update_layout(
-                               scene = dict(
-                                            aspectmode  = 'manual',
-                                            aspectratio = dict(x=1.,y=1.,z=1.),
-                                           ),
+                               autosize = False,
+                               width    = self.settings['width'],
+                               height   = self.settings['height'],
+                               scene    = dict(
+                                               aspectmode  = 'manual',
+                                               aspectratio = dict(x=1.,y=1.,z=1.),
+                                              ),
                                font     = dict(
                                                size=self.settings['font size'],
                                               ),
@@ -206,17 +214,8 @@ class plotshow():
                                                b=self.settings['margin'][2],
                                                t=self.settings['margin'][3]
                                               ),
-                               scene_camera_eye=dict(
-                                                     x=self.settings['camera'][0],
-                                                     y=self.settings['camera'][1],
-                                                     z=self.settings['camera'][2]
-                                                    ),
 
                               )
-        self.fig.layout = go.Layout(
-                                    xaxis=dict(title=self.settings['x label']),
-                                    yaxis=dict(title=self.settings['y label'])
-                                   )
         self.fig.show()
 
     def save_image(self,filename):
