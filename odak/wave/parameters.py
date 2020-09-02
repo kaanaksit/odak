@@ -68,7 +68,9 @@ def calculate_phase(field,deg=False):
     phase        : float
                    Phase or phases of electric field(s) in radians.
     """
-    phase = np.angle(field,deg=deg)
+    phase = np.angle(field)
+    if deg == True:
+        phase *= 180./np.pi
     return phase
 
 def calculate_amplitude(field):
