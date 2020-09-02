@@ -182,7 +182,7 @@ def circular_uniform_random_sample(no=[10,50],radius=10.,center=[0.,0.,0.],angle
     for i in rs:
         for angle in angs:
             r       = radius*i
-            point   = np.array([r*np.cos(angle),r*np.sin(angle),0])
+            point   = np.array([float(r*np.cos(angle)),float(r*np.sin(angle)),0])
             samples = np.vstack((samples,point))
     samples = rotate_points(samples,angles=angles,offset=center)
     return samples
@@ -213,7 +213,7 @@ def circular_uniform_sample(no=[10,50],radius=10.,center=[0.,0.,0.],angles=[0.,0
         ang_no = no[1]*i/no[0]
         for j in range(0,int(no[1]*i/no[0])):
             angle   = j/ang_no*2*np.pi
-            point   = np.array([r*np.cos(angle),r*np.sin(angle),0])
+            point   = np.array([float(r*np.cos(angle)),float(r*np.sin(angle)),0])
             samples = np.vstack((samples,point))
     samples = rotate_points(samples,angles=angles,offset=center)
     return samples

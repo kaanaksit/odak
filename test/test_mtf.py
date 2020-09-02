@@ -18,7 +18,7 @@ def test():
     mtf,freq,p = routine(image,location=roi,px_size=[angsize,angsize])
     figure.add_plot(freq[1],np.abs(mtf[1]),label=label,mode='lines')
     figure.add_plot(freq[1],p[1](freq[1]),label=label,mode='lines')
-    figure.show()
+#    figure.show()
     assert True==True
 
 if __name__ == '__main__':
