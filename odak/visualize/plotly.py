@@ -13,21 +13,23 @@ class surfaceshow():
         Class for plotting detectors.
 
         Parameters
-        ----------
-        title         : str
-                        Title of the plot.
-        labels        : list
-                        Labels for x and y axes.
-        types         : list
-                        Types of axes, it can be `linear`, `log`, `data`, or `category`. For more see ploty.layout.scene.xaxis.type.
-        font_size     : int
-                        Font size.
-        tick_no       : list
-                        Number of ticks along each axis.
-        margin        : list
-                        Margins in plotting.
-        camera        : list
-                        Scene camera location along X,Y,Z axes.
+        ---------- 
+        title          : str
+                         Title of the plot.
+        labels         : list
+                         Labels for x and y axes.
+        types          : list
+                         Types of axes, it can be `linear`, `log`, `data`, or `category`. For more see ploty.layout.scene.xaxis.type.
+        font_size      : int
+                         Font size.
+        tick_no        : list
+                         Number of ticks along each axis.
+        margin         : list
+                         Margins in plotting.
+        camera         : list
+                         Scene camera location along X,Y,Z axes.
+        colorbarlength : float
+                         Length of the colorbar.
         """
         self.settings   = {
                            'title'              : title,
@@ -146,22 +148,35 @@ class plotshow():
     """
     A class for general purpose 1D plotting using plotly.
     """
-    def __init__(self,subplot_titles=['plot'],labels=['x','y']):
+    def __init__(self,subplot_titles=['plot'],font_size=16,labels=['x','y'],margin=[65,50,65,90],camera=[1.87,0.88,-0.64],colorbarlength=0.75):
         """
         Class for plotting detectors.
 
         Parameters
         ----------
+        font_size      : int
+                         Font size.
         subplot_titles : list
                          Titles of plots.
         labels         : list
                          Labels for x and y axes.
+        margin         : list
+                         Margins in plotting.
+        camera         : list
+                         Scene camera location along X,Y,Z axes.
+        colorbarlength : float
+                         Length of the colorbar.                         
         """
         self.settings   = {
-                           'subplot titles' : subplot_titles,
-                           'color scale'    : 'Portland',
-                           'x label'        : labels[0],
-                           'y label'        : labels[1]
+                           'subplot titles'     : subplot_titles,
+                           'color scale'        : 'Portland',
+                           'font size'          : font_size,                           
+                           'x label'            : labels[0],
+                           'y label'            : labels[1],
+                           'margin'             : margin,
+                           'camera'             : camera,
+                           'colorbar length'    : colorbarlength,
+                          
                           }
         self.fig = make_subplots(
                                  rows=1,
@@ -182,12 +197,38 @@ class plotshow():
                                             aspectmode  = 'manual',
                                             aspectratio = dict(x=1.,y=1.,z=1.),
                                            ),
+                               font     = dict(
+                                               size=self.settings['font size'],
+                                              ),
+                               margin   = dict(
+                                               l=self.settings['margin'][0],
+                                               r=self.settings['margin'][1],
+                                               b=self.settings['margin'][2],
+                                               t=self.settings['margin'][3]
+                                              ),
+                               scene_camera_eye=dict(
+                                                     x=self.settings['camera'][0],
+                                                     y=self.settings['camera'][1],
+                                                     z=self.settings['camera'][2]
+                                                    ),
+
                               )
         self.fig.layout = go.Layout(
                                     xaxis=dict(title=self.settings['x label']),
                                     yaxis=dict(title=self.settings['y label'])
                                    )
         self.fig.show()
+
+    def save_image(self,filename):
+        """
+        Definition to save the figure.
+
+        Parameters
+        ----------
+        filename    : str
+                      Filename.
+        """
+        self.fig.write_image(filename)
 
     def add_plot(self,data_x,data_y=None,label='',mode='lines+markers'):
         """
