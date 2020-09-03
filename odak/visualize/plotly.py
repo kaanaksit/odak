@@ -124,9 +124,9 @@ class surfaceshow():
                       Opacity of the plot. The value must be between one to zero. Zero is fully trasnparent, while one is opaque.
         """
         if np.__name__ == 'cupy':
-            data_x        = np.asnumpy(data_x)
-            data_y        = np.asnumpy(data_y)
-            data_z        = np.asnumpy(data_z)
+            data_x = np.asnumpy(data_x)
+            data_y = np.asnumpy(data_y)
+            data_z = np.asnumpy(data_z)
         self.fig.add_trace(
                            go.Surface(
                                       x=data_x,
@@ -244,8 +244,11 @@ class plotshow():
         mode        : str
                       Mode for the plot, it can be either lines+markers, lines or markers.
         """
-        if type(data_y) == None:
+        if type(data_y) == type(None):
            data_y = np.arange(0,data_x.shape[0])
+        if np.__name__ == 'cupy':
+            data_x = np.asnumpy(data_x)
+            data_y = np.asnumpy(data_y)
         self.fig.add_trace(
                            go.Scatter(
                                       x=data_x,
