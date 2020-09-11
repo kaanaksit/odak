@@ -7,10 +7,10 @@ import sys,scipy
 import matplotlib
 #matplotlib.use('Agg')
 import matplotlib.pyplot
-import mpl_toolkits.mplot3d.art3d as art3d
+#import mpl_toolkits.mplot3d.art3d as art3d
 import scipy.linalg
 from datetime import datetime
-from matplotlib.mlab import griddata
+#from matplotlib.mlab import griddata
 from matplotlib import cm
 from matplotlib.patches import Circle, PathPatch, Ellipse
 from mpl_toolkits.mplot3d import axes3d

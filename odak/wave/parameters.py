@@ -1,4 +1,41 @@
 from odak import np
+from odak.tools import distance_between_two_points
+
+def propagate_field(points0,points1,field0,wave_number,direction=1):
+    """
+    Definition to propagate a field from points to an another points in space.
+
+    Parameters
+    ----------
+    points0       : ndarray
+                    Start points (i.e. odak.tools.grid_sample).
+    points1       : ndarray
+                    End points (ie. odak.tools.grid_sample).
+    field0        : ndarray
+                    Field for given starting points.
+    wave_number   : float
+                    Wave number of a wave, see odak.wave.parameters.wavenumber for more.
+    direction     : float
+                    For propagating in forward direction set as 1, otherwise -1.
+
+    Returns
+    ----------
+    field1        : ndarray
+                    Field for given end points.
+    """
+    field1 = np.zeros(points1.shape[0],dtype=np.complex64)
+    for point_id in range(points0.shape[0]):
+        point     = points0[point_id]
+        distances = distance_between_two_points(
+                                                point,
+                                                points1
+                                               )
+        field1   += electric_field_per_plane_wave(
+                                                  field0[point_id],
+                                                  distances*direction,
+                                                  wave_number,
+                                                 )
+    return field1
 
 def propagate_plane_waves(field,opd,k,w=0,t=0):
     """
