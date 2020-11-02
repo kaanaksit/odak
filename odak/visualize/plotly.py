@@ -2,7 +2,7 @@ import plotly.graph_objects as go
 import sys
 from plotly.subplots import make_subplots
 from odak import np
-from odak.wave.parameters import calculate_phase,calculate_amplitude,calculate_intensity
+from odak.wave import calculate_phase,calculate_amplitude,calculate_intensity
 
 class surfaceshow():
     """
