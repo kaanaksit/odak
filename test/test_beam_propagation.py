@@ -7,7 +7,7 @@ from odak.wave import wavenumber,propagate_beam
 def main():
     # Variables to be set.
     wavelength                 = 0.5*pow(10,-6)
-    pixeltom                   = 3*pow(10,-6)
+    pixeltom                   = 6*pow(10,-6)
     distance                   = 0.2
     propagation_type           = 'IR Fresnel'
     k                          = wavenumber(wavelength)
@@ -16,7 +16,8 @@ def main():
                  240:260,
                  240:260
                 ]              = 1000
-    sample_field              += 1j*np.random.random(sample_field.shape)
+    random_phase               = np.pi*np.random.random(sample_field.shape)
+    sample_field               = sample_field*np.cos(random_phase)+1j*sample_field*np.sin(random_phase)
     hologram                   = propagate_beam(
                                                 sample_field,
                                                 k,
