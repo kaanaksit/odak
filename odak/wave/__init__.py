@@ -123,3 +123,19 @@ def rotationspeed(wavelength,c=3*10**11):
     f = c*wavelength
     w = 2*np.pi*f
     return w
+
+def add_random_phase(field):
+    """
+    Definition for adding a random phase to a given complex field.
+
+    Parameters
+    ----------
+    field        : np.complex64
+
+    Returns
+    ----------
+    new_field    : np.complex64
+    """
+    random_phase = np.pi*np.random.random(field.shape)
+    new_field    = field*np.cos(random_phase)+1j*field*np.sin(random_phase)
+    return new_field

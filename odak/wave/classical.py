@@ -25,8 +25,8 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
                        Final complex field (MxN).
     """
     nu,nv  = field.shape
-    x      = np.linspace(-nu*dx,nu*dx,nu)
-    y      = np.linspace(-nv*dx,nv*dx,nv)
+    x      = np.linspace(-nv*dx,nv*dx,nv)
+    y      = np.linspace(-nu*dx,nu*dx,nu)
     X,Y    = np.meshgrid(x,y)
     Z      = X**2+Y**2
     if propagation_type == 'IR Fresnel':
