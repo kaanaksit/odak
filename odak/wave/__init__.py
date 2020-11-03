@@ -7,6 +7,7 @@ Provides necessary definitions for merging geometric optics with wave theory and
 # To get sub-modules.
 from .vector import *
 from .classical import *
+from odak.tools import save_image
 
 def rayleigh_resolution(diameter,focal=None,wavelength=0.0005):
     """
@@ -139,3 +140,58 @@ def add_random_phase(field):
     random_phase = np.pi*np.random.random(field.shape)
     new_field    = field*np.cos(random_phase)+1j*field*np.sin(random_phase)
     return new_field
+
+def adjust_phase_only_slm_range(native_range,working_wavelength,native_wavelength):
+    """
+    Definition for calculating the phase range of the Spatial Light Modulator (SLM) for a given wavelength. Here you prove maximum angle as the lower bound is typically zero. If the lower bound isn't zero in angles, you can use this very same definition for calculating lower angular bound as well.
+
+    Parameters
+    ==========
+    native_range       : float
+                         Native range of the phase only SLM in radians (i.e. two pi).
+    working_wavelength : float
+                         Wavelength of the illumination source or some working wavelength.
+    native_wavelength  : float
+                         Wavelength which the SLM is designed for.
+
+    Returns
+    ==========
+    new_range          : float
+                         Calculated phase range in radians.
+    """
+    new_range = native_range*working_wavelength/native_wavelength
+    return new_range
+
+def produce_phase_only_slm_pattern(hologram,slm_range,filename=None):
+    """
+    Definition for producing a pattern for a phase only Spatial Light Modulator (SLM) using a given field.
+
+    Parameters
+    ==========
+    hologram           : np.complex64
+                         Input holographic field.
+    slm_range          : float
+                         Range of the phase only SLM in radians for a working wavelength (i.e. two pi). See odak.wave.adjust_phase_only_slm_range() for more.
+    filename           : str
+                         Optional variable, if provided the patterns will be save to given location.
+
+    Returns
+    ==========
+    pattern            : np.complex64
+                         Adjusted phase only pattern.
+    """
+    hologram_phase                            = calculate_phase(hologram) % (2*np.pi)
+    hologram_phase[hologram_phase>slm_range]  = slm_range
+    hologram_phase                           /= slm_range
+    hologram_phase                           *= 255
+    hologram_phase                            = hologram_phase.astype(np.int)
+    hologram_phase                            = hologram_phase.astype(np.float)
+    hologram_phase                           *= slm_range/255.
+    if type(filename) != type(None):
+        save_image(
+                   filename,
+                   hologram_phase,
+                   cmin=0,
+                   cmax=slm_range
+                  )
+    return np.cos(hologram_phase)+1j*np.sin(hologram_phase)    
