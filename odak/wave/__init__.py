@@ -185,13 +185,13 @@ def produce_phase_only_slm_pattern(hologram,slm_range,filename=None):
     hologram_phase                           /= slm_range
     hologram_phase                           *= 255
     hologram_phase                            = hologram_phase.astype(np.int)
-    hologram_phase                            = hologram_phase.astype(np.float)
-    hologram_phase                           *= slm_range/255.
     if type(filename) != type(None):
         save_image(
                    filename,
                    hologram_phase,
                    cmin=0,
-                   cmax=slm_range
+                   cmax=255
                   )
+    hologram_phase                            = hologram_phase.astype(np.float)
+    hologram_phase                           *= slm_range/255.
     return np.cos(hologram_phase)+1j*np.sin(hologram_phase)    
