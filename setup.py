@@ -6,16 +6,16 @@ def read(fname):
 
 setup(
       name                 = "odak",
-      version              = "0.1.4",
+      version              = "0.1.5",
       author               = "Kaan Akşit",
       author_email         = "kunguz@gmail.com",
       description          = (
-                              "Odak (pronounced O-dawec) is the fundamental Python library"
+                              "Odak (pronounced O-dac) is the fundamental Python library"
                               "for scientific computing in optical sciences."
                               "Odak includes modules for geometric raytracing and wave optics."
                              ),
       license              = "",
-      keywords             = "example documentation tutorial",
+      keywords             = "optics holography",
       url                  = "https://github.com/kunguz/odak",
       install_requires     = [
                               "numpy",
@@ -31,6 +31,7 @@ setup(
                               'odak/manager',
                               'odak/measurement',
                               'odak/catalog',
+                              'odak/learn',
                               'odak/oldschool'
                              ],
       package_dir          = {'odak': 'odak'},
