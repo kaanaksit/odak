@@ -1,5 +1,6 @@
 from odak import np
 import torch, torch.fft
+from odak.learn.toolkit import fftshift, ifftshift
 
 def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel'):
     """
@@ -33,18 +34,18 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
     Z      = X**2+Y**2
     if propagation_type == 'IR Fresnel':
        h      = 1./(1j*wavelength*distance)*torch.exp(1j*k*0.5/distance*Z)
-       h      = torch.fft.fft2(torch.fft.fftshift(h))*pow(dx,2)
-       U1     = torch.fft.fft2(torch.fft.fftshift(field))
+       h      = torch.fft.fftn(fftshift(h))*pow(dx,2)
+       U1     = torch.fft.fftn(fftshift(field))
        U2     = h*U1
-       result = torch.fft.ifftshift(torch.fft.ifft2(U2))
+       result = ifftshift(torch.fft.ifftn(U2))
     elif propagation_type == 'TR Fresnel':
        h      = torch.exp(1j*k*distance)*torch.exp(-1j*np.pi*wavelength*distance*Z)
-       h      = torch.fft.fftshift(h)
-       U1     = torch.fft.fft2(torch.fft.fftshift(field))
+       h      = fftshift(h)
+       U1     = torch.fft.fftn(fftshift(field))
        U2     = h*U1
-       result = torch.fft.ifftshift(torch.fft.ifft2(U2))
+       result = ifftshift(torch.fft.ifftn(U2))
     elif propagation_type == 'Fraunhofer':
        c      = 1./(1j*wavelength*distance)*torch.exp(1j*k*0.5/distance*Z)
-       result = c*torch.fft.ifftshift(torch.fft.fft2(torch.fft.fftshift(field)))*pow(dx,2)
+       result = c*ifftshift(torch.fft.fftn(fftshift(field)))*pow(dx,2)
     result = result.squeeze(0)
     return result
