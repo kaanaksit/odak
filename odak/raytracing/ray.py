@@ -121,3 +121,29 @@ def propagate_a_ray(ray,distance):
     if new_ray.shape[0] == 1:
         new_ray = new_ray.reshape((2,3))
     return new_ray
+
+def findNearestPoints(vec1, vec2, ray):
+  # written by praneeth chakravarthula
+    # Refer to the concept of skew lines and line-plane intersection for the following math.
+    p1 = vec1[0].reshape(3,)
+    d1 = vec1[1].reshape(3,)
+    p2 = vec2[0].reshape(3,)
+    d2 = vec2[1].reshape(3,)
+    # normal to both vectors
+    n = np.cross(d1, d2)
+    # if the rays intersect
+    if np.all(n)==0:
+      point, distances = ray.CalculateIntersectionOfTwoVectors(vec1, vec2)
+      c1 = c2 = point
+    else:
+      # normal to plane formed by vectors n and d1
+      n1 = np.cross(d1, n)
+      # normal to plane formed by vectors n and d2
+      n2 = np.cross(d2, n)
+      # nearest distance point to vec2 along vec1 is equal to
+      # intersection of vec1 with plane formed by vec2 and normal n
+      c1 = p1 + (np.dot((p2-p1), n2)/np.dot(d1, n2))*d1
+      # nearest distance point to vec1 along vec2 is equal to
+      # intersection of vec2 with plane formed by vec1 and normal n
+      c2 = p2 + (np.dot((p1-p2), n1)/np.dot(d2, n1))*d2
+    return c1, c2
