@@ -48,6 +48,28 @@ def same_side(p1,p2,a,b):
         return True
     return False
 
+def distance_between_point_clouds(points0,points1):
+    """
+    A definition to find distance between every point in one cloud to other points in the other point cloud.
+    Parameters
+    ----------
+    points0     : ndarray
+                  Mx3 points.
+    points1     : ndarray
+                  Nx3 points.
+
+    Returns
+    ----------
+    distances   : ndarray
+                  MxN distances.
+    """
+    c         = points1.reshape((1,points1.shape[0],points1.shape[1]))
+    a         = np.repeat(c,points0.shape[0],axis=0)
+    b         = points0.reshape((points0.shape[0],1,points0.shape[1]))
+    b         = np.repeat(b,a.shape[1],axis=1)
+    distances = np.sqrt(np.sum((a-b)**2,axis=2))
+    return distances
+
 def distance_between_two_points(point1,point2):
     """
     Definition to calculate distance between two given points.
