@@ -189,3 +189,46 @@ def list_files(path,key='*.*',recursive=True):
         files_list.append(str(item))
     return files_list
 
+def convert_bytes(num):
+    """
+    A definition to convert bytes to semantic scheme (MB,GB or alike). Inspired from https://stackoverflow.com/questions/2104080/how-can-i-check-file-size-in-python#2104083.
+
+    Parameters
+    ----------
+    num        : float
+                 Size in bytes
+
+    Returns
+    ----------
+    num        : float
+                 Size in new unit.
+    x          : str
+                 New unit bytes, KB, MB, GB or TB.
+    """
+    for x in ['bytes', 'KB', 'MB', 'GB', 'TB']:
+        if num < 1024.0:
+            return num, x
+        num /= 1024.0
+    return None,None
+
+def size_of_a_file(file_path):
+    """
+    A definition to get size of a file with a relevant unit.
+
+    Parameters
+    ----------
+    file_path  : float
+                 Path of the file.
+
+    Returns
+    ----------
+    a          : float
+                 Size of the file.
+    b          : str
+                 Unit of the size (bytes, KB, MB, GB or TB).
+    """
+    if os.path.isfile(file_path):
+        file_info = os.stat(file_path)
+        a,b       = convert_bytes(file_info.st_size)
+        return a,b
+    return None,None
