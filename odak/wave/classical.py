@@ -3,7 +3,7 @@ from .__init__ import wavenumber,produce_phase_only_slm_pattern, calculate_ampli
 
 def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel'):
     """
-    Definitions for Fresnel impulse respone (IR), Fresnel Transfer Function (TF), Fraunhofer diffraction in accordence with "Computational Fourier Optics" by David Vuelz.
+    Definitions for Fresnel impulse respone (IR), Bandlimited Fresnel impulse response, Fresnel Transfer Function (TF), Fraunhofer diffraction in accordence with "Computational Fourier Optics" by David Vuelz. For more on Bandlimited Fresnel impulse response also known as Bandlimited Angular Spectrum method see "Band-limited Angular Spectrum Method for Numerical Simulation of Free-Space Propagation in Far and Near Fields".
 
     Parameters
     ----------
@@ -18,7 +18,7 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
     wavelength       : float
                        Wavelength of the electric field.
     propagation_type : str
-                       Type of the propagation (IR Fresnel, TR Fresnel, Fraunhofer).
+                       Type of the propagation (IR Fresnel, Bandlimited IR Fresnel, TR Fresnel, Fraunhofer).
 
     Returns
     =======
@@ -31,11 +31,25 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
     X,Y    = np.meshgrid(x,y)
     Z      = X**2+Y**2
     if propagation_type == 'IR Fresnel' or propagation_type == 'Angular Spetrum':
-       h      = 1./(1j*wavelength*distance)*np.exp(1j*k*(distance+Z/2/distance)
+       h      = 1./(1j*wavelength*distance)*np.exp(1j*k*(distance+Z/2/distance))
        h      = np.fft.fft2(np.fft.fftshift(h))*pow(dx,2)
        U1     = np.fft.fft2(np.fft.fftshift(field))
        U2     = h*U1
        result = np.fft.ifftshift(np.fft.ifft2(U2))
+    elif propagation_type == 'Bandlimited IR Fresnel' or propagation_type == 'Bandlimited Angular Spectrum':
+       h      = 1./(1j*wavelength*distance)*np.exp(1j*k*(distance+Z/2/distance))
+       h      = np.fft.fft2(np.fft.fftshift(h))*pow(dx,2)
+       flimx  = int(1/(((2*distance*(1./(dx)))**2+1)**0.5*wavelength))
+       flimy  = int(1/(((2*distance*(1./(dx)))**2+1)**0.5*wavelength))
+       mask   = np.zeros((nu,nv))
+       center = [int(nu/2),int(nv/2)]
+       mask [
+             center[0]-flimx:center[0]+flimx,
+             center[1]-flimy:center[1]+flimy
+            ] = 1.
+       U1     = np.fft.fft2(np.fft.fftshift(field*mask))
+       U2     = h*U1
+       result = np.fft.ifftshift(np.fft.ifft2(U2))     
     elif propagation_type == 'TR Fresnel':
        h      = np.exp(1j*k*distance)*np.exp(-1j*np.pi*wavelength*distance*Z)
        h      = np.fft.fftshift(h)
