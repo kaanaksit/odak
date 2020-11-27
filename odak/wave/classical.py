@@ -39,16 +39,13 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
     elif propagation_type == 'Bandlimited IR Fresnel' or propagation_type == 'Bandlimited Angular Spectrum':
        h      = 1./(1j*wavelength*distance)*np.exp(1j*k*(distance+Z/2/distance))
        h      = np.fft.fft2(np.fft.fftshift(h))*pow(dx,2)
-       flimx  = int(1/(((2*distance*(1./(dx)))**2+1)**0.5*wavelength))
-       flimy  = int(1/(((2*distance*(1./(dx)))**2+1)**0.5*wavelength))
-       mask   = np.zeros((nu,nv))
-       center = [int(nu/2),int(nv/2)]
-       mask [
-             center[0]-flimx:center[0]+flimx,
-             center[1]-flimy:center[1]+flimy
-            ] = 1.
-       U1     = np.fft.fft2(np.fft.fftshift(field*mask))
-       U2     = h*U1
+       flimx  = int(1/(((2*distance*(1./(nu)))**2+1)**0.5*wavelength))
+       flimy  = int(1/(((2*distance*(1./(nv)))**2+1)**0.5*wavelength))
+       mask   = np.zeros((nu,nv),dtype=np.complex64)
+       mask   = set_amplitude(h,mask)
+       mask   = (np.abs(X)<flimx) & (np.abs(Y)<flimy)
+       U1     = np.fft.fft2(np.fft.fftshift(field))
+       U2     = mask*U1
        result = np.fft.ifftshift(np.fft.ifft2(U2))     
     elif propagation_type == 'TR Fresnel':
        h      = np.exp(1j*k*distance)*np.exp(-1j*np.pi*wavelength*distance*Z)
