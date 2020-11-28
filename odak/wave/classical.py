@@ -30,39 +30,79 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
     y      = np.linspace(-nu*dx,nu*dx,nu)
     X,Y    = np.meshgrid(x,y)
     Z      = X**2+Y**2
+    if propagation_type == 'Rayleigh-Sommerfeld':
+        result = rayleigh_sommerfeld(field,k,distance,dx,wavelength)
     if propagation_type == 'Angular Spectrum':
-       h      = 1./(1j*wavelength*distance)*np.exp(1j*k*(distance+Z/2/distance))
-       h      = np.fft.fft2(np.fft.fftshift(h))*pow(dx,2)
-       U1     = np.fft.fft2(np.fft.fftshift(field))
-       U2     = h*U1
-       result = np.fft.ifftshift(np.fft.ifft2(U2))
+        h      = 1./(1j*wavelength*distance)*np.exp(1j*k*(distance+Z/2/distance))
+        h      = np.fft.fft2(np.fft.fftshift(h))*pow(dx,2)
+        U1     = np.fft.fft2(np.fft.fftshift(field))
+        U2     = h*U1
+        result = np.fft.ifftshift(np.fft.ifft2(U2))
     elif propagation_type == 'IR Fresnel':
-       h      = np.exp(1j*k*distance)/(1j*wavelength*distance)*np.exp(1j*k/2/distance*Z)
-       h      = np.fft.fft2(np.fft.fftshift(h))*pow(dx,2)
-       U1     = np.fft.fft2(np.fft.fftshift(field))
-       U2     = h*U1
-       result = np.fft.ifftshift(np.fft.ifft2(U2))
+        h      = np.exp(1j*k*distance)/(1j*wavelength*distance)*np.exp(1j*k/2/distance*Z)
+        h      = np.fft.fft2(np.fft.fftshift(h))*pow(dx,2)
+        U1     = np.fft.fft2(np.fft.fftshift(field))
+        U2     = h*U1
+        result = np.fft.ifftshift(np.fft.ifft2(U2))
     elif propagation_type == 'Bandlimited Angular Spectrum':
-       h      = 1./(1j*wavelength*distance)*np.exp(1j*k*(distance+Z/2/distance))
-       h      = np.fft.fft2(np.fft.fftshift(h))*pow(dx,2)
-       flimx  = int(1/(((2*distance*(1./(nu)))**2+1)**0.5*wavelength))
-       flimy  = int(1/(((2*distance*(1./(nv)))**2+1)**0.5*wavelength))
-       mask   = np.zeros((nu,nv),dtype=np.complex64)
-       mask   = (np.abs(X)<flimx) & (np.abs(Y)<flimy)
-       mask   = set_amplitude(h,mask)
-       U1     = np.fft.fft2(np.fft.fftshift(field))
-       U2     = mask*U1
-       result = np.fft.ifftshift(np.fft.ifft2(U2))     
+        h      = 1./(1j*wavelength*distance)*np.exp(1j*k*(distance+Z/2/distance))
+        h      = np.fft.fft2(np.fft.fftshift(h))*pow(dx,2)
+        flimx  = int(1/(((2*distance*(1./(nu)))**2+1)**0.5*wavelength))
+        flimy  = int(1/(((2*distance*(1./(nv)))**2+1)**0.5*wavelength))
+        mask   = np.zeros((nu,nv),dtype=np.complex64)
+        mask   = (np.abs(X)<flimx) & (np.abs(Y)<flimy)
+        mask   = set_amplitude(h,mask)
+        U1     = np.fft.fft2(np.fft.fftshift(field))
+        U2     = mask*U1
+        result = np.fft.ifftshift(np.fft.ifft2(U2))     
     elif propagation_type == 'TR Fresnel':
-       h      = np.exp(1j*k*distance)*np.exp(-1j*np.pi*wavelength*distance*Z)
-       h      = np.fft.fftshift(h)
-       U1     = np.fft.fft2(np.fft.fftshift(field))
-       U2     = h*U1
-       result = np.fft.ifftshift(np.fft.ifft2(U2))
+        h      = np.exp(1j*k*distance)*np.exp(-1j*np.pi*wavelength*distance*Z)
+        h      = np.fft.fftshift(h)
+        U1     = np.fft.fft2(np.fft.fftshift(field))
+        U2     = h*U1
+        result = np.fft.ifftshift(np.fft.ifft2(U2))
     elif propagation_type == 'Fraunhofer':
-       c      = 1./(1j*wavelength*distance)*np.exp(1j*k*0.5/distance*Z)
-       result = c*np.fft.ifftshift(np.fft.fft2(np.fft.fftshift(field)))*pow(dx,2)
+        c      = 1./(1j*wavelength*distance)*np.exp(1j*k*0.5/distance*Z)
+        result = c*np.fft.ifftshift(np.fft.fft2(np.fft.fftshift(field)))*pow(dx,2)
     return result
+
+def rayleigh_sommerfeld(field,k,distance,dx,wavelength):
+    """
+    Definition to compute beam propagation using Rayleigh-Sommerfeld's diffraction formula (Huygens-Fresnel Principle). For more see Section 3.5.2 in Goodman, Joseph W. Introduction to Fourier optics. Roberts and Company Publishers, 2005.
+
+    Parameters
+    ----------
+    field            : np.complex
+                       Complex field (MxN).
+    k                : odak.wave.wavenumber
+                       Wave number of a wave, see odak.wave.wavenumber for more.
+    distance         : float
+                       Propagation distance.
+    dx               : float
+                       Size of one single pixel in the field grid (in meters).
+    wavelength       : float
+                       Wavelength of the electric field.
+
+    Returns
+    =======
+    result           : np.complex
+                       Final complex field (MxN).
+    """
+    nu,nv     = field.shape
+    x         = np.linspace(-nv*dx,nv*dx,nv)
+    y         = np.linspace(-nu*dx,nu*dx,nu)
+    X,Y       = np.meshgrid(x,y)
+    Z         = X**2+Y**2
+    result    = np.zeros(field.shape,dtype=np.complex64)
+    direction = int(distance/np.abs(distance))
+    for i in range(nu):
+        for j in range(nv):
+            r01      = np.sqrt(distance**2+(X-X[i,j])**2+(Y-Y[i,j])**2)*direction
+            cosnr01  = np.cos(distance/r01)
+            result  += field[i,j]*np.exp(1j*k*r01)/r01*cosnr01
+    result *= 1./(1j*wavelength)
+    return result
+
 
 def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,propagation_type='IR Fresnel'):
     """
