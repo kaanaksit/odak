@@ -3,7 +3,7 @@ from .__init__ import wavenumber,produce_phase_only_slm_pattern, calculate_ampli
 
 def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel'):
     """
-    Definitions for Fresnel impulse respone (IR), Bandlimited Fresnel impulse response, Fresnel Transfer Function (TF), Fraunhofer diffraction in accordence with "Computational Fourier Optics" by David Vuelz. For more on Bandlimited Fresnel impulse response also known as Bandlimited Angular Spectrum method see "Band-limited Angular Spectrum Method for Numerical Simulation of Free-Space Propagation in Far and Near Fields".
+    Definitions for Fresnel Impulse Respone (IR), Angular Spectrum (AS), Bandlimited Angular Spectrum (BAS), Fresnel Transfer Function (TF), Fraunhofer diffraction in accordence with "Computational Fourier Optics" by David Vuelz. For more on Bandlimited Fresnel impulse response also known as Bandlimited Angular Spectrum method see "Band-limited Angular Spectrum Method for Numerical Simulation of Free-Space Propagation in Far and Near Fields".
 
     Parameters
     ----------
@@ -18,7 +18,7 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
     wavelength       : float
                        Wavelength of the electric field.
     propagation_type : str
-                       Type of the propagation (IR Fresnel, Bandlimited IR Fresnel, TR Fresnel, Fraunhofer).
+                       Type of the propagation (IR Fresnel, Angular Spectrum, Bandlimited Angular Spectrum, TR Fresnel, Fraunhofer).
 
     Returns
     =======
@@ -30,13 +30,19 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
     y      = np.linspace(-nu*dx,nu*dx,nu)
     X,Y    = np.meshgrid(x,y)
     Z      = X**2+Y**2
-    if propagation_type == 'IR Fresnel' or propagation_type == 'Angular Spetrum':
+    if propagation_type == 'Angular Spetrum':
        h      = 1./(1j*wavelength*distance)*np.exp(1j*k*(distance+Z/2/distance))
        h      = np.fft.fft2(np.fft.fftshift(h))*pow(dx,2)
        U1     = np.fft.fft2(np.fft.fftshift(field))
        U2     = h*U1
        result = np.fft.ifftshift(np.fft.ifft2(U2))
-    elif propagation_type == 'Bandlimited IR Fresnel' or propagation_type == 'Bandlimited Angular Spectrum':
+    elif propagation_type == 'IR Fresnel':
+       h      = np.exp(1j*k*distance)/(1j*wavelength*distance)*np.exp(1j*k/2/distance*Z)
+       h      = np.fft.fft2(np.fft.fftshift(h))*pow(dx,2)
+       U1     = np.fft.fft2(np.fft.fftshift(field))
+       U2     = h*U1
+       result = np.fft.ifftshift(np.fft.ifft2(U2))
+    elif propagation_type == 'Bandlimited Angular Spectrum':
        h      = 1./(1j*wavelength*distance)*np.exp(1j*k*(distance+Z/2/distance))
        h      = np.fft.fft2(np.fft.fftshift(h))*pow(dx,2)
        flimx  = int(1/(((2*distance*(1./(nu)))**2+1)**0.5*wavelength))
