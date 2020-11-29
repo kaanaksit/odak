@@ -150,7 +150,7 @@ class plotshow():
     """
     A class for general purpose 1D plotting using plotly.
     """
-    def __init__(self,subplot_titles=['plot'],shape=[1000,1000],font_size=16,labels=['x','y'],margin=[65,50,65,90],colorbarlength=0.75):
+    def __init__(self,subplot_titles=['plot'],shape=[1000,1000],font_size=16,labels=['x','y'],margin=[65,50,65,90],colorbarlength=0.75,rows=1,cols=1):
         """
         Class for plotting detectors.
 
@@ -179,14 +179,17 @@ class plotshow():
                            'width'              : shape[0],
                            'height'             : shape[1],
                           }
+        specs           = []
+        new_row         = []
+        for row in range(rows):
+            new_col = []
+            for col in range(cols):
+                new_col.append({"type":"xy"})
+            specs.append(new_col)
         self.fig = make_subplots(
-                                 rows=1,
-                                 cols=1,
-                                 specs=[
-                                        [
-                                         {"type": "xy"},
-                                        ],
-                                       ],
+                                 rows=rows,
+                                 cols=cols,
+                                 specs=specs,
                                  subplot_titles=subplot_titles
                                 )
     def show(self):
@@ -229,7 +232,7 @@ class plotshow():
         """
         self.fig.write_image(filename)
 
-    def add_plot(self,data_x,data_y=None,label='',mode='lines+markers'):
+    def add_plot(self,data_x,data_y=None,label='',mode='lines+markers',row=1,col=1):
         """
         Definition to add data to the plot.
 
@@ -256,15 +259,15 @@ class plotshow():
                                       mode=mode,
                                       name=label,
                                      ),
-                           row=1,
-                           col=1
+                           row=row,
+                           col=col
                           )
 
 class detectorshow():
     """
     A class for visualizing detectors using plotly.
     """
-    def __init__(self,subplot_titles=['Amplitude','Phase','Intensity'],title='detector'):
+    def __init__(self,subplot_titles=['Amplitude','Phase','Intensity'],title='detector',rows=1,cols=1,show_intensity=False,show_amplitude=True,show_phase=True):
         """
         Class for plotting detectors.
 
@@ -272,23 +275,47 @@ class detectorshow():
         ----------
         subplot_titles : list
                          Titles of plots.
+        title          : str
+                         Title of plots.
+        rows           : int
+                         Number of rows/fields.
+        show_intensity : bool
+                         Flag to show intensity.
+        show_amplitude : bool
+                         Flag to show amplitude.
+        show_phase     : bool
+                         Flag to show phase.
         """
-        self.settings   = {
-                           'title'          : title,
-                           'subplot titles' : subplot_titles,
-                           'color scale'    : 'Portland'
-                          }
+        m = 0
+        if show_intensity == True:
+            m +=1
+        if show_amplitude == True:
+            m +=1
+        if show_phase == True:
+            m +=1
+
+        self.settings  = {
+                          'title'          : title,
+                          'subplot titles' : subplot_titles[0:cols],
+                          'color scale'    : 'Portland',
+                          'sub column no'  : m,
+                          'column number'  : cols*m,
+                          'row number'     : rows,
+                          'show amplitude' : show_amplitude,
+                          'show phase'     : show_phase,
+                          'show intensity' : show_intensity
+                         }
+        specs          = []
+        for i in range(0,self.settings["row number"]):
+            new_row = []
+            for j in range(0,self.settings["column number"]):
+                new_row.append({"type": "heatmap"})
+            specs.append(new_row)
         self.fig = make_subplots(
-                                 rows=1,
-                                 cols=3,
-                                 specs=[
-                                        [
-                                         {"type": "xy"},
-                                         {"type": "xy"},
-                                         {"type": "xy"}
-                                        ],
-                                       ],
-                                 subplot_titles=subplot_titles
+                                 rows=self.settings["row number"],
+                                 cols=self.settings["column number"],
+                                 specs=specs,
+                                 subplot_titles=self.settings["subplot titles"]
                                 )
     def show(self):
         """
@@ -302,7 +329,7 @@ class detectorshow():
                               )
         self.fig.show()
 
-    def add_field(self,field):
+    def add_field(self,field,row=1,col=1,showscale=False):
         """
         Definition to add a point to the figure.
 
@@ -310,6 +337,12 @@ class detectorshow():
         ----------
         field          : ndarray
                          Field to be displayed.
+        row            : int
+                         Row number.
+        col            : int
+                         Column number.
+        showscale      : bool
+                         Set True to show color bar.
         """
         amplitude = calculate_amplitude(field)
         phase     = calculate_phase(field,deg=True)
@@ -318,33 +351,42 @@ class detectorshow():
             amplitude = np.asnumpy(amplitude)
             phase     = np.asnumpy(phase)
             intensity = np.asnumpy(intensity)
-        self.fig.add_trace(
-                           go.Heatmap(
-                                      z=amplitude,
-                                      colorscale=self.settings['color scale']
-                                     ),
-                           row=1,
-                           col=1
-                          )
+        col = (col-1)*(self.settings["sub column no"])+1
+        if self.settings["show amplitude"] == True:
+            self.fig.add_trace(
+                               go.Heatmap(
+                                          z=amplitude,
+                                          colorscale=self.settings['color scale'],
+                                          showscale = showscale
+                                         ),
+                               row=row,
+                               col=col
+                              )
+            col += 1
 
-        self.fig.add_trace(
-                           go.Heatmap(
-                                      z=phase,
-                                      colorscale=self.settings['color scale']
-                                     ),
-                           row=1,
-                           col=2
-                          )
+        if self.settings["show phase"] == True:
+            self.fig.add_trace(
+                               go.Heatmap(
+                                          z=phase,
+                                          colorscale=self.settings['color scale'],
+                                          showscale = showscale
+                                         ),
+                               row=row,
+                               col=col
+                              )
+            col += 1
 
-        self.fig.add_trace(
-                           go.Heatmap(
-                                      z=intensity,
-                                      colorscale=self.settings['color scale']
-                                     ),
-                           row=1,
-                           col=3
-                          )
-
+        if self.settings["show intensity"] == True:
+            self.fig.add_trace(
+                               go.Heatmap(
+                                          z=intensity,
+                                          colorscale=self.settings['color scale'],
+                                          showscale = showscale
+                                         ),
+                               row=row,
+                               col=col
+                              )
+            col += 1
 
 class rayshow():
     """
