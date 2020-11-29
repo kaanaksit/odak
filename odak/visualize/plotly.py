@@ -267,7 +267,7 @@ class detectorshow():
     """
     A class for visualizing detectors using plotly.
     """
-    def __init__(self,subplot_titles=['Amplitude','Phase','Intensity'],title='detector',rows=1,cols=1,show_intensity=False,show_amplitude=True,show_phase=True,shape=[1000,1000],margin=[65,50,65,90]):
+    def __init__(self,row_titles=['Field 1'],subplot_titles=['Amplitude','Phase','Intensity'],title='detector',rows=1,cols=1,show_intensity=False,show_amplitude=True,show_phase=True,shape=[1000,1000],margin=[65,50,65,90]):
         """
         Class for plotting detectors.
 
@@ -296,7 +296,8 @@ class detectorshow():
 
         self.settings  = {
                           'title'          : title,
-                          'subplot titles' : subplot_titles[0:cols],
+                          'subplot titles' : subplot_titles,
+                          'row titles'     : row_titles,
                           'color scale'    : 'Portland',
                           'sub column no'  : m,
                           'column number'  : cols*m,
@@ -318,7 +319,8 @@ class detectorshow():
                                  rows=self.settings["row number"],
                                  cols=self.settings["column number"],
                                  specs=specs,
-                                 subplot_titles=self.settings["subplot titles"]
+                                 subplot_titles=self.settings["subplot titles"],
+                                 row_titles=self.settings["row titles"]
                                 )
     def show(self):
         """
