@@ -329,6 +329,17 @@ class detectorshow():
                               )
         self.fig.show()
 
+    def save_image(self,filename):
+        """
+        Definition to save the figure.
+
+        Parameters
+        ----------
+        filename    : str
+                      Filename.
+        """
+        self.fig.write_image(filename)
+
     def add_field(self,field,row=1,col=1,showscale=False):
         """
         Definition to add a point to the figure.
