@@ -267,7 +267,7 @@ class detectorshow():
     """
     A class for visualizing detectors using plotly.
     """
-    def __init__(self,subplot_titles=['Amplitude','Phase','Intensity'],title='detector',rows=1,cols=1,show_intensity=False,show_amplitude=True,show_phase=True):
+    def __init__(self,subplot_titles=['Amplitude','Phase','Intensity'],title='detector',rows=1,cols=1,show_intensity=False,show_amplitude=True,show_phase=True,shape=[1000,1000],margin=[65,50,65,90]):
         """
         Class for plotting detectors.
 
@@ -303,7 +303,10 @@ class detectorshow():
                           'row number'     : rows,
                           'show amplitude' : show_amplitude,
                           'show phase'     : show_phase,
-                          'show intensity' : show_intensity
+                          'show intensity' : show_intensity,
+                          'width'          : shape[0],
+                          'height'         : shape[1],
+                          'margin'         : margin
                          }
         specs          = []
         for i in range(0,self.settings["row number"]):
@@ -322,10 +325,19 @@ class detectorshow():
         Definition to show the plot.
         """
         self.fig.update_layout(
-                               scene = dict(
-                                            aspectmode  = 'manual',
-                                            aspectratio = dict(x=1.,y=1.,z=1.),
-                                           ),
+                               autosize = True,
+                               width    = self.settings['width'],
+                               height   = self.settings['height'],
+                               scene    = dict(
+                                               aspectmode  = 'manual',
+                                               aspectratio = dict(x=1.,y=1.,z=1.),
+                                              ),
+                               margin   = dict(
+                                               l=self.settings['margin'][0],
+                                               r=self.settings['margin'][1],
+                                               b=self.settings['margin'][2],
+                                               t=self.settings['margin'][3]
+                                              ),
                               )
         self.fig.show()
 
