@@ -3,7 +3,7 @@ import os
 import odak
 from odak import np
 from odak.wave import wavenumber,propagate_beam
-from odak.learn import propagate_beam as propagate_beam_torch
+from odak.learn.wave import propagate_beam as propagate_beam_torch
 import torch
 
 def main():
