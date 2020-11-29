@@ -1,6 +1,7 @@
 from odak import np
 import torch, torch.fft
-from odak.learn.toolkit import fftshift, ifftshift
+from .toolkit import fftshift, ifftshift
+from .__init__ import set_amplitude
 
 def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel'):
     """
@@ -40,19 +41,18 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
        U2     = h*U1
        result = ifftshift(torch.fft.ifftn(U2))
     elif propagation_type == 'Bandlimited Angular Spectrum':
-       h      = 1./(1j*wavelength*distance)*torch.exp(1j*k*(0.5 / distance * Z))
-       h      = torch.fft.fftn(fftshift(h)) * pow(dx, 2)
-       h      = h.to(field.device)
-       flimx  = int(1/(((2*distance*(1./(nv)))**2+1)**0.5*wavelength))
-       flimy  = int(1/(((2*distance*(1./(nu)))**2+1)**0.5*wavelength))
-       mask   = torch.zeros(field.shape, dtype=torch.cfloat)
+       h         = 1./(1j*wavelength*distance)*torch.exp(1j*k*(0.5 / distance * Z))
+       h         = torch.fft.fftn(fftshift(h)) * pow(dx, 2)
+       h         = h.to(field.device)
+       flimx     = int(1/(((2*distance*(1./(nv)))**2+1)**0.5*wavelength))
+       flimy     = int(1/(((2*distance*(1./(nu)))**2+1)**0.5*wavelength))
+       mask      = torch.zeros((nu,nv), dtype=torch.cfloat)
        mask[...] = torch.logical_and(torch.lt(torch.abs(X), flimx), torch.lt(torch.abs(Y), flimy))
-       mask   = mask.to(field.device)
-       mask   = set_amplitude(h, mask)
-       U1 = torch.fft.fftn(fftshift(field))
-       U2 = mask * U1 
-       result = ifftshift(torch.fft.ifftn(U2))
-
+       mask      = mask.to(field.device)
+       mask      = set_amplitude(h, mask)
+       U1        = torch.fft.fftn(fftshift(field))
+       U2        = mask * U1 
+       result    = ifftshift(torch.fft.ifftn(U2))
     elif propagation_type == 'TR Fresnel':
        h      = torch.exp(1j*k*distance)*torch.exp(-1j*np.pi*wavelength*distance*Z)
        h      = fftshift(h)
