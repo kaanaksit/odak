@@ -60,7 +60,7 @@ def compare():
     wavelength                 = 0.5*pow(10,-6)
     pixeltom                   = 6*pow(10,-6)
     distance                   = 0.2
-    propagation_type           = 'IR Fresnel'
+    propagation_type           = 'Bandlimited Angular Spectrum'
     k                          = wavenumber(wavelength)
     sample_field               = np.zeros((500,500),dtype=np.complex64)
     sample_field[
@@ -114,4 +114,4 @@ def compare():
     np.testing.assert_array_almost_equal(hologram_torch.numpy(), hologram, 3)
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(compare())
