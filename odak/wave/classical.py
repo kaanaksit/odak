@@ -1,4 +1,5 @@
 from odak import np
+from odak.tools import nufft2
 from .__init__ import wavenumber,produce_phase_only_slm_pattern, calculate_amplitude,set_amplitude
 
 def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel'):
@@ -32,7 +33,7 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
     Z      = X**2+Y**2
     if propagation_type == 'Rayleigh-Sommerfeld':
         result = rayleigh_sommerfeld(field,k,distance,dx,wavelength)
-    if propagation_type == 'Angular Spectrum':
+    elif propagation_type == 'Angular Spectrum':
         h      = 1./(1j*wavelength*distance)*np.exp(1j*k*(distance+Z/2/distance))
         h      = np.fft.fft2(np.fft.fftshift(h))*pow(dx,2)
         U1     = np.fft.fft2(np.fft.fftshift(field))
@@ -54,7 +55,9 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
         mask   = set_amplitude(h,mask)
         U1     = np.fft.fft2(np.fft.fftshift(field))
         U2     = mask*U1
-        result = np.fft.ifftshift(np.fft.ifft2(U2))     
+        result = np.fft.ifftshift(np.fft.ifft2(U2))
+    elif propagation_type == 'Bandextended Angular Spectrum':
+        result = band_extended_angular_spectrum(field,k,distance,dx,wavelength)
     elif propagation_type == 'TR Fresnel':
         h      = np.exp(1j*k*distance)*np.exp(-1j*np.pi*wavelength*distance*Z)
         h      = np.fft.fftshift(h)
@@ -64,6 +67,44 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
     elif propagation_type == 'Fraunhofer':
         c      = 1./(1j*wavelength*distance)*np.exp(1j*k*0.5/distance*Z)
         result = c*np.fft.ifftshift(np.fft.fft2(np.fft.fftshift(field)))*pow(dx,2)
+    else:
+        raise Exception("Unknown propagation type selected.")
+    return result
+
+def trajectory(Nd,f):
+    dim = len(Nd) # dimension
+    if np.__name__ == 'cupy':
+        import numpy as np_cpu
+        M = np_cpu.prod(Nd)
+    else:
+        M = np.prod(Nd)
+    om   = np.zeros((M, dim), dtype = np.float)
+    grid = np.indices(Nd)
+    for dimid in range(0, dim):
+        om[:, dimid] = grid[dimid].ravel()*Nd[dimid]*f
+    return om
+
+def band_extended_angular_spectrum(field,k,distance,dx,wavelength):
+    nu,nv       = field.shape
+    fx_extend   = (1./(2*2**0.5*wavelength*distance)*((nu/2)*wavelength*((nu/2)**2*wavelength**2+16*distance**2)**0.5-(nu/2)**2*wavelength**2)**0.5)
+#    fx_h        = nu*dx/wavelength/distance
+    fx_h        = 1./dx/2.
+    ss          = np.abs(fx_extend/fx_h)
+    print(ss)
+    fx          = np.linspace(-field.shape[0]/2,field.shape[0]/2,field.shape[0])
+    fy          = np.linspace(-field.shape[1]/2,field.shape[1]/2,field.shape[1])
+    fx          = fx/np.amax(fx)*np.pi*ss
+    fy          = fy/np.amax(fy)*np.pi*ss
+    FX,FY       = np.meshgrid(fx,fy)
+    sx          = np.linspace(-field.shape[0]/2,field.shape[0]/2,field.shape[0])
+    sy          = np.linspace(-field.shape[1]/2,field.shape[1]/2,field.shape[1])
+    sx          = sx/np.amax(sx)*np.pi
+    sy          = sy/np.amax(sy)*np.pi
+    SX,SY       = np.meshgrid(sx,sy)
+    H           = np.exp(1j*k*distance*((1-(wavelength*FX)**2-(wavelength*FY)**2)**0.5))
+    G           = nufft2(field,FX,FY,SX,SY,sign=1)
+    U           = H*G
+    result      = nufft2(U,SX,SY,FX,FY,sign=-1)
     return result
 
 def rayleigh_sommerfeld(field,k,distance,dx,wavelength):
