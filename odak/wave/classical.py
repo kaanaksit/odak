@@ -67,12 +67,16 @@ def fraunhofer(field,k,distance,dx,wavelength):
                        Final complex field (MxN).
     """
     nu,nv  = field.shape
-    x      = np.linspace(-nu/2*dx,nu/2*dx,nu)
-    y      = np.linspace(-nv/2*dx,nv/2*dx,nv)
-    X,Y    = np.meshgrid(x,y)
-    Z      = X**2+Y**2
-    c      = 1./(1j*wavelength*distance)*np.exp(1j*k*0.5/distance*Z)
-    result = c*np.fft.ifftshift(np.fft.fft2(np.fft.fftshift(field)))*pow(dx,2)
+    l      = nu*dx
+    l2     = wavelength*distance/dx
+    dx2    = wavelength*distance/l
+    fx     = np.arange(-l2/2.,l2/2.,dx2)
+    fy     = np.arange(-l2/2.,l2/2.,dx2)
+    FX,FY  = np.meshgrid(fx,fy)
+    FZ     = FX**2+FY**2
+    c      = 1./(1j*wavelength*distance)*np.exp(1j*k*(2./distance)*FZ)
+    c      = np.exp(1j*k*distance)/(1j*wavelength*distance)*np.exp(1j*k/(2*distance)*FZ)
+    result = c*np.fft.ifftshift(np.fft.fft2(np.fft.fftshift(field)))*dx**2
     return result
 
 def band_limited_angular_spectrum(field,k,distance,dx,wavelength):
@@ -103,9 +107,9 @@ def band_limited_angular_spectrum(field,k,distance,dx,wavelength):
     X,Y    = np.meshgrid(x,y)
     Z      = X**2+Y**2
     h      = 1./(1j*wavelength*distance)*np.exp(1j*k*(distance+Z/2/distance))
-    h      = np.fft.fft2(np.fft.fftshift(h))*pow(dx,2)
-    flimx  = int(1/(((2*distance*(1./(nu)))**2+1)**0.5*wavelength))
-    flimy  = int(1/(((2*distance*(1./(nv)))**2+1)**0.5*wavelength))
+    h      = np.fft.fft2(np.fft.fftshift(h))*dx**2
+    flimx  = np.ceil(1/(((2*distance*(1./(nu)))**2+1)**0.5*wavelength))
+    flimy  = np.ceil(1/(((2*distance*(1./(nv)))**2+1)**0.5*wavelength))
     mask   = np.zeros((nu,nv),dtype=np.complex64)
     mask   = (np.abs(X)<flimx) & (np.abs(Y)<flimy)
     mask   = set_amplitude(h,mask)
@@ -142,7 +146,7 @@ def angular_spectrum(field,k,distance,dx,wavelength):
     X,Y    = np.meshgrid(x,y)
     Z      = X**2+Y**2
     h      = 1./(1j*wavelength*distance)*np.exp(1j*k*(distance+Z/2/distance))
-    h      = np.fft.fft2(np.fft.fftshift(h))*pow(dx,2)
+    h      = np.fft.fft2(np.fft.fftshift(h))*dx**2
     U1     = np.fft.fft2(np.fft.fftshift(field))
     U2     = h*U1
     result = np.fft.ifftshift(np.fft.ifft2(U2))
@@ -177,7 +181,7 @@ def impulse_response_fresnel(field,k,distance,dx,wavelength):
     X,Y    = np.meshgrid(x,y)
     Z      = X**2+Y**2
     h      = np.exp(1j*k*distance)/(1j*wavelength*distance)*np.exp(1j*k/2/distance*Z)
-    h      = np.fft.fft2(np.fft.fftshift(h))*pow(dx,2)
+    h      = np.fft.fft2(np.fft.fftshift(h))*dx**2
     U1     = np.fft.fft2(np.fft.fftshift(field))
     U2     = h*U1
     result = np.fft.ifftshift(np.fft.ifft2(U2))
@@ -240,7 +244,7 @@ def band_extended_angular_spectrum(field,k,distance,dx,wavelength):
     result           : np.complex
                        Final complex field (MxN).
     """
-
+    raise Exception("Bandextended angular spectrum is not supported, yet. See issue 13.")
     iflag = -1
     eps   = 10**(-12)
     nu,nv = field.shape
@@ -265,11 +269,11 @@ def band_extended_angular_spectrum(field,k,distance,dx,wavelength):
         fyn = fy*ss
         mul = 1
     FXN,FYN     = np.meshgrid(fxn,fxn)
-    Hn          = np.exp(1j*np.pi*distance*(2./wavelength-wavelength*(FXN**2+FYN**2)))
+    Hn          = np.exp(1j*k*distance*(1-(FXN*wavelength)**2-(FYN*wavelength)**2)**0.5)
     X           = X/np.amax(X)*np.pi
     Y           = Y/np.amax(Y)*np.pi
-    t_asmNUFT   = nufft2(field,X,Y,sign=iflag,eps=eps)
-    result      = nufft2(Hn*t_asmNUFT,X*mul,Y*mul,sign=-iflag,eps=eps)
+    t_asmNUFT   = nufft2(field,X,Y,fxn*K,sign=iflag,eps=eps)
+    result      = nufft2(Hn*t_asmNUFT,X,Y,fxn*K,sign=-iflag,eps=eps)
     return result    
 
 def rayleigh_sommerfeld(field,k,distance,dx,wavelength):
