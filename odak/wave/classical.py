@@ -70,8 +70,8 @@ def fraunhofer(field,k,distance,dx,wavelength):
     l      = nu*dx
     l2     = wavelength*distance/dx
     dx2    = wavelength*distance/l
-    fx     = np.arange(-l2/2.,l2/2.,dx2)
-    fy     = np.arange(-l2/2.,l2/2.,dx2)
+    fx     = np.linspace(-l2/2.,l2/2.,nu)
+    fy     = np.linspace(-l2/2.,l2/2.,nv)
     FX,FY  = np.meshgrid(fx,fy)
     FZ     = FX**2+FY**2
     c      = 1./(1j*wavelength*distance)*np.exp(1j*k*(2./distance)*FZ)
@@ -299,8 +299,8 @@ def rayleigh_sommerfeld(field,k,distance,dx,wavelength):
                        Final complex field (MxN).
     """
     nu,nv     = field.shape
-    x         = np.linspace(-nv*dx,nv*dx,nv)
-    y         = np.linspace(-nu*dx,nu*dx,nu)
+    x         = np.linspace(-nv*dx/2,nv*dx/2,nv)
+    y         = np.linspace(-nu*dx/2,nu*dx/2,nu)
     X,Y       = np.meshgrid(x,y)
     Z         = X**2+Y**2
     result    = np.zeros(field.shape,dtype=np.complex64)
