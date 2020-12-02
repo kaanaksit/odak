@@ -345,7 +345,7 @@ class detectorshow():
 
     def save_image(self,filename):
         """
-        Definition to save the figure.
+        Definition to save the figure. Always first show then save.
 
         Parameters
         ----------

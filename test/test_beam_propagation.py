@@ -9,10 +9,7 @@ def main():
     wavelength                 = 0.5*pow(10,-6)
     pixeltom                   = 6*pow(10,-6)
     distance                   = 0.1
-#    propagation_type           = 'Rayleigh-Sommerfeld'
     propagation_type           = 'IR Fresnel'
-#    propagation_type           = 'Angular Spectrum'
-#    propagation_type           = 'Bandlimited Angular Spectrum'
     k                          = wavenumber(wavelength)
     sample_field               = np.zeros((150,150),dtype=np.complex64)
     sample_field[
