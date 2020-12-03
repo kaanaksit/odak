@@ -1,5 +1,5 @@
 from odak import np
-from odak.tools import nufft2
+from odak.tools import nufft2,nuifft2
 from .__init__ import wavenumber,produce_phase_only_slm_pattern, calculate_amplitude,set_amplitude
 
 def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel'):
@@ -222,8 +222,6 @@ def transfer_function_fresnel(field,k,distance,dx,wavelength):
 
 def band_extended_angular_spectrum(field,k,distance,dx,wavelength):
     """
-    ATTENTION THIS IS NOT STABLE, YET!!!
-
     A definition to calculate bandextended angular spectrum based beam propagation. For more Zhang, Wenhui, Hao Zhang, and Guofan Jin. "Band-extended angular spectrum method for accurate diffraction calculation in a wide propagation range." Optics Letters 45.6 (2020): 1543-1546.
 
     Parameters
@@ -244,7 +242,6 @@ def band_extended_angular_spectrum(field,k,distance,dx,wavelength):
     result           : np.complex
                        Final complex field (MxN).
     """
-    raise Exception("Bandextended angular spectrum is not supported, yet. See issue 13.")
     iflag = -1
     eps   = 10**(-12)
     nu,nv = field.shape
@@ -263,18 +260,16 @@ def band_extended_angular_spectrum(field,k,distance,dx,wavelength):
     if np.abs(distance) < zc:
         fxn = fx
         fyn = fy
-        mul = 1
     else:
         fxn = fx*ss
         fyn = fy*ss
-        mul = 1
-    FXN,FYN     = np.meshgrid(fxn,fxn)
-    Hn          = np.exp(1j*k*distance*(1-(FXN*wavelength)**2-(FYN*wavelength)**2)**0.5)
-    X           = X/np.amax(X)*np.pi
-    Y           = Y/np.amax(Y)*np.pi
-    t_asmNUFT   = nufft2(field,X,Y,fxn*K,sign=iflag,eps=eps)
-    result      = nufft2(Hn*t_asmNUFT,X,Y,fxn*K,sign=-iflag,eps=eps)
-    return result    
+    FXN,FYN   = np.meshgrid(fxn,fxn)
+    Hn        = np.exp(1j*k*distance*(1-(FXN*wavelength)**2-(FYN*wavelength)**2)**0.5)
+    X         = X/np.amax(X)*np.pi
+    Y         = Y/np.amax(Y)*np.pi
+    t_asmNUFT = nufft2(field,X*ss,Y*ss,FXN*K,sign=iflag,eps=eps)
+    result    = nuifft2(Hn*t_asmNUFT,X*ss,Y*ss,fxn*K,sign=-iflag,eps=eps)
+    return result
 
 def rayleigh_sommerfeld(field,k,distance,dx,wavelength):
     """
