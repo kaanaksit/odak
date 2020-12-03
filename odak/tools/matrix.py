@@ -1,6 +1,6 @@
 from odak import np
 import pkg_resources
-import nufft2d
+import finufft
 
 def nuifft2(field,fx,fy,a,sign=1,eps=10**(-12)):
     """
@@ -12,7 +12,6 @@ def nuifft2(field,fx,fy,a,sign=1,eps=10**(-12)):
         image = np.asnumpy(np.copy(field)).astype(np.complex128)
     else:
         image = np.copy(field).astype(np.complex128)
-    import finufft
     result = finufft.nufft2d2(fx.flatten(),fy.flatten(),image,eps=eps,isign=sign)
     result = result.reshape(field.shape)
     if np.__name__ == 'cupy':
@@ -29,8 +28,6 @@ def nufft2(field,fx,fy,a,sign=1,eps=10**(-12)):
         image = np.asnumpy(np.copy(field)).astype(np.complex128)
     else:
         image = np.copy(field).astype(np.complex128)
-
-    import finufft
     result = finufft.nufft2d1(fx.flatten(),fy.flatten(),image.flatten(),image.shape,eps=eps,isign=sign)
     if np.__name__ == 'cupy':
         result = np.asarray(result)
