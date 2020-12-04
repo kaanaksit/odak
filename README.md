@@ -26,7 +26,7 @@ It is easy as in this recorded session. Import it to your code and start designi
 ![alt tag](recordings/example.gif)
 
 ### Examples
-We prepared a bunch of test routines, which can also play a role in guidance during using Odak, you find these test scripts in [here](test/).
+We prepared a bunch of test routines, which can also play a role in guidance during using Odak, you find these test scripts in [here](test/). If you need more then the test scripts, reach out using issues. Remember there are no stupid questions, there are stupid answers.
 
 ## Citing
 If you use Odak in a research project leading to a publication, please acknowledge this fact by using our ready-made [bibtex citation entry](citations/odak.bib).
