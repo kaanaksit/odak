@@ -137,7 +137,6 @@ def fraunhofer(field,k,distance,dx,wavelength):
     fy     = np.linspace(-l2/2.,l2/2.,nv)
     FX,FY  = np.meshgrid(fx,fy)
     FZ     = FX**2+FY**2
-    # c      = 1./(1j*wavelength*distance)*np.exp(1j*k*(2./np.abs(distance))*FZ)
     c      = np.exp(1j*k*distance)/(1j*wavelength*distance)*np.exp(1j*k/(2*distance)*FZ)
     result = c*np.fft.ifftshift(np.fft.fft2(np.fft.fftshift(field)))*dx**2
     return result
@@ -164,17 +163,17 @@ def fraunhofer_inverse(field,k,distance,dx,wavelength):
     result           : np.complex
                        Final complex field (MxN).
     """
-    nu,nv  = field.shape
-    l      = nu*dx
-    l2     = wavelength*distance/dx
-    dx2    = wavelength*distance/l
-    fx     = np.linspace(-l2/2.,l2/2.,nu)
-    fy     = np.linspace(-l2/2.,l2/2.,nv)
-    FX,FY  = np.meshgrid(fx,fy)
-    FZ     = FX**2+FY**2
-    # c      = 1./(1j*wavelength*distance)*np.exp(1j*k*(2./np.abs(distance))*FZ)
-    c      = np.exp(1j*k*distance)/(1j*wavelength*distance)*np.exp(1j*k/(2*distance)*FZ)
-    result = np.fft.fftshift(np.fft.ifft2(np.fft.ifftshift(field/dx**2/c )))
+    distance = np.abs(distance)
+    nu,nv    = field.shape
+    l        = nu*dx
+    l2       = wavelength*distance/dx
+    dx2      = wavelength*distance/l
+    fx       = np.linspace(-l2/2.,l2/2.,nu)
+    fy       = np.linspace(-l2/2.,l2/2.,nv)
+    FX,FY    = np.meshgrid(fx,fy)
+    FZ       = FX**2+FY**2
+    c        = np.exp(1j*k*distance)/(1j*wavelength*distance)*np.exp(1j*k/(2*distance)*FZ)
+    result   = np.fft.fftshift(np.fft.ifft2(np.fft.ifftshift(field/dx**2/c )))
     return result
 
 def band_limited_angular_spectrum(field,k,distance,dx,wavelength):

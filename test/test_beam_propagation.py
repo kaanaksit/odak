@@ -25,16 +25,15 @@ def main():
                                                 wavelength,
                                                 propagation_type
                                                )
-
     if propagation_type == 'Fraunhofer':
-        distance = np.abs(distance)
-        reconstruction             = propagate_beam(
+        propagation_type = 'Fraunhofer Inverse'
+    reconstruction             = propagate_beam(
                                                 hologram,
                                                 k,
-                                                distance,
+                                                -distance,
                                                 pixeltom,
                                                 wavelength,
-                                                'Fraunhofer Inverse'
+                                                propagation_type
                                                )
 
 
@@ -44,7 +43,7 @@ def main():
     detector.show()
     detector.add_field(hologram)
     detector.show()
-    detector.add_field(reconstruction/np.amax(np.abs(reconstruction)))
+    detector.add_field(reconstruction)
     detector.show()
     assert True==True
 
