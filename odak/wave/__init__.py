@@ -132,13 +132,36 @@ def add_random_phase(field):
     Parameters
     ----------
     field        : np.complex64
+                   Complex field.
 
     Returns
     ----------
     new_field    : np.complex64
+                   Complex field.
     """
     random_phase = np.pi*np.random.random(field.shape)
     new_field    = field*np.cos(random_phase)+1j*field*np.sin(random_phase)
+    return new_field
+
+def set_amplitude(field,amplitude):
+    """
+    Definition to keep phase as is and change the amplitude of a given field.
+
+    Parameters
+    ----------
+    field        : np.complex64
+                   Complex field.
+    amplitude    : np.array or np.complex64
+                   Amplitudes.
+
+    Returns
+    ----------
+    new_field    : np.complex64
+                   Complex field.
+    """
+    amplitude = calculate_amplitude(amplitude)
+    phase     = calculate_phase(field)
+    new_field = amplitude*np.cos(phase)+1j*amplitude*np.sin(phase)
     return new_field
 
 def adjust_phase_only_slm_range(native_range,working_wavelength,native_wavelength):
@@ -194,4 +217,4 @@ def produce_phase_only_slm_pattern(hologram,slm_range,filename=None):
                   )
     hologram_phase                            = hologram_phase.astype(np.float)
     hologram_phase                           *= slm_range/255.
-    return np.cos(hologram_phase)+1j*np.sin(hologram_phase)    
+    return np.cos(hologram_phase)+1j*np.sin(hologram_phase)

@@ -122,28 +122,70 @@ def propagate_a_ray(ray,distance):
         new_ray = new_ray.reshape((2,3))
     return new_ray
 
-def findNearestPoints(vec1, vec2, ray):
-  # written by praneeth chakravarthula
-    # Refer to the concept of skew lines and line-plane intersection for the following math.
-    p1 = vec1[0].reshape(3,)
-    d1 = vec1[1].reshape(3,)
-    p2 = vec2[0].reshape(3,)
-    d2 = vec2[1].reshape(3,)
-    # normal to both vectors
-    n = np.cross(d1, d2)
-    # if the rays intersect
+def calculate_intersection_of_two_rays(ray0,ray1):
+    """
+    Definition to calculate the intersection of two rays.
+
+    Parameters
+    ----------
+    ray0       : ndarray
+                 A ray.
+    ray1       : ndarray
+                 A ray.
+
+    Returns
+    ----------
+    point      : ndarray
+                 Point in X,Y,Z.
+    distances  : ndarray
+                 Distances.
+    """
+    A = np.array([
+                  [float(ray0[1][0]),float(ray1[1][0])],
+                  [float(ray0[1][1]),float(ray1[1][1])],
+                  [float(ray0[1][2]),float(ray1[1][2])]
+                 ])
+    B = np.array([
+                  ray0[0][0]-ray1[0][0],
+                  ray0[0][1]-ray1[0][1],
+                  ray0[0][2]-ray1[0][2]
+                 ])
+    distances = np.linalg.lstsq(A,B)[0]
+    if np.allclose(np.dot(A,distances),B) == False:
+        distances = np.array([0,0])
+    distances = distances[np.argsort(-distances)]
+    point     = propagate_a_ray(ray0,distances[0])[0]
+    return point,distances
+
+def find_nearest_points(ray0,ray1):
+    """
+    Find the nearest points on given rays with respect to the other ray.
+
+    Parameters
+    ----------
+    ray0       : ndarray
+                 A ray.
+    ray1       : ndarray
+                 A ray.
+
+    Returns
+    ----------
+    c0         : ndarray
+                 Closest point on ray0.
+    c1         : ndarray
+                 Closest point on ray1.
+    """
+    p0 = ray0[0].reshape(3,)
+    d0 = ray0[1].reshape(3,)
+    p1 = ray1[0].reshape(3,)
+    d1 = ray1[1].reshape(3,)
+    n  = np.cross(d0, d1)
     if np.all(n)==0:
-      point, distances = ray.CalculateIntersectionOfTwoVectors(vec1, vec2)
-      c1 = c2 = point
+      point, distances = calculate_intersection_of_two_rays(ray0,ray1)
+      c0 = c1 = point
     else:
-      # normal to plane formed by vectors n and d1
-      n1 = np.cross(d1, n)
-      # normal to plane formed by vectors n and d2
-      n2 = np.cross(d2, n)
-      # nearest distance point to vec2 along vec1 is equal to
-      # intersection of vec1 with plane formed by vec2 and normal n
-      c1 = p1 + (np.dot((p2-p1), n2)/np.dot(d1, n2))*d1
-      # nearest distance point to vec1 along vec2 is equal to
-      # intersection of vec2 with plane formed by vec1 and normal n
-      c2 = p2 + (np.dot((p1-p2), n1)/np.dot(d2, n1))*d2
-    return c1, c2
+      n0 = np.cross(d0,n)
+      n1 = np.cross(d1,n)
+      c0 = p0+(np.dot((p1-p0), n1)/np.dot(d0, n1))*d0
+      c1 = p1+(np.dot((p0-p1), n0)/np.dot(d1, n0))*d1
+    return c0,c1

@@ -8,14 +8,14 @@ def main():
     # Variables to be set.
     wavelength                 = 0.5*pow(10,-6)
     pixeltom                   = 6*pow(10,-6)
-    distance                   = 13.0
+    distance                   = 0.1
     propagation_type           = 'Fraunhofer'
     k                          = wavenumber(wavelength)
     sample_field               = np.zeros((150,150),dtype=np.complex64)
     sample_field[
-                 65:85,
-                 65:85
-                ]              = 1
+                 40:60,
+                 40:60
+                ]              = 10
     sample_field               = add_random_phase(sample_field)
     hologram                   = propagate_beam(
                                                 sample_field,
@@ -25,16 +25,8 @@ def main():
                                                 wavelength,
                                                 propagation_type
                                                )
-    reconstruction             = propagate_beam(
-                                                hologram,
-                                                k,
-                                                -distance,
-                                                pixeltom,
-                                                wavelength,
-                                                propagation_type
-                                               )
-    propagation_type = 'Fraunhofer Inverse'
-    if propagation_type == 'Fraunhofer Inverse':
+
+    if propagation_type == 'Fraunhofer':
         distance = np.abs(distance)
         reconstruction             = propagate_beam(
                                                 hologram,
@@ -42,8 +34,9 @@ def main():
                                                 distance,
                                                 pixeltom,
                                                 wavelength,
-                                                propagation_type
+                                                'Fraunhofer Inverse'
                                                )
+
 
     from odak.visualize.plotly import detectorshow
     detector       = detectorshow()

@@ -26,6 +26,7 @@ setup(
                               'odak/jones',
                               'odak/tools',
                               'odak/wave',
+                              'odak/learn/wave',
                               'odak/visualize',
                               'odak/visualize/blender',
                               'odak/manager',

@@ -10,3 +10,4 @@ from .vector import *
 from .sample import *
 from .asset import *
 from .file import *
+from .matrix import *

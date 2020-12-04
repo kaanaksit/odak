@@ -3,7 +3,7 @@ import os
 import odak
 from odak import np
 from odak.wave import wavenumber,propagate_beam
-from odak.learn import propagate_beam as propagate_beam_torch
+from odak.learn.wave import propagate_beam as propagate_beam_torch
 import torch
 
 def main():
@@ -11,7 +11,7 @@ def main():
     wavelength                 = 0.5*pow(10,-6)
     pixeltom                   = 6*pow(10,-6)
     distance                   = 0.2
-    propagation_type           = 'IR Fresnel'
+    propagation_type           = 'Bandlimited Angular Spectrum'
     k                          = wavenumber(wavelength)
     sample_field               = np.zeros((500,500),dtype=np.complex64)
     sample_field[
@@ -42,21 +42,25 @@ def main():
                                                 wavelength,
                                                 propagation_type
                                                )
-    # from odak.visualize.plotly import detectorshow
-    # detector       = detectorshow()
-    # detector.add_field(sample_field)
-    # detector.show()
-    # detector.add_field(hologram)
-    # detector.show()
-    # detector.add_field(reconstruction)
-    # detector.show()
+
+#    reconstruction = np.asarray(reconstruction.numpy())
+#    sample_field   = np.asarray(sample_field.numpy())
+#    hologram       = np.asarray(hologram.numpy())
+#    from odak.visualize.plotly import detectorshow
+#    detector       = detectorshow()
+#    detector.add_field(sample_field)
+#    detector.show()
+#    detector.add_field(hologram)
+#    detector.show()
+#    detector.add_field(reconstruction)
+#    detector.show()
     assert True==True
 
 def compare():
     wavelength                 = 0.5*pow(10,-6)
     pixeltom                   = 6*pow(10,-6)
     distance                   = 0.2
-    propagation_type           = 'IR Fresnel'
+    propagation_type           = 'Bandlimited Angular Spectrum'
     k                          = wavenumber(wavelength)
     sample_field               = np.zeros((500,500),dtype=np.complex64)
     sample_field[
@@ -110,4 +114,4 @@ def compare():
     np.testing.assert_array_almost_equal(hologram_torch.numpy(), hologram, 3)
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(compare())
