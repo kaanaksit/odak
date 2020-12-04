@@ -36,6 +36,8 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
         result = band_limited_angular_spectrum(field,k,distance,dx,wavelength)
     elif propagation_type == 'Bandextended Angular Spectrum':
         result = band_extended_angular_spectrum(field,k,distance,dx,wavelength)
+    elif propagation_type == 'Adaptive Sampling Angular Spectrum':
+        result = adaptive_sampling_angular_spectrum(field,k,distance,dx,wavelength)
     elif propagation_type == 'TR Fresnel':
         result = transfer_function_fresnel(field,k,distance,dx,wavelength)
     elif propagation_type == 'Fraunhofer':
@@ -43,6 +45,65 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
     else:
         raise Exception("Unknown propagation type selected.")
     return result
+
+def adaptive_sampling_angular_spectrum(field,k,distance,dx,wavelength):
+    """
+    A definition to calculate adaptive sampling angular spectrum based beam propagation. For more Zhang, Wenhui, Hao Zhang, and Guofan Jin. "Adaptive-sampling angular spectrum method with full utilization of space-bandwidth product." Optics Letters 45.16 (2020): 4416-4419.
+
+    Parameters
+    ----------
+    field            : np.complex
+                       Complex field (MxN).
+    k                : odak.wave.wavenumber
+                       Wave number of a wave, see odak.wave.wavenumber for more.
+    distance         : float
+                       Propagation distance.
+    dx               : float
+                       Size of one single pixel in the field grid (in meters).
+    wavelength       : float
+                       Wavelength of the electric field.
+
+    Returns
+    =======
+    result           : np.complex
+                       Final complex field (MxN).
+    """
+    raise Exception("Adaptive sampling angular spectrum method is not yet stable. See issue https://github.com/kunguz/odak/issues/13")
+    iflag = -1
+    eps   = 10**(-12)
+    nu,nv = field.shape
+    l     = nu*dx
+    x     = np.linspace(-l/2,l/2,nu)
+    y     = np.linspace(-l/2,l/2,nv)
+    X,Y   = np.meshgrid(x,y)
+    fx    = np.linspace(-1./2./dx,1./2./dx,nu)
+    fy    = np.linspace(-1./2./dx,1./2./dx,nv)
+    FX,FY = np.meshgrid(fx,fy)
+    forig = 1./2./dx
+    fc2   = 1./2*(nu/wavelength/np.abs(distance))**0.5
+    ss    = np.abs(fc2)/forig
+    zc    = nu*dx**2/wavelength
+    K     = nu/2/np.amax(np.abs(fx))
+    if np.abs(distance) <= zc*2:
+        nnu2  = nu
+        nnv2  = nv
+        fxn   = np.linspace(-1./2./dx,1./2./dx,nnu2)
+        fyn   = np.linspace(-1./2./dx,1./2./dx,nnv2)
+    else:
+        nnu2  = nu
+        nnv2  = nv
+        fxn   = np.linspace(-fc2,fc2,nnu2)
+        fyn   = np.linspace(-fc2,fc2,nnv2)
+    FXN,FYN   = np.meshgrid(fxn,fxn)
+    Hn        = np.exp(1j*k*distance*(1-(FXN*wavelength)**2-(FYN*wavelength)**2)**0.5)
+    FX        = FX/np.amax(FX)*np.pi
+    FY        = FY/np.amax(FY)*np.pi
+    t_2       = nufft2(field,FX*ss,FY*ss,size=[nnu2,nnv2],sign=iflag,eps=eps)
+    FX        = FXN/np.amax(FXN)*np.pi
+    FY        = FYN/np.amax(FYN)*np.pi
+    result    = nufft2(Hn*t_2,FX*ss,FY*ss,size=[nu,nv],sign=-iflag,eps=eps)
+    return result
+
 
 def fraunhofer(field,k,distance,dx,wavelength):
     """
@@ -254,7 +315,7 @@ def band_extended_angular_spectrum(field,k,distance,dx,wavelength):
     fy    = np.linspace(-1./2./dx,1./2./dx,nv)
     FX,FY = np.meshgrid(fx,fy)
     K     = nu/2/np.amax(fx)
-    fcn   = 1./2*(nu/wavelength/distance)**0.5
+    fcn   = 1./2*(nu/wavelength/np.abs(distance))**0.5
     ss    = np.abs(fcn)/np.amax(np.abs(fx))
     zc    = nu*dx**2/wavelength
     if np.abs(distance) < zc:
@@ -267,8 +328,8 @@ def band_extended_angular_spectrum(field,k,distance,dx,wavelength):
     Hn        = np.exp(1j*k*distance*(1-(FXN*wavelength)**2-(FYN*wavelength)**2)**0.5)
     X         = X/np.amax(X)*np.pi
     Y         = Y/np.amax(Y)*np.pi
-    t_asmNUFT = nufft2(field,X*ss,Y*ss,FXN*K,sign=iflag,eps=eps)
-    result    = nuifft2(Hn*t_asmNUFT,X*ss,Y*ss,fxn*K,sign=-iflag,eps=eps)
+    t_asmNUFT = nufft2(field,X*ss,Y*ss,sign=iflag,eps=eps)
+    result    = nuifft2(Hn*t_asmNUFT,X*ss,Y*ss,sign=-iflag,eps=eps)
     return result
 
 def rayleigh_sommerfeld(field,k,distance,dx,wavelength):
