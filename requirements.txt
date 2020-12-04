@@ -8,3 +8,4 @@ pillow>=6.1.0
 plotly>=4.7.1
 torch>=1.7.0
 finufft>=2.0.0
+kaleido>=0.0.3.post1
