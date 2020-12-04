@@ -2,22 +2,21 @@ import sys
 import os
 import odak
 from odak import np
-from odak.wave import wavenumber,propagate_beam
+from odak.wave import wavenumber,propagate_beam,add_random_phase
 
 def main():
     # Variables to be set.
     wavelength                 = 0.5*pow(10,-6)
     pixeltom                   = 6*pow(10,-6)
-    distance                   = 0.2
-    propagation_type           = 'IR Fresnel'
+    distance                   = 13.0
+    propagation_type           = 'Fraunhofer'
     k                          = wavenumber(wavelength)
-    sample_field               = np.zeros((500,500),dtype=np.complex64)
+    sample_field               = np.zeros((150,150),dtype=np.complex64)
     sample_field[
-                 240:260,
-                 240:260
-                ]              = 1000
-    random_phase               = np.pi*np.random.random(sample_field.shape)
-    sample_field               = sample_field*np.cos(random_phase)+1j*sample_field*np.sin(random_phase)
+                 65:85,
+                 65:85
+                ]              = 1
+    sample_field               = add_random_phase(sample_field)
     hologram                   = propagate_beam(
                                                 sample_field,
                                                 k,
@@ -34,14 +33,26 @@ def main():
                                                 wavelength,
                                                 propagation_type
                                                )
-#    from odak.visualize.plotly import detectorshow
-#    detector       = detectorshow()
-#    detector.add_field(sample_field)
-#    detector.show()
-#    detector.add_field(hologram)
-#    detector.show()
-#    detector.add_field(reconstruction)
-#    detector.show()
+    propagation_type = 'Fraunhofer Inverse'
+    if propagation_type == 'Fraunhofer Inverse':
+        distance = np.abs(distance)
+        reconstruction             = propagate_beam(
+                                                hologram,
+                                                k,
+                                                distance,
+                                                pixeltom,
+                                                wavelength,
+                                                propagation_type
+                                               )
+
+    from odak.visualize.plotly import detectorshow
+    detector       = detectorshow()
+    detector.add_field(sample_field)
+    detector.show()
+    detector.add_field(hologram)
+    detector.show()
+    detector.add_field(reconstruction/np.amax(np.abs(reconstruction)))
+    detector.show()
     assert True==True
 
 if __name__ == '__main__':
