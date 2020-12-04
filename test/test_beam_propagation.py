@@ -9,7 +9,7 @@ def main():
     wavelength                 = 0.5*pow(10,-6)
     pixeltom                   = 6*pow(10,-6)
     distance                   = 0.1
-    propagation_type           = 'IR Fresnel'
+    propagation_type           = 'Fraunhofer'
     k                          = wavenumber(wavelength)
     sample_field               = np.zeros((150,150),dtype=np.complex64)
     sample_field[
@@ -25,22 +25,27 @@ def main():
                                                 wavelength,
                                                 propagation_type
                                                )
-    reconstruction             = propagate_beam(
+
+    if propagation_type == 'Fraunhofer':
+        distance = np.abs(distance)
+        reconstruction             = propagate_beam(
                                                 hologram,
                                                 k,
-                                                -distance,
+                                                distance,
                                                 pixeltom,
                                                 wavelength,
-                                                propagation_type
+                                                'Fraunhofer Inverse'
                                                )
-#    from odak.visualize.plotly import detectorshow
-#    detector       = detectorshow()
-#    detector.add_field(sample_field)
-#    detector.show()
-#    detector.add_field(hologram)
-#    detector.show()
-#    detector.add_field(reconstruction/np.amax(np.abs(reconstruction)))
-#    detector.show()
+
+
+    from odak.visualize.plotly import detectorshow
+    detector       = detectorshow()
+    detector.add_field(sample_field)
+    detector.show()
+    detector.add_field(hologram)
+    detector.show()
+    detector.add_field(reconstruction/np.amax(np.abs(reconstruction)))
+    detector.show()
     assert True==True
 
 if __name__ == '__main__':
