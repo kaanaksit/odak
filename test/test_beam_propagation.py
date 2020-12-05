@@ -26,8 +26,9 @@ def main():
                                                 propagation_type
                                                )
     if propagation_type == 'Fraunhofer':
-        from odak.wave import fraunhofer_equal_size_adjust
-        hologram         = fraunhofer_equal_size_adjust(hologram,distance,pixeltom,wavelength)
+        # Uncomment if you want to match the physical size of hologram and input field.
+        #from odak.wave import fraunhofer_equal_size_adjust
+        #hologram         = fraunhofer_equal_size_adjust(hologram,distance,pixeltom,wavelength)
         propagation_type = 'Fraunhofer Inverse'
     reconstruction             = propagate_beam(
                                                 hologram,
