@@ -70,7 +70,6 @@ def adaptive_sampling_angular_spectrum(field,k,distance,dx,wavelength):
     result           : np.complex
                        Final complex field (MxN).
     """
-    raise Exception("Adaptive sampling angular spectrum method is not yet stable. See issue https://github.com/kunguz/odak/issues/13")
     iflag = -1
     eps   = 10**(-12)
     nu,nv = field.shape
@@ -86,20 +85,21 @@ def adaptive_sampling_angular_spectrum(field,k,distance,dx,wavelength):
     ss    = np.abs(fc2)/forig
     zc    = nu*dx**2/wavelength
     K     = nu/2/np.amax(np.abs(fx))
+    m     = 2
     if np.abs(distance) <= zc*2:
-        nnu2  = nu
-        nnv2  = nv
+        nnu2  = m*nu
+        nnv2  = m*nv
         fxn   = np.linspace(-1./2./dx,1./2./dx,nnu2)
         fyn   = np.linspace(-1./2./dx,1./2./dx,nnv2)
     else:
-        nnu2  = nu
-        nnv2  = nv
-        fxn   = np.linspace(-fc2,fc2,nnu2)
-        fyn   = np.linspace(-fc2,fc2,nnv2)
+        nnu2  = m*nu
+        nnv2  = m*nv
+        fxn   = np.linspace(-1./2./dx,1./2./dx,nnu2)*ss
+        fyn   = np.linspace(-1./2./dx,1./2./dx,nnv2)*ss
     FXN,FYN   = np.meshgrid(fxn,fxn)
     Hn        = np.exp(1j*k*distance*(1-(FXN*wavelength)**2-(FYN*wavelength)**2)**0.5)
-    FX        = FX/np.amax(FX)*np.pi
-    FY        = FY/np.amax(FY)*np.pi
+    FX        = FX/np.amax(FX)*np.pi*(1./m)
+    FY        = FY/np.amax(FY)*np.pi*(1./m)
     t_2       = nufft2(field,FX*ss,FY*ss,size=[nnu2,nnv2],sign=iflag,eps=eps)
     FX        = FXN/np.amax(FXN)*np.pi
     FY        = FYN/np.amax(FYN)*np.pi
