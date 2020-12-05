@@ -26,6 +26,8 @@ def main():
                                                 propagation_type
                                                )
     if propagation_type == 'Fraunhofer':
+        from odak.wave import fraunhofer_equal_size_adjust
+        hologram         = fraunhofer_equal_size_adjust(hologram,distance,pixeltom,wavelength)
         propagation_type = 'Fraunhofer Inverse'
     reconstruction             = propagate_beam(
                                                 hologram,
@@ -36,15 +38,16 @@ def main():
                                                 propagation_type
                                                )
 
-
-    from odak.visualize.plotly import detectorshow
-    detector       = detectorshow()
-    detector.add_field(sample_field)
-    detector.show()
-    detector.add_field(hologram)
-    detector.show()
-    detector.add_field(reconstruction)
-    detector.show()
+    #from odak.visualize.plotly import detectorshow
+    #detector       = detectorshow()
+    #detector.add_field(sample_field)
+    #detector.show()
+    #detector       = detectorshow()
+    #detector.add_field(hologram)
+    #detector.show()
+    #detector       = detectorshow()
+    #detector.add_field(reconstruction)
+    #detector.show()
     assert True==True
 
 if __name__ == '__main__':

@@ -106,6 +106,36 @@ def adaptive_sampling_angular_spectrum(field,k,distance,dx,wavelength):
     result    = nufft2(Hn*t_2,FX*ss,FY*ss,size=[nu,nv],sign=-iflag,eps=eps)
     return result
 
+def fraunhofer_equal_size_adjust(field,distance,dx,wavelength):
+    """
+    A definition to match the physical size of the original field with the propagated field.
+
+    Parameters
+    ----------
+    field            : np.complex
+                       Complex field (MxN).
+    distance         : float
+                       Propagation distance.
+    dx               : float
+                       Size of one single pixel in the field grid (in meters).
+    wavelength       : float
+                       Wavelength of the electric field.
+
+    Returns
+    =======
+    new_field        : np.complex
+                       Final complex field (MxN).
+    """
+    nu,nv     = field.shape
+    l1        = nu*dx
+    l2        = wavelength*distance/dx
+    m         = l1/l2
+    px        = int(m*nu)
+    py        = int(m*nv)
+    nx        = int(field.shape[0]/2-px/2)
+    ny        = int(field.shape[1]/2-py/2)
+    new_field = np.copy(field[nx:nx+px,ny:ny+py])
+    return new_field
 
 def fraunhofer(field,k,distance,dx,wavelength):
     """
