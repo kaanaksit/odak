@@ -8,7 +8,7 @@ def main():
     # Variables to be set.
     wavelength                 = 0.5*pow(10,-6)
     pixeltom                   = 6*pow(10,-6)
-    distance                   = 0.1
+    distance                   = 10.0
     propagation_type           = 'Fraunhofer'
     k                          = wavenumber(wavelength)
     sample_field               = np.zeros((150,150),dtype=np.complex64)
