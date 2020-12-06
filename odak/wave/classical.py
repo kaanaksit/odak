@@ -86,16 +86,13 @@ def adaptive_sampling_angular_spectrum(field,k,distance,dx,wavelength):
     zc    = nu*dx**2/wavelength
     K     = nu/2/np.amax(np.abs(fx))
     m     = 2
-    if np.abs(distance) <= zc*2:
-        nnu2  = m*nu
-        nnv2  = m*nv
-        fxn   = np.linspace(-1./2./dx,1./2./dx,nnu2)
-        fyn   = np.linspace(-1./2./dx,1./2./dx,nnv2)
-    else:
-        nnu2  = m*nu
-        nnv2  = m*nv
-        fxn   = np.linspace(-1./2./dx,1./2./dx,nnu2)*ss
-        fyn   = np.linspace(-1./2./dx,1./2./dx,nnv2)*ss
+    nnu2  = m*nu
+    nnv2  = m*nv
+    fxn   = np.linspace(-1./2./dx,1./2./dx,nnu2)
+    fyn   = np.linspace(-1./2./dx,1./2./dx,nnv2)
+    if np.abs(distance) > zc*2:
+        fxn   = fxn*ss
+        fyn   = fyn*ss
     FXN,FYN   = np.meshgrid(fxn,fxn)
     Hn        = np.exp(1j*k*distance*(1-(FXN*wavelength)**2-(FYN*wavelength)**2)**0.5)
     FX        = FX/np.amax(FX)*np.pi*(1./m)
