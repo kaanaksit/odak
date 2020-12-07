@@ -5,7 +5,7 @@ def test():
     import torch
     from odak.learn.wave import gerchberg_saxton,produce_phase_only_slm_pattern,calculate_amplitude
     from odak.tools import save_image
-    wavelength             = 0.000532
+    wavelength             = 0.000000532
     dx                     = 0.0000064
     distance               = 0.2
     input_field            = np.zeros((500,500),dtype=np.complex64)
