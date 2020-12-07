@@ -35,7 +35,7 @@ def main():
     reconstruction             = propagate_beam(
                                                 hologram,
                                                 k,
-                                                distance,
+                                                -distance,
                                                 pixeltom,
                                                 wavelength,
                                                 propagation_type
