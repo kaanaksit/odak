@@ -113,18 +113,6 @@ def compare():
                                                 wavelength,
                                                 propagation_type
                                                )
-    field = hologram_torch
-    dx = pixeltom
-    nv, nu = field.shape[-2], field.shape[-1]
-    x      = torch.linspace(-nu/2*dx,nu/2*dx,nu)
-    y      = torch.linspace(-nv/2*dx,nv/2*dx,nv)
-    Y,X    = torch.meshgrid(y,x)
-    Z      = X**2+Y**2
-    print('k is  %f and its type is '%(k), type(k))
-    np_result = np.exp(1j * k * (distance + Z.numpy() /2 /distance))
-    torch_result = torch.exp(1j * k * (distance + Z / 2 / distance))
-
-    #np.testing.assert_array_almost_equal(torch_result.numpy(), np_result, 3)
     np.testing.assert_array_almost_equal(hologram_torch.numpy(), hologram, 3)
 
 if __name__ == '__main__':
