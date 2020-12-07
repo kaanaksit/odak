@@ -28,12 +28,11 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
                        Final complex field (MxN).
     """
     nv, nu = field.shape[-1], field.shape[-2]
-    x = torch.linspace(-nv*dx/2, nv*dx/2, nv, dtype=torch.float64)
-    y = torch.linspace(-nu*dx/2, nu*dx/2, nu, dtype=torch.float64)
-    Y, X = torch.meshgrid(y, x)
-    Z = torch.pow(X,2) + torch.pow(Y,2)
+    x      = torch.linspace(-nv*dx/2, nv*dx/2, nv, dtype=torch.float64)
+    y      = torch.linspace(-nu*dx/2, nu*dx/2, nu, dtype=torch.float64)
+    Y, X   = torch.meshgrid(y, x)
+    Z      = torch.pow(X,2) + torch.pow(Y,2)
     Z      = X**2+Y**2
-
     if propagation_type == 'IR Fresnel':
        h      = 1./(1j*wavelength*distance)*torch.exp(1j*k*0.5/distance*Z)
        h      = torch.fft.fftn(fftshift(h))*pow(dx,2)
