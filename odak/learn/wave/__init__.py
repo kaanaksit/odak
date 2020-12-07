@@ -89,4 +89,8 @@ def produce_phase_only_slm_pattern(hologram,slm_range):
     hologram_phase                            = calculate_phase(hologram) % (2*np.pi)
     hologram_phase[hologram_phase>slm_range]  = slm_range
     hologram_phase                           /= slm_range
+    hologram_phase                           *= 255
+    hologram_phase                            = hologram_phase.int()
+    hologram_phase                            = hologram_phase.float()
+    hologram_phase                           *= slm_range/255.
     return np.cos(hologram_phase)+1j*np.sin(hologram_phase)
