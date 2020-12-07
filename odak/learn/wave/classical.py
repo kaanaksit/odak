@@ -1,7 +1,8 @@
 from odak import np
 import torch, torch.fft
 from .toolkit import fftshift, ifftshift
-from .__init__ import set_amplitude
+from .__init__ import set_amplitude, produce_phase_only_slm_pattern
+from odak.wave import wavenumber
 
 def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel'):
     """
@@ -65,3 +66,40 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
        c      = c.to(field.device)
        result = c*ifftshift(torch.fft.fftn(fftshift(field)))*pow(dx,2)
     return result
+
+
+def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,propagation_type='IR Fresnel'):
+    """
+    Definition to compute a hologram using an iterative method called Gerchberg-Saxton phase retrieval algorithm. For more on the method, see: Gerchberg, Ralph W. "A practical algorithm for the determination of phase from image and diffraction plane pictures." Optik 35 (1972): 237-246.
+
+    Parameters
+    ----------
+    field            : torch.cfloat
+                       Complex field (MxN).
+    distance         : float
+                       Propagation distance.
+    dx               : float
+                       Size of one single pixel in the field grid (in meters).
+    wavelength       : float
+                       Wavelength of the electric field.
+    slm_range        : float
+                       Typically this is equal to two pi. See odak.wave.adjust_phase_only_slm_range() for more.
+    propagation_type : str
+                       Type of the propagation (IR Fresnel, TR Fresnel, Fraunhofer).
+
+    Result
+    ---------
+    hologram         : torch.cfloat
+                       Calculated complex hologram.
+    reconstruction   : torch.cfloat
+                       Calculated reconstruction using calculated hologram. 
+    """
+    k              = wavenumber(wavelength)
+    reconstruction = field
+    for i in range(n_iterations):
+        hologram       = propagate_beam(reconstruction,k,-distance,dx,wavelength,propagation_type)
+        hologram       = produce_phase_only_slm_pattern(hologram,slm_range)
+        reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
+        reconstruction = set_amplitude(hologram,field)
+    reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
+    return hologram,reconstruction

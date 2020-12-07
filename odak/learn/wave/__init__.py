@@ -67,3 +67,26 @@ def set_amplitude(field,amplitude):
     phase     = calculate_phase(field)
     new_field = amplitude*torch.cos(phase)+1j*amplitude*torch.sin(phase)
     return new_field
+
+def produce_phase_only_slm_pattern(hologram,slm_range):
+    """
+    Definition for producing a pattern for a phase only Spatial Light Modulator (SLM) using a given field.
+
+    Parameters
+    ==========
+    hologram           : torch.cfloat
+                         Input holographic field.
+    slm_range          : float
+                         Range of the phase only SLM in radians for a working wavelength (i.e. two pi). See odak.wave.adjust_phase_only_slm_range() for more.
+    filename           : str
+                         Optional variable, if provided the patterns will be save to given location.
+
+    Returns
+    ==========
+    pattern            : torch.cfloat
+                         Adjusted phase only pattern.
+    """
+    hologram_phase                            = calculate_phase(hologram) % (2*np.pi)
+    hologram_phase[hologram_phase>slm_range]  = slm_range
+    hologram_phase                           /= slm_range
+    return np.cos(hologram_phase)+1j*np.sin(hologram_phase)
