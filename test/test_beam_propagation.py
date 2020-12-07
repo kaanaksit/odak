@@ -12,13 +12,6 @@ def main():
     propagation_type           = 'Fraunhofer'
     k                          = wavenumber(wavelength)
     sample_field               = np.zeros((150,150),dtype=np.complex64)
-    sample_field[
-                 40:60,
-                 40:60
-                ]              = 10
-    distance                   = 13.0
-    propagation_type           = 'Fraunhofer'
-    k                          = wavenumber(wavelength)
     sample_field               = np.zeros((150,150),dtype=np.complex64)
     sample_field[
                  65:85,
@@ -38,6 +31,7 @@ def main():
         #from odak.wave import fraunhofer_equal_size_adjust
         #hologram         = fraunhofer_equal_size_adjust(hologram,distance,pixeltom,wavelength)
         propagation_type = 'Fraunhofer Inverse'
+        distance = np.abs(distance)
     reconstruction             = propagate_beam(
                                                 hologram,
                                                 k,
