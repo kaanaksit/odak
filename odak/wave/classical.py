@@ -429,61 +429,6 @@ def band_extended_angular_spectrum(field,k,distance,dx,wavelength):
     result    = nuifft2(Hn*t_asmNUFT,X*ss,Y*ss,sign=-iflag,eps=eps)
     return result
 
-def band_extended_angular_spectrum(field,k,distance,dx,wavelength):
-    """
-    ATTENTION THIS IS NOT STABLE, YET!!!
-
-    A definition to calculate bandextended angular spectrum based beam propagation. For more Zhang, Wenhui, Hao Zhang, and Guofan Jin. "Band-extended angular spectrum method for accurate diffraction calculation in a wide propagation range." Optics Letters 45.6 (2020): 1543-1546.
-
-    Parameters
-    ----------
-    field            : np.complex
-                       Complex field (MxN).
-    k                : odak.wave.wavenumber
-                       Wave number of a wave, see odak.wave.wavenumber for more.
-    distance         : float
-                       Propagation distance.
-    dx               : float
-                       Size of one single pixel in the field grid (in meters).
-    wavelength       : float
-                       Wavelength of the electric field.
-
-    Returns
-    =======
-    result           : np.complex
-                       Final complex field (MxN).
-    """
-    iflag = -1
-    eps   = 10**(-12)
-    nu,nv = field.shape
-    l     = nu*dx
-    x     = np.linspace(-l/2,l/2,nu)
-    y     = np.linspace(-l/2,l/2,nv)
-    X,Y   = np.meshgrid(x,y)
-    Z     = X**2+Y**2
-    fx    = np.linspace(-1./2./dx,1./2./dx,nu)
-    fy    = np.linspace(-1./2./dx,1./2./dx,nv)
-    FX,FY = np.meshgrid(fx,fy)
-    K     = nu/2/np.amax(fx)
-    fcn   = 1./2*(nu/wavelength/distance)**0.5
-    ss    = np.abs(fcn)/np.amax(np.abs(fx))
-    zc    = nu*dx**2/wavelength
-    if np.abs(distance) < zc:
-        fxn = fx
-        fyn = fy
-        mul = 1
-    else:
-        fxn = fx*ss
-        fyn = fy*ss
-        mul = 1
-    FXN,FYN     = np.meshgrid(fxn,fxn)
-    Hn          = np.exp(1j*k*distance*(1-(FXN*wavelength)**2-(FYN*wavelength)**2)**0.5)
-    X           = X/np.amax(X)*np.pi
-    Y           = Y/np.amax(Y)*np.pi
-    t_asmNUFT   = nufft2(field,X,Y,fxn*K,sign=iflag,eps=eps)
-    result      = nufft2(Hn*t_asmNUFT,X,Y,fxn*K,sign=-iflag,eps=eps)
-    return result    
-
 def rayleigh_sommerfeld(field,k,distance,dx,wavelength):
     """
     Definition to compute beam propagation using Rayleigh-Sommerfeld's diffraction formula (Huygens-Fresnel Principle). For more see Section 3.5.2 in Goodman, Joseph W. Introduction to Fourier optics. Roberts and Company Publishers, 2005.
