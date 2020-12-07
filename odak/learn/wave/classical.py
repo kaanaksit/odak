@@ -1,7 +1,7 @@
 from odak import np
 import torch, torch.fft
 from .toolkit import fftshift, ifftshift
-from .__init__ import set_amplitude
+from .__init__ import rect_to_polar, polar_to_rect, complex_to_polar, complex_to_rect, polar_exp, complex_mul, set_amplitude
 
 def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel'):
     """
@@ -27,12 +27,13 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
     result           : torch.complex128
                        Final complex field (MxN).
     """
-    nv, nu = field.shape[-2], field.shape[-1]
-    x      = torch.linspace(-nv*dx,nv*dx,nv)
-    y      = torch.linspace(-nu*dx,nu*dx,nu)
-    X,Y    = torch.meshgrid(x,y)
-    k      = torch.tensor(k, dtype=field.dtype)
+    nv, nu = field.shape[-1], field.shape[-2]
+    x = torch.linspace(-nv*dx/2, nv*dx/2, nv, dtype=torch.float64)
+    y = torch.linspace(-nu*dx/2, nu*dx/2, nu, dtype=torch.float64)
+    Y, X = torch.meshgrid(y, x)
+    Z = torch.pow(X,2) + torch.pow(Y,2)
     Z      = X**2+Y**2
+
     if propagation_type == 'IR Fresnel':
        h      = 1./(1j*wavelength*distance)*torch.exp(1j*k*0.5/distance*Z)
        h      = torch.fft.fftn(fftshift(h))*pow(dx,2)
@@ -41,7 +42,7 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
        U2     = h*U1
        result = ifftshift(torch.fft.ifftn(U2))
     elif propagation_type == 'Bandlimited Angular Spectrum':
-       h         = 1./(1j*wavelength*distance)*torch.exp(1j*k*(0.5 / distance * Z))
+       h         = 1./(1j*wavelength*distance)*torch.exp(1j*k*(distance+Z/2/distance))  
        h         = torch.fft.fftn(fftshift(h)) * pow(dx, 2)
        h         = h.to(field.device)
        flimx     = int(1/(((2*distance*(1./(nv)))**2+1)**0.5*wavelength))
