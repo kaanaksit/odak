@@ -1,7 +1,7 @@
 from odak import np
 import torch, torch.fft
 from .toolkit import fftshift, ifftshift
-from .__init__ import rect_to_polar, polar_to_rect, complex_to_polar, complex_to_rect, polar_exp, complex_mul, set_amplitude
+from .__init__ import set_amplitude
 
 def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel'):
     """
