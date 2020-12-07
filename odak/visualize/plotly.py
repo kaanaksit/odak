@@ -345,11 +345,7 @@ class detectorshow():
 
     def save_image(self,filename):
         """
-<<<<<<< HEAD
         Definition to save the figure. Always first show then save.
-=======
-        Definition to save the figure.
->>>>>>> bd51314... Odak.visualize.plotly.detectorshow.save_image() is added.
 
         Parameters
         ----------
