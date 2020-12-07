@@ -16,6 +16,14 @@ def main():
                  40:60,
                  40:60
                 ]              = 10
+    distance                   = 13.0
+    propagation_type           = 'Fraunhofer'
+    k                          = wavenumber(wavelength)
+    sample_field               = np.zeros((150,150),dtype=np.complex64)
+    sample_field[
+                 65:85,
+                 65:85
+                ]              = 1
     sample_field               = add_random_phase(sample_field)
     hologram                   = propagate_beam(
                                                 sample_field,
@@ -33,7 +41,7 @@ def main():
     reconstruction             = propagate_beam(
                                                 hologram,
                                                 k,
-                                                -distance,
+                                                distance,
                                                 pixeltom,
                                                 wavelength,
                                                 propagation_type

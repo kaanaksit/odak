@@ -226,41 +226,6 @@ def band_limited_angular_spectrum(field,k,distance,dx,wavelength):
                        Final complex field (MxN).
     """
     nu,nv  = field.shape
-    l      = nu*dx
-    l2     = wavelength*distance/dx
-    dx2    = wavelength*distance/l
-    fx     = np.linspace(-l2/2.,l2/2.,nu)
-    fy     = np.linspace(-l2/2.,l2/2.,nv)
-    FX,FY  = np.meshgrid(fx,fy)
-    FZ     = FX**2+FY**2
-    c      = 1./(1j*wavelength*distance)*np.exp(1j*k*(2./distance)*FZ)
-    c      = np.exp(1j*k*distance)/(1j*wavelength*distance)*np.exp(1j*k/(2*distance)*FZ)
-    result = c*np.fft.ifftshift(np.fft.fft2(np.fft.fftshift(field)))*dx**2
-    return result
-
-def band_limited_angular_spectrum(field,k,distance,dx,wavelength):
-    """
-    A definition to calculate bandlimited angular spectrum based beam propagation. For more Matsushima, Kyoji, and Tomoyoshi Shimobaba. "Band-limited angular spectrum method for numerical simulation of free-space propagation in far and near fields." Optics express 17.22 (2009): 19662-19673.
-
-    Parameters
-    ----------
-    field            : np.complex
-                       Complex field (MxN).
-    k                : odak.wave.wavenumber
-                       Wave number of a wave, see odak.wave.wavenumber for more.
-    distance         : float
-                       Propagation distance.
-    dx               : float
-                       Size of one single pixel in the field grid (in meters).
-    wavelength       : float
-                       Wavelength of the electric field.
-
-    Returns
-    =======
-    result           : np.complex
-                       Final complex field (MxN).
-    """
-    nu,nv  = field.shape
     x      = np.linspace(-nu/2*dx,nu/2*dx,nu)
     y      = np.linspace(-nv/2*dx,nv/2*dx,nv)
     X,Y    = np.meshgrid(x,y)
@@ -500,7 +465,6 @@ def rayleigh_sommerfeld(field,k,distance,dx,wavelength):
             result  += field[i,j]*np.exp(1j*k*r01)/r01*cosnr01
     result *= 1./(1j*wavelength)
     return result
-
 
 def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,propagation_type='IR Fresnel'):
     """
