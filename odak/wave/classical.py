@@ -42,16 +42,12 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
         result = transfer_function_fresnel(field,k,distance,dx,wavelength)
     elif propagation_type == 'Fraunhofer':
         result = fraunhofer(field,k,distance,dx,wavelength)
-<<<<<<< HEAD
     elif propagation_type == 'Fraunhofer Inverse':
         result = fraunhofer_inverse(field,k,distance,dx,wavelength)
-=======
->>>>>>> 4442cdb... Transfer function Fresnel beam propagation method was broken, and now fixed.
     else:
         raise Exception("Unknown propagation type selected.")
     return result
 
-<<<<<<< HEAD
 def adaptive_sampling_angular_spectrum(field,k,distance,dx,wavelength):
     """
     A definition to calculate adaptive sampling angular spectrum based beam propagation. For more Zhang, Wenhui, Hao Zhang, and Guofan Jin. "Adaptive-sampling angular spectrum method with full utilization of space-bandwidth product." Optics Letters 45.16 (2020): 4416-4419.
@@ -457,7 +453,6 @@ def band_extended_angular_spectrum(field,k,distance,dx,wavelength):
     result           : np.complex
                        Final complex field (MxN).
     """
-
     iflag = -1
     eps   = 10**(-12)
     nu,nv = field.shape
@@ -482,11 +477,11 @@ def band_extended_angular_spectrum(field,k,distance,dx,wavelength):
         fyn = fy*ss
         mul = 1
     FXN,FYN     = np.meshgrid(fxn,fxn)
-    Hn          = np.exp(1j*np.pi*distance*(2./wavelength-wavelength*(FXN**2+FYN**2)))
+    Hn          = np.exp(1j*k*distance*(1-(FXN*wavelength)**2-(FYN*wavelength)**2)**0.5)
     X           = X/np.amax(X)*np.pi
     Y           = Y/np.amax(Y)*np.pi
-    t_asmNUFT   = nufft2(field,X,Y,sign=iflag,eps=eps)
-    result      = nufft2(Hn*t_asmNUFT,X*mul,Y*mul,sign=-iflag,eps=eps)
+    t_asmNUFT   = nufft2(field,X,Y,fxn*K,sign=iflag,eps=eps)
+    result      = nufft2(Hn*t_asmNUFT,X,Y,fxn*K,sign=-iflag,eps=eps)
     return result    
 
 def rayleigh_sommerfeld(field,k,distance,dx,wavelength):

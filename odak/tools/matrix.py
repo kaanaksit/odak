@@ -44,3 +44,4 @@ def nufft2(field,fx,fy,size=None,sign=1,eps=10**(-12)):
                                   eps=eps,
                                   isign=sign
                                  )
+    return result
