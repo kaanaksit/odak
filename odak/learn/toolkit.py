@@ -6,20 +6,37 @@ import math
 def ifftshift(tensor):
     """ifftshift for tensors of dimensions [height, width]
     shifts the width and heights
+    using negative dim index for being robust to differen tensor shapes 
+        especially when there is batch and channel dims.
     """
     size = tensor.size()
-    tensor_shifted = roll_torch(tensor, -math.floor(size[0] / 2.0), 0)
-    tensor_shifted = roll_torch(tensor_shifted, -math.floor(size[1] / 2.0), 1)
+    if size[-1] == 2:
+        first_dim = -3 
+        second_dim = -2 
+    else: # for tensor with torch.cfloat type
+        first_dim = -2
+        second_dim = -1
+    tensor_shifted = roll_torch(tensor, -math.floor(size[first_dim] / 2.0), first_dim)
+    tensor_shifted = roll_torch(tensor_shifted, -math.floor(size[second_dim] / 2.0), second_dim)
     return tensor_shifted
 
 
 def fftshift(tensor):
     """fftshift for tensors of dimensions [height, width]
     shifts the width and heights
+    using negative dim index for being robust to differen tensor shapes 
+        especially when there is batch and channel dims.
     """
     size = tensor.size()
-    tensor_shifted = roll_torch(tensor, math.floor(size[0] / 2.0), 0)
-    tensor_shifted = roll_torch(tensor_shifted, math.floor(size[1] / 2.0), 1)
+    if size[-1] == 2:
+        first_dim = -3 
+        second_dim = -2 
+    else: # for tensor with torch.cfloat type
+        first_dim = -2
+        second_dim = -1
+    size = tensor.size()
+    tensor_shifted = roll_torch(tensor, math.floor(size[first_dim] / 2.0), first_dim)
+    tensor_shifted = roll_torch(tensor_shifted, math.floor(size[second_dim] / 2.0), second_dim)
     return tensor_shifted
 
 def roll_torch(tensor, shift, axis):

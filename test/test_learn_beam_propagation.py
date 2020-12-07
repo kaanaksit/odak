@@ -11,7 +11,8 @@ def main():
     wavelength                 = 0.5*pow(10,-6)
     pixeltom                   = 6*pow(10,-6)
     distance                   = 0.2
-    propagation_type           = 'IR Fresnel'
+    propagation_type           = 'Bandlimited Angular Spectrum'
+    #propagation_type           = 'IR Fresnel'
     k                          = wavenumber(wavelength)
     sample_field               = np.zeros((500,500),dtype=np.complex64)
     sample_field[
@@ -20,6 +21,7 @@ def main():
                 ]              = 1000
     random_phase               = np.pi*np.random.random(sample_field.shape)
     sample_field               = sample_field*np.cos(random_phase)+1j*sample_field*np.sin(random_phase)
+    criterion = torch.nn.MSELoss()
 
     if np.__name__ == 'cupy':
         sample_field = np.asnumpy(sample_field)
@@ -34,6 +36,7 @@ def main():
                                                 wavelength,
                                                 propagation_type
                                                )
+    hologram.requires_grad = True
     reconstruction             = propagate_beam_torch(
                                                 hologram,
                                                 k,
@@ -42,21 +45,27 @@ def main():
                                                 wavelength,
                                                 propagation_type
                                                )
-    # from odak.visualize.plotly import detectorshow
-    # detector       = detectorshow()
-    # detector.add_field(sample_field)
-    # detector.show()
-    # detector.add_field(hologram)
-    # detector.show()
-    # detector.add_field(reconstruction)
-    # detector.show()
+                                            
+    loss = criterion(torch.abs(sample_field), torch.abs(reconstruction))
+    loss.backward()
+    print(hologram.grad)
+    print('backward successfully')
+
+    from odak.visualize.plotly import detectorshow
+    detector       = detectorshow()
+    detector.add_field(sample_field)
+    detector.show()
+    detector.add_field(hologram)
+    detector.show()
+    detector.add_field(reconstruction)
+    detector.show()
     assert True==True
 
 def compare():
     wavelength                 = 0.5*pow(10,-6)
     pixeltom                   = 6*pow(10,-6)
     distance                   = 0.2
-    propagation_type           = 'IR Fresnel'
+    propagation_type           = 'Bandlimited Angular Spectrum'
     k                          = wavenumber(wavelength)
     sample_field               = np.zeros((500,500),dtype=np.complex64)
     sample_field[
@@ -106,8 +115,21 @@ def compare():
                                                 wavelength,
                                                 propagation_type
                                                )
+    field = hologram_torch
+    dx = pixeltom
+    nv, nu = field.shape[-2], field.shape[-1]
+    x      = torch.linspace(-nu/2*dx,nu/2*dx,nu)
+    y      = torch.linspace(-nv/2*dx,nv/2*dx,nv)
+    #X,Y    = torch.meshgrid(x,y)
+    Y,X    = torch.meshgrid(y,x)
+    #k      = torch.tensor(k, dtype=field.dtype)
+    Z      = X**2+Y**2
+    print('k is  %f and its type is '%(k), type(k))
+    np_result = np.exp(1j * k * (distance + Z.numpy() /2 /distance))
+    torch_result = torch.exp(1j * k * (distance + Z / 2 / distance))
 
+    #np.testing.assert_array_almost_equal(torch_result.numpy(), np_result, 3)
     np.testing.assert_array_almost_equal(hologram_torch.numpy(), hologram, 3)
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(compare())

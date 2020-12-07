@@ -26,10 +26,11 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
                        Final complex field (MxN).
     """
     nu,nv  = field.shape
-    x      = np.linspace(-nv*dx,nv*dx,nv)
-    y      = np.linspace(-nu*dx,nu*dx,nu)
-    X,Y    = np.meshgrid(x,y)
+    x = np.linspace(-nv*dx/2, nv*dx/2, nv)
+    y = np.linspace(-nu*dx/2, nu*dx/2, nu)
+    X, Y = np.meshgrid(x, y)
     Z      = X**2+Y**2
+
     if propagation_type == 'Rayleigh-Sommerfeld':
         result = rayleigh_sommerfeld(field,k,distance,dx,wavelength)
     if propagation_type == 'Angular Spectrum':
@@ -45,6 +46,8 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
         U2     = h*U1
         result = np.fft.ifftshift(np.fft.ifft2(U2))
     elif propagation_type == 'Bandlimited Angular Spectrum':
+        nu,nv  = field.shape
+        Z      = X**2+Y**2
         h      = 1./(1j*wavelength*distance)*np.exp(1j*k*(distance+Z/2/distance))
         h      = np.fft.fft2(np.fft.fftshift(h))*pow(dx,2)
         flimx  = int(1/(((2*distance*(1./(nu)))**2+1)**0.5*wavelength))
@@ -54,7 +57,7 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
         mask   = set_amplitude(h,mask)
         U1     = np.fft.fft2(np.fft.fftshift(field))
         U2     = mask*U1
-        result = np.fft.ifftshift(np.fft.ifft2(U2))     
+        result = np.fft.ifftshift(np.fft.ifft2(U2))    
     elif propagation_type == 'TR Fresnel':
         h      = np.exp(1j*k*distance)*np.exp(-1j*np.pi*wavelength*distance*Z)
         h      = np.fft.fftshift(h)
