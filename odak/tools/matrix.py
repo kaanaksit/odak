@@ -88,7 +88,7 @@ def nufft2(field,fx,fy,size=None,sign=1,eps=10**(-12)):
         result = np.asarray(result)
     return result
 
-def generate_bandlimits(size=[512,512],levels=8):
+def generate_bandlimits(size=[512,512],levels=9):
     """
     A definition to calculate octaves used in bandlimiting frequencies in the frequency domain.
 
@@ -106,17 +106,17 @@ def generate_bandlimits(size=[512,512],levels=8):
     cx     = size[0]/2
     cy     = size[1]/2
     for i in range(0,masks.shape[0]):
-        deltax = int(size[0]/masks.shape[0])
-        deltay = int(size[1]/masks.shape[0])
+        deltax = int((size[0])/(2**(i+1)))
+        deltay = int((size[1])/(2**(i+1)))
         masks[
               i,
-              cx-deltax/2*(i+1):cx+deltax/2*(i+1),
-              cy-deltay/2*(i+1):cy+deltay/2*(i+1)
+              cx-deltax:cx+deltax,
+              cy-deltay:cy+deltay
              ] = 1.
         masks[
               i,
-              cx-deltax/2*i:cx+deltax/2*i,
-              cy-deltay/2*i:cy+deltay/2*i
+              cx-deltax/2.:cx+deltax/2.,
+              cy-deltay/2.:cy+deltay/2.
              ] = 0.
     masks = np.asarray(masks)
     return masks
