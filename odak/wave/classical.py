@@ -460,9 +460,10 @@ def rayleigh_sommerfeld(field,k,distance,dx,wavelength):
     direction = int(distance/np.abs(distance))
     for i in range(nu):
         for j in range(nv):
-            r01      = np.sqrt(distance**2+(X-X[i,j])**2+(Y-Y[i,j])**2)*direction
-            cosnr01  = np.cos(distance/r01)
-            result  += field[i,j]*np.exp(1j*k*r01)/r01*cosnr01
+            if field[i,j] != 0:
+                r01      = np.sqrt(distance**2+(X-X[i,j])**2+(Y-Y[i,j])**2)*direction
+                cosnr01  = np.cos(distance/r01)
+                result  += field[i,j]*np.exp(1j*k*r01)/r01*cosnr01
     result *= 1./(1j*wavelength)
     return result
 

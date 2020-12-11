@@ -7,6 +7,7 @@ Provides necessary definitions for merging geometric optics with wave theory and
 # To get sub-modules.
 from .vector import *
 from .classical import *
+from .lens import *
 from odak.tools import save_image
 
 def rayleigh_resolution(diameter,focal=None,wavelength=0.0005):
