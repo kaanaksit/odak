@@ -1,6 +1,8 @@
 from odak import np
 from odak.tools import nufft2,nuifft2
+from .lens import quadratic_phase_function
 from .__init__ import wavenumber,produce_phase_only_slm_pattern, calculate_amplitude,set_amplitude
+from tqdm import tqdm
 
 def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel'):
     """
@@ -502,3 +504,36 @@ def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,pr
         reconstruction = set_amplitude(hologram,field)
     reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
     return hologram,reconstruction
+
+def point_wise(field,distances,k,dx):
+    """
+    Point-wise hologram calculation method. For more Maimone, Andrew, Andreas Georgiou, and Joel S. Kollin. "Holographic near-eye displays for virtual and augmented reality." ACM Transactions on Graphics (TOG) 36.4 (2017): 1-16.
+
+    Parameters
+    ----------
+    field      : ndarray
+                 Complex input field to be converted into a hologram.
+    distances  : ndarray
+                 Depth map of the input field.
+    k          : odak.wave.wavenumber
+                 Wave number of a wave, see odak.wave.wavenumber for more.
+    dx         : float
+                 Pixel pitch.
+
+    Returns
+    ----------
+    hologram   : ndarray
+                 Generated complex hologram.
+    """
+    hologram  = np.zeros(field.shape,dtype=np.complex64)
+    nx,ny     = field.shape
+    cx        = int(nx/2)
+    cy        = int(ny/2)
+    for i in tqdm(range(0,nx)):
+        for j in tqdm(range(0,ny),leave=False):
+            if field[i,j] != 0:
+                lens      = quadratic_phase_function(nx,ny,k,focal=distances[i,j],dx=dx)
+                lens      = np.roll(lens,i-cx,axis=0)
+                lens      = np.roll(lens,j-cy,axis=1)
+                hologram += lens*field[i,j]
+    return hologram
