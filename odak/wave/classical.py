@@ -530,8 +530,11 @@ def point_wise(field,distances,k,dx):
     cx            = int(nx/2)
     cy            = int(ny/2)
     non_zeros     = np.asarray((np.abs(field)>0).nonzero())
-    new_field     = np.copy(field[non_zeros])
-    new_distances = np.copy(distances[non_zeros])
+    unique_dist   = np.unique(distances)
+    lenses        = []
+    for distance in unique_dist:
+        lenses.append(quadratic_phase_function(nx,ny,k,focal=distance,dx=dx))
+    print(len(lenses))
     for m in tqdm(range(non_zeros.shape[1])):
         i         = int(non_zeros[0,m])
         j         = int(non_zeros[1,m])
