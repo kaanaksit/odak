@@ -534,11 +534,11 @@ def point_wise(field,distances,k,dx):
     lenses        = []
     for distance in unique_dist:
         lenses.append(quadratic_phase_function(nx,ny,k,focal=distance,dx=dx))
-    print(len(lenses))
     for m in tqdm(range(non_zeros.shape[1])):
         i         = int(non_zeros[0,m])
         j         = int(non_zeros[1,m])
-        lens      = quadratic_phase_function(nx,ny,k,focal=distances[i,j],dx=dx)
+        lens_id   = int(np.argwhere(unique_dist==distances[i,j]))
+        lens      = lenses[lens_id]
         lens      = np.roll(lens,i-cx,axis=0)
         lens      = np.roll(lens,j-cy,axis=1)
         hologram += lens*field[i,j]
