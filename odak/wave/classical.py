@@ -497,7 +497,7 @@ def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,pr
     """
     k              = wavenumber(wavelength)
     reconstruction = np.copy(field)
-    for i in range(n_iterations):
+    for i in tqdm(range(n_iterations)):
         hologram       = propagate_beam(reconstruction,k,-distance,dx,wavelength,propagation_type)
         hologram       = produce_phase_only_slm_pattern(hologram,slm_range)
         reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
@@ -525,15 +525,18 @@ def point_wise(field,distances,k,dx):
     hologram   : ndarray
                  Generated complex hologram.
     """
-    hologram  = np.zeros(field.shape,dtype=np.complex64)
-    nx,ny     = field.shape
-    cx        = int(nx/2)
-    cy        = int(ny/2)
-    for i in tqdm(range(0,nx)):
-        for j in tqdm(range(0,ny),leave=False):
-            if field[i,j] != 0:
-                lens      = quadratic_phase_function(nx,ny,k,focal=distances[i,j],dx=dx)
-                lens      = np.roll(lens,i-cx,axis=0)
-                lens      = np.roll(lens,j-cy,axis=1)
-                hologram += lens*field[i,j]
+    hologram      = np.zeros(field.shape,dtype=np.complex64)
+    nx,ny         = field.shape
+    cx            = int(nx/2)
+    cy            = int(ny/2)
+    non_zeros     = np.asarray((np.abs(field)>0).nonzero())
+    new_field     = np.copy(field[non_zeros])
+    new_distances = np.copy(distances[non_zeros])
+    for m in tqdm(range(non_zeros.shape[1])):
+        i         = int(non_zeros[0,m])
+        j         = int(non_zeros[1,m])
+        lens      = quadratic_phase_function(nx,ny,k,focal=distances[i,j],dx=dx)
+        lens      = np.roll(lens,i-cx,axis=0)
+        lens      = np.roll(lens,j-cy,axis=1)
+        hologram += lens*field[i,j]
     return hologram
