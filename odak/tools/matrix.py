@@ -120,3 +120,41 @@ def generate_bandlimits(size=[512,512],levels=9):
              ] = 0.
     masks = np.asarray(masks)
     return masks
+
+def zero_pad(field):
+    """
+    Definition to zero pad a MxN array to 2Mx2N array.
+
+    Parameters
+    ----------
+    field             : ndarray
+                        Input field MxN array.
+
+    Returns
+    ----------
+    field_zero_padded : ndarray
+                        Zeropadded version of the input field.
+    """
+    hx                = int(np.ceil(field.shape[0])/2)
+    hy                = int(np.ceil(field.shape[1])/2)
+    field_zero_padded = np.pad(field,(hx,hy), constant_values=(0,0))
+    return field_zero_padded
+
+def crop_center(field):
+    """
+    Definition to crop the center of a field with 2Mx2N size. The outcome is a MxN array.
+
+    Parameters
+    ----------
+    field       : ndarray
+                  Input field 2Mx2N array.
+
+    Returns
+    ----------
+    cropped     : ndarray
+                  Cropped version of the input field.
+    """
+    qx      = int(np.ceil(field.shape[0])/4)
+    qy      = int(np.ceil(field.shape[1])/4)
+    cropped = np.copy(field[qx:3*qx,qy:3*qy])
+    return cropped
