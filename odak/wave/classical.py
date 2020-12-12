@@ -505,20 +505,28 @@ def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,pr
     reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
     return hologram,reconstruction
 
-def point_wise(field,distances,k,dx):
+def point_wise(field,distances,k,dx,wavelength,lens_method='ideal',propagation_method='Bandlimited Angular Spectrum',n_iteration=3):
     """
     Point-wise hologram calculation method. For more Maimone, Andrew, Andreas Georgiou, and Joel S. Kollin. "Holographic near-eye displays for virtual and augmented reality." ACM Transactions on Graphics (TOG) 36.4 (2017): 1-16.
 
     Parameters
     ----------
-    field      : ndarray
-                 Complex input field to be converted into a hologram.
-    distances  : ndarray
-                 Depth map of the input field.
-    k          : odak.wave.wavenumber
-                 Wave number of a wave, see odak.wave.wavenumber for more.
-    dx         : float
-                 Pixel pitch.
+    field            : ndarray
+                       Complex input field to be converted into a hologram.
+    distances        : ndarray
+                       Depth map of the input field.
+    k                : odak.wave.wavenumber
+                       Wave number of a wave, see odak.wave.wavenumber for more.
+    dx               : float
+                       Pixel pitch.
+    wavelength       : float
+                       Wavelength of the light.
+    lens_model       : str
+                       Method to calculate the lens patterns.
+    propagation_mode : str
+                       Beam propagation method to be used if the lens_model is not equal to `ideal`.
+    n_iteration      : int
+                       Number of iterations.
 
     Returns
     ----------
@@ -531,9 +539,24 @@ def point_wise(field,distances,k,dx):
     cy            = int(ny/2)
     non_zeros     = np.asarray((np.abs(field)>0).nonzero())
     unique_dist   = np.unique(distances)
+    target        = np.zeros((nx,ny),dtype=np.complex64)
+    target[cx,cy] = 1.
     lenses        = []
     for distance in unique_dist:
-        lenses.append(quadratic_phase_function(nx,ny,k,focal=distance,dx=dx))
+        if lens_method == 'ideal':
+            new_lens = quadratic_phase_function(nx,ny,k,focal=distance,dx=dx)
+            lenses.append(new_lens)
+        elif lens_method == 'Gerchberg-Saxton':
+            new_lens,_ = gerchberg_saxton(
+                                          target,
+                                          n_iteration,
+                                          distance,
+                                          dx,
+                                          wavelength,
+                                          np.pi*2,
+                                          propagation_method
+                                         )
+            lenses.append(new_lens)
     for m in tqdm(range(non_zeros.shape[1])):
         i         = int(non_zeros[0,m])
         j         = int(non_zeros[1,m])
