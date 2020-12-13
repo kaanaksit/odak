@@ -74,7 +74,7 @@ def adaptive_sampling_angular_spectrum(field,k,distance,dx,wavelength):
     """
     iflag = -1
     eps   = 10**(-12)
-    nu,nv = field.shape
+    nv,nu = field.shape
     l     = nu*dx
     x     = np.linspace(-l/2,l/2,nu)
     y     = np.linspace(-l/2,l/2,nv)
@@ -95,7 +95,7 @@ def adaptive_sampling_angular_spectrum(field,k,distance,dx,wavelength):
     if np.abs(distance) > zc*2:
         fxn   = fxn*ss
         fyn   = fyn*ss
-    FXN,FYN   = np.meshgrid(fxn,fxn)
+    FXN,FYN   = np.meshgrid(fxn,fyn)
     Hn        = np.exp(1j*k*distance*(1-(FXN*wavelength)**2-(FYN*wavelength)**2)**0.5)
     FX        = FX/np.amax(FX)*np.pi*(1./m)
     FY        = FY/np.amax(FY)*np.pi*(1./m)
@@ -125,7 +125,7 @@ def fraunhofer_equal_size_adjust(field,distance,dx,wavelength):
     new_field        : np.complex
                        Final complex field (MxN).
     """
-    nu,nv     = field.shape
+    nv,nu     = field.shape
     l1        = nu*dx
     l2        = wavelength*distance/dx
     m         = l1/l2
@@ -158,7 +158,7 @@ def fraunhofer(field,k,distance,dx,wavelength):
     result           : np.complex
                        Final complex field (MxN).
     """
-    nu,nv  = field.shape
+    nv,nu  = field.shape
     l      = nu*dx
     l2     = wavelength*distance/dx
     dx2    = wavelength*distance/l
@@ -193,7 +193,7 @@ def fraunhofer_inverse(field,k,distance,dx,wavelength):
                        Final complex field (MxN).
     """
     distance = np.abs(distance)
-    nu,nv    = field.shape
+    nv,nu    = field.shape
     l        = nu*dx
     l2       = wavelength*distance/dx
     dx2      = wavelength*distance/l
@@ -227,7 +227,7 @@ def band_limited_angular_spectrum(field,k,distance,dx,wavelength):
     result           : np.complex
                        Final complex field (MxN).
     """
-    nu,nv  = field.shape
+    nv,nu  = field.shape
     x      = np.linspace(-nu/2*dx,nu/2*dx,nu)
     y      = np.linspace(-nv/2*dx,nv/2*dx,nv)
     X,Y    = np.meshgrid(x,y)
@@ -266,7 +266,7 @@ def angular_spectrum(field,k,distance,dx,wavelength):
     result           : np.complex
                        Final complex field (MxN).
     """
-    nu,nv  = field.shape
+    nv,nu  = field.shape
     x      = np.linspace(-nu/2*dx,nu/2*dx,nu)
     y      = np.linspace(-nv/2*dx,nv/2*dx,nv)
     X,Y    = np.meshgrid(x,y)
@@ -300,7 +300,7 @@ def angular_spectrum(field,k,distance,dx,wavelength):
     result           : np.complex
                        Final complex field (MxN).
     """
-    nu,nv  = field.shape
+    nv,nu  = field.shape
     x      = np.linspace(-nu/2*dx,nu/2*dx,nu)
     y      = np.linspace(-nv/2*dx,nv/2*dx,nv)
     X,Y    = np.meshgrid(x,y)
@@ -335,7 +335,7 @@ def impulse_response_fresnel(field,k,distance,dx,wavelength):
                        Final complex field (MxN).
 
     """
-    nu,nv  = field.shape
+    nv,nu  = field.shape
     x      = np.linspace(-nu/2*dx,nu/2*dx,nu)
     y      = np.linspace(-nv/2*dx,nv/2*dx,nv)
     X,Y    = np.meshgrid(x,y)
@@ -370,7 +370,7 @@ def transfer_function_fresnel(field,k,distance,dx,wavelength):
                        Final complex field (MxN).
 
     """
-    nu,nv  = field.shape
+    nv,nu  = field.shape
     fx     = np.linspace(-1./2./dx,1./2./dx,nu)
     fy     = np.linspace(-1./2./dx,1./2./dx,nv)
     FX,FY  = np.meshgrid(fx,fy)
@@ -404,7 +404,7 @@ def band_extended_angular_spectrum(field,k,distance,dx,wavelength):
     """
     iflag = -1
     eps   = 10**(-12)
-    nu,nv = field.shape
+    nv,nu = field.shape
     l     = nu*dx
     x     = np.linspace(-l/2,l/2,nu)
     y     = np.linspace(-l/2,l/2,nv)
@@ -423,7 +423,7 @@ def band_extended_angular_spectrum(field,k,distance,dx,wavelength):
     else:
         fxn = fx*ss
         fyn = fy*ss
-    FXN,FYN   = np.meshgrid(fxn,fxn)
+    FXN,FYN   = np.meshgrid(fxn,fyn)
     Hn        = np.exp(1j*k*distance*(1-(FXN*wavelength)**2-(FYN*wavelength)**2)**0.5)
     X         = X/np.amax(X)*np.pi
     Y         = Y/np.amax(Y)*np.pi
@@ -453,7 +453,7 @@ def rayleigh_sommerfeld(field,k,distance,dx,wavelength):
     result           : np.complex
                        Final complex field (MxN).
     """
-    nu,nv     = field.shape
+    nv,nu     = field.shape
     x         = np.linspace(-nv*dx/2,nv*dx/2,nv)
     y         = np.linspace(-nu*dx/2,nu*dx/2,nu)
     X,Y       = np.meshgrid(x,y)
