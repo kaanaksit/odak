@@ -534,7 +534,7 @@ def point_wise(field,distances,k,dx,wavelength,lens_method='ideal',propagation_m
                  Generated complex hologram.
     """
     hologram      = np.zeros(field.shape,dtype=np.complex64)
-    ny,nx         = field.shape
+    nx,ny         = field.shape
     cx            = int(nx/2)
     cy            = int(ny/2)
     non_zeros     = np.asarray((np.abs(field)>0).nonzero())
