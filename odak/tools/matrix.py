@@ -121,7 +121,7 @@ def generate_bandlimits(size=[512,512],levels=9):
     masks = np.asarray(masks)
     return masks
 
-def zero_pad(field):
+def zero_pad(field,size=None):
     """
     Definition to zero pad a MxN array to 2Mx2N array.
 
@@ -135,12 +135,16 @@ def zero_pad(field):
     field_zero_padded : ndarray
                         Zeropadded version of the input field.
     """
-    hx                = int(np.ceil(field.shape[0])/2)
-    hy                = int(np.ceil(field.shape[1])/2)
-    field_zero_padded = np.pad(field,(hx,hy), constant_values=(0,0))
+    if type(size) == type(None):
+        hx = int(np.ceil(field.shape[0])/2)
+        hy = int(np.ceil(field.shape[1])/2)
+    else:
+        hx = int(np.ceil((size[0]-field.shape[0])/2))
+        hy = int(np.ceil((size[1]-field.shape[1])/2))
+    field_zero_padded = np.pad(field,([hx,hx],[hy,hy]), constant_values=(0,0))
     return field_zero_padded
 
-def crop_center(field):
+def crop_center(field,size=None):
     """
     Definition to crop the center of a field with 2Mx2N size. The outcome is a MxN array.
 
@@ -154,7 +158,14 @@ def crop_center(field):
     cropped     : ndarray
                   Cropped version of the input field.
     """
-    qx      = int(np.ceil(field.shape[0])/4)
-    qy      = int(np.ceil(field.shape[1])/4)
-    cropped = np.copy(field[qx:3*qx,qy:3*qy])
+    if type(size) == type(None):
+        qx      = int(np.ceil(field.shape[0])/4)
+        qy      = int(np.ceil(field.shape[1])/4)
+        cropped = np.copy(field[qx:3*qx,qy:3*qy])
+    else:
+        cx      = int(np.ceil(field.shape[0]/2))
+        cy      = int(np.ceil(field.shape[1]/2))
+        hx      = int(np.ceil(size[0]/2))
+        hy      = int(np.ceil(size[1]/2))
+        cropped = np.copy(field[cx-hx:cx+hx,cy-hy:cy+hy]) 
     return cropped
