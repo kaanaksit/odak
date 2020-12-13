@@ -167,6 +167,5 @@ def crop_center(field,size=None):
         cy      = int(np.ceil(field.shape[1]/2))
         hx      = int(np.ceil(size[0]/2))
         hy      = int(np.ceil(size[1]/2))
-        print(cx,cy,field.shape)
         cropped = np.copy(field[cx-hx:cx+hx,cy-hy:cy+hy]) 
     return cropped
