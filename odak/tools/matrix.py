@@ -2,9 +2,9 @@ from odak import np
 import pkg_resources
 import finufft
 
-def nuifft2(field,fx,fy,sign=1,eps=10**(-12)):
+def nufft2(field,fx,fy,size=None,sign=1,eps=10**(-12)):
     """
-    A definition to take 2D Inverse Non-Uniform Fast Fourier Transform (NUFFT).
+    A definition to take 2D Non-Uniform Fast Fourier Transform (NUFFT).
 
     Parameters
     ----------
@@ -14,6 +14,8 @@ def nuifft2(field,fx,fy,sign=1,eps=10**(-12)):
                   Frequencies along x axis.
     fy          : ndarray
                   Frequencies along y axis.
+    size        : list
+                  Size.
     sign        : float
                   Sign of the exponential used in NUFFT kernel.
     eps         : float
@@ -31,14 +33,17 @@ def nuifft2(field,fx,fy,sign=1,eps=10**(-12)):
     else:
         image = np.copy(field).astype(np.complex128)
     result = finufft.nufft2d2(fx.flatten(),fy.flatten(),image,eps=eps,isign=sign)
-    result = result.reshape(field.shape)
+    if type(size) == type(None):
+        result = result.reshape(field.shape)
+    else:
+        result = result.reshape(size)
     if np.__name__ == 'cupy':
         result = np.asarray(result)
     return result
 
-def nufft2(field,fx,fy,size=None,sign=1,eps=10**(-12)):
+def nuifft2(field,fx,fy,size=None,sign=1,eps=10**(-12)):
     """
-    A definition to take 2D Non-Uniform Fast Fourier Transform (NUFFT).
+    A definition to take 2D Adjoint Non-Uniform Fast Fourier Transform (NUFFT).
 
     Parameters
     ----------

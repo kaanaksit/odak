@@ -97,12 +97,12 @@ def adaptive_sampling_angular_spectrum(field,k,distance,dx,wavelength):
         fyn   = fyn*ss
     FXN,FYN   = np.meshgrid(fxn,fyn)
     Hn        = np.exp(1j*k*distance*(1-(FXN*wavelength)**2-(FYN*wavelength)**2)**0.5)
-    FX        = FX/np.amax(FX)*np.pi*(1./m)
-    FY        = FY/np.amax(FY)*np.pi*(1./m)
-    t_2       = nufft2(field,FX*ss,FY*ss,size=[nnu2,nnv2],sign=iflag,eps=eps)
     FX        = FXN/np.amax(FXN)*np.pi
     FY        = FYN/np.amax(FYN)*np.pi
-    result    = nufft2(Hn*t_2,FX*ss,FY*ss,size=[nu,nv],sign=-iflag,eps=eps)
+    t_2       = nufft2(field,FX*ss,FY*ss,size=[nnu2,nnv2],sign=iflag,eps=eps)
+    FX        = FX/np.amax(FX)*np.pi
+    FY        = FY/np.amax(FY)*np.pi
+    result    = nuifft2(Hn*t_2,FX*ss,FY*ss,size=[nu,nv],sign=-iflag,eps=eps)
     return result
 
 def fraunhofer_equal_size_adjust(field,distance,dx,wavelength):
