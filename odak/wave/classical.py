@@ -545,7 +545,7 @@ def point_wise(field,distances,k,dx,wavelength,lens_method='ideal',propagation_m
     lenses        = []
     for distance in unique_dist:
         if lens_method == 'ideal':
-            new_lens = quadratic_phase_function(ny,nx,k,focal=distance,dx=dx)
+            new_lens = quadratic_phase_function(nx,ny,k,focal=distance,dx=dx)
             lenses.append(new_lens)
         elif lens_method == 'Gerchberg-Saxton':
             new_lens,_ = gerchberg_saxton(

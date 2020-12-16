@@ -22,9 +22,10 @@ def quadratic_phase_function(nx,ny,k,focal=0.4,dx=0.001):
     function   : ndarray
                  Generated quadratic phase function.
     """
-    x   = np.linspace(-nx*dx/2,nx*dx/2,nx)
-    y   = np.linspace(-ny*dx/2,ny*dx/2,ny)
-    X,Y = np.meshgrid(x,y)
-    Z   = X**2+Y**2
-    qwf = np.exp(1j*k*0.5*Z/focal)
+    size = [ny,nx]
+    x    = np.linspace(-size[0]*dx/2,size[0]*dx/2,size[0])
+    y    = np.linspace(-size[1]*dx/2,size[1]*dx/2,size[1])
+    X,Y  = np.meshgrid(x,y)
+    Z    = X**2+Y**2
+    qwf  = np.exp(1j*k*0.5*Z/focal)
     return qwf
