@@ -108,8 +108,8 @@ def generate_bandlimits(size=[512,512],levels=9):
                  Masks (Octaves).
     """
     masks = np.zeros((levels,size[0],size[1]))
-    cx     = size[0]/2
-    cy     = size[1]/2
+    cx     = int(size[0]/2)
+    cy     = int(size[1]/2)
     for i in range(0,masks.shape[0]):
         deltax = int((size[0])/(2**(i+1)))
         deltay = int((size[1])/(2**(i+1)))
@@ -120,8 +120,8 @@ def generate_bandlimits(size=[512,512],levels=9):
              ] = 1.
         masks[
               i,
-              cx-deltax/2.:cx+deltax/2.,
-              cy-deltay/2.:cy+deltay/2.
+              int(cx-deltax/2.):int(cx+deltax/2.),
+              int(cy-deltay/2.):int(cy+deltay/2.)
              ] = 0.
     masks = np.asarray(masks)
     return masks
