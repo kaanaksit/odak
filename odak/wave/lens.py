@@ -43,7 +43,7 @@ def prism_phase_function(nx,ny,k,angle,dx=0.001,axis='x'):
     k          : odak.wave.wavenumber
                  See odak.wave.wavenumber for more.
     angle      : float
-                 Tilt angle of the prism at radians.
+                 Tilt angle of the prism in degrees.
     dx         : float
                  Pixel pitch.
     axis       : str
@@ -54,6 +54,7 @@ def prism_phase_function(nx,ny,k,angle,dx=0.001,axis='x'):
     prism      : ndarray
                  Generated phase function for a prism.
     """
+    angle = np.degrees(angle)
     size  = [ny,nx]
     x     = np.linspace(-size[0]*dx/2,size[0]*dx/2,size[0])
     y     = np.linspace(-size[1]*dx/2,size[1]*dx/2,size[1])
