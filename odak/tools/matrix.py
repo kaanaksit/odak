@@ -174,3 +174,25 @@ def crop_center(field,size=None):
         hy      = int(np.ceil(size[1]/2))
         cropped = np.copy(field[cx-hx:cx+hx,cy-hy:cy+hy]) 
     return cropped
+
+def quantize(image_field,bits=4):
+    """
+    Definitio to quantize a image field (0-255, 8 bit) to a certain bits level.
+
+    Parameters
+    ----------
+    image_field : ndarray
+                  Input image field.
+    bits        : int
+                  A value in between 0 to 8. Can not be zero.
+
+    Returns
+    ----------
+    new_field   : ndarray
+                  Quantized image field.
+    """
+    divider   = 2**(8-bits)
+    new_field = image_field/divider
+    new_field = new_field.astype(np.int)
+    return new_field
+
