@@ -147,6 +147,8 @@ def zero_pad(field,size=None):
         hx = int(np.ceil((size[0]-field.shape[0])/2))
         hy = int(np.ceil((size[1]-field.shape[1])/2))
     field_zero_padded = np.pad(field,([hx,hx],[hy,hy]), constant_values=(0,0))
+    if type(size) != type(None):
+        field_zero_padded = field_zero_padded[0:size[0],0:size[1]]
     return field_zero_padded
 
 def crop_center(field,size=None):
