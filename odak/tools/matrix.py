@@ -126,7 +126,7 @@ def generate_bandlimits(size=[512,512],levels=9):
     masks = np.asarray(masks)
     return masks
 
-def zero_pad(field,size=None):
+def zero_pad(field,size=None,method='center'):
     """
     Definition to zero pad a MxN array to 2Mx2N array.
 
@@ -134,6 +134,10 @@ def zero_pad(field,size=None):
     ----------
     field             : ndarray
                         Input field MxN array.
+    size              : list
+                        Size to be zeropadded.
+    method            : str
+                        Zeropad either by placing the content to center or to the left.
 
     Returns
     ----------
