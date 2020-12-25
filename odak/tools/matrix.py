@@ -153,7 +153,7 @@ def zero_pad(field,size=None,method='center'):
     if method == 'center':
         field_zero_padded = np.pad(field,([hx,hx],[hy,hy]), constant_values=(0,0))
     elif method == 'left aligned':
-        field_zero_padded = np.pad(field,([0,0],[2*hx,2*hy]), constant_values=(0,0))
+        field_zero_padded = np.pad(field,([0,2*hx],[0,2*hy]), constant_values=(0,0))
     if type(size) != type(None):
         field_zero_padded = field_zero_padded[0:size[0],0:size[1]]
     return field_zero_padded

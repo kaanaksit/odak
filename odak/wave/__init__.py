@@ -165,12 +165,31 @@ def set_amplitude(field,amplitude):
     new_field = amplitude*np.cos(phase)+1j*amplitude*np.sin(phase)
     return new_field
 
+def generate_complex_field(amplitude,phase):
+    """
+    Definition to generate a complex field with a given amplitude and phase.
+
+    Parameters
+    ----------
+    amplitude         : ndarray
+                        Amplitude of the field.
+    phase             : ndarray
+                        Phase of the field.
+
+    Returns
+    ----------
+    field             : ndarray
+                        Complex field.
+    """
+    field = amplitude*np.cos(phase)+1j*amplitude*np.sin(phase)
+    return field
+
 def adjust_phase_only_slm_range(native_range,working_wavelength,native_wavelength):
     """
     Definition for calculating the phase range of the Spatial Light Modulator (SLM) for a given wavelength. Here you prove maximum angle as the lower bound is typically zero. If the lower bound isn't zero in angles, you can use this very same definition for calculating lower angular bound as well.
 
     Parameters
-    ==========
+    ----------
     native_range       : float
                          Native range of the phase only SLM in radians (i.e. two pi).
     working_wavelength : float
