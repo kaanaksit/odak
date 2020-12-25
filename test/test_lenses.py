@@ -15,6 +15,7 @@ def main():
     plane_field                = plane_tilt(
                                             sample_field.shape[0],
                                             sample_field.shape[1],
+                                            k,
                                             [0.3,0.9,1.,1.],
                                             dx=pixeltom,
                                             axis='x'
