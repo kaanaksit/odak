@@ -1,6 +1,0 @@
-===== Begin of My Publications List =====
-===== YEAR 2012 =====
-[Ref01] Kaan Akşit: "Odak: Scientific computing library for optical sciences" , 2012.
-URL: https://github.com/kunguz/odak.
-
-===== End of My Publications List =====
