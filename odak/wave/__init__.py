@@ -141,7 +141,28 @@ def add_random_phase(field):
                    Complex field.
     """
     random_phase = np.pi*np.random.random(field.shape)
-    new_field    = field*np.cos(random_phase)+1j*field*np.sin(random_phase)
+    new_field    = add_phase(field,random_phase)
+    return new_field
+
+def add_phase(field,new_phase):
+    """
+    Definition for adding a phase to a given complex field.
+
+    Parameters
+    ----------
+    field        : np.complex64
+                   Complex field.
+    new_phase    : np.complex64
+                   Complex phase.
+
+    Returns
+    ----------
+    new_field    : np.complex64
+                   Complex field.
+    """
+    phase        = calculate_phase(field)
+    amplitude    = calculate_amplitude(field)
+    new_field    = amplitude*np.cos(phase+new_phase)+1j*amplitude*np.sin(phase+new_phase)
     return new_field
 
 def set_amplitude(field,amplitude):

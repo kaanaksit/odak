@@ -1,7 +1,7 @@
 from odak import np
 from odak.tools import nufft2,nuifft2
 from .lens import quadratic_phase_function
-from .__init__ import wavenumber,produce_phase_only_slm_pattern,calculate_amplitude,calculate_phase,set_amplitude,generate_complex_field
+from .__init__ import wavenumber,produce_phase_only_slm_pattern,calculate_amplitude,calculate_phase,set_amplitude,generate_complex_field,add_random_phase
 from tqdm import tqdm
 
 def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel'):
@@ -469,13 +469,13 @@ def rayleigh_sommerfeld(field,k,distance,dx,wavelength):
     result *= 1./(1j*wavelength)
     return result
 
-def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,propagation_type='IR Fresnel'):
+def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,propagation_type='IR Fresnel',initial_phase=None):
     """
     Definition to compute a hologram using an iterative method called Gerchberg-Saxton phase retrieval algorithm. For more on the method, see: Gerchberg, Ralph W. "A practical algorithm for the determination of phase from image and diffraction plane pictures." Optik 35 (1972): 237-246.
 
     Parameters
     ----------
-    field            : np.complex
+    field            : np.complex64
                        Complex field (MxN).
     distance         : float
                        Propagation distance.
@@ -487,6 +487,8 @@ def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,pr
                        Typically this is equal to two pi. See odak.wave.adjust_phase_only_slm_range() for more.
     propagation_type : str
                        Type of the propagation (IR Fresnel, TR Fresnel, Fraunhofer).
+    initial_phase    : np.complex64
+                       Phase to be added to the initial value.
 
     Result
     ---------
@@ -498,6 +500,8 @@ def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,pr
     k              = wavenumber(wavelength)
     target         = calculate_amplitude(field)
     reconstruction = generate_complex_field(target,0)
+    if type(initial_phase) == type(None):
+        reconstruction = add_random_phase(reconstruction)
     for i in tqdm(range(n_iterations)):
         hologram       = propagate_beam(reconstruction,k,-distance,dx,wavelength,propagation_type)
         hologram       = generate_complex_field(1,calculate_phase(hologram))
