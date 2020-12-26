@@ -611,7 +611,6 @@ def gerchberg_saxton_3d(fields,n_iterations,distances,dx,wavelength,slm_range=6.
     for i in tqdm(range(n_iterations)):
         for distance_id in tqdm(range(len(distances))):
             distance       = distances[distance_id]
-            print(distance)
             reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
             reconstruction = generate_complex_field(targets[distance_id],calculate_phase(reconstruction))
             hologram       = propagate_beam(reconstruction,k,-distance,dx,wavelength,propagation_type)
