@@ -154,10 +154,19 @@ def plane_tilt(nx,ny,k,focals,dx=0.001,axis='x'):
     y          = np.linspace(-size[1]*dx/2,size[1]*dx/2,size[1])
     X,Y        = np.meshgrid(x,y)
     Z          = X**2+Y**2
-    if np.all((focals==0)):
+    focals     = np.asarray(focals)
+    if np.where(focals==0)[0].shape[0] != 0:
         raise Exception("Focals must be non zero.")
-    focal_x    = np.geomspace(focals[0],focals[1],size[0])
-    focal_y    = np.geomspace(focals[2],focals[3],size[1])
+    if np.__name__ == 'cupy':
+        import numpy as np_cpu
+        focals = np.asnumpy(focals)
+    else:
+        np_cpu = np
+    focal_x    = np_cpu.geomspace(focals[0],focals[1],size[0])
+    focal_y    = np_cpu.geomspace(focals[2],focals[3],size[1])
+    if np.__name__ == 'cupy':
+        focal_x = np.asarray(focal_x)
+        focal_y = np.asarray(focal_y)
     FX,FY      = np.meshgrid(focal_x,focal_y)
     field      = np.ones((nx,ny),dtype=np.complex64)
     if axis == 'x' or axis == 'xy':

@@ -499,16 +499,16 @@ def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,pr
     """
     k              = wavenumber(wavelength)
     target         = calculate_amplitude(field)
-    reconstruction = generate_complex_field(target,0)
+    hologram       = generate_complex_field(np.ones(field.shape),0)
     if type(initial_phase) == type(None):
-        reconstruction = add_random_phase(reconstruction)
+        hologram = add_random_phase(hologram)
     else:
-        reconstruction = add_phase(reconstruction,initial_phase)
+        hologram = add_phase(hologram,initial_phase)
     for i in tqdm(range(n_iterations)):
-        hologram       = propagate_beam(reconstruction,k,-distance,dx,wavelength,propagation_type)
-        hologram       = generate_complex_field(1,calculate_phase(hologram))
         reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
         reconstruction = generate_complex_field(target,calculate_phase(reconstruction))
+        hologram       = propagate_beam(reconstruction,k,-distance,dx,wavelength,propagation_type)
+        hologram       = generate_complex_field(1,calculate_phase(hologram)) 
     reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
     return hologram,reconstruction
 
@@ -550,7 +550,7 @@ def point_wise(field,distances,k,dx,wavelength,lens_method='ideal',propagation_m
     target        = np.zeros((nx,ny),dtype=np.complex64)
     target[cx,cy] = 1.
     lenses        = []
-    for distance in unique_dist:
+    for distance in tqdm(unique_dist):
         if lens_method == 'ideal':
             new_lens = quadratic_phase_function(nx,ny,k,focal=distance,dx=dx)
             lenses.append(new_lens)
@@ -574,3 +574,48 @@ def point_wise(field,distances,k,dx,wavelength,lens_method='ideal',propagation_m
         lens      = np.roll(lens,j-cy,axis=1)
         hologram += lens*field[i,j]
     return hologram
+
+def gerchberg_saxton_3d(fields,n_iterations,distances,dx,wavelength,slm_range=6.28,propagation_type='IR Fresnel',initial_phase=None):
+    """
+    Definition to compute a multi plane hologram using an iterative method called Gerchberg-Saxton phase retrieval algorithm. For more on the method, see: Zhou, Pengcheng, et al. "30.4: Multi‐plane holographic display with a uniform 3D Gerchberg‐Saxton algorithm." SID Symposium Digest of Technical Papers. Vol. 46. No. 1. 2015.
+
+    Parameters
+    ----------
+    fields           : np.complex64
+                       Complex fields (MxN).
+    distances        : list
+                       Propagation distances.
+    dx               : float
+                       Size of one single pixel in the field grid (in meters).
+    wavelength       : float
+                       Wavelength of the electric field.
+    slm_range        : float
+                       Typically this is equal to two pi. See odak.wave.adjust_phase_only_slm_range() for more.
+    propagation_type : str
+                       Type of the propagation (IR Fresnel, TR Fresnel, Fraunhofer).
+    initial_phase    : np.complex64
+                       Phase to be added to the initial value.
+
+    Result
+    ---------
+    hologram         : np.complex
+                       Calculated complex hologram.
+    """
+    k        = wavenumber(wavelength)
+    targets  = calculate_amplitude(np.asarray(fields))
+    hologram = generate_complex_field(np.zeros(targets[0].shape),0)
+    if type(initial_phase) == type(None):
+        hologram = add_random_phase(hologram)
+    else:
+        hologram = add_phase(hologram,initial_phase)
+    for i in tqdm(range(n_iterations)):
+        for distance_id in tqdm(range(len(distances))):
+            distance       = distances[distance_id]
+            print(distance)
+            reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
+            reconstruction = generate_complex_field(targets[distance_id],calculate_phase(reconstruction))
+            hologram       = propagate_beam(reconstruction,k,-distance,dx,wavelength,propagation_type)
+            hologram       = generate_complex_field(1.,calculate_phase(hologram)) 
+    return hologram
+
+
