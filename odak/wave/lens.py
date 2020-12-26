@@ -1,5 +1,35 @@
 from odak import np
 
+def double_convergence(nx,ny,k,r,dx):
+    """
+    A definition to generate initial phase for a Gerchberg-Saxton method. For more details consult Sun, Peng, et al. "Holographic near-eye display system based on double-convergence light Gerchberg-Saxton algorithm." Optics express 26.8 (2018): 10140-10151.
+
+    Parameters
+    ----------
+    nx         : int
+                 Size of the output along X.
+    ny         : int
+                 Size of the output along Y.
+    k          : odak.wave.wavenumber
+                 See odak.wave.wavenumber for more.
+    r          : float
+                 The distance between location of a light source and an image plane.
+    dx         : float
+                 Pixel pitch.
+
+    Returns
+    ---------
+    function   : ndarray
+                 Generated phase pattern for a Gerchberg-Saxton method.
+    """
+    size = [ny,nx]
+    x    = np.linspace(-size[0]*dx/2,size[0]*dx/2,size[0])
+    y    = np.linspace(-size[1]*dx/2,size[1]*dx/2,size[1])
+    X,Y  = np.meshgrid(x,y)
+    Z    = X**2+Y**2  
+    w    = np.exp(1j*k*Z/r)
+    return w
+
 def quadratic_phase_function(nx,ny,k,focal=0.4,dx=0.001):
     """ 
     A definition to generate 2D quadratic phase function, which is typically use to represent lenses.

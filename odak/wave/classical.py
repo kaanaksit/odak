@@ -1,7 +1,7 @@
 from odak import np
 from odak.tools import nufft2,nuifft2
 from .lens import quadratic_phase_function
-from .__init__ import wavenumber,produce_phase_only_slm_pattern,calculate_amplitude,calculate_phase,set_amplitude,generate_complex_field,add_random_phase
+from .__init__ import wavenumber,produce_phase_only_slm_pattern,calculate_amplitude,calculate_phase,set_amplitude,generate_complex_field,add_random_phase,add_phase
 from tqdm import tqdm
 
 def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel'):
@@ -502,6 +502,8 @@ def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,pr
     reconstruction = generate_complex_field(target,0)
     if type(initial_phase) == type(None):
         reconstruction = add_random_phase(reconstruction)
+    else:
+        reconstruction = add_phase(reconstruction,initial_phase)
     for i in tqdm(range(n_iterations)):
         hologram       = propagate_beam(reconstruction,k,-distance,dx,wavelength,propagation_type)
         hologram       = generate_complex_field(1,calculate_phase(hologram))
