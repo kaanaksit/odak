@@ -605,8 +605,7 @@ def gerchberg_saxton_3d(fields,n_iterations,distances,dx,wavelength,slm_range=6.
     """
     k              = wavenumber(wavelength)
     targets        = calculate_amplitude(np.asarray(fields)).astype(np.float)
-    targets_summed = np.sum(targets,axis=0)
-    hologram       = generate_complex_field(np.zeros(targets[0].shape),0)
+    hologram       = generate_complex_field(np.ones(targets[0].shape),0)
     if type(initial_phase) == type(None):
         hologram = add_random_phase(hologram)
     else:
