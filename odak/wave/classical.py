@@ -504,7 +504,7 @@ def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,pr
         hologram = add_random_phase(hologram)
     else:
         hologram = add_phase(hologram,initial_phase)
-    for i in tqdm(range(n_iterations)):
+    for i in tqdm(range(n_iterations),leave=False):
         reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
         reconstruction = generate_complex_field(target,calculate_phase(reconstruction))
         hologram       = propagate_beam(reconstruction,k,-distance,dx,wavelength,propagation_type)
@@ -550,7 +550,7 @@ def point_wise(field,distances,k,dx,wavelength,lens_method='ideal',propagation_m
     target        = np.zeros((nx,ny),dtype=np.complex64)
     target[cx,cy] = 1.
     lenses        = []
-    for distance in tqdm(unique_dist):
+    for distance in tqdm(unique_dist,leave=False):
         if lens_method == 'ideal':
             new_lens = quadratic_phase_function(nx,ny,k,focal=distance,dx=dx)
             lenses.append(new_lens)
@@ -565,7 +565,7 @@ def point_wise(field,distances,k,dx,wavelength,lens_method='ideal',propagation_m
                                           propagation_method
                                          )
             lenses.append(new_lens)
-    for m in tqdm(range(non_zeros.shape[1])):
+    for m in tqdm(range(non_zeros.shape[1]),leave=False):
         i         = int(non_zeros[0,m])
         j         = int(non_zeros[1,m])
         lens_id   = int(np.argwhere(unique_dist==distances[i,j]))
@@ -611,8 +611,8 @@ def gerchberg_saxton_3d(fields,n_iterations,distances,dx,wavelength,slm_range=6.
         hologram = add_random_phase(hologram)
     else:
         hologram = add_phase(hologram,initial_phase)
-    for i in tqdm(range(n_iterations)):
-        for distance_id in tqdm(range(len(distances))):
+    for i in tqdm(range(n_iterations),leave=False):
+        for distance_id in tqdm(range(len(distances)),leave=False):
             distance       = distances[distance_id]
             reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
             if target_type == 'double constraint':

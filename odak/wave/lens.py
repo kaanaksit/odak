@@ -30,7 +30,7 @@ def double_convergence(nx,ny,k,r,dx):
     w    = np.exp(1j*k*Z/r)
     return w
 
-def quadratic_phase_function(nx,ny,k,focal=0.4,dx=0.001):
+def quadratic_phase_function(nx,ny,k,focal=0.4,dx=0.001,offset=[0,0]):
     """ 
     A definition to generate 2D quadratic phase function, which is typically use to represent lenses.
 
@@ -46,6 +46,8 @@ def quadratic_phase_function(nx,ny,k,focal=0.4,dx=0.001):
                  Focal length of the quadratic phase function.
     dx         : float
                  Pixel pitch.
+    offset     : list
+                 Deviation from the center along X and Y axes.
 
     Returns
     ---------
@@ -53,8 +55,8 @@ def quadratic_phase_function(nx,ny,k,focal=0.4,dx=0.001):
                  Generated quadratic phase function.
     """
     size = [ny,nx]
-    x    = np.linspace(-size[0]*dx/2,size[0]*dx/2,size[0])
-    y    = np.linspace(-size[1]*dx/2,size[1]*dx/2,size[1])
+    x    = np.linspace(-size[0]*dx/2,size[0]*dx/2,size[0])-offset[1]*dx
+    y    = np.linspace(-size[1]*dx/2,size[1]*dx/2,size[1])-offset[0]*dx
     X,Y  = np.meshgrid(x,y)
     Z    = X**2+Y**2
     qwf  = np.exp(1j*k*0.5*np.sin(Z/focal))
