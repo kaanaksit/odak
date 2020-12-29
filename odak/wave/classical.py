@@ -575,7 +575,7 @@ def point_wise(field,distances,k,dx,wavelength,lens_method='ideal',propagation_m
         hologram += lens*field[i,j]
     return hologram
 
-def gerchberg_saxton_3d(fields,n_iterations,distances,dx,wavelength,slm_range=6.28,propagation_type='IR Fresnel',initial_phase=None,target_type='no constraint'):
+def gerchberg_saxton_3d(fields,n_iterations,distances,dx,wavelength,slm_range=6.28,propagation_type='IR Fresnel',initial_phase=None,target_type='no constraint',coefficients=None):
     """
     Definition to compute a multi plane hologram using an iterative method called Gerchberg-Saxton phase retrieval algorithm. For more on the method, see: Zhou, Pengcheng, et al. "30.4: Multi‐plane holographic display with a uniform 3D Gerchberg‐Saxton algorithm." SID Symposium Digest of Technical Papers. Vol. 46. No. 1. 2015.
 
@@ -619,12 +619,14 @@ def gerchberg_saxton_3d(fields,n_iterations,distances,dx,wavelength,slm_range=6.
             distance       = distances[distance_id]
             reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
             if target_type == 'double constraint':
-                alpha = 10.0; beta=1.;gamma=1.0
+                if type(coefficients) == type(None):
+                    raise Exception("Provide coeeficients of alpha,beta and gamma for double constraint.")
+                alpha = coefficients[0]; beta=coefficients[1];gamma=coefficients[2]
                 target_current                    = 2*alpha*np.copy(targets[distance_id])-beta*calculate_amplitude(reconstruction)
-                target_current[target_current==0] = gamma*reconstruction[target_current==0]
+                target_current[target_current==0] = gamma*np.abs(reconstruction[target_current==0])
             elif target_type == 'no constraint':
-                target_current = np.copy(targets[distance_id])*distance**2
-            reconstruction         = generate_complex_field(np.abs(target_current),calculate_phase(reconstruction))
+                target_current = np.abs(targets[distance_id])
+            reconstruction         = generate_complex_field(target_current,calculate_phase(reconstruction))
             holograms[distance_id] = propagate_beam(reconstruction,k,-distance,dx,wavelength,propagation_type)
             holograms[distance_id] = generate_complex_field(1.,calculate_phase(holograms[distance_id])) 
         hologram = np.sum(holograms,axis=0)
