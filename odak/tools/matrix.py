@@ -229,7 +229,7 @@ def convolve2d(field,kernel):
     new_field = np.roll(new_field, -n/2+1,axis=1)
     return new_field
 
-def generate_2d_gaussian(kernel_length=[21], nsigma=[3,3]):
+def generate_2d_gaussian(kernel_length=[21,21], nsigma=[3,3]):
     """
     Generate 2D Gaussian kernel. Inspired from https://stackoverflow.com/questions/29731726/how-to-calculate-a-gaussian-kernel-matrix-efficiently-in-numpy
 
@@ -239,6 +239,11 @@ def generate_2d_gaussian(kernel_length=[21], nsigma=[3,3]):
                     Length of the Gaussian kernel along X and Y axes.
     nsigma        : list
                     Sigma of the Gaussian kernel along X and Y axes.
+    
+    Returns
+    ----------
+    kernel_2d     : ndarray
+                    Generated Gaussian kernel.
     """
     x           = np.linspace(-nsigma[0], nsigma[0], kernel_length[0]+1)
     y           = np.linspace(-nsigma[1], nsigma[1], kernel_length[1]+1)
@@ -246,3 +251,27 @@ def generate_2d_gaussian(kernel_length=[21], nsigma=[3,3]):
     kernel_2d   = np.exp(-0.5*(np.square(xx)/np.square(nsigma[0]) + np.square(yy)/np.square(nsigma[1])))
     kernel_2d   = kernel_2d/kernel_2d.sum()
     return kernel_2d
+
+def blur_gaussian(field,kernel_length=[21,21],nsigma=[3,3]):
+    """
+    A definition to blur a field using a Gaussian kernel.
+
+    Parameters
+    ----------
+    field         : ndarray
+                    MxN field.
+    kernel_length : list
+                    Length of the Gaussian kernel along X and Y axes.
+    nsigma        : list
+                    Sigma of the Gaussian kernel along X and Y axes.
+
+    Returns
+    ----------
+    blurred_field : ndarray
+                    Blurred field.
+    """
+    kernel        = generate_2d_gaussian(kernel_length,nsigma)
+    kernel        = zero_pad(kernel,field.shape)
+    blurred_field = convolve2d(field,kernel)
+    blurred_field = blurred_field/np.amax(blurred_field)
+    return blurred_field
