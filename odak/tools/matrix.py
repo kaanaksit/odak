@@ -225,8 +225,8 @@ def convolve2d(field,kernel):
     fr2       = np.fft.fft2(np.flipud(np.fliplr(kernel)))
     m,n       = fr.shape
     new_field = np.real(np.fft.ifft2(fr*fr2))
-    new_field = np.roll(new_field, -m/2+1,axis=0)
-    new_field = np.roll(new_field, -n/2+1,axis=1)
+    new_field = np.roll(new_field,int(-m/2+1),axis=0)
+    new_field = np.roll(new_field,int(-n/2+1),axis=1)
     return new_field
 
 def generate_2d_gaussian(kernel_length=[21,21], nsigma=[3,3]):
