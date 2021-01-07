@@ -83,17 +83,18 @@ def impulse_response_fresnel(field,k,distance,dx,wavelength):
     result           : np.complex
                        Final complex field (MxN).
     """
-    nv, nu = field.shape[-1], field.shape[-2]
-    x      = torch.linspace(-nv*dx/2, nv*dx/2, nv, dtype=torch.float64)
-    y      = torch.linspace(-nu*dx/2, nu*dx/2, nu, dtype=torch.float64)
-    Y, X   = torch.meshgrid(y, x)
-    Z      = torch.pow(X,2) + torch.pow(Y,2)
-    h      = torch.exp(1j*k*distance)/(1j*wavelength*distance)*torch.exp(1j*k*0.5/distance*Z)
-    h      = torch.fft.fftn(fftshift(h))*pow(dx,2)
-    h      = h.to(field.device)
-    U1     = torch.fft.fftn(fftshift(field))
-    U2     = h*U1
-    result = ifftshift(torch.fft.ifftn(U2))
+    nv, nu   = field.shape[-1], field.shape[-2]
+    x        = torch.linspace(-nv*dx/2, nv*dx/2, nv, dtype=torch.float64)
+    y        = torch.linspace(-nu*dx/2, nu*dx/2, nu, dtype=torch.float64)
+    Y, X     = torch.meshgrid(y, x)
+    Z        = torch.pow(X,2) + torch.pow(Y,2)
+    distance = torch.FloatTensor([distance])
+    h        = torch.exp(1j*k*distance)/(1j*wavelength*distance)*torch.exp(1j*k*0.5/distance*Z)
+    h        = torch.fft.fftn(fftshift(h))*pow(dx,2)
+    h        = h.to(field.device)
+    U1       = torch.fft.fftn(fftshift(field))
+    U2       = h*U1
+    result   = ifftshift(torch.fft.ifftn(U2))
     return result
 
 def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,propagation_type='IR Fresnel'):
