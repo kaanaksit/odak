@@ -90,7 +90,7 @@ def impulse_response_fresnel(field,k,distance,dx,wavelength):
     Z      = torch.pow(X,2) + torch.pow(Y,2)
     h      = torch.exp(1j*k*distance)/(1j*wavelength*distance)*torch.exp(1j*k*0.5/distance*Z)
     h      = torch.fft.fftn(fftshift(h))*pow(dx,2)
-    h      = h.to(field.device)7
+    h      = h.to(field.device)
     U1     = torch.fft.fftn(fftshift(field))
     U2     = h*U1
     result = ifftshift(torch.fft.ifftn(U2))
