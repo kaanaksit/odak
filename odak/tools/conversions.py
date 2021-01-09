@@ -1,7 +1,7 @@
 from odak import np
 import torch
 
-def convert_to_torch(a):
+def convert_to_torch(a,grad=True):
     """
     A definition to convert Numpy/Cupy arrays to Torch.
 
@@ -9,6 +9,8 @@ def convert_to_torch(a):
     ----------
     a          : ndarray
                  Input Numpy or Cupy array.
+    grad       : bool
+                 Set if the converted array requires gradient.
 
     Returns
     ----------
@@ -20,4 +22,5 @@ def convert_to_torch(a):
     else:
         b = np.copy(a)
     c = torch.from_numpy(b)
+    c.requires_grad_(grad)
     return c

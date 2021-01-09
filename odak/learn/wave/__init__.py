@@ -68,6 +68,33 @@ def set_amplitude(field,amplitude):
     new_field = amplitude*torch.cos(phase)+1j*amplitude*torch.sin(phase)
     return new_field
 
+def generate_complex_field(amplitude,phase):
+    """
+    Definition to generate a complex field with a given amplitude and phase.
+
+    Parameters
+    ----------
+    amplitude         : ndarray
+                        Amplitude of the field.
+    phase             : ndarray
+                        Phase of the field.
+
+    Returns
+    ----------
+    field             : ndarray
+                        Complex field.
+    """
+    if type(phase) == 'torch.Tensor':
+        phase     = torch.FloatTensor(phase)
+    elif type(phase) == type([]):
+        phase     = torch.FloatTensor([phase])
+    if type(amplitude) == 'torch.Tensor':
+        amplitude = torch.FloatTensor(amplitude)
+    elif type(amplitude) == type([]):
+        amplitude = torch.FloatTensor([amplitude])
+    field     = amplitude*torch.cos(phase)+1j*amplitude*torch.sin(phase)
+    return field
+
 def produce_phase_only_slm_pattern(hologram,slm_range):
     """
     Definition for producing a pattern for a phase only Spatial Light Modulator (SLM) using a given field.
