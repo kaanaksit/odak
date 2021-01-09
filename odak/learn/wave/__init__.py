@@ -25,9 +25,9 @@ def calculate_phase(field,deg=False):
     phase        : torch.float
                    Phase or phases of electric field(s) in radians.
     """
-    phase = torch.angle(field)
+    phase = field.imag.atan2(field.real)
     if deg == True:
-        phase *= 180./np.pi
+        phase *= 180./3.14
     return phase
 
 def calculate_amplitude(field):
