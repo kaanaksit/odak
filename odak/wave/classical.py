@@ -506,7 +506,8 @@ def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,pr
     if type(initial_phase) == type(None):
         hologram = add_random_phase(hologram)
     else:
-        hologram = add_phase(hologram,initial_phase)
+        initial_phase = zero_pad(initial_phase) 
+        hologram      = add_phase(hologram,initial_phase)
     for i in tqdm(range(n_iterations),leave=False):
         reconstruction  = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
         amplitude       = calculate_amplitude(reconstruction)
@@ -625,7 +626,8 @@ def gerchberg_saxton_3d(fields,n_iterations,distances,dx,wavelength,slm_range=6.
     if type(initial_phase) == type(None):
         hologram = add_random_phase(hologram)
     else:
-        hologram = add_phase(hologram,initial_phase)
+        initial_phase = zero_pad(initial_phase)
+        hologram      = add_phase(hologram,initial_phase)
     for i in tqdm(range(n_iterations),leave=False):
         holograms = []
         for j in range(len(distances)):
