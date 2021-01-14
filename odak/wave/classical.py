@@ -1,5 +1,5 @@
 from odak import np
-from odak.tools import nufft2,nuifft2
+from odak.tools import nufft2,nuifft2,zero_pad
 from .lens import quadratic_phase_function
 from .__init__ import wavenumber,produce_phase_only_slm_pattern,calculate_amplitude,calculate_phase,set_amplitude,generate_complex_field,add_random_phase,add_phase
 from tqdm import tqdm
@@ -500,15 +500,28 @@ def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,pr
     k              = wavenumber(wavelength)
     target         = calculate_amplitude(field)
     hologram       = generate_complex_field(np.ones(field.shape),0)
+    hologram       = zero_pad(hologram)
+    center         = [int(hologram.shape[0]/2.),int(hologram.shape[1]/2.)]
+    orig_shape     = [int(field.shape[0]/2.),int(field.shape[1]/2.)]
     if type(initial_phase) == type(None):
         hologram = add_random_phase(hologram)
     else:
         hologram = add_phase(hologram,initial_phase)
     for i in tqdm(range(n_iterations),leave=False):
-        reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
-        reconstruction = generate_complex_field(target,calculate_phase(reconstruction))
-        hologram       = propagate_beam(reconstruction,k,-distance,dx,wavelength,propagation_type)
-        hologram       = generate_complex_field(1,calculate_phase(hologram)) 
+        reconstruction  = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
+        amplitude       = calculate_amplitude(reconstruction)
+        reconstruction  = reconstruction[
+                                         center[0]-orig_shape[0]:center[0]+orig_shape[0],
+                                         center[1]-orig_shape[1]:center[1]+orig_shape[1]
+                                        ]
+        reconstruction  = generate_complex_field(target,calculate_phase(reconstruction))
+        hologram        = propagate_beam(reconstruction,k,-distance,dx,wavelength,propagation_type)
+        hologram        = generate_complex_field(1,calculate_phase(hologram)) 
+        hologram        = zero_pad(hologram)
+    hologram       = hologram[
+                              center[0]-orig_shape[0]:center[0]+orig_shape[0],
+                              center[1]-orig_shape[1]:center[1]+orig_shape[1]
+                             ]
     reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
     return hologram,reconstruction
 
@@ -606,6 +619,9 @@ def gerchberg_saxton_3d(fields,n_iterations,distances,dx,wavelength,slm_range=6.
     k              = wavenumber(wavelength)
     targets        = calculate_amplitude(np.asarray(fields)).astype(np.float)
     hologram       = generate_complex_field(np.ones(targets[0].shape),0)
+    hologram       = zero_pad(hologram)
+    center         = [int(hologram.shape[0]/2.),int(hologram.shape[1]/2.)]
+    orig_shape     = [int(fields[0].shape[0]/2.),int(fields[0].shape[1]/2.)]
     if type(initial_phase) == type(None):
         hologram = add_random_phase(hologram)
     else:
@@ -626,10 +642,19 @@ def gerchberg_saxton_3d(fields,n_iterations,distances,dx,wavelength,slm_range=6.
                 target_current[target_current==0] = gamma*np.abs(reconstruction[target_current==0])
             elif target_type == 'no constraint':
                 target_current = np.abs(targets[distance_id])
+            reconstruction         = reconstruction[
+                                                    center[0]-orig_shape[0]:center[0]+orig_shape[0],
+                                                    center[1]-orig_shape[1]:center[1]+orig_shape[1]
+                                                   ]
             reconstruction         = generate_complex_field(target_current,calculate_phase(reconstruction))
-            holograms[distance_id] = propagate_beam(reconstruction,k,-distance,dx,wavelength,propagation_type)
-            holograms[distance_id] = generate_complex_field(1.,calculate_phase(holograms[distance_id])) 
+            hologram_layer         = propagate_beam(reconstruction,k,-distance,dx,wavelength,propagation_type)
+            hologram_layer         = generate_complex_field(1.,calculate_phase(hologram_layer)) 
+            holograms[distance_id] = zero_pad(hologram_layer)
         hologram = np.sum(holograms,axis=0)
+    hologram = hologram[
+                        center[0]-orig_shape[0]:center[0]+orig_shape[0],
+                        center[1]-orig_shape[1]:center[1]+orig_shape[1]
+                       ]
     return hologram
 
 
