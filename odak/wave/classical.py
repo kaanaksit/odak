@@ -638,7 +638,12 @@ def gerchberg_saxton_3d(fields,n_iterations,distances,dx,wavelength,slm_range=6.
                 if type(coefficients) == type(None):
                     raise Exception("Provide coeeficients of alpha,beta and gamma for double constraint.")
                 alpha = coefficients[0]; beta=coefficients[1];gamma=coefficients[2]
-                target_current                    = 2*alpha*np.copy(targets[distance_id])-beta*calculate_amplitude(reconstruction)
+                target_current                    = 2*alpha*np.copy(targets[distance_id])-beta*calculate_amplitude(
+                                                                                                                   reconstruction[
+                                                                                                                                  center[0]-orig_shape[0]:center[0]+orig_shape[0],
+                                                                                                                                  center[1]-orig_shape[1]:center[1]+orig_shape[1]
+                                                                                                                                 ]
+                                                                                                                  )
                 target_current[target_current==0] = gamma*np.abs(reconstruction[target_current==0])
             elif target_type == 'no constraint':
                 target_current = np.abs(targets[distance_id])
