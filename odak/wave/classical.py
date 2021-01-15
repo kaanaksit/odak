@@ -510,7 +510,6 @@ def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,pr
         hologram      = add_phase(hologram,initial_phase)
     for i in tqdm(range(n_iterations),leave=False):
         reconstruction  = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
-        amplitude       = calculate_amplitude(reconstruction)
         reconstruction  = reconstruction[
                                          center[0]-orig_shape[0]:center[0]+orig_shape[0],
                                          center[1]-orig_shape[1]:center[1]+orig_shape[1]
@@ -634,12 +633,12 @@ def gerchberg_saxton_3d(fields,n_iterations,distances,dx,wavelength,slm_range=6.
             holograms.append(hologram)
         holograms = np.asarray(holograms)
         for distance_id in tqdm(range(len(distances)),leave=False):
-            distance       = distances[distance_id]
-            reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
-            reconstruction = reconstruction[
-                                            center[0]-orig_shape[0]:center[0]+orig_shape[0],
-                                            center[1]-orig_shape[1]:center[1]+orig_shape[1]
-                                           ]
+            distance        = distances[distance_id]
+            reconstruction  = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
+            reconstruction  = reconstruction[
+                                             center[0]-orig_shape[0]:center[0]+orig_shape[0],
+                                             center[1]-orig_shape[1]:center[1]+orig_shape[1]
+                                            ]
             if target_type == 'double constraint':
                 if type(coefficients) == type(None):
                     raise Exception("Provide coeeficients of alpha,beta and gamma for double constraint.")

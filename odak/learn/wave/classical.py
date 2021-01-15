@@ -38,12 +38,13 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
     elif propagation_type == 'Bandlimited Angular Spectrum':
         result = band_limited_angular_spectrum(field,k,distance,dx,wavelength)
     elif propagation_type == 'TR Fresnel':
-        h      = torch.exp(1j*k*distance)*torch.exp(-1j*np.pi*wavelength*distance*Z)
-        h      = fftshift(h)
-        h      = h.to(field.device)
-        U1     = torch.fft.fftn(fftshift(field))
-        U2     = h*U1
-        result = ifftshift(torch.fft.ifftn(U2))
+        distance  = torch.FloatTensor([distance])
+        h         = torch.exp(1j*k*distance)*torch.exp(-1j*np.pi*wavelength*distance*Z)
+        h         = fftshift(h)
+        h         = h.to(field.device)
+        U1        = torch.fft.fftn(fftshift(field))
+        U2        = h*U1
+        result    = ifftshift(torch.fft.ifftn(U2))
     elif propagation_type == 'Fraunhofer':
         c      = 1./(1j*wavelength*distance)*torch.exp(1j*k*0.5/distance*Z)
         c      = c.to(field.device)
