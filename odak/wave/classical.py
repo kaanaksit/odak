@@ -510,19 +510,28 @@ def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,pr
         hologram      = add_phase(hologram,initial_phase)
     for i in tqdm(range(n_iterations),leave=False):
         reconstruction  = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
-        reconstruction  = reconstruction[
-                                         center[0]-orig_shape[0]:center[0]+orig_shape[0],
-                                         center[1]-orig_shape[1]:center[1]+orig_shape[1]
-                                        ]
-        reconstruction  = generate_complex_field(target,calculate_phase(reconstruction))
+        new_target      = calculate_amplitude(reconstruction)
+        new_target[
+                   center[0]-orig_shape[0]:center[0]+orig_shape[0],
+                   center[1]-orig_shape[1]:center[1]+orig_shape[1]
+                  ]     = target
+        reconstruction  = generate_complex_field(new_target,calculate_phase(reconstruction))
         hologram        = propagate_beam(reconstruction,k,-distance,dx,wavelength,propagation_type)
         hologram        = generate_complex_field(1,calculate_phase(hologram)) 
+        hologram        = hologram[
+                                   center[0]-orig_shape[0]:center[0]+orig_shape[0],
+                                   center[1]-orig_shape[1]:center[1]+orig_shape[1],
+                                  ]
         hologram        = zero_pad(hologram)
+    reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
     hologram       = hologram[
                               center[0]-orig_shape[0]:center[0]+orig_shape[0],
                               center[1]-orig_shape[1]:center[1]+orig_shape[1]
                              ]
-    reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
+    reconstruction = reconstruction[
+                                    center[0]-orig_shape[0]:center[0]+orig_shape[0],
+                                    center[1]-orig_shape[1]:center[1]+orig_shape[1]
+                                   ]
     return hologram,reconstruction
 
 def point_wise(field,distances,k,dx,wavelength,lens_method='ideal',propagation_method='Bandlimited Angular Spectrum',n_iteration=3):
