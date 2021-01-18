@@ -25,7 +25,7 @@ def test():
     reconstruction_1             = propagate_beam(hologram,k,distances[1],dx,wavelength,propagation_type='Bandlimited Angular Spectrum')
     amplitude_0                  = calculate_amplitude(reconstruction_0)
     amplitude_1                  = calculate_amplitude(reconstruction_1)
-    hologram                     = produce_phase_only_slm_pattern(
+    hologram,_                   = produce_phase_only_slm_pattern(
                                                                   hologram,
                                                                   2*np.pi,
                                                                   'output_hologram.png'

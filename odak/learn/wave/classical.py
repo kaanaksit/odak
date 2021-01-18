@@ -159,7 +159,7 @@ def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,pr
     reconstruction = field
     for i in range(n_iterations):
         hologram       = propagate_beam(reconstruction,k,-distance,dx,wavelength,propagation_type)
-        hologram       = produce_phase_only_slm_pattern(hologram,slm_range)
+        hologram,_     = produce_phase_only_slm_pattern(hologram,slm_range)
         reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
         reconstruction = set_amplitude(hologram,field)
     reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)

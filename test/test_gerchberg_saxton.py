@@ -29,7 +29,7 @@ def test():
                                               'Bandlimited Angular Spectrum',
                                               initial_phase=initial_phase
                                              )
-    hologram               = produce_phase_only_slm_pattern(
+    hologram,_              = produce_phase_only_slm_pattern(
                                                             hologram,
                                                             2*np.pi,
                                                             'output_hologram.png'

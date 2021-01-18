@@ -1,7 +1,7 @@
 from odak import np
 from odak.tools import nufft2,nuifft2,zero_pad
 from .lens import quadratic_phase_function
-from .__init__ import wavenumber,produce_phase_only_slm_pattern,calculate_amplitude,calculate_phase,set_amplitude,generate_complex_field,add_random_phase,add_phase
+from .__init__ import wavenumber,calculate_amplitude,calculate_phase,set_amplitude,generate_complex_field,add_random_phase,add_phase
 from tqdm import tqdm
 
 def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel'):
@@ -276,6 +276,7 @@ def angular_spectrum(field,k,distance,dx,wavelength):
     U1     = np.fft.fft2(np.fft.fftshift(field))
     U2     = h*U1
     result = np.fft.ifftshift(np.fft.ifft2(U2))
+    print('hello')
     return result
 
 def angular_spectrum(field,k,distance,dx,wavelength):
