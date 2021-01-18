@@ -95,7 +95,7 @@ def generate_complex_field(amplitude,phase):
     field     = amplitude*torch.cos(phase)+1j*amplitude*torch.sin(phase)
     return field
 
-def produce_phase_only_slm_pattern(hologram,slm_range):
+def produce_phase_only_slm_pattern(hologram,slm_range,bits=8):
     """
     Definition for producing a pattern for a phase only Spatial Light Modulator (SLM) using a given field.
 
@@ -107,17 +107,22 @@ def produce_phase_only_slm_pattern(hologram,slm_range):
                          Range of the phase only SLM in radians for a working wavelength (i.e. two pi). See odak.wave.adjust_phase_only_slm_range() for more.
     filename           : str
                          Optional variable, if provided the patterns will be save to given location.
+    bits               : int
+                         Quantization bits.
 
     Returns
     ==========
     pattern            : torch.cfloat
                          Adjusted phase only pattern.
+    hologram_digital   : np.int
+                         Digital representation of the hologram.
     """
     hologram_phase                            = calculate_phase(hologram) % (2*np.pi)
     hologram_phase[hologram_phase>slm_range]  = slm_range
     hologram_phase                           /= slm_range
-    hologram_phase                           *= 255
+    hologram_phase                           *= 2**bits
+    hologram_digital                          = hologram_phase.detach().clone()
     hologram_phase                            = hologram_phase.int()
     hologram_phase                            = hologram_phase.float()
     hologram_phase                           *= slm_range/255.
-    return torch.cos(hologram_phase)+1j*torch.sin(hologram_phase)
+    return torch.cos(hologram_phase)+1j*torch.sin(hologram_phase),hologram_digital
