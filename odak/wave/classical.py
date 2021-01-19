@@ -366,7 +366,7 @@ def transfer_function_fresnel(field,k,distance,dx,wavelength):
                        Wavelength of the electric field.
 
     Returns
-    =======
+    -----------
     result           : np.complex
                        Final complex field (MxN).
 

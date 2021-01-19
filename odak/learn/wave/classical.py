@@ -38,18 +38,48 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
     elif propagation_type == 'Bandlimited Angular Spectrum':
         result = band_limited_angular_spectrum(field,k,distance,dx,wavelength)
     elif propagation_type == 'TR Fresnel':
-        distance  = torch.FloatTensor([distance])
-        h         = torch.exp(1j*k*distance)*torch.exp(-1j*np.pi*wavelength*distance*Z)
-        h         = fftshift(h)
-        h         = h.to(field.device)
-        U1        = torch.fft.fftn(fftshift(field))
-        U2        = h*U1
-        result    = ifftshift(torch.fft.ifftn(U2))
+        result = transfer_function_fresnel(field,k,distance,dx,wavelength)
     elif propagation_type == 'Fraunhofer':
         c      = 1./(1j*wavelength*distance)*torch.exp(1j*k*0.5/distance*Z)
         c      = c.to(field.device)
         result = c*ifftshift(torch.fft.fftn(fftshift(field)))*pow(dx,2)
     return result
+
+
+def transfer_function_fresnel(field,k,distance,dx,wavelength):
+    """
+    A definition to calculate convolution based Fresnel approximation for beam propagation.
+
+    Parameters
+    ----------
+    field            : troch.complex
+                       Complex field (MxN).
+    k                : odak.wave.wavenumber
+                       Wave number of a wave, see odak.wave.wavenumber for more.
+    distance         : float
+                       Propagation distance.
+    dx               : float
+                       Size of one single pixel in the field grid (in meters).
+    wavelength       : float
+                       Wavelength of the electric field.
+
+    Returns
+    ---------
+    result           : torch.complex
+                       Final complex field (MxN).
+
+    """
+    nv, nu    = field.shape[-1], field.shape[-2]
+    fx        = torch.linspace(-1./2./dx, 1./2./dx, nu, dtype=torch.float64)
+    fy        = torch.linspace(-1./2./dx, 1./2./dx, nv, dtype=torch.float64)
+    FY, FX    = torch.meshgrid(fx, fy)
+    H         = torch.exp(1j*k*distance*(1-(FX*wavelength)**2-(FY*wavelength)**2)**0.5)
+    H         = H.to(field.device)
+    U1        = fftshift(torch.fft.fftn(fftshift(field)))
+    U2        = H*U1
+    result    = ifftshift(torch.fft.ifftn(ifftshift(U2)))
+    return result
+
 
 def band_limited_angular_spectrum(field,k,distance,dx,wavelength):
     """
