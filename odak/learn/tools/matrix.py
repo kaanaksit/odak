@@ -26,9 +26,9 @@ def zero_pad(field,size=None,method='center'):
         hx = int(torch.ceil(torch.tensor([(size[0]-field.shape[0])/2])))
         hy = int(torch.ceil(torch.tensor([(size[1]-field.shape[1])/2])))
     if method == 'center':
-        m = torch.nn.ZeroPad2d((hx, hx, hy, hy))
+        m = torch.nn.ZeroPad2d((hy, hy, hx, hx))
     elif method == 'left aligned':
-        m = torch.nn.ZeroPad2d((0, hx*2, 0, hy*2))
+        m = torch.nn.ZeroPad2d((0, hy*2, 0, hx*2))
     field_zero_padded = m(field)
     if type(size) != type(None):
         field_zero_padded = field_zero_padded[0:size[0],0:size[1]]
