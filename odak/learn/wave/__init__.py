@@ -7,7 +7,24 @@ Provides necessary definitions for neural networks and learning algorithms. The 
 from odak import np
 import torch
 from .classical import *
+from .lens import *
 
+def wavenumber(wavelength):
+    """
+    Definition for calculating the wavenumber of a plane wave.
+
+    Parameters
+    ----------
+    wavelength   : float
+                   Wavelength of a wave in mm.
+
+    Returns
+    ----------
+    k            : float
+                   Wave number for a given wavelength.
+    """
+    k = 2*np.pi/wavelength
+    return k
 
 def calculate_phase(field,deg=False):
     """ 
