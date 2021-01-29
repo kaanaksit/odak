@@ -112,7 +112,7 @@ def generate_complex_field(amplitude,phase):
     field     = amplitude*torch.cos(phase)+1j*amplitude*torch.sin(phase)
     return field
 
-def produce_phase_only_slm_pattern(hologram,slm_range,bits=8):
+def produce_phase_only_slm_pattern(hologram,slm_range,bits=8,default_range=6.28):
     """
     Definition for producing a pattern for a phase only Spatial Light Modulator (SLM) using a given field.
 
@@ -126,6 +126,8 @@ def produce_phase_only_slm_pattern(hologram,slm_range,bits=8):
                          Optional variable, if provided the patterns will be save to given location.
     bits               : int
                          Quantization bits.
+    default_ramge      : float
+                         Default range of phase only SLM.
 
     Returns
     ==========
@@ -134,12 +136,12 @@ def produce_phase_only_slm_pattern(hologram,slm_range,bits=8):
     hologram_digital   : np.int
                          Digital representation of the hologram.
     """
-    hologram_phase                            = calculate_phase(hologram) % (2*np.pi)
-    hologram_phase[hologram_phase>slm_range]  = slm_range
-    hologram_phase                           /= slm_range
-    hologram_phase                           *= 2**bits
-    hologram_digital                          = hologram_phase.detach().clone()
-    hologram_phase                            = hologram_phase.int()
-    hologram_phase                            = hologram_phase.float()
-    hologram_phase                           *= slm_range/255.
+    hologram_phase    = calculate_phase(hologram) % default_range
+    hologram_phase    = hologram_phase % slm_range
+    hologram_phase   /= slm_range
+    hologram_phase   *= 2**bits
+    hologram_digital  = hologram_phase.detach().clone()
+    hologram_phase    = hologram_phase.int()
+    hologram_phase    = hologram_phase.float()
+    hologram_phase   *= slm_range/255.
     return torch.cos(hologram_phase)+1j*torch.sin(hologram_phase),hologram_digital
