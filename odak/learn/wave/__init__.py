@@ -112,7 +112,7 @@ def generate_complex_field(amplitude,phase):
     field     = amplitude*torch.cos(phase)+1j*amplitude*torch.sin(phase)
     return field
 
-def produce_phase_only_slm_pattern(hologram,slm_range,bits=8,default_range=6.28):
+def produce_phase_only_slm_pattern(hologram,slm_range,bits=8,default_range=6.28,illumination=None):
     """
     Definition for producing a pattern for a phase only Spatial Light Modulator (SLM) using a given field.
 
@@ -128,6 +128,8 @@ def produce_phase_only_slm_pattern(hologram,slm_range,bits=8,default_range=6.28)
                          Quantization bits.
     default_ramge      : float
                          Default range of phase only SLM.
+    illumination       : torch.tensor
+                         Spatial illumination distribution.
 
     Returns
     ==========
@@ -144,4 +146,8 @@ def produce_phase_only_slm_pattern(hologram,slm_range,bits=8,default_range=6.28)
     hologram_phase    = hologram_phase.int()
     hologram_phase    = hologram_phase.float()
     hologram_phase   *= slm_range/255.
-    return torch.cos(hologram_phase)+1j*torch.sin(hologram_phase),hologram_digital
+    if type(illumination) == type(None):
+        A = torch.tensor([1.])
+    else:
+        A = illumination
+    return A*torch.cos(hologram_phase)+A*1j*torch.sin(hologram_phase),hologram_digital
