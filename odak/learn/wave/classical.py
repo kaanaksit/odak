@@ -70,10 +70,10 @@ def transfer_function_fresnel(field,k,distance,dx,wavelength):
 
     """
     nv, nu    = field.shape[-1], field.shape[-2]
-    fx        = torch.linspace(-1./2./dx, 1./2./dx, nu, dtype=torch.float64)
-    fy        = torch.linspace(-1./2./dx, 1./2./dx, nv, dtype=torch.float64)
+    fx        = torch.linspace(-1./2./dx, 1./2./dx, nu, dtype=torch.float64).to(field.device)
+    fy        = torch.linspace(-1./2./dx, 1./2./dx, nv, dtype=torch.float64).to(field.device)
     FY, FX    = torch.meshgrid(fx, fy)
-    H         = torch.exp(1j*k*distance*(1-(FX*wavelength)**2-(FY*wavelength)**2)**0.5)
+    H         = torch.exp(1j*k*distance*(1-(FX*wavelength)**2-(FY*wavelength)**2)**0.5).to(field.device)
     H         = H.to(field.device)
     U1        = fftshift(torch.fft.fftn(fftshift(field)))
     U2        = H*U1
