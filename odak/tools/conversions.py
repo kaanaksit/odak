@@ -24,3 +24,23 @@ def convert_to_torch(a,grad=True):
     c = torch.from_numpy(b)
     c.requires_grad_(grad)
     return c
+
+def convert_to_numpy(a):
+    """
+    A definition to convert Torch/Cupy to Numpy.
+
+    Parameters
+    ----------
+    a          : torch.Tensor or cupy.ndarray
+                 Input Cupy or Torch array.
+
+    Returns
+    ----------
+    b          : numpy.ndarray
+                 Converted array.
+    """
+    if str(type(a)).find('torch') > 0:
+        b = a.to('cpu').detach().numpy()
+    elif str(type(a)).find('cupy') > 0:
+        b = np.asnumpy(a)
+    return b
