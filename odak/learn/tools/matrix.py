@@ -60,3 +60,73 @@ def crop_center(field,size=None):
         cropped = field[cx-hx:cx+hx,cy-hy:cy+hy]
     return cropped
 
+def convolve2d(field,kernel):
+    """
+    Definition to convolve a field with a kernel by multiplying in frequency space.
+
+    Parameters
+    ----------
+    field       : torch.tensor
+                  Input field with MxN shape.
+    kernel      : torch.tensor
+                  Input kernel with MxN shape.
+
+    Returns
+    ----------
+    new_field   : torch.tensor
+                  Convolved field.
+    """
+    fr        = torch.fft.fftn(field)
+    fr2       = torch.fft.fftn(torch.flip(torch.flip(kernel,[1,0]),[0,1]))
+    m,n       = fr.shape
+    new_field = torch.real(torch.fft.ifftn(fr*fr2))
+    new_field = torch.roll(new_field,int(-m/2+1),0)
+    new_field = torch.roll(new_field,0,int(-n/2+1))
+    return new_field
+
+def generate_2d_gaussian(kernel_length=[21,21], nsigma=[3,3]):
+    """
+    Generate 2D Gaussian kernel. Inspired from https://stackoverflow.com/questions/29731726/how-to-calculate-a-gaussian-kernel-matrix-efficiently-in-numpy
+
+    Parameters
+    ----------
+    kernel_length : list
+                    Length of the Gaussian kernel along X and Y axes.
+    nsigma        : list
+                    Sigma of the Gaussian kernel along X and Y axes.
+
+    Returns
+    ----------
+    kernel_2d     : torch.tensor
+                    Generated Gaussian kernel.
+    """
+    x           = torch.linspace(-nsigma[0], nsigma[0], kernel_length[0]+1)
+    y           = torch.linspace(-nsigma[1], nsigma[1], kernel_length[1]+1)
+    xx, yy      = torch.meshgrid(x, y)
+    kernel_2d   = torch.exp(-0.5*(torch.square(xx)/torch.square(nsigma[0]) + torch.square(yy)/torch.square(nsigma[1])))
+    kernel_2d   = kernel_2d/kernel_2d.sum()
+    return kernel_2d
+
+def blur_gaussian(field,kernel_length=[21,21],nsigma=[3,3]):
+    """
+    A definition to blur a field using a Gaussian kernel.
+
+    Parameters
+    ----------
+    field         : ndarray
+                    MxN field.
+    kernel_length : list
+                    Length of the Gaussian kernel along X and Y axes.
+    nsigma        : list
+                    Sigma of the Gaussian kernel along X and Y axes.
+
+    Returns
+    ----------
+    blurred_field : ndarray
+                    Blurred field.
+    """
+    kernel        = generate_2d_gaussian(kernel_length,nsigma)
+    kernel        = zero_pad(kernel,field.shape)
+    blurred_field = convolve2d(field,kernel)
+    blurred_field = blurred_field/torch.amax(blurred_field)
+    return blurred_field
