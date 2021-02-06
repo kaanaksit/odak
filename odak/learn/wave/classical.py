@@ -27,11 +27,6 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
     result           : torch.complex128
                        Final complex field (MxN).
     """
-    nv, nu = field.shape[-1], field.shape[-2]
-    x      = torch.linspace(-nv*dx/2, nv*dx/2, nv, dtype=torch.float64)
-    y      = torch.linspace(-nu*dx/2, nu*dx/2, nu, dtype=torch.float64)
-    Y, X   = torch.meshgrid(y, x)
-    Z      = torch.pow(X,2) + torch.pow(Y,2)
     if propagation_type == 'IR Fresnel':
         result = impulse_response_fresnel(field,k,distance,dx,wavelength)
     elif propagation_type == 'Bandlimited Angular Spectrum':
@@ -39,6 +34,11 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
     elif propagation_type == 'TR Fresnel':
         result = transfer_function_fresnel(field,k,distance,dx,wavelength)
     elif propagation_type == 'Fraunhofer':
+        nv, nu = field.shape[-1], field.shape[-2]
+        x      = torch.linspace(-nv*dx/2, nv*dx/2, nv, dtype=torch.float64)
+        y      = torch.linspace(-nu*dx/2, nu*dx/2, nu, dtype=torch.float64)
+        Y, X   = torch.meshgrid(y, x)
+        Z      = torch.pow(X,2) + torch.pow(Y,2)
         c      = 1./(1j*wavelength*distance)*torch.exp(1j*k*0.5/distance*Z)
         c      = c.to(field.device)
         result = c*torch.fft.ifftshift(torch.fft.fft2(torch.fft.fftshift(field)))*pow(dx,2)
@@ -76,7 +76,7 @@ def transfer_function_fresnel(field,k,distance,dx,wavelength):
     H         = H.to(field.device)
     U1        = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field)))
     U2        = H*U1
-    result    = torch.fft.ifftshift(torch.fft.ifftn(torch.fft.ifftshift(U2)))
+    result    = torch.fft.ifftshift(torch.fft.ifft2(torch.fft.ifftshift(U2)))
     return result
 
 
@@ -102,6 +102,7 @@ def band_limited_angular_spectrum(field,k,distance,dx,wavelength):
     result           : torch.complex
                        Final complex field (MxN).
     """
+    assert True==False,"Refer to Issue 19 for more. This definition is unreliable."
     nv, nu    = field.shape[-1], field.shape[-2]
     x         = torch.linspace(-nv*dx/2, nv*dx/2, nv, dtype=torch.float64)
     y         = torch.linspace(-nu*dx/2, nu*dx/2, nu, dtype=torch.float64)
@@ -113,9 +114,8 @@ def band_limited_angular_spectrum(field,k,distance,dx,wavelength):
     h         = h.to(field.device)
     flimx     = torch.ceil(1/(((2*distance*(1./(nv)))**2+1)**0.5*wavelength))
     flimy     = torch.ceil(1/(((2*distance*(1./(nu)))**2+1)**0.5*wavelength))
-    mask      = torch.zeros((nu,nv), dtype=torch.cfloat)
+    mask      = torch.zeros((nu,nv), dtype=torch.cfloat).to(field.device)
     mask[...] = torch.logical_and(torch.lt(torch.abs(X), flimx), torch.lt(torch.abs(Y), flimy))
-    mask      = mask.to(field.device)
     mask      = set_amplitude(h, mask)
     U1        = torch.fft.fft2(torch.fft.fftshift(field))
     U2        = mask * U1
@@ -144,14 +144,15 @@ def impulse_response_fresnel(field,k,distance,dx,wavelength):
     result           : np.complex
                        Final complex field (MxN).
     """
+    assert True==False,"Refer to Issue 19 for more. This definition is unreliable."
     nv, nu   = field.shape[-1], field.shape[-2]
-    x        = torch.linspace(-nv*dx/2, nv*dx/2, nv, dtype=torch.float64)
-    y        = torch.linspace(-nu*dx/2, nu*dx/2, nu, dtype=torch.float64)
-    Y, X     = torch.meshgrid(y, x)
-    Z        = torch.pow(X,2) + torch.pow(Y,2)
-    distance = torch.FloatTensor([distance])
-    h        = torch.exp(1j*k*distance)/(1j*wavelength*distance)*torch.exp(1j*k*0.5/distance*Z)
-    h        = torch.fft.fft2(torch.fft.fftshift(h))*pow(dx,2)
+    x        = torch.linspace(-nu/2*dx,nu/2*dx,nu)
+    y        = torch.linspace(-nv/2*dx,nv/2*dx,nv)
+    X,Y      = torch.meshgrid(x,y)
+    Z        = X**2+Y**2
+    distance = torch.tensor([distance]).to(field.device)
+    h        = torch.exp(1j*k*distance)/(1j*wavelength*distance)*torch.exp(1j*k/2/distance*Z)
+    h        = torch.fft.fft2(torch.fft.fftshift(h))*dx**2
     h        = h.to(field.device)
     U1       = torch.fft.fft2(torch.fft.fftshift(field))
     U2       = h*U1
