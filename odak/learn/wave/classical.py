@@ -1,6 +1,5 @@
 from odak import np
 import torch, torch.fft
-from .toolkit import fftshift, ifftshift
 from .__init__ import set_amplitude, produce_phase_only_slm_pattern
 from odak.wave import wavenumber
 
@@ -42,7 +41,7 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
     elif propagation_type == 'Fraunhofer':
         c      = 1./(1j*wavelength*distance)*torch.exp(1j*k*0.5/distance*Z)
         c      = c.to(field.device)
-        result = c*ifftshift(torch.fft.fftn(fftshift(field)))*pow(dx,2)
+        result = c*torch.fft.ifftshift(torch.fft.fft2(torch.fft.fftshift(field)))*pow(dx,2)
     return result
 
 
@@ -75,9 +74,9 @@ def transfer_function_fresnel(field,k,distance,dx,wavelength):
     FY, FX    = torch.meshgrid(fx, fy)
     H         = torch.exp(1j*k*distance*(1-(FX*wavelength)**2-(FY*wavelength)**2)**0.5)
     H         = H.to(field.device)
-    U1        = fftshift(torch.fft.fftn(fftshift(field)))
+    U1        = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field)))
     U2        = H*U1
-    result    = ifftshift(torch.fft.ifftn(ifftshift(U2)))
+    result    = torch.fft.ifftshift(torch.fft.ifftn(torch.fft.ifftshift(U2)))
     return result
 
 
@@ -110,7 +109,7 @@ def band_limited_angular_spectrum(field,k,distance,dx,wavelength):
     Z         = torch.pow(X,2) + torch.pow(Y,2)
     distance  = torch.FloatTensor([distance])
     h         = 1./(1j*wavelength*distance)*torch.exp(1j*k*(distance+Z/2/distance))
-    h         = torch.fft.fftn(fftshift(h)) * pow(dx, 2)
+    h         = torch.fft.fft2(torch.fft.fftshift(h)) * pow(dx, 2)
     h         = h.to(field.device)
     flimx     = torch.ceil(1/(((2*distance*(1./(nv)))**2+1)**0.5*wavelength))
     flimy     = torch.ceil(1/(((2*distance*(1./(nu)))**2+1)**0.5*wavelength))
@@ -118,9 +117,9 @@ def band_limited_angular_spectrum(field,k,distance,dx,wavelength):
     mask[...] = torch.logical_and(torch.lt(torch.abs(X), flimx), torch.lt(torch.abs(Y), flimy))
     mask      = mask.to(field.device)
     mask      = set_amplitude(h, mask)
-    U1        = torch.fft.fftn(fftshift(field))
+    U1        = torch.fft.fft2(torch.fft.fftshift(field))
     U2        = mask * U1
-    result    = ifftshift(torch.fft.ifftn(U2))
+    result    = torch.fft.ifftshift(torch.fft.ifft2(U2))
     return result
 
 def impulse_response_fresnel(field,k,distance,dx,wavelength):
@@ -152,11 +151,11 @@ def impulse_response_fresnel(field,k,distance,dx,wavelength):
     Z        = torch.pow(X,2) + torch.pow(Y,2)
     distance = torch.FloatTensor([distance])
     h        = torch.exp(1j*k*distance)/(1j*wavelength*distance)*torch.exp(1j*k*0.5/distance*Z)
-    h        = torch.fft.fftn(fftshift(h))*pow(dx,2)
+    h        = torch.fft.fft2(torch.fft.fftshift(h))*pow(dx,2)
     h        = h.to(field.device)
-    U1       = torch.fft.fftn(fftshift(field))
+    U1       = torch.fft.fft2(torch.fft.fftshift(field))
     U2       = h*U1
-    result   = ifftshift(torch.fft.ifftn(U2))
+    result   = torch.fft.ifftshift(torch.fft.ifft2(U2))
     return result
 
 def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,propagation_type='IR Fresnel'):
