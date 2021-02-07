@@ -80,8 +80,8 @@ def convolve2d(field,kernel):
     fr2       = torch.fft.fftn(torch.flip(torch.flip(kernel,[1,0]),[0,1]))
     m,n       = fr.shape
     new_field = torch.real(torch.fft.ifftn(fr*fr2))
-    new_field = torch.roll(new_field,int(-m/2+1),0)
-    new_field = torch.roll(new_field,0,int(-n/2+1))
+    new_field = torch.roll(new_field,shifts=(int(-m/2+1),0),dims=(1,0))
+    new_field = torch.roll(new_field,shifts=(0,int(-n/2+1)),dims=(0,1))
     return new_field
 
 def generate_2d_gaussian(kernel_length=[21,21], nsigma=[3,3]):
@@ -103,6 +103,7 @@ def generate_2d_gaussian(kernel_length=[21,21], nsigma=[3,3]):
     x           = torch.linspace(-nsigma[0], nsigma[0], kernel_length[0]+1)
     y           = torch.linspace(-nsigma[1], nsigma[1], kernel_length[1]+1)
     xx, yy      = torch.meshgrid(x, y)
+    nsigma      = torch.tensor(nsigma)
     kernel_2d   = torch.exp(-0.5*(torch.square(xx)/torch.square(nsigma[0]) + torch.square(yy)/torch.square(nsigma[1])))
     kernel_2d   = kernel_2d/kernel_2d.sum()
     return kernel_2d
@@ -125,7 +126,7 @@ def blur_gaussian(field,kernel_length=[21,21],nsigma=[3,3]):
     blurred_field : ndarray
                     Blurred field.
     """
-    kernel        = generate_2d_gaussian(kernel_length,nsigma)
+    kernel        = generate_2d_gaussian(kernel_length,nsigma).to(field.device)
     kernel        = zero_pad(kernel,field.shape)
     blurred_field = convolve2d(field,kernel)
     blurred_field = blurred_field/torch.amax(blurred_field)
