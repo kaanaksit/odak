@@ -68,6 +68,7 @@ def transfer_function_fresnel(field,k,distance,dx,wavelength):
                        Final complex field (MxN).
 
     """
+    distance  = torch.tensor([distance]).to(field.device)
     nv, nu    = field.shape[-1], field.shape[-2]
     fx        = torch.linspace(-1./2./dx,1./2./dx,nu,dtype=torch.float64).to(field.device)
     fy        = torch.linspace(-1./2./dx,1./2./dx,nv,dtype=torch.float64).to(field.device)

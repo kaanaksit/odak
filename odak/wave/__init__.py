@@ -223,7 +223,7 @@ def adjust_phase_only_slm_range(native_range,working_wavelength,native_wavelengt
     new_range          : float
                          Calculated phase range in radians.
     """
-    new_range = native_range*working_wavelength/native_wavelength
+    new_range = native_range/working_wavelength*native_wavelength
     return new_range
 
 def produce_phase_only_slm_pattern(hologram,slm_range,filename=None,bits=8,default_range=6.28,illumination=None):
@@ -252,7 +252,8 @@ def produce_phase_only_slm_pattern(hologram,slm_range,filename=None,bits=8,defau
     hologram_digital   : np.int
                          Digital representation of the hologram.
     """
-    hologram_phase   = calculate_phase(hologram) % default_range
+    #hologram_phase   = calculate_phase(hologram) % default_range
+    hologram_phase   = calculate_phase(hologram)
     hologram_phase   = hologram_phase % slm_range
     hologram_phase  /= slm_range
     hologram_phase  *= 2**bits
