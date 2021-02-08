@@ -264,10 +264,10 @@ def produce_phase_only_slm_pattern(hologram,slm_range,filename=None,bits=8,defau
                    filename,
                    hologram_phase,
                    cmin=0,
-                   cmax=255
+                   cmax=2**bits
                   )
     hologram_phase   = hologram_phase.astype(np.float)
-    hologram_phase  *= slm_range/255.
+    hologram_phase  *= slm_range/2**bits
     if type(illumination) == type(None):
         A = 1.
     else:

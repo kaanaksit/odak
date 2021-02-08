@@ -166,7 +166,7 @@ def produce_phase_only_slm_pattern(hologram,slm_range,bits=8,default_range=6.28,
     hologram_digital  = hologram_phase.detach().clone()
     hologram_phase    = hologram_phase.int()
     hologram_phase    = hologram_phase.float()
-    hologram_phase   *= slm_range/255.
+    hologram_phase   *= slm_range/2**bits
     if type(illumination) == type(None):
         A = torch.tensor([1.]).to(hologram_phase.device)
     else:
