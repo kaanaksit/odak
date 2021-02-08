@@ -160,6 +160,7 @@ def produce_phase_only_slm_pattern(hologram,slm_range,bits=8,default_range=6.28,
                          Digital representation of the hologram.
     """
 #    hologram_phase    = calculate_phase(hologram) % default_range
+    hologram_phase    = calculate_phase(hologram)
     hologram_phase    = hologram_phase % slm_range
     hologram_phase   /= slm_range
     hologram_phase   *= 2**bits
