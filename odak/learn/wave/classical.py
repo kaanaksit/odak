@@ -201,7 +201,7 @@ def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,pr
     reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
     return hologram,reconstruction
 
-def stochastic_gradient_descent(field, wavelength, distance, dx, resolution, propogation_type, n_iteration = 100, loss_function=None, cuda=False):
+def stochastic_gradient_descent(field,wavelength,distance,dx,resolution,propogation_type,n_iteration=100,loss_function=None,cuda=False,learning_rate=1.0):
     """
     Definition to generate phase and reconstruction from target image via stochastic gradient descent.
 
@@ -225,6 +225,8 @@ def stochastic_gradient_descent(field, wavelength, distance, dx, resolution, pro
                               If none it is set to be l2 loss
     cuda                    : boolean
                               GPU enabled
+    learning_rate           : float
+                              Learning rate.
 
     Returns
     ----------
@@ -237,34 +239,28 @@ def stochastic_gradient_descent(field, wavelength, distance, dx, resolution, pro
     """
     torch.cuda.empty_cache()
     torch.manual_seed(0)
-    device = torch.device("cuda" if cuda else "cpu")
-    
-    field = field.float().to(device)
-    phase = torch.zeros((resolution), requires_grad = True).float().to(device)
-    amplitude =  torch.ones((resolution), requires_grad = False).to(device)
-    k = wavenumber(wavelength)
+    device    = torch.device("cuda" if cuda else "cpu") 
+    field     = field.float().to(device)
+    phase     = torch.zeros((resolution),requires_grad=True,device=device)
+    amplitude = torch.ones((resolution),requires_grad=False).to(device)
+    k         = wavenumber(wavelength)
     optimizer = torch.optim.Adam([{'params': phase}],lr=1.0)
     if loss_function == None:
-        l2 = torch.nn.MSELoss().to(device)
-        def loss_function():
-            loss = l2(reconstruction_intensity, field)
-            return loss
+        loss_function = torch.nn.MSELoss().to(device)
     t = tqdm(range(n_iteration),leave=False)
     for i in t:
         optimizer.zero_grad()
-        hologram = generate_complex_field(amplitude, phase)
-        hologram = zero_pad(hologram)
-        reconstruction = propagate_beam(hologram, k, distance, dx, wavelength, propogation_type)
-        reconstruction = crop_center(reconstruction)
-        reconstruction_intensity = calculate_amplitude(reconstruction).float()
-        loss = loss_function()
+        hologram                 = generate_complex_field(amplitude,phase)
+        hologram                 = zero_pad(hologram)
+        reconstruction           = propagate_beam(hologram,k,distance,dx,wavelength,propogation_type)
+        reconstruction           = crop_center(reconstruction)
+        reconstruction_amplitude = calculate_amplitude(reconstruction).float()
+        loss                     = loss_function(reconstruction_amplitude,field)
         loss.backward(retain_graph=True)
         optimizer.step()
-        description = "loss:{}".format(loss.item())
+        description              = "loss:{}".format(loss.item())
         t.set_description(description)
-
-    reconstruction = propagate_beam(hologram, k, distance, dx, wavelength, propogation_type)
+    reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propogation_type)
     reconstruction = crop_center(reconstruction)
-    hologram = crop_center(hologram)
-
+    hologram       = crop_center(hologram)
     return hologram, reconstruction

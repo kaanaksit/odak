@@ -17,7 +17,7 @@ def test():
     input_field              = np.zeros((1080,1920),dtype=np.float)
     input_field[0::50,:]    += 1
     iteration_number         = 10
-    input_field              = torch.from_numpy(input_field)
+    input_field              = tools.convert_to_torch(input_field)
     hologram, reconstruction = stochastic_gradient_descent(
                                                            input_field, 
                                                            wavelength, 
@@ -27,7 +27,7 @@ def test():
                                                            propogation_type, 
                                                            iteration_number,
                                                            loss_function=None, 
-                                                           cuda=False
+                                                           cuda=True
                                                            )
     phase                    = ((calculate_phase(hologram) % (2 * np.pi)) / (2*np.pi)) * 255 
     phase                    = np.asarray(tools.convert_to_numpy(phase))
