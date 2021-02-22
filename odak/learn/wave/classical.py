@@ -1,7 +1,9 @@
 from odak import np
 import torch, torch.fft
-from .__init__ import set_amplitude, produce_phase_only_slm_pattern
+from .__init__ import set_amplitude, produce_phase_only_slm_pattern, generate_complex_field, calculate_amplitude
 from odak.wave import wavenumber
+from odak.learn.tools import zero_pad, crop_center
+from tqdm import tqdm
 
 def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel'):
     """
@@ -14,7 +16,10 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
     k                : odak.wave.wavenumber
                        Wave number of a wave, see odak.wave.wavenumber for more.
     distance         : float
-                       Propagation distance.
+                       Propagation distance.                        Propagation distance.                       Propagation distance.
+
+                      Propagation distance.
+
     dx               : float
                        Size of one single pixel in the field grid (in meters).
     wavelength       : float
@@ -195,3 +200,67 @@ def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,pr
         reconstruction = set_amplitude(hologram,field)
     reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
     return hologram,reconstruction
+
+def stochastic_gradient_descent(field,wavelength,distance,dx,resolution,propogation_type,n_iteration=100,loss_function=None,cuda=False,learning_rate=1.0):
+    """
+    Definition to generate phase and reconstruction from target image via stochastic gradient descent.
+
+    Parameters
+    ----------
+    field                   : ndarray
+                              Input field as Numpy array.
+    wavelength              : double
+                              Set if the converted array requires gradient.
+    distance                : double
+                              Hologaram plane distance wrt SLM plane
+    dx                      : float
+                              SLM pixel pitch
+    resolution              : array
+                              SLM resolution
+    propogation type        : str
+                              Type of the propagation (IR Fresnel, Angular Spectrum, Bandlimited Angular Spectrum, TR Fresnel, Fraunhofer)
+    n_iteration:            : int
+                              Max iteratation 
+    loss_function:          : function
+                              If none it is set to be l2 loss
+    cuda                    : boolean
+                              GPU enabled
+    learning_rate           : float
+                              Learning rate.
+
+    Returns
+    ----------
+    hologram                : torch.Tensor
+                              Phase only hologram as torch array
+
+    reconstruction_intensity: torch.Tensor
+                              Reconstruction as torch array
+
+    """
+    torch.cuda.empty_cache()
+    torch.manual_seed(0)
+    device    = torch.device("cuda" if cuda else "cpu") 
+    field     = field.float().to(device)
+    phase     = torch.zeros((resolution),requires_grad=True,device=device)
+    amplitude = torch.ones((resolution),requires_grad=False).to(device)
+    k         = wavenumber(wavelength)
+    optimizer = torch.optim.Adam([{'params': phase}],lr=1.0)
+    if loss_function == None:
+        loss_function = torch.nn.MSELoss().to(device)
+    t = tqdm(range(n_iteration),leave=False)
+    for i in t:
+        optimizer.zero_grad()
+        hologram                 = generate_complex_field(amplitude,phase)
+        hologram                 = zero_pad(hologram)
+        reconstruction           = propagate_beam(hologram,k,distance,dx,wavelength,propogation_type)
+        reconstruction           = crop_center(reconstruction)
+        reconstruction_amplitude = calculate_amplitude(reconstruction).float()
+        loss                     = loss_function(reconstruction_amplitude,field)
+        loss.backward(retain_graph=True)
+        optimizer.step()
+        description              = "loss:{}".format(loss.item())
+        t.set_description(description)
+    reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propogation_type)
+    reconstruction = crop_center(reconstruction)
+    hologram       = crop_center(hologram)
+    return hologram, reconstruction
