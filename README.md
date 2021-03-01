@@ -7,10 +7,16 @@ Odak (pronounced "O-dac") is the fundamental library for scientific computing in
 ## Getting Started
 
 ### Installing
-Odak can be installed using [pip](https://pypi.org/project/pip) **(Not recommended at this time)**:
+Odak can be installed using [pip](https://pypi.org/project/pip):
 
 ```bash
-pip3 install -i https://test.pypi.org/simple/ odak
+pip3 install git+https://github.com/kunguz/odak
+```
+
+or (not recommended at the time being):
+
+```bash
+pip3 install odak
 ```
 
 Or you can also directly install using the source
