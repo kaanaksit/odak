@@ -27,7 +27,7 @@ def test():
                                                            propogation_type, 
                                                            iteration_number,
                                                            loss_function=None, 
-                                                           cuda=True
+                                                           cuda=False
                                                            )
     phase                    = ((calculate_phase(hologram) % (2 * np.pi)) / (2*np.pi)) * 255 
     phase                    = np.asarray(tools.convert_to_numpy(phase))

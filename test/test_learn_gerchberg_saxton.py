@@ -21,7 +21,7 @@ def test():
                                               dx,
                                               wavelength,
                                               np.pi*2,
-                                              'IR Fresnel'
+                                              'TR Fresnel'
                                              )
     # hologram,_             = produce_phase_only_slm_pattern(
     #                                                         hologram,
