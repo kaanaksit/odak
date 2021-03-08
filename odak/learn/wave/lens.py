@@ -34,3 +34,38 @@ def quadratic_phase_function(nx,ny,k,focal=0.4,dx=0.001,offset=[0,0]):
     k     = torch.tensor([k])
     qwf  = torch.exp(1j*k*0.5*torch.sin(Z/focal))
     return qwf
+
+def prism_phase_function(nx,ny,k,angle,dx=0.001,axis='x'):
+    """
+    A definition to generate 2D phase function that represents a prism. See Goodman's Introduction to Fourier Optics book for more.
+
+    Parameters
+    ----------
+    nx         : int
+                 Size of the output along X.
+    ny         : int
+                 Size of the output along Y.
+    k          : odak.wave.wavenumber
+                 See odak.wave.wavenumber for more.
+    angle      : float
+                 Tilt angle of the prism in degrees.
+    dx         : float
+                 Pixel pitch.
+    axis       : str
+                 Axis of the prism.
+
+    Returns
+    ----------
+    prism      : torch.tensor
+                 Generated phase function for a prism.
+    """
+    angle = torch.deg2rad(torch.tensor([angle]))
+    size  = [ny,nx]
+    x     = torch.linspace(-size[0]*dx/2,size[0]*dx/2,size[0])
+    y     = torch.linspace(-size[1]*dx/2,size[1]*dx/2,size[1])
+    X,Y   = torch.meshgrid(x,y)
+    if axis == 'y':
+        prism = torch.exp(-1j*k*torch.sin(angle)*Y)
+    elif axis == 'x':
+        prism = torch.exp(-1j*k*torch.sin(angle)*X)
+    return prism
