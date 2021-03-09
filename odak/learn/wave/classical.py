@@ -242,7 +242,6 @@ def stochastic_gradient_descent(field,wavelength,distance,dx,resolution,propogat
     device    = torch.device("cuda" if cuda else "cpu") 
     field     = field.float().to(device)
     phase     = torch.zeros((resolution),requires_grad=True,device=device)
-    amplitude = torch.ones((resolution),requires_grad=False).to(device)
     k         = wavenumber(wavelength)
     optimizer = torch.optim.Adam([{'params': phase}],lr=1.0)
     if loss_function == None:
@@ -250,6 +249,7 @@ def stochastic_gradient_descent(field,wavelength,distance,dx,resolution,propogat
     t = tqdm(range(n_iteration),leave=False)
     for i in t:
         optimizer.zero_grad()
+        amplitude                = torch.ones((resolution),requires_grad=False).to(device)
         hologram                 = generate_complex_field(amplitude,phase)
         hologram                 = zero_pad(hologram)
         reconstruction           = propagate_beam(hologram,k,distance,dx,wavelength,propogation_type)
