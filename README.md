@@ -14,17 +14,10 @@ Odak can be installed using [pip](https://pypi.org/project/pip):
 pip3 install git+https://github.com/kunguz/odak
 ```
 
-or (not recommended at the time being):
+or:
 
 ```bash
 pip3 install odak
-```
-
-Or you can also directly install using the source
-
-```bash
-pip3 install -r requirements.txt
-python3 setup.py install
 ```
 
 ### Usage
