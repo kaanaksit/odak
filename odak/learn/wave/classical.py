@@ -16,10 +16,7 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
     k                : odak.wave.wavenumber
                        Wave number of a wave, see odak.wave.wavenumber for more.
     distance         : float
-                       Propagation distance.                        Propagation distance.                       Propagation distance.
-
-                      Propagation distance.
-
+                       Propagation distance.
     dx               : float
                        Size of one single pixel in the field grid (in meters).
     wavelength       : float
