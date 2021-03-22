@@ -76,12 +76,12 @@ def convolve2d(field,kernel):
     new_field   : torch.tensor
                   Convolved field.
     """
-    fr        = torch.fft.fftn(field)
-    fr2       = torch.fft.fftn(torch.flip(torch.flip(kernel,[1,0]),[0,1]))
+    fr        = torch.fft.fft2(field)
+    fr2       = torch.fft.fft2(torch.flip(torch.flip(kernel,[1,0]),[0,1]))
     m,n       = fr.shape
-    new_field = torch.real(torch.fft.ifftn(fr*fr2))
-    new_field = torch.roll(new_field,shifts=(int(-m/2+1),0),dims=(1,0))
-    new_field = torch.roll(new_field,shifts=(0,int(-n/2+1)),dims=(0,1))
+    new_field = torch.real(torch.fft.ifft2(fr*fr2))
+    new_field = torch.roll(new_field,shifts=(int(n/2+1),0),dims=(1,0))
+    new_field = torch.roll(new_field,shifts=(int(m/2+1),0),dims=(0,1))
     return new_field
 
 def generate_2d_gaussian(kernel_length=[21,21], nsigma=[3,3]):
