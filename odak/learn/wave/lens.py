@@ -22,7 +22,7 @@ def quadratic_phase_function(nx,ny,k,focal=0.4,dx=0.001,offset=[0,0]):
 
     Returns
     ---------
-    function   : ndarray
+    function   : torch.tensor
                  Generated quadratic phase function.
     """
     size  = [ny,nx]
@@ -32,7 +32,7 @@ def quadratic_phase_function(nx,ny,k,focal=0.4,dx=0.001,offset=[0,0]):
     Z     = X**2+Y**2
     focal = torch.tensor([focal])
     k     = torch.tensor([k])
-    qwf  = torch.exp(1j*k*0.5*torch.sin(Z/focal))
+    qwf   = torch.exp(1j*k*0.5*torch.sin(Z/focal))
     return qwf
 
 def prism_phase_function(nx,ny,k,angle,dx=0.001,axis='x'):
