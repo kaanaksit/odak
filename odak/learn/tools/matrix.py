@@ -1,6 +1,27 @@
 from odak import np
 import torch,torch.nn
 
+def quantize(image_field,bits=4):
+    """ 
+    Definitio to quantize a image field (0-255, 8 bit) to a certain bits level.
+
+    Parameters
+    ----------
+    image_field : torch.tensor
+                  Input image field.
+    bits        : int
+                  A value in between 0 to 8. Can not be zero.
+
+    Returns
+    ----------
+    new_field   : torch.tensor
+                  Quantized image field.
+    """
+    divider   = 2**(8-bits)
+    new_field = image_field/divider
+    new_field = new_field.int()
+    return new_field
+
 def zero_pad(field,size=None,method='center'):
     """
     Definition to zero pad a MxN array to 2Mx2N array.
