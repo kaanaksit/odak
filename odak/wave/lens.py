@@ -201,9 +201,10 @@ def linear_grating(nx,ny,every=2,add=3.14,axis='x'):
     """
     grating = np.zeros((nx,ny),dtype=np.complex64)
     if axis == 'x':
-        grating[::every,:] += np.exp(1j*add)
+        grating[::every,:] = np.exp(1j*add)
     if axis == 'y':
-        grating[:,::every] += np.exp(1j*add)
+        grating[:,::every] = np.exp(1j*add)
     if axis == 'xy':
-        grating[::every,::every] += np.exp(1j*np.pi)
+        grating += np.indices((nx,ny)).sum(axis=0) % every
+        grating  = np.exp(1j*grating*add)
     return grating
