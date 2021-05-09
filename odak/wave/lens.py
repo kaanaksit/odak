@@ -176,3 +176,34 @@ def plane_tilt(nx,ny,k,focals,dx=0.001,axis='x'):
     if axis == 'y' or axis == 'xy':
         field *= np.exp(1j*k*0.5*np.sin(Z/FY))
     return field
+
+def linear_grating(nx,ny,every=2,add=3.14,axis='x'):
+    """
+    A definition to generate a linear grating.
+
+    Parameters
+    ----------
+    nx         : int
+                 Size of the output along X.
+    ny         : int
+                 Size of the output along Y.
+    every      : int
+                 Add the add value at every given number.
+    add        : float
+                 Angle to be added.
+    axis       : string
+                 Axis eiter X,Y or both.
+
+    Returns
+    ----------
+    field      : ndarray
+                 Linear grating term.
+    """
+    grating = np.zeros((nx,ny),dtype=np.complex64)
+    if axis == 'x':
+        grating[::every,:] += np.exp(1j*add)
+    if axis == 'y':
+        grating[:,::every] += np.exp(1j*add)
+    if axis == 'xy':
+        grating[::every,::every] += np.exp(1j*np.pi)
+    return grating
