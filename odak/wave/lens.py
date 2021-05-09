@@ -205,6 +205,8 @@ def linear_grating(nx,ny,every=2,add=3.14,axis='x'):
     if axis == 'y':
         grating[:,::every] = np.exp(1j*add)
     if axis == 'xy':
-        grating += np.indices((nx,ny)).sum(axis=0) % every
-        grating  = np.exp(1j*grating*add)
+        checker  = np.indices((nx,ny)).sum(axis=0) % every
+        checker += 1
+        checker  = checker % 2
+        grating  = np.exp(1j*checker*add)
     return grating
