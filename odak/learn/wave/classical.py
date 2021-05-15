@@ -241,7 +241,7 @@ def stochastic_gradient_descent(field,wavelength,distance,dx,resolution,propogat
     phase     = torch.zeros((resolution),requires_grad=True,device=device)
     k         = wavenumber(wavelength)
     optimizer = torch.optim.Adam([{'params': phase}],lr=1.0)
-    if loss_function == None:
+    if type(loss_function) == type(None):
         loss_function = torch.nn.MSELoss().to(device)
     t = tqdm(range(n_iteration),leave=False)
     for i in t:
@@ -257,6 +257,7 @@ def stochastic_gradient_descent(field,wavelength,distance,dx,resolution,propogat
         optimizer.step()
         description              = "loss:{}".format(loss.item())
         t.set_description(description)
+    hologram       = generate_complex_field(amplitude,phase)
     reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propogation_type)
     reconstruction = crop_center(reconstruction)
     hologram       = crop_center(hologram)
