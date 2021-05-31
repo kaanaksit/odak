@@ -154,6 +154,33 @@ def render(fn,exit=False):
         quit()
     return True
 
+def set_render_type(render_type='rgb'):
+    """
+    Definition to set the render type.
+
+    Parameters
+    ----------
+    render_type    : str
+                     Set it to `rgb` or `depth` to get either color or depth images.
+    """
+    bpy.context.scene.use_nodes = True
+    tree                        = bpy.context.scene.node_tree
+    links                       = tree.links
+    for node in tree.nodes:
+        tree.nodes.remove(node)
+    node_composite              = tree.nodes.new('CompositorNodeComposite')
+    node_norm                   = tree.nodes.new('CompositorNodeNormalize')
+    node_layers                 = tree.nodes.new('CompositorNodeRLayers')
+    node_composite.location     = 800,0
+    node_norm.location          = 400,-100
+    node_layers.location        = 0,0
+    link0                       = links.new(node_layers.outputs[2],node_norm.inputs[0])
+    if render_type == 'rgb':
+        linkr = links.new(node_layers.outputs[0],node_composite.inputs[0])
+    elif render_type == 'depth':
+        linkr = links.new(node_norm.outputs[0],node_composite.inputs[0])
+    return True
+
 def prepare(resolution=[1920,1080],camera_fov=40.0,camera_location=[0.,0.,-15.],camera_lookat=[0.,0.,0.],clip=[0.1,100000000.],device='GPU',intensity=2.,world_color=[0.3,0.3,0.3]):
     """
     Definition to prepare Blender for renderings.
