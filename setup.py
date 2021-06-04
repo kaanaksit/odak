@@ -4,6 +4,13 @@ from setuptools import setup
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+thelibFolder = os.path.dirname(os.path.realpath(__file__))
+requirementPath = thelibFolder + '/requirements.txt'
+install_requires = []
+if os.path.isfile(requirementPath):
+    with open(requirementPath) as f:
+        install_requires = f.read().splitlines()
+        
 setup(
       name                 = "odak",
       version              = "0.1.5",
@@ -17,9 +24,7 @@ setup(
       license              = "",
       keywords             = "optics holography",
       url                  = "https://github.com/kunguz/odak",
-      install_requires     = [
-                              "numpy",
-                             ],
+      install_requires     = install_requires,
       packages             = [
                               'odak',
                               'odak/raytracing',
