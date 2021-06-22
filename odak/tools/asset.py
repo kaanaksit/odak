@@ -15,7 +15,7 @@ def read_PLY(fn,offset=[0,0,0],angles=[0.,0.,0.],mode='XYZ'):
     angles       : list
                    Rotation angles in degrees.
     mode         : str
-                   Rotation mode determines ordering of the rotations at each axis. There are XYZ,YXZ,ZXY and ZYX modes.                  
+                   Rotation mode determines ordering of the rotations at each axis. There are XYZ,YXZ,ZXY and ZYX modes. 
 
     Returns
     ----------
