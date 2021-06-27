@@ -13,7 +13,7 @@ if os.path.isfile(requirementPath):
         
 setup(
       name                 = "odak",
-      version              = "0.1.6",
+      version              = "0.1.7",
       author               = "Kaan Akşit",
       author_email         = "kunguz@gmail.com",
       description          = (
@@ -43,7 +43,7 @@ setup(
                              ],
       package_dir          = {'odak': 'odak'},
       package_data         = {'odak': ['catalog/data/*.json']},
-      data_files           = [('', ['LICENSE.txt'])],
+      data_files           = [('', ['LICENSE.txt','README.md','THANKS.txt','requirements.txt'])],
       long_description     = read('README.md'),
       classifiers          = [
                               "Development Status :: 2 - Pre-Alpha",
