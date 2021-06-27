@@ -22,7 +22,7 @@ pip3 install odak
 ### Usage
 It is easy as in this recorded session. Import it to your code and start designing your next in Optics!
 
-![alt tag](recordings/example.gif)
+![alt tag](example.gif)
 
 ### Examples
 We prepared a bunch of test routines, which can also play a role in guidance during using Odak, you find these test scripts in [here](test/). If you need more then the test scripts, reach out using issues. Remember there are no stupid questions, there are stupid answers. 
