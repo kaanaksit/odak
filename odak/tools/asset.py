@@ -146,6 +146,7 @@ def write_PLY_from_points(points,savefn='output.ply'):
             tris.append(([idy+(idx+1)*samples[0], idy+1+idx*samples[0], idy+1+(idx+1)*samples[0]], color[0], color[1], color[2]))
     tris    = np_ply.asarray(tris, dtype=[('vertex_indices', 'i4', (3,)),('red', 'u1'), ('green', 'u1'),('blue', 'u1')])
     pnts    = np_ply.asarray(pnts, dtype=[('x', 'f4'), ('y', 'f4'), ('z', 'f4')])
+    print(tris.shape,pnts.shape)
     # Save mesh.
     el1     = PlyElement.describe(pnts, 'vertex', comments=['Vertex data'])
     el2     = PlyElement.describe(tris, 'face', comments=['Face data'])
