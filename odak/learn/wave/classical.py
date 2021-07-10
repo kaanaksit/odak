@@ -252,7 +252,7 @@ def stochastic_gradient_descent(field,wavelength,distance,dx,resolution,propogat
         reconstruction           = propagate_beam(hologram,k,distance,dx,wavelength,propogation_type)
         reconstruction           = crop_center(reconstruction)
         reconstruction_amplitude = calculate_amplitude(reconstruction).float()
-        loss                     = loss_function(reconstruction_amplitude,field)
+        loss                     = loss_function(reconstruction_amplitude**2,field)
         loss.backward(retain_graph=True)
         optimizer.step()
         description              = "loss:{}".format(loss.item())
