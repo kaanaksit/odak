@@ -241,7 +241,7 @@ def stochastic_gradient_descent(field,wavelength,distance,dx,resolution,propogat
     phase     = torch.zeros((resolution),requires_grad=True,device=device)
     amplitude = torch.ones((resolution),requires_grad=False).to(device)
     k         = wavenumber(wavelength)
-    optimizer = torch.optim.Adam([{'params': phase}],lr=1.0)
+    optimizer = torch.optim.Adam([{'params': phase}],lr=learning_rate)
     if type(loss_function) == type(None):
         loss_function = torch.nn.MSELoss().to(device)
     t = tqdm(range(n_iteration),leave=False)
