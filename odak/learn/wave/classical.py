@@ -198,7 +198,7 @@ def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,pr
     reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propagation_type)
     return hologram,reconstruction
 
-def stochastic_gradient_descent(field,wavelength,distance,dx,resolution,propogation_type,n_iteration=100,loss_function=None,cuda=False,learning_rate=1.0):
+def stochastic_gradient_descent(field,wavelength,distance,dx,resolution,propogation_type,n_iteration=100,loss_function=None,cuda=False,learning_rate=0.1):
     """
     Definition to generate phase and reconstruction from target image via stochastic gradient descent.
 
@@ -241,25 +241,27 @@ def stochastic_gradient_descent(field,wavelength,distance,dx,resolution,propogat
     phase     = torch.zeros((resolution),requires_grad=True,device=device)
     amplitude = torch.ones((resolution),requires_grad=False).to(device)
     k         = wavenumber(wavelength)
-    optimizer = torch.optim.Adam([{'params': phase}],lr=1.0)
+    optimizer = torch.optim.Adam([{'params': phase}],lr=learning_rate)
     if type(loss_function) == type(None):
         loss_function = torch.nn.MSELoss().to(device)
     t = tqdm(range(n_iteration),leave=False)
     for i in t:
         optimizer.zero_grad()
         hologram                 = generate_complex_field(amplitude,phase)
-        hologram                 = zero_pad(hologram)
-        reconstruction           = propagate_beam(hologram,k,distance,dx,wavelength,propogation_type)
-        reconstruction           = crop_center(reconstruction)
+        hologram_padded          = zero_pad(hologram)
+        reconstruction_padded    = propagate_beam(hologram_padded,k,distance,dx,wavelength,propogation_type)
+        reconstruction           = crop_center(reconstruction_padded)
         reconstruction_amplitude = calculate_amplitude(reconstruction).float()
         loss                     = loss_function(reconstruction_amplitude**2,field)
         loss.backward(retain_graph=True)
         optimizer.step()
         description              = "loss:{}".format(loss.item())
         t.set_description(description)
-    hologram       = generate_complex_field(amplitude,phase)
-    hologram       = zero_pad(hologram)
-    reconstruction = propagate_beam(hologram,k,distance,dx,wavelength,propogation_type)
-    reconstruction = crop_center(reconstruction)
-    hologram       = crop_center(hologram)
+    print(description)
+    torch.no_grad()
+    hologram              = generate_complex_field(amplitude,phase)
+    hologram_padded       = zero_pad(hologram)
+    reconstruction_padded = propagate_beam(hologram_padded,k,distance,dx,wavelength,propogation_type)
+    reconstruction        = crop_center(reconstruction_padded)
+    hologram              = crop_center(hologram_padded)
     return hologram, reconstruction
