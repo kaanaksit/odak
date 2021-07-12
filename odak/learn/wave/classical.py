@@ -238,7 +238,7 @@ def stochastic_gradient_descent(field,wavelength,distance,dx,resolution,propogat
     torch.manual_seed(0)
     device    = torch.device("cuda" if cuda else "cpu") 
     field     = field.float().to(device)
-    phase     = torch.zeros((resolution),requires_grad=True,device=device)
+    phase     = torch.zeros(resolution).detach().to(device).requires_grad_()
     amplitude = torch.ones((resolution),requires_grad=False).to(device)
     k         = wavenumber(wavelength)
     optimizer = torch.optim.Adam([{'params': phase}],lr=learning_rate)
