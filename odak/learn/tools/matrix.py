@@ -3,7 +3,7 @@ import torch,torch.nn
 
 def quantize(image_field,bits=4):
     """ 
-    Definitio to quantize a image field (0-255, 8 bit) to a certain bits level.
+    Definition to quantize a image field (0-255, 8 bit) to a certain bits level.
 
     Parameters
     ----------
