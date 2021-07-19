@@ -69,3 +69,38 @@ def prism_phase_function(nx,ny,k,angle,dx=0.001,axis='x'):
     elif axis == 'x':
         prism = torch.exp(-1j*k*torch.sin(angle)*X)
     return prism
+
+def linear_grating(nx,ny,every=2,add=3.14,axis='x'):
+    """
+    A definition to generate a linear grating.
+
+    Parameters
+    ----------
+    nx         : int
+                 Size of the output along X.
+    ny         : int
+                 Size of the output along Y.
+    every      : int
+                 Add the add value at every given number.
+    add        : float
+                 Angle to be added.
+    axis       : string
+                 Axis eiter X,Y or both.
+
+    Returns
+    ----------
+    field      : torch.tensor
+                 Linear grating term.
+    """
+    grating = torch.zeros((nx,ny),dtype=torch.complex64)
+    if axis == 'x':
+        grating[::every,:] = torch.exp(1j*add)
+    if axis == 'y':
+        grating[:,::every] = torch.exp(1j*add)
+    if axis == 'xy':
+        checker  = np.indices((nx,ny)).sum(axis=0) % every
+        checker  = torch.from_numpy(checker)
+        checker += 1
+        checker  = checker % 2
+        grating  = torch.exp(1j*checker*add)
+    return grating
