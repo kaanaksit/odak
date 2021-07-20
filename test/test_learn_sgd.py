@@ -12,17 +12,17 @@ def test():
     input_field              = torch.zeros(resolution[0],resolution[1]).double().to(device)
     input_field[500::600,:]  = 1
     iteration_number         = 50
-    hologram,reconstructed = stochastic_gradient_descent(
-                                                         input_field,
-                                                         wavelength,
-                                                         distance,
-                                                         dx,
-                                                         resolution,
-                                                         'TR Fresnel',
-                                                         iteration_number,
-                                                         learning_rate=0.1,
-                                                         cuda=cuda
-                                                        )
+    hologram,reconstructed   = stochastic_gradient_descent(
+                                                           input_field,
+                                                           wavelength,
+                                                           distance,
+                                                           dx,
+                                                           resolution,
+                                                           'TR Fresnel',
+                                                           iteration_number,
+                                                           learning_rate=0.1,
+                                                           cuda=cuda
+                                                          )
     assert True==True
 
 if __name__ == '__main__':

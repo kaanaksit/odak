@@ -251,8 +251,8 @@ def stochastic_gradient_descent(field,wavelength,distance,dx,resolution,propogat
         hologram_padded          = zero_pad(hologram)
         reconstruction_padded    = propagate_beam(hologram_padded,k,distance,dx,wavelength,propogation_type)
         reconstruction           = crop_center(reconstruction_padded)
-        reconstruction_amplitude = calculate_amplitude(reconstruction)
-        loss                     = loss_function(reconstruction_amplitude,field)
+        reconstruction_intensity = calculate_amplitude(reconstruction)**2
+        loss                     = loss_function(reconstruction_intensity,field)
         description              = "Iteration: {} loss:{:.4f}".format(i,loss.item())
         loss.backward(retain_graph=True)
         optimizer.step()
