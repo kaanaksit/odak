@@ -37,8 +37,8 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
         result = transfer_function_fresnel(field,k,distance,dx,wavelength)
     elif propagation_type == 'Fraunhofer':
         nv, nu = field.shape[-1], field.shape[-2]
-        x      = torch.linspace(-nv*dx/2, nv*dx/2, nv, dtype=torch.float64)
-        y      = torch.linspace(-nu*dx/2, nu*dx/2, nu, dtype=torch.float64)
+        x      = torch.linspace(-nv*dx/2, nv*dx/2, nv, dtype=torch.float32)
+        y      = torch.linspace(-nu*dx/2, nu*dx/2, nu, dtype=torch.float32)
         Y, X   = torch.meshgrid(y, x)
         Z      = torch.pow(X,2) + torch.pow(Y,2)
         c      = 1./(1j*wavelength*distance)*torch.exp(1j*k*0.5/distance*Z)
@@ -72,8 +72,8 @@ def transfer_function_fresnel(field,k,distance,dx,wavelength):
     """
     distance  = torch.tensor([distance]).to(field.device)
     nv, nu    = field.shape[-1], field.shape[-2]
-    fx        = torch.linspace(-1./2./dx,1./2./dx,nu,dtype=torch.float64).to(field.device)
-    fy        = torch.linspace(-1./2./dx,1./2./dx,nv,dtype=torch.float64).to(field.device)
+    fx        = torch.linspace(-1./2./dx,1./2./dx,nu,dtype=torch.float32).to(field.device)
+    fy        = torch.linspace(-1./2./dx,1./2./dx,nv,dtype=torch.float32).to(field.device)
     FY, FX    = torch.meshgrid(fx, fy)
     H         = torch.exp(1j*k*distance*(1-(FX*wavelength)**2-(FY*wavelength)**2)**0.5)
     H         = H.to(field.device)
@@ -107,8 +107,8 @@ def band_limited_angular_spectrum(field,k,distance,dx,wavelength):
     """
     assert True==False,"Refer to Issue 19 for more. This definition is unreliable."
     nv, nu    = field.shape[-1], field.shape[-2]
-    x         = torch.linspace(-nv*dx/2, nv*dx/2, nv, dtype=torch.float64)
-    y         = torch.linspace(-nu*dx/2, nu*dx/2, nu, dtype=torch.float64)
+    x         = torch.linspace(-nv*dx/2, nv*dx/2, nv, dtype=torch.float32)
+    y         = torch.linspace(-nu*dx/2, nu*dx/2, nu, dtype=torch.float32)
     Y, X      = torch.meshgrid(y, x)
     Z         = torch.pow(X,2) + torch.pow(Y,2)
     distance  = torch.FloatTensor([distance])
