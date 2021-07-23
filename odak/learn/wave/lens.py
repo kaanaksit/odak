@@ -94,9 +94,9 @@ def linear_grating(nx,ny,every=2,add=3.14,axis='x'):
     """
     grating = torch.zeros((nx,ny),dtype=torch.complex64)
     if axis == 'x':
-        grating[::every,:] = torch.exp(1j*add)
+        grating[::every,:] = torch.exp(torch.tensor(1j*add))
     if axis == 'y':
-        grating[:,::every] = torch.exp(1j*add)
+        grating[:,::every] = torch.exp(torch.tensor(1j*add))
     if axis == 'xy':
         checker  = np.indices((nx,ny)).sum(axis=0) % every
         checker  = torch.from_numpy(checker)
