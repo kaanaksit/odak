@@ -13,7 +13,7 @@ if os.path.isfile(requirementPath):
         
 setup(
       name                 = "odak",
-      version              = "0.1.7",
+      version              = "0.1.8",
       author               = "Kaan Akşit",
       author_email         = "kunguz@gmail.com",
       description          = (
