@@ -1,0 +1,10 @@
+cff-version: 1.1.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Akşit
+    given-names: Kaan
+    orcid: https://orcid.org/0000-0002-5934-5500
+title: "Odak"
+version: 0.1.8
+doi: 10.5281/zenodo.5136406
+date-released: 2021-06-25
