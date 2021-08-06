@@ -4,6 +4,27 @@ authors:
   - family-names: Akşit
     given-names: Kaan
     orcid: https://orcid.org/0000-0002-5934-5500
+
+  - family-names: Karadeniz
+    given-names: Ahmet Serdar
+    orcid: https://orcid.org/0000-0002-7894-4891
+
+  - family-names: Chakravarthula
+    given-names: Praneeth
+    orcid: https://orcid.org/0000-0002-3092-7435
+
+  - family-names: Kavaklı
+    given-names: Koray
+    orcid: https://orcid.org/0000-0003-4678-2522
+
+  - family-names: Itoh
+    given-names: Yuta
+    orcid: https://orcid.org/0000-0002-5901-797X
+
+  - family-names: Wang
+    given-names: Yuta
+    orcid:
+
 title: "Odak"
 version: 0.1.8
 doi: 10.5281/zenodo.5136406
