@@ -48,6 +48,8 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel',
         c      = 1./(1j*wavelength*distance)*torch.exp(1j*k*0.5/distance*Z)
         c      = c.to(field.device)
         result = c*torch.fft.ifftshift(torch.fft.fft2(torch.fft.fftshift(field)))*pow(dx,2)
+    else:
+        assert True==False,"Propagation type not recognized."
     return result
 
 def custom(field,kernel):
