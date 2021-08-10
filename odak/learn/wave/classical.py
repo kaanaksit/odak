@@ -5,13 +5,13 @@ from odak.wave import wavenumber
 from odak.learn.tools import zero_pad, crop_center
 from tqdm import tqdm
 
-def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel'):
+def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel',kernel=None):
     """
     Definitions for Fresnel impulse respone (IR), Fresnel Transfer Function (TF), Fraunhofer diffraction in accordence with "Computational Fourier Optics" by David Vuelz.
 
     Parameters
     ==========
-    field            : torch.complex128
+    field            : torch.complex
                        Complex field (MxN).
     k                : odak.wave.wavenumber
                        Wave number of a wave, see odak.wave.wavenumber for more.
@@ -23,6 +23,8 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
                        Wavelength of the electric field.
     propagation_type : str
                        Type of the propagation (IR Fresnel, TR Fresnel, Fraunhofer).
+    kernel           : torch.complex
+                       Custom complex kernel.
 
     Returns
     =======
@@ -35,6 +37,8 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
         result = band_limited_angular_spectrum(field,k,distance,dx,wavelength)
     elif propagation_type == 'TR Fresnel':
         result = transfer_function_fresnel(field,k,distance,dx,wavelength)
+    elif propagation_type == 'custom':
+        result = custom(field,k,distance,dx,wavelength,kernel)
     elif propagation_type == 'Fraunhofer':
         nv, nu = field.shape[-1], field.shape[-2]
         x      = torch.linspace(-nv*dx/2, nv*dx/2, nv, dtype=torch.float32)
@@ -46,6 +50,33 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel')
         result = c*torch.fft.ifftshift(torch.fft.fft2(torch.fft.fftshift(field)))*pow(dx,2)
     return result
 
+def custom(field,kernel):
+    """
+    A definition to calculate convolution based Fresnel approximation for beam propagation.
+
+    Parameters
+    ----------
+    field            : torch.complex
+                       Complex field (MxN).
+    kernel           : torch.complex
+                       Custom complex kernel for beam propagation.
+
+    Returns
+    ---------
+    result           : torch.complex
+                       Final complex field (MxN).
+
+    """
+    distance  = torch.tensor([distance]).to(field.device)
+    nv, nu    = field.shape[-1], field.shape[-2]
+    if type(kernel) == type(None):
+        H     = torch.zeros(field.shape).to(field.device)
+    else:
+        H     = kernel
+    U1        = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field)))
+    U2        = H*U1
+    result    = torch.fft.ifftshift(torch.fft.ifft2(torch.fft.ifftshift(U2)))
+    return result
 
 def transfer_function_fresnel(field,k,distance,dx,wavelength):
     """
@@ -53,7 +84,7 @@ def transfer_function_fresnel(field,k,distance,dx,wavelength):
 
     Parameters
     ----------
-    field            : troch.complex
+    field            : torch.complex
                        Complex field (MxN).
     k                : odak.wave.wavenumber
                        Wave number of a wave, see odak.wave.wavenumber for more.
