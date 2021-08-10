@@ -38,7 +38,7 @@ def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel',
     elif propagation_type == 'TR Fresnel':
         result = transfer_function_fresnel(field,k,distance,dx,wavelength)
     elif propagation_type == 'custom':
-        result = custom(field,k,distance,dx,wavelength,kernel)
+        result = custom(field,kernel)
     elif propagation_type == 'Fraunhofer':
         nv, nu = field.shape[-1], field.shape[-2]
         x      = torch.linspace(-nv*dx/2, nv*dx/2, nv, dtype=torch.float32)
