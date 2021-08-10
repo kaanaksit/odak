@@ -69,8 +69,6 @@ def custom(field,kernel):
                        Final complex field (MxN).
 
     """
-    distance  = torch.tensor([distance]).to(field.device)
-    nv, nu    = field.shape[-1], field.shape[-2]
     if type(kernel) == type(None):
         H     = torch.zeros(field.shape).to(field.device)
     else:
