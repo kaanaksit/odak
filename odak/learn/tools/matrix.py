@@ -63,6 +63,8 @@ def crop_center(field,size=None):
     ----------
     field       : ndarray
                   Input field 2Mx2N array.
+    size        : list
+                  Dimensions to crop with respect to center of the image.
 
     Returns
     ----------
