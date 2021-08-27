@@ -299,29 +299,27 @@ def stochastic_gradient_descent(field,wavelength,distance,dx,resolution,propogat
 
 def point_wise(target,wavelength,distance,dx,device,lens_size=401):
     """
-    Point-wise hologram calculation method. For more Maimone, Andrew, Andreas Georgiou, and Joel S. Kollin. "Holographic near-eye displays for virtual and augmented reality." ACM Transactions on Graphics (TOG) 36.4 (2017): 1-16.
+    Naive point-wise hologram calculation method. For more information, refer to Maimone, Andrew, Andreas Georgiou, and Joel S. Kollin. "Holographic near-eye displays for virtual and augmented reality." ACM Transactions on Graphics (TOG) 36.4 (2017): 1-16.
 
     Parameters
     ----------
-    field            : ndarray
-                       Complex input field to be converted into a hologram.
+    target           : torch.float
+                       float input target to be converted into a hologram (Target should be in range of 0 and 1).
     wavelength       : float
-                       Wavelength of the light.
-    distance         : ndarray
-                       Depth map of the input field.
+                       Wavelength of the electric field.
+    distance         : float
+                       Propagation distance.
     dx               : float
-                       Pixel pitch.
-    lens_model       : str
-                       Method to calculate the lens patterns.
-    propagation_mode : str
-                       Beam propagation method to be used if the lens_model is not equal to `ideal`.
-    n_iteration      : int
-                       Number of iterations.
+                       Size of one single pixel in the field grid (in meters).
+    device           : torch.device
+                       Device type (cuda or cpu)`.
+    lens_size        : int
+                       Size of lens for masking sub holograms(in pixels).
 
     Returns
     ----------
-    hologram   : ndarray
-                 Generated complex hologram.
+    hologram         : torch.cfloat
+                       Calculated complex hologram.
     """
     target         = zero_pad(target)
     nx,ny          = target.shape
