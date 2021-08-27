@@ -1,8 +1,8 @@
 from odak import np
 import torch, torch.fft
-from .__init__ import set_amplitude, produce_phase_only_slm_pattern, generate_complex_field, calculate_amplitude
+from .__init__ import set_amplitude, produce_phase_only_slm_pattern, generate_complex_field, calculate_amplitude, quadratic_phase_function, calculate_phase
 from odak.wave import wavenumber
-from odak.learn.tools import zero_pad, crop_center
+from odak.learn.tools import zero_pad, crop_center 
 from tqdm import tqdm
 
 def propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel',kernel=None):
@@ -296,3 +296,51 @@ def stochastic_gradient_descent(field,wavelength,distance,dx,resolution,propogat
     reconstruction        = crop_center(reconstruction_padded)
     hologram              = crop_center(hologram_padded)
     return hologram.detach(), reconstruction.detach()
+
+def point_wise(target,wavelength,distance,dx,device,lens_size=401):
+    """
+    Point-wise hologram calculation method. For more Maimone, Andrew, Andreas Georgiou, and Joel S. Kollin. "Holographic near-eye displays for virtual and augmented reality." ACM Transactions on Graphics (TOG) 36.4 (2017): 1-16.
+
+    Parameters
+    ----------
+    field            : ndarray
+                       Complex input field to be converted into a hologram.
+    wavelength       : float
+                       Wavelength of the light.
+    distance         : ndarray
+                       Depth map of the input field.
+    dx               : float
+                       Pixel pitch.
+    lens_model       : str
+                       Method to calculate the lens patterns.
+    propagation_mode : str
+                       Beam propagation method to be used if the lens_model is not equal to `ideal`.
+    n_iteration      : int
+                       Number of iterations.
+
+    Returns
+    ----------
+    hologram   : ndarray
+                 Generated complex hologram.
+    """
+    target         = zero_pad(target)
+    nx,ny          = target.shape
+    k              = wavenumber(wavelength)
+    ones           = torch.ones(target.shape,requires_grad=False).to(device)
+    x              = torch.linspace(-nx/2,nx/2,nx).to(device)
+    y              = torch.linspace(-ny/2,ny/2,ny).to(device)
+    X,Y            = torch.meshgrid(x,y)
+    Z              = (X**2+Y**2)**0.5
+    mask           = (torch.abs(Z)<=lens_size)
+    mask[mask>1]   = 1
+    fz             = quadratic_phase_function(nx,ny,k,focal=-distance,dx=dx).to(device)
+    A              = target**0.5
+    fz             = mask*fz
+    FA             = torch.fft.fft2(torch.fft.fftshift(A))
+    FFZ            = torch.fft.fft2(torch.fft.fftshift(fz))
+    H              = torch.mul(FA,FFZ)
+    hologram       = torch.fft.ifftshift(torch.fft.ifft2(H))
+    hologram_phase = calculate_phase(hologram)
+    hologram       = generate_complex_field(ones,hologram_phase)
+    hologram       = crop_center(hologram)
+    return hologram

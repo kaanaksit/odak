@@ -54,7 +54,7 @@ def quadratic_phase_function(nx,ny,k,focal=0.4,dx=0.001,offset=[0,0]):
     function   : ndarray
                  Generated quadratic phase function.
     """
-    size = [ny,nx]
+    size = [nx,ny]
     x    = np.linspace(-size[0]*dx/2,size[0]*dx/2,size[0])-offset[1]*dx
     y    = np.linspace(-size[1]*dx/2,size[1]*dx/2,size[1])-offset[0]*dx
     X,Y  = np.meshgrid(x,y)
