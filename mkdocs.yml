@@ -1,0 +1,18 @@
+
+# Project information
+site_name: Odak
+site_description: The fundamental library for scientific computing in optical and visual perception sciences.
+site_author: Kaan Akşit
+site_url: 'https://kunguz.github.io/odak/'
+
+# Repository
+repo_name: kunguz/odak
+repo_url: 'https://github.com/kunguz/odak'
+
+# Copyright
+copyright: 'Copyright &copy; 2021'
+
+# Page tree
+nav:
+  - Introduction: index.md
+
