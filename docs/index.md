@@ -1,7 +1,3 @@
-page_title: About Odak
-page_description: Introduction to Odak
-page_keywords: introduction, documentation, about
-
 # Odak
 Odak (pronounced "O-dac") is the entire library for scientific computing in optical and visual perception sciences.
 
