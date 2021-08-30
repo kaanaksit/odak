@@ -1,5 +1,0 @@
-theme:
-    name: readthedocs
-    highlightjs: true
-    hljs_languages:
-        - python
