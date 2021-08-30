@@ -1,4 +1,4 @@
-# Odak
+# Introduction
 Odak (pronounced "O-dac") is the entire library for scientific computing in optical and visual perception sciences.
 
 **For users:**
