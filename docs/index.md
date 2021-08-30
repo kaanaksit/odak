@@ -4,7 +4,7 @@ Odak (pronounced "O-dac") is the entire library for scientific computing in opti
 **For users:**
 
 * What is Odak and why does it exist?
-* [Installation](installation/index.md)
+* [Installation](installation.md)
 * Use cases
 
 **For contributors:**

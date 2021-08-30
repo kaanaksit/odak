@@ -1,5 +1,1 @@
-theme:
-    name: readthedocs
-    highlightjs: true
-    hljs_languages:
-        - python
+remote_theme: carlosperate/jekyll-theme-rtd

@@ -14,7 +14,7 @@ copyright: 'Copyright &copy; 2021'
 
 # Page tree
 nav:
-  - Introduction: ':windex.md'
+  - Introduction: 'index.md'
 
 theme:
     name: readthedocs
