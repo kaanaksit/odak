@@ -1,7 +1,7 @@
 [![DOI](https://zenodo.org/badge/3987171.svg)](https://zenodo.org/badge/latestdoi/3987171)
 
 # Odak
-Odak (pronounced "O-dac") is the entire library for scientific computing in optical and visual perception sciences.
+Odak (pronounced "O-dac") is the fundamental library for scientific computing in optical and visual perception sciences.
 Odak includes modules for geometric [3D raytracing](odak/raytracing/), [Jones calculus](odak/jones), [wave optics](odak/wave), and [a set of tools](odak/tools) to ease pain in [measurement](odak/measurement), [exporting/importing CAD](odak/tools/asset.py), and [visualization](odak/visualize) during a design process. 
 We have generated a set of recipes that go well with machine learning approaches compatible with the PyTorch learning framework as provided [here](odak/learn). 
 We have created many [test scripts](test/) to inspire how you use Odak and helping your design process. 
