@@ -14,5 +14,10 @@ copyright: 'Copyright &copy; 2021'
 
 # Page tree
 nav:
-  - Introduction: index.md
+  - Introduction: ':windex.md'
 
+theme:
+    name: readthedocs
+    highlightjs: true
+    hljs_languages:
+        - python
