@@ -1,3 +1,5 @@
+[Go to main page](index.md)
+
 # Installation
 Odak can be installed in multiple ways. 
 However, our recommended method for installing Odak is using [pip](https://pypi.org/project/pip) distribution system. 
@@ -51,3 +53,4 @@ pytest
 The tests should return no error.
 However, if an error is encountered, please [start a new issue](https://github.com/kunguz/odak/issues) to help us be aware of the issue.
 
+[Go to main page](index.md)
