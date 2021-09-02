@@ -10,8 +10,13 @@ repo_url: 'https://github.com/kunguz/odak'
 copyright: 'Copyright &copy; 2021'
 
 nav:
-  - Introduction: 'index.md'
-  - Installation: 'installation.md'
+  - Main: 'index.md'
+  - For users:
+      - What is Odak?: 'beginning.md'
+      - Installation: 'installation.md'
+  - Additional information:
+      - Odak on GitHub: 'https://github.com/kunguz/odak'
+      - License of Odak: 'https://github.com/kunguz/odak/blob/master/LICENSE.txt'
 
 theme:
     name: readthedocs
