@@ -24,7 +24,8 @@ pip3 install odak
 ```
 
 ### Usage
-It is easy as in this recorded session. Import it to your code and start designing your next in Optics!
+It is easy as in this recorded session. Import it to your code and start designing your next in Optics! 
+You can consulte to the [documentation](https://kunguz.github.io/odak) for learning and finding out more ways to use Odak.
 
 ![alt tag](example.gif)
 
