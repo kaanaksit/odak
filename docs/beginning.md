@@ -36,5 +36,5 @@ I used Odak in my all published papers.
 When I look back, I can only say that I am thankful to 2011 me spending a part of his summer in front of a computer to code a raytracer for optical design.
 Odak is now more than a raytracer, expanding on many other aspects of light, including vision science, polarization optics, computer-generated holography or machine learning routines for light sciences.
 Odak keeps on growing [thanks to a body of people that contributed over time](https://github.com/kunguz/odak/blob/master/THANKS.txt).
-It will keep it growing in the future and will continually transform into the tool that I need to innovate.
+I will keep it growing in the future and will continually transform into the tool that I need to innovate.
 All of it is free as in free-free, and all is sharable as I believe in people.
