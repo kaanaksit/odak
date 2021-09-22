@@ -21,10 +21,6 @@ authors:
     given-names: Yuta
     orcid: https://orcid.org/0000-0002-5901-797X
 
-  - family-names: Wang
-    given-names: Yuta
-    orcid:
-
 title: "Odak"
 version: 0.1.8
 doi: 10.5281/zenodo.5136406
