@@ -6,6 +6,10 @@ Odak (pronounced "O-dac") is the fundamental library for scientific computing in
 - [`What is Odak?`](odak/beginning.md)
 - [`Installation`](odak/installation.md)
 
+## Use cases
+
+- [`Computer-Generated Holography`](cgh.md)
+
 ## New contributors
 
 - `Guide to contribution`
