@@ -10,13 +10,8 @@ repo_url: 'https://github.com/kunguz/odak'
 copyright: 'Copyright &copy; 2021'
 
 nav:
-  - Main: 'index.md'
-  - For users:
-      - What is Odak?: 'beginning.md'
-      - Installation: 'installation.md'
-  - Additional information:
-      - Odak on GitHub: 'https://github.com/kunguz/odak'
-      - License of Odak: 'https://github.com/kunguz/odak/blob/master/LICENSE.txt'
+  - Getting started: 'index.md'
+  - Computer-Generated Holography: 'cgh.md'
 
 theme:
     name: readthedocs

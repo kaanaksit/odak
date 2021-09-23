@@ -1,18 +1,17 @@
-# Main
+#Getting started
+Odak (pronounced "O-dac") is the fundamental library for scientific computing in optical and visual perception sciences.
 
-**For users:**
+#New Users
 
-* [What is Odak?](beginning.md)
-* [Installation](installation.md)
-* Use cases
+- [`What is Odak?`](beginning.md)
+- [`Installation`](installation.md)
 
-**For contributors:**
+#New contributors
 
-* Guide to contribution
+- `Guide to contribution`
 
-**Additional information:**
+#Additional information
 
-* [Citing Odak in a scientific publication](https://zenodo.org/badge/latestdoi/3987171)
-* Reporting bugs or requesting a feature
-* [License of Odak](https://github.com/kunguz/odak/blob/master/LICENSE.txt)
-
+- [`Citing Odak in a scientific publication`](https://zenodo.org/badge/latestdoi/3987171)
+- [`License of Odak`](https://github.com/kunguz/odak/blob/master/LICENSE.txt)
+- `Reporting bugs or requesting a feature`

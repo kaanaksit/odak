@@ -7,13 +7,11 @@ One of them is related to the history of `Odak`, which is partially answered in 
 The other answer lies in what kind of submodules `Odak` has in it.
 Depending on a need of a scientist at all levels or a professional from the industry, these submodules can help the design processes in optics and visual perception.
 
-Odak includes modules for geometric [3D raytracing](odak/raytracing/), [Jones calculus](odak/jones), [wave optics](odak/wave), and [a set of tools](odak/tools) to ease pain in [measurement](odak/measurement), [exporting/importing CAD](odak/tools/asset.py), and [visualization](odak/visualize) during a design process.
-We have generated a set of recipes that go well with machine learning approaches compatible with the PyTorch learning framework as provided [here](odak/learn).
-We have created many [test scripts](test/) to inspire how you use Odak and helping your design process.
-Finally, we have created a [distribution system](odak/manager) to process tasks in parallel across multiple computing resources within the same network.
-Odak can either run using CPUs or automatically switch to [NVIDIA GPUs](odak/__init__.py#L8).
-
-
+Odak includes modules for geometric [3D raytracing](https://github.com/kunguz/odak/tree/master/odak/raytracing/), [Jones calculus](https://github.com/kunguz/odak/tree/master/odak/jones), [wave optics](odak/wave), and [a set of tools](https://github.com/kunguz/odak/tree/master/odak/tools) to ease pain in [measurement](https://github.com/kunguz/odak/tree/master/odak/measurement), [exporting/importing CAD](https://github.com/kunguz/odak/tree/master/odak/tools/asset.py), and [visualization](https://github.com/kunguz/odak/tree/master/odak/visualize) during a design process.
+We have generated a set of recipes that go well with machine learning approaches compatible with the PyTorch learning framework as provided [here](https://github.com/kunguz/odak/tree/master/odak/learn).
+We have created many [test scripts](https://github.com/kunguz/odak/tree/master/test/) to inspire how you use Odak and helping your design process.
+Finally, we have created a [distribution system](https://github.com/kunguz/odak/tree/master/odak/manager) to process tasks in parallel across multiple computing resources within the same network.
+Odak can either run using CPUs or automatically switch to [NVIDIA GPUs](https://github.com/kunguz/odak/tree/master/odak/__init__.py#L8).
 
 ## History
 In the summer of 2011, I, [Kaan Akşit](https://kaanaksit.com), was a PhD student.
