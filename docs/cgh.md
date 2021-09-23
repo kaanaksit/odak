@@ -7,3 +7,5 @@ We consult the beginners in this matter to `Goodman's Introduction to Fourier Op
 | Function      | Description   |
 | ------------- |:-------------:|
 | [odak.learn.wave.propagate_beam](odak/learn/wave/propagate_beam) | Optical beam propagation. |
+
+
