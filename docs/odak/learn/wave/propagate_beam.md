@@ -1,4 +1,4 @@
-#odak.learn.wave.propagate_beam
+# odak.learn.wave.propagate_beam
 
 `odak.learn.propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel',kernel=None)`
 
