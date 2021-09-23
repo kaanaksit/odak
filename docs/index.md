@@ -3,8 +3,8 @@ Odak (pronounced "O-dac") is the fundamental library for scientific computing in
 
 ## New Users
 
-- [`What is Odak?`](beginning.md)
-- [`Installation`](installation.md)
+- [`What is Odak?`](odak/beginning.md)
+- [`Installation`](odak/installation.md)
 
 ## New contributors
 
