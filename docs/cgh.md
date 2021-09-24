@@ -7,7 +7,7 @@ In the rest of this document, you will find engineering notes and relevant funct
 
 | Note          | Description   |
 | ------------- |:-------------:|
-| Introduction to hologram calculation using Odak | This engineering note will give you an idea about how to calculate phase-only holograms using Odak |
+| Optimizing holograms using Odak | This engineering note will give you an idea about how to calculate phase-only holograms using Odak |
 
 ## odak.learn.wave
 
