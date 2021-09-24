@@ -14,7 +14,7 @@ nav:
   - Computer-Generated Holography: 'cgh.md'
 
 theme:
-    name: readthedocs
+    name: material
     highlightjs: true
     hljs_languages:
         - python

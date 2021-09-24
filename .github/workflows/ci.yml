@@ -1,0 +1,33 @@
+name: ci 
+
+You can change the name to your liking.
+
+
+on:
+  push:
+    branches: 
+
+At some point, GitHub renamed master to main. If your default branch is named master, you can safely remove main, vice versa.
+
+
+      - master
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+      - run: pip install mkdocs-material 
+
+This is the place to install further MkDocs plugins or Markdown extensions with pip to be used during the build:
+
+pip install \
+  mkdocs-material \
+  mkdocs-awesome-pages-plugin \
+  ...
+
+
+      - run: mkdocs gh-deploy --force
