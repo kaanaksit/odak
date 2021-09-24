@@ -33,6 +33,7 @@ setup(
                               'odak/wave',
                               'odak/learn/wave',
                               'odak/learn/tools',
+                              'odak/learn/perception',
                               'odak/visualize',
                               'odak/visualize/blender',
                               'odak/manager',
