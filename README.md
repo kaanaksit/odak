@@ -7,6 +7,7 @@ We have generated a set of recipes that go well with machine learning approaches
 We have created many [test scripts](test/) to inspire how you use Odak and helping your design process. 
 Finally, we have created a [distribution system](odak/manager) to process tasks in parallel across multiple computing resources within the same network. 
 Odak can either run using CPUs or automatically switch to [NVIDIA GPUs](odak/__init__.py#L8).
+Consult to our [documentation](https://kunguz.github.io/odak) for more!
 
 ## Getting Started
 
@@ -24,4 +25,5 @@ pip3 install odak
 ```
 
 ### Usage
-You can import Odak and start designing your next in Optics! We prepared a [documentation](https://kunguz.github.io/odak) on usage and much more.
+You can import Odak and start designing your next in Optics! 
+We prepared a [documentation](https://kunguz.github.io/odak) on usage and much more.
