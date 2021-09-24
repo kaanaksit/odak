@@ -24,7 +24,10 @@ authors:
     given-names: Yuta
     orcid: https://orcid.org/0000-0002-5901-797X
 
+  - family-names: Walton
+    given-names: David Robert
+    orcid:  https://orcid.org/0000-0001-5879-9714
+
 title: "Odak"
-version: 0.1.8
+version: 0.1.9
 doi: 10.5281/zenodo.5136406
-date-released: 2021-06-25
