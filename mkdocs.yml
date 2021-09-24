@@ -15,9 +15,14 @@ nav:
 
 theme:
     name: material
+    theme:
+        features:
+            - navigation.instant
+            - navigation.tabs
+    palette:
+        primary: red
     highlightjs: true
     hljs_languages:
         - python
-
-plugins:
-    - search
+    plugins:
+        - search
