@@ -25,7 +25,7 @@ pip3 install -r requirements.txt
 python3 setup.py install
 ```
 
-# Notes before running
+## Notes before running
 Some notes should be highlighted to users, and these include:
 
 * Odak installs `Numpy` during an installation but not `Cupy`. 
@@ -34,7 +34,7 @@ Therefore, anything that relies on approaches that use `Numpy` or `Cupy` can not
 * Odak installs `PyTorch` that only uses `CPU`. 
 To properly install `PyTorch` with GPU support, please consult [PyTorch website](https://pytorch.org).
 
-# Testing an installation
+## Testing an installation
 After installing Odak, one can test if Odak has been appropriately installed with its dependencies by running the unit tests.
 To be able to run unit tests, make sure to have `pytest` installed:
 
