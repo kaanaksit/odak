@@ -1,6 +1,6 @@
 title: Odak
 description: The fundamental library for scientific computing in optical and visual perception sciences.
-remote_theme: carlosperate/jekyll-theme-rtd
+remote_theme: material
 
 site_author: Kaan Akşit
 repo_url: "https://github.com/kunguz/odak"
