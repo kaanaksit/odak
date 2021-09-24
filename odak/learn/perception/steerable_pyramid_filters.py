@@ -6,6 +6,18 @@ def crop_steerable_pyramid_filters(filters, size):
     Given original 9x9 NYU filters, this crops them to the desired size.
     The size must be an odd number >= 3
     Note this only crops the h0, l0 and band filters (not the l downsampling filter)
+
+    Parameters
+    ----------
+    filters     : dict of torch.tensor
+                    Filters to crop (should in format used by get_steerable_pyramid_filters.)
+    size        : int
+                    Size to crop to. For example, an input of 3 will crop the filters to a size of 3x3.
+
+    Returns
+    =======
+    filters     : dict of torch.tensor
+                    The cropped filters.
     """
     assert(size >= 3)
     assert(size % 2 == 1)
@@ -35,12 +47,29 @@ def crop_steerable_pyramid_filters(filters, size):
 def get_steerable_pyramid_filters(size, n_orientations, filter_type):
     """
     This returns filters for a real-valued steerable pyramid.
-    size: Width of the filters (e.g. 3 will return 3x3 filters)
-    n_orientations: Number of oriented band filters
-    filter_type: This can be used to select between the original NYU filters and cropped or trained alternatives.
-        full: Original NYU filters from https://github.com/LabForComputationalVision/pyrtools/blob/master/pyrtools/pyramids/filters.py
-        cropped: Some filters are cut back in size by extracting the centre and scaling as appropriate.
-        trained: Same as reduced, but the oriented kernels are replaced by learned 5x5 kernels.
+
+    Parameters
+    ----------
+
+    size            : int
+                        Width of the filters (e.g. 3 will return 3x3 filters)
+    n_orientations  : int
+                        Number of oriented band filters
+    filter_type     :  str
+                        This can be used to select between the original NYU filters and cropped or trained alternatives.
+                        full: Original NYU filters from https://github.com/LabForComputationalVision/pyrtools/blob/master/pyrtools/pyramids/filters.py
+                        cropped: Some filters are cut back in size by extracting the centre and scaling as appropriate.
+                        trained: Same as reduced, but the oriented kernels are replaced by learned 5x5 kernels.
+    
+    Returns
+    =======
+    
+    filters         : dict of torch.tensor
+                        The steerable pyramid filters. Returned as a dict with the following keys:
+                        "l" The lowpass downsampling filter
+                        "l0" The lowpass residual filter
+                        "h0" The highpass residual filter
+                        "b" The band filters (a list of torch.tensor filters, one for each orientation).
     """
 
     if filter_type != "full" and filter_type != "cropped" and filter_type != "trained":

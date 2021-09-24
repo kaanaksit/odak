@@ -5,24 +5,29 @@ from .metameric_loss import MetamericLoss
 from .color_conversion import ycrcb_2_rgb, rgb_2_ycrcb
 
 class MetamerMSELoss():
-    """ MetamerMSELoss measures the MSE between a given image and a metamer of the given target
-        image.
-        =================================================================
-        Parameters:
-        alpha: parameter controlling foveation - larger values mean bigger pooling
-            regions.
-        real_image_width: The real width of the image as displayed to the user.
-            Units don't matter as long as they are the same as for real_viewing_distance.
-        real_viewing_distance: The real distance of the observer's eyes to the image plane.
-            Units don't matter as long as they are the same as for real_image_width.
-        n_pyramid_levels: Number of levels of the steerable pyramid. Note that the image is padded
-            so that both height and width are multiples of 2^(n_pyramid_levels), so setting this value
-            too high will slow down the calculation a lot.
-        mode: Foveation mode, either "quadratic" or "linear". Controls how pooling regions grow
-            as you move away from the fovea. We got best results with "quadratic".
-        n_orientations: Number of orientations in the steerable pyramid. Can be 1, 2, 4 or 6.
-            Increasing this will increase runtime.
-        =================================================================
+    """ 
+    Measures the MSE between a given image and a metamer of the given target image.
+
+    Parameters
+    ----------
+    alpha                   : float
+                                parameter controlling foveation - larger values mean bigger pooling regions.
+    real_image_width        : float 
+                                The real width of the image as displayed to the user.
+                                Units don't matter as long as they are the same as for real_viewing_distance.
+    real_viewing_distance   : float 
+                                The real distance of the observer's eyes to the image plane.
+                                Units don't matter as long as they are the same as for real_image_width.
+    n_pyramid_levels        : int 
+                                Number of levels of the steerable pyramid. Note that the image is padded
+                                so that both height and width are multiples of 2^(n_pyramid_levels), so setting this value
+                                too high will slow down the calculation a lot.
+    mode                    : str 
+                                Foveation mode, either "quadratic" or "linear". Controls how pooling regions grow
+                                as you move away from the fovea. We got best results with "quadratic".
+    n_orientations          : int 
+                                Number of orientations in the steerable pyramid. Can be 1, 2, 4 or 6.
+                                Increasing this will increase runtime.
     """
     def __init__(self, device=torch.device("cpu"),\
         alpha=0.08, real_image_width=0.2, real_viewing_distance=0.7, mode="quadratic",
@@ -35,8 +40,22 @@ class MetamerMSELoss():
         self.loss_func = torch.nn.MSELoss()
 
     def gen_metamer(self, image, gaze):
-        """ Generates a metamer for an image, following the method in [this paper](https://dl.acm.org/doi/abs/10.1145/3450626.3459943)
-            This function can be used on its own to generate a metamer for a desired image.
+        """ 
+        Generates a metamer for an image, following the method in [this paper](https://dl.acm.org/doi/abs/10.1145/3450626.3459943)
+        This function can be used on its own to generate a metamer for a desired image.
+
+        Parameters
+        ----------
+        image   : torch.tensor
+                Image to compute metamer for. Should be an RGB image in NCHW format (4 dimensions)
+        gaze    : list
+                Gaze location in the image, in normalized image coordinates (range [0, 1]) relative to the top left of the image.
+        
+        Returns
+        =======
+
+        metamer : torch.tensor
+                The generated metamer image
         """
         image = rgb_2_ycrcb(image)
         target_stats = self.metameric_loss.calc_statsmaps(image, gaze=gaze, alpha=self.metameric_loss.alpha)        
@@ -71,6 +90,24 @@ class MetamerMSELoss():
 
     
     def __call__(self, image, target, gaze=[0.5,0.5]):
+        """ 
+        Calculates the Metamer MSE Loss.
+
+        Parameters
+        ----------
+        image   : torch.tensor
+                Image to compute loss for. Should be an RGB image in NCHW format (4 dimensions)
+        target  : torch.tensor
+                Ground truth target image to compute loss for. Should be an RGB image in NCHW format (4 dimensions)
+        gaze    : list
+                Gaze location in the image, in normalized image coordinates (range [0, 1]) relative to the top left of the image.
+
+        Returns
+        =======
+
+        loss                : torch.tensor
+                                The computed loss.
+        """
         # Pad image and target if necessary
         min_divisor = 2 ** self.metameric_loss.n_pyramid_levels
         height = image.size(2)

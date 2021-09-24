@@ -3,13 +3,27 @@ import torch
 import math
 
 def make_3d_location_map(image_pixel_size, real_image_width=0.3, real_viewing_distance=0.6):
-    """ Makes a map of the real 3D location that each pixel in an image corresponds to, when displayed to
-        a user on a flat screen. Assumes the viewpoint is located at the centre of the image, and the screen is 
-        perpendicular to the viewing direction.
-        image_pixel_size: The size of the image in pixels, as a tuple of form (height, width)
-        real_image_width: The real width of the image as displayed. Units not important, as long as they
-            are the same as those used for real_viewing_distance
-        real_viewing_distance: The real distance from the user's viewpoint to the screen.
+    """ 
+    Makes a map of the real 3D location that each pixel in an image corresponds to, when displayed to
+    a user on a flat screen. Assumes the viewpoint is located at the centre of the image, and the screen is 
+    perpendicular to the viewing direction.
+
+    Parameters
+    ----------
+
+    image_pixel_size        : tuple of ints 
+                                The size of the image in pixels, as a tuple of form (height, width)
+    real_image_width        : float
+                                The real width of the image as displayed. Units not important, as long as they
+                                are the same as those used for real_viewing_distance
+    real_viewing_distance   : float 
+                                The real distance from the user's viewpoint to the screen.
+    
+    Returns
+    =======
+
+    map                     : torch.tensor
+                                The computed 3D location map, of size 3xWxH.
     """
     real_image_height = (real_image_width / image_pixel_size[-1]) * image_pixel_size[-2]
     x_coords = torch.linspace(-0.5, 0.5, image_pixel_size[-1])*real_image_width
@@ -21,15 +35,32 @@ def make_3d_location_map(image_pixel_size, real_image_width=0.3, real_viewing_di
     return torch.cat([x_coords, y_coords, z_coords], dim=0)
 
 def make_eccentricity_distance_maps(gaze_location, image_pixel_size, real_image_width=0.3, real_viewing_distance=0.6):
-    """ Makes a map of the eccentricity of each pixel in an image for a given fixation point, when displayed to
-        a user on a flat screen. Assumes the viewpoint is located at the centre of the image, and the screen is 
-        perpendicular to the viewing direction. Output in radians.
-        gaze_location: User's gaze (fixation point) in the image. Should be given as a tuple with normalized
-            image coordinates (ranging from 0 to 1)
-        image_pixel_size: The size of the image in pixels, as a tuple of form (height, width)
-        real_image_width: The real width of the image as displayed. Units not important, as long as they
-            are the same as those used for real_viewing_distance
-        real_viewing_distance: The real distance from the user's viewpoint to the screen.
+    """ 
+    Makes a map of the eccentricity of each pixel in an image for a given fixation point, when displayed to
+    a user on a flat screen. Assumes the viewpoint is located at the centre of the image, and the screen is 
+    perpendicular to the viewing direction. Output in radians.
+
+    Parameters
+    ----------
+
+    gaze_location           : tuple of floats
+                                User's gaze (fixation point) in the image. Should be given as a tuple with normalized
+                                image coordinates (ranging from 0 to 1)
+    image_pixel_size        : tuple of ints
+                                The size of the image in pixels, as a tuple of form (height, width)
+    real_image_width        : float
+                                The real width of the image as displayed. Units not important, as long as they
+                                are the same as those used for real_viewing_distance
+    real_viewing_distance   : float
+                                The real distance from the user's viewpoint to the screen.
+
+    Returns
+    =======
+
+    eccentricity_map        : torch.tensor
+                                The computed eccentricity map, of size WxH.
+    distance_map            : torch.tensor
+                                The computed distance map, of size WxH.
     """
     real_image_height = (real_image_width / image_pixel_size[-1]) * image_pixel_size[-2]
     location_map = make_3d_location_map(image_pixel_size, real_image_width, real_viewing_distance)
@@ -50,18 +81,32 @@ def make_eccentricity_distance_maps(gaze_location, image_pixel_size, real_image_
     return eccentricity_map, distance_map
 
 def make_pooling_size_map_pixels(gaze_location, image_pixel_size, alpha=0.3, real_image_width=0.3, real_viewing_distance=0.6, mode="quadratic"):
-    """ Makes a map of the pooling size associated with each pixel in an image for a given fixation point, when displayed to
-        a user on a flat screen. Follows the idea that pooling size (in radians) should be directly proportional to eccentricity
-        (also in radians). 
-        Assumes the viewpoint is located at the centre of the image, and the screen is 
-        perpendicular to the viewing direction. Output is the width of the pooling region in pixels.
-        gaze_location: User's gaze (fixation point) in the image. Should be given as a tuple with normalized
-            image coordinates (ranging from 0 to 1)
-        image_pixel_size: The size of the image in pixels, as a tuple of form (height, width)
-        alpha: The constant of proportionality (i.e. pooling size = alpha x eccentricity).
-        real_image_width: The real width of the image as displayed. Units not important, as long as they
-            are the same as those used for real_viewing_distance
-        real_viewing_distance: The real distance from the user's viewpoint to the screen.
+    """ 
+    Makes a map of the pooling size associated with each pixel in an image for a given fixation point, when displayed to
+    a user on a flat screen. Follows the idea that pooling size (in radians) should be directly proportional to eccentricity
+    (also in radians). 
+    Assumes the viewpoint is located at the centre of the image, and the screen is 
+    perpendicular to the viewing direction. Output is the width of the pooling region in pixels.
+
+    Parameters
+    ----------
+
+    gaze_location           : tuple of floats
+                                User's gaze (fixation point) in the image. Should be given as a tuple with normalized
+                                image coordinates (ranging from 0 to 1)
+    image_pixel_size        : tuple of ints
+                                The size of the image in pixels, as a tuple of form (height, width)
+    real_image_width        : float
+                                The real width of the image as displayed. Units not important, as long as they
+                                are the same as those used for real_viewing_distance
+    real_viewing_distance   : float
+                                The real distance from the user's viewpoint to the screen.
+
+    Returns
+    =======
+
+    pooling_size_map        : torch.tensor
+                                The computed pooling size map, of size WxH.
     """
     eccentricity, distance_to_pixel = make_eccentricity_distance_maps(gaze_location, image_pixel_size, real_image_width, real_viewing_distance)
     eccentricity_centre, _ = make_eccentricity_distance_maps([0.5,0.5], image_pixel_size, real_image_width, real_viewing_distance)
@@ -79,7 +124,29 @@ def make_pooling_size_map_pixels(gaze_location, image_pixel_size, alpha=0.3, rea
     return pooling_pixel
 
 def make_pooling_size_map_lod(gaze_location, image_pixel_size, alpha=0.3, real_image_width=0.3, real_viewing_distance=0.6, mode="quadratic"):
-    """ Like make_pooling_size_map_pixels, but instead gives the pooling sizes as LOD levels of a mipmap to sample from.
+    """ 
+    This function is similar to make_pooling_size_map_pixels, but instead returns a map of LOD levels to sample from
+    to achieve the correct pooling region areas.
+
+    Parameters
+    ----------
+
+    gaze_location           : tuple of floats
+                                User's gaze (fixation point) in the image. Should be given as a tuple with normalized
+                                image coordinates (ranging from 0 to 1)
+    image_pixel_size        : tuple of ints
+                                The size of the image in pixels, as a tuple of form (height, width)
+    real_image_width        : float
+                                The real width of the image as displayed. Units not important, as long as they
+                                are the same as those used for real_viewing_distance
+    real_viewing_distance   : float
+                                The real distance from the user's viewpoint to the screen.
+
+    Returns
+    =======
+
+    pooling_size_map        : torch.tensor
+                                The computed pooling size map, of size WxH.
     """
     pooling_pixel = make_pooling_size_map_pixels(gaze_location, image_pixel_size, alpha, real_image_width, real_viewing_distance, mode)
     pooling_lod = torch.log2(1e-6+pooling_pixel)
@@ -87,8 +154,17 @@ def make_pooling_size_map_lod(gaze_location, image_pixel_size, alpha=0.3, real_i
     return pooling_lod
 
 def make_radial_map(size, gaze):
-    """ Makes a simple radial map where each pixel contains distance in pixels from the chosen gaze location.
-        Gaze location should be supplied in normalised image coordinates.
+    """ 
+    Makes a simple radial map where each pixel contains distance in pixels from the chosen gaze location.
+
+    Parameters
+    ----------
+
+    size    : tuple of ints
+                Dimensions of the image
+    gaze    : tuple of floats
+                User's gaze (fixation point) in the image. Should be given as a tuple with normalized
+                image coordinates (ranging from 0 to 1)
     """
     pix_gaze = [gaze[0]*size[0], gaze[1]*size[1]]
     rows = torch.linspace(0, size[0], size[0])

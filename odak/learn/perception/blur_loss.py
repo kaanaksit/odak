@@ -3,26 +3,37 @@ import torch
 from .radially_varying_blur import RadiallyVaryingBlur
 
 class BlurLoss():
-    """ BlurLoss implements two of the losses presented in the paper.
-        When blur_source is set to False, it implements blur_match from the paper, trying to match
-        the input image to the blurred target image.
-        When blur_source is set to True, it implements blur_lowpass from the paper, matching the blurred
-        version of the input image to the blurred target image.
-    =================================================================
-    Parameters:
-    alpha: parameter controlling foveation - larger values mean bigger pooling
-        regions.
-    real_image_width: The real width of the image as displayed to the user.
-        Units don't matter as long as they are the same as for real_viewing_distance.
-    real_viewing_distance: The real distance of the observer's eyes to the image plane.
-        Units don't matter as long as they are the same as for real_image_width.
-    mode: Foveation mode, either "quadratic" or "linear". Controls how pooling regions grow
-        as you move away from the fovea. We got best results with "quadratic".
-    =================================================================
+    """ 
+    BlurLoss implements two different blur losses.
+    When blur_source is set to False, it implements blur_match, trying to match the input image to the blurred target image.
+    This tries to match the source input image to a blurred version of the target.
+    When blur_source is set to True, it implements blur_lowpass, matching the blurred version of the input image to the blurred target image.
+    This tries to match only the low frequencies of the source input image to the low frequencies of the target.
+
+
+    Parameters
+    ----------
+
+    alpha                   : float
+                                parameter controlling foveation - larger values mean bigger pooling regions.
+    real_image_width        : float 
+                                The real width of the image as displayed to the user.
+                                Units don't matter as long as they are the same as for real_viewing_distance.
+    real_viewing_distance   : float 
+                                The real distance of the observer's eyes to the image plane.
+                                Units don't matter as long as they are the same as for real_image_width.
+    n_pyramid_levels        : int 
+                                Number of levels of the steerable pyramid. Note that the image is padded
+                                so that both height and width are multiples of 2^(n_pyramid_levels), so setting this value
+                                too high will slow down the calculation a lot.
+    mode                    : str 
+                                Foveation mode, either "quadratic" or "linear". Controls how pooling regions grow
+                                as you move away from the fovea. We got best results with "quadratic".
+    blur_source             : bool
+                                If true, blurs the source image as well as the target before computing the loss.
     """
     def __init__(self, device=torch.device("cpu"),\
-        alpha=0.08, real_image_width=0.2, real_viewing_distance=0.7, mode="quadratic",
-        use_old_blur=False, blur_source=False):
+        alpha=0.08, real_image_width=0.2, real_viewing_distance=0.7, mode="quadratic", blur_source=False):
         self.target = None
         self.device = device
         self.alpha = alpha
@@ -31,7 +42,6 @@ class BlurLoss():
         self.mode = mode
         self.blur = None
         self.loss_func = torch.nn.MSELoss()
-        self.use_old_blur = use_old_blur
         self.blur_source = blur_source
 
     def blur_image(self, image, gaze):
@@ -41,6 +51,27 @@ class BlurLoss():
 
     
     def __call__(self, image, target, gaze=[0.5,0.5]):
+        """ 
+        Calculates the Blur Loss.
+
+        Parameters
+        ----------
+        image               : torch.tensor
+                                Image to compute loss for. Should be an RGB image in NCHW format (4 dimensions)
+        target              : torch.tensor
+                                Ground truth target image to compute loss for. Should be an RGB image in NCHW format (4 dimensions)
+        image_colorspace    : str
+                                The current colorspace of your image and target. Ignored if input does not have 3 channels.
+                                accepted values: RGB, YCrCb.
+        gaze                : list
+                                Gaze location in the image, in normalized image coordinates (range [0, 1]) relative to the top left of the image.
+        
+        Returns
+        =======
+
+        loss                : torch.tensor
+                                The computed loss.
+        """
         blurred_target = self.blur_image(target, gaze)
         if self.blur_source:
             blurred_image = self.blur_image(image, gaze)

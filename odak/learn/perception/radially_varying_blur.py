@@ -7,39 +7,49 @@ import math
 from .foveation import make_pooling_size_map_lod
 
 class RadiallyVaryingBlur():
-    """ This class is used to apply a radially varying blur to input images. Given a gaze location and information about the 
-        image and foveation, it applies a blur that will achieve the proper pooling size.
+    """ 
+    This class is used to apply a radially varying blur to input images. Given a gaze location and information about the 
+    image and foveation, it applies a blur that will achieve the proper pooling size.
 
-        The blur is accelerated by generating and sampling from MIP maps of the input image.
+    The blur is accelerated by generating and sampling from MIP maps of the input image.
 
-        This class caches the foveation information. This means that if it is run repeatedly with the same foveation parameters,
-        gaze location and image size (e.g. in an optimisation loop) it won't recalculate the pooling maps.
-        If you are repeatedly applying blur to images of different sizes (e.g. a pyramid) for best performance use one instance
-        of this class per image size.
+    This class caches the foveation information. This means that if it is run repeatedly with the same foveation parameters,
+    gaze location and image size (e.g. in an optimisation loop) it won't recalculate the pooling maps.
+    If you are repeatedly applying blur to images of different sizes (e.g. a pyramid) for best performance use one instance
+    of this class per image size.
     """
     def __init__(self):
         self.lod_map = None
 
     def blur(self, image, alpha=0.08, real_image_width=0.2, real_viewing_distance=0.7, centre=None, mode="quadratic"):
         """
-            Apply the radially varying blur to an image.
+        Apply the radially varying blur to an image.
 
-            =================================================================
-            Parameters:
-            alpha: parameter controlling foveation - larger values mean bigger pooling
-                regions.
-            real_image_width: The real width of the image as displayed to the user.
-                Units don't matter as long as they are the same as for real_viewing_distance.
-            real_viewing_distance: The real distance of the observer's eyes to the image plane.
-                Units don't matter as long as they are the same as for real_image_width.
-            n_pyramid_levels: Number of levels of the steerable pyramid. Note that the image is padded
-                so that both height and width are multiples of 2^(n_pyramid_levels), so setting this value
-                too high will slow down the calculation a lot.
-            mode: Foveation mode, either "quadratic" or "linear". Controls how pooling regions grow
-                as you move away from the fovea. We got best results with "quadratic".
-            n_orientations: Number of orientations in the steerable pyramid. Can be 1, 2, 4 or 6.
-                Increasing this will increase runtime.
-            =================================================================
+        Parameters
+        ----------
+
+        image                   : torch.tensor
+                                    The image to blur, in NCHW format.
+        alpha                   : float
+                                    parameter controlling foveation - larger values mean bigger pooling regions.
+        real_image_width        : float 
+                                    The real width of the image as displayed to the user.
+                                    Units don't matter as long as they are the same as for real_viewing_distance.
+        real_viewing_distance   : float 
+                                    The real distance of the observer's eyes to the image plane.
+                                    Units don't matter as long as they are the same as for real_image_width.
+        centre                  : tuple of floats
+                                    The centre of the radially varying blur (the gaze location).
+                                    Should be a tuple of floats containing normalised image coordinates in range [0,1]
+        mode                    : str 
+                                    Foveation mode, either "quadratic" or "linear". Controls how pooling regions grow
+                                    as you move away from the fovea. We got best results with "quadratic".
+
+        Returns
+        =======
+
+        output                  : torch.tensor
+                                    The blurred image
         """
         size = (image.size(-2), image.size(-1))
 

@@ -10,12 +10,26 @@ class SpatialSteerablePyramid():
     as opposed to multiplication in the Fourier domain.
     This has a number of optimisations over previous implementations that increase efficiency, but introduce some
     reconstruction error.
-    use_bilinear_downup: This uses bilinear filtering when upsampling/downsampling, rather than the original approach
-    of applying a large lowpass kernel and sampling even rows/columns
-    filter_type: This can be used to select smaller filters than the original ones if desired.
-        full: Original filter sizes
-        cropped: Some filters are cut back in size by extracting the centre and scaling as appropriate.
-        trained: Same as reduced, but the oriented kernels are replaced by learned 5x5 kernels.
+
+    Parameters
+    ----------
+
+    use_bilinear_downup     : bool
+                                This uses bilinear filtering when upsampling/downsampling, rather than the original approach
+                                of applying a large lowpass kernel and sampling even rows/columns
+    n_channels              : int
+                                Number of channels in the input images (e.g. 3 for RGB input)
+    filter_size             : int
+                                Desired size of filters (e.g. 3 will use 3x3 filters).
+    n_orientations          : int
+                                Number of oriented bands in each level of the pyramid.
+    filter_type             : str
+                                This can be used to select smaller filters than the original ones if desired.
+                                full: Original filter sizes
+                                cropped: Some filters are cut back in size by extracting the centre and scaling as appropriate.
+                                trained: Same as reduced, but the oriented kernels are replaced by learned 5x5 kernels.
+    device                  : torch.device
+                                torch device the input images will be supplied from.
     """
 
     def __init__(self, use_bilinear_downup=True, n_channels=1, 
@@ -56,6 +70,32 @@ class SpatialSteerablePyramid():
                 self.filt_l = add_channels_to_filter(self.filt_l)
 
     def construct_pyramid(self, image, n_levels, multiple_highpass=False):
+        """
+        Constructs and returns a steerable pyramid for the provided image.
+
+        Parameters
+        ----------
+
+        image               : torch.tensor
+                                The input image, in NCHW format. The number of channels C should match num_channels
+                                when the pyramid maker was created.
+        n_levels            : int
+                                Number of levels in the constructed steerable pyramid.
+        multiple_highpass   : bool
+                                If true, computes a highpass for each level of the pyramid.
+                                These extra levels are redundant (not used for reconstruction).
+        
+        Returns
+        =======
+
+        pyramid             : list of dicts of torch.tensor
+                                The computed steerable pyramid.
+                                Each level is an entry in a list. The pyramid is ordered from largest levels to smallest levels.
+                                Each level is stored as a dict, with the following keys:
+                                "h" Highpass residual
+                                "l" Lowpass residual
+                                "b" Oriented bands (a list of torch.tensor)
+        """
         pyramid = []
 
         # Make level 0, containing highpass, lowpass and the bands
@@ -104,21 +144,24 @@ class SpatialSteerablePyramid():
 
         return pyramid
 
-    def reconstruct_from_pyramid_upsample(self, pyramid):
-        output_size = pyramid[0]['h'].size()[-2:]
-        image = pyramid[-1]['l']
-        image = torch.nn.functional.interpolate(image, size=output_size, mode="nearest", recompute_scale_factor=False)
-        for level in reversed(pyramid[:-1]):
-            for b in range(len(level['b'])):
-                b_filtered = torch.nn.functional.conv2d(self.pad_b(level['b'][b]), -self.band_filters[b])
-                image += torch.nn.functional.interpolate(b_filtered, size=output_size, mode="nearest", recompute_scale_factor=False)
-
-        image = torch.nn.functional.conv2d(self.pad_l0(image), self.filt_l0)
-        image += torch.nn.functional.conv2d(self.pad_h0(pyramid[0]['h']), self.filt_h0)
-        
-        return image
-
     def reconstruct_from_pyramid(self, pyramid):
+        """
+        Reconstructs an input image from a steerable pyramid.
+
+        Parameters
+        ----------
+
+        pyramid : list of dicts of torch.tensor
+                    The steerable pyramid.
+                    Should be in the same format as output by construct_steerable_pyramid().
+                    The number of channels should match num_channels when the pyramid maker was created.
+        
+        Returns
+        =======
+
+        image   : torch.tensor
+                    The reconstructed image, in NCHW format.         
+        """
         def upsample(image, size):
             if self.use_bilinear_downup:
                 return torch.nn.functional.interpolate(image, size=size, mode="bilinear", align_corners=False, recompute_scale_factor=False)
