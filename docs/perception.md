@@ -8,7 +8,7 @@ In the rest of this document, you will find engineering notes and relevant funct
 | ------------- |:-------------:|
 | Metameric loss function in Odak | This engineering note will give you an idea about how to use the metameric loss function found inside Odak |
 
-## odak.learn.wave
+## odak.learn.perception
 
 | Function      | Description   |
 | ------------- |:-------------:|
