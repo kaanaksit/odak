@@ -12,6 +12,7 @@ copyright: 'Copyright &copy; 2021'
 nav:
   - Getting started: 'index.md'
   - Computer-Generated Holography: 'cgh.md'
+  - Visual perception: 'perception.md'
 
 theme:
     name: material
