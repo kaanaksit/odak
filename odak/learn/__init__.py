@@ -5,3 +5,4 @@ Provides necessary definitions for neural networks and learning algorithms. The 
 """
 import odak.learn.wave
 import odak.learn.tools
+import odak.learn.perception
