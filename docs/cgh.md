@@ -14,8 +14,9 @@ In the rest of this document, you will find engineering notes and relevant funct
 
 | Function      | Description   |
 | ------------- |:-------------:|
-| [odak.learn.wave.propagate_beam](odak/learn/wave/propagate_beam.md) | Optical beam propagation. |
+| [odak.learn.wave.propagate_beam](odak/learn/wave/propagate_beam.md) | General function for optical beam propagation. |
 | [odak.learn.wave.custom](odak/learn/wave/custom.md)                 | Optical beam propagation with a custom complex kernel. |
 | [odak.learn.wave.transfer_function_kernel](odak/learn/wave/transfer_function_kernel.md) | Optical beam propagation with transfer function kernel. |
 | [odak.learn.wave.band_limited_angular_spectrum](odak/learn/wave/band_limited_angular_spectrum.md) | Optical beam propagation with banlimited angular spectrum. |
 | [odak.learn.wave.impulse_response_fresnel](odak/learn/wave/impulse_response_fresnel.md) | Optical beam propagation with impulse response fresnel. |
+| [odak.learn.wave.gerchberg_saxton](odak/learn/wave/gerchberg_saxton.md) | Phase-only hologram optimization using Gerchberg-Saxton algorithm. |
