@@ -11,6 +11,7 @@ In the rest of this document, you will find engineering notes and relevant funct
 | [`Optimizing holograms using Odak`](notes/optimizing_holograms_using_odak.md) | This engineering note will give you an idea about how to calculate phase-only holograms using Odak. |
 
 ## odak.learn.wave
+This submodule is based on `torch`, therefore the functions provided here are differentiable and can be used with provided optimizers in `torch`.
 
 | Function      | Description   |
 | ------------- |:-------------:|
