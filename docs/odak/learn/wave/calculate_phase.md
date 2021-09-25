@@ -1,26 +1,25 @@
-# odak.learn.wave.custom
+# odak.learn.wave.calculate_phase
 
-`custom(field,kernel)`
+`calculate_phase(field,deg=False)`
 
-A definition to calculate convolution based Fresnel approximation for beam propagation. Curious reader can consult `Learned Holographic Light Transport`, Applied Optics (2021) by `Koray Kavaklı, Hakan Urey and Kaan Akşit`.
-
+ Definition to calculate phase of a single or multiple given electric field(s).
+ 
 **Parameters:**
 
-    field            : torch.complex
-                       Complex field (MxN).
-    kernel           : torch.complex
-                       Custom complex kernel for beam propagation.
+    field        : torch.cfloat
+                   Electric fields or an electric field.
+    deg          : bool
+                   If set True, the angles will be returned in degrees.
                        
 **Returns**
 
-    result           : torch.complex
-                       Final complex field (MxN).
+    phase        : torch.float
+                   Phase or phases of electric field(s) in radians.
 
 ## Notes
 
-Unless you know what you are doing, we do not suggest you to use this function directly. Rather stick to [`odak.learn.wave.propagate_beam`](propagate_beam.md) for  your beam propagation code. Note that this function can also be used as convolution operation between two complex arrays.
+Regarding usage of this definition, you can find use cases in the engineering notes, specifically at [`Optimizing holograms using Odak`](../../../notes/hologram_optimization.md).
 
 ## See also
 
 * [`Computer Generated-Holography`](../../../cgh.md)
-* [`odak.learn.wave.propagate_beam`](propagate_beam.md)
