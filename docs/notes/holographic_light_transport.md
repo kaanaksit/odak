@@ -44,5 +44,6 @@ Note that beam propagation can also be learned for physical setups to avoid impe
 * `Kavaklı, Koray, Hakan Urey, and Kaan Akşit. "Learned holographic light transport." Applied Optics (2021).`.
 
 ## See also
+For more engineering notes, follow:
 
 * [`Computer Generated-Holography`](../../../cgh.md)
