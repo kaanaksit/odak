@@ -7,7 +7,7 @@ In the rest of this document, you will find engineering notes and relevant funct
 
 | Note          | Description   |
 | ------------- |:-------------:|
-| Light propagation | This engineering note will give you an idea about how light propagates in free space. |
+| Holographic light transport | This engineering note will give you an idea about how coherent light propagates in free space. |
 | Optimizing holograms using Odak | This engineering note will give you an idea about how to calculate phase-only holograms using Odak. |
 
 ## odak.learn.wave
