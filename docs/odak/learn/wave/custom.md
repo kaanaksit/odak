@@ -2,7 +2,8 @@
 
 `custom(field,kernel)`
 
-A definition to calculate convolution based Fresnel approximation for beam propagation. Curious reader can consult `Learned Holographic Light Transport`, Applied Optics (2021) by `Koray Kavaklı, Hakan Urey and Kaan Akşit`.
+A definition to calculate convolution based Fresnel approximation for beam propagation. 
+Curious reader can consult `Learned Holographic Light Transport`, Applied Optics (2021) by `Koray Kavaklı, Hakan Urey and Kaan Akşit`.
 
 **Parameters:**
 
