@@ -14,6 +14,7 @@ In the rest of this document, you will find engineering notes and relevant funct
 
 | Function      | Description   |
 | ------------- |:-------------:|
+| [odak.learn.wave.wavenumber](odak/learn/wave/wavenumber.md) | Wave number. |
 | [odak.learn.wave.propagate_beam](odak/learn/wave/propagate_beam.md) | General function for optical beam propagation. |
 | [odak.learn.wave.custom](odak/learn/wave/custom.md)                 | Optical beam propagation with a custom complex kernel. |
 | [odak.learn.wave.transfer_function_kernel](odak/learn/wave/transfer_function_kernel.md) | Optical beam propagation with transfer function kernel. |
