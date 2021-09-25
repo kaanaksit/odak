@@ -20,4 +20,4 @@ Regarding usage of this definition, you can find use cases in the engineering no
 
 ## See also
 
-* [`Computer Generated-Holography`](../../../cgh.md)
+* [`Computer Generated-Holography`](../../cgh.md)
