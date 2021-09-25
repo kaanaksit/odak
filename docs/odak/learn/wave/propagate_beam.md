@@ -48,7 +48,7 @@ sample_field               = generate_complex_field(sample_amplitude,sample_phas
 
 
 sample_field               = zero_pad(sample_field)
-hologram_torch             = propagate_beam(
+reconstruction             = propagate_beam(
                                             sample_field,
                                             k,
                                             distance,
