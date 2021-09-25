@@ -34,3 +34,9 @@ This submodule is based on `torch`, therefore the functions provided here are di
 | [odak.learn.wave.prism_phase_function](odak/learn/wave/prism_phase_function.md) | Prism phase function, a prism.|
 | [odak.learn.wave.linear_grating](odak/learn/wave/linear_grating.md) | One or two axis linear grating.|
 
+## odak.wave
+This submodule is based on `Numpy`. This submodule existed much before `odak.learn.wave`. Though this submodule contains more functions than `odak.learn.wave`, it does not provide the flexibility in optimization provided by differentiation support of `torch`.
+
+| Function      | Description   |
+| ------------- |:-------------:|
+| [odak.wave.wavenumber](odak/wave/wavenumber.md) | Wave number. |
