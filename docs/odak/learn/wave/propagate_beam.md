@@ -60,4 +60,4 @@ reconstruction             = propagate_beam(
 
 ## See also
 
-* [`Computer Generated-Holography`](../../cgh.md)
+* [`Computer Generated-Holography`](../../../cgh.md)
