@@ -1,4 +1,4 @@
-# odak.learn.wave.wavenumber
+# odak.wave.wavenumber
 
 `wavenumber(wavelength)`
 
