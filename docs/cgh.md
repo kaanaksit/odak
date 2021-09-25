@@ -7,7 +7,8 @@ In the rest of this document, you will find engineering notes and relevant funct
 
 | Note          | Description   |
 | ------------- |:-------------:|
-| Optimizing holograms using Odak | This engineering note will give you an idea about how to calculate phase-only holograms using Odak |
+| Light propagation | This engineering note will give you an idea about how light propagates in free space. |
+| Optimizing holograms using Odak | This engineering note will give you an idea about how to calculate phase-only holograms using Odak. |
 
 ## odak.learn.wave
 
@@ -17,4 +18,4 @@ In the rest of this document, you will find engineering notes and relevant funct
 | [odak.learn.wave.custom](odak/learn/wave/custom.md)                 | Optical beam propagation with a custom complex kernel. |
 | [odak.learn.wave.transfer_function_kernel](odak/learn/wave/transfer_function_kernel.md) | Optical beam propagation with transfer function kernel. |
 | [odak.learn.wave.band_limited_angular_spectrum](odak/learn/wave/band_limited_angular_spectrum.md) | Optical beam propagation with banlimited angular spectrum. |
-
+| [odak.learn.wave.impulse_response_fresnel](odak/learn/wave/impulse_response_fresnel.md) | Optical beam propagation with impulse response fresnel. |
