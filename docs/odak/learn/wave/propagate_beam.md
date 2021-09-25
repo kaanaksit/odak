@@ -17,7 +17,7 @@ This is the primary holographic light transport definition. It links to Fresnel 
     wavelength       : float
                        Wavelength of the electric field.
     propagation_type : str
-                       Type of the propagation (IR Fresnel, TR Fresnel, Fraunhofer).
+                       Type of the propagation (IR Fresnel, TR Fresnel, Bandlimited Angular Spectrum, custom, Fraunhofer).
     kernel           : torch.complex
                        Custom complex kernel.
 **Returns**
