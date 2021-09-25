@@ -46,4 +46,4 @@ Note that beam propagation can also be learned for physical setups to avoid impe
 ## See also
 For more engineering notes, follow:
 
-* [`Computer Generated-Holography`](../../../cgh.md)
+* [`Computer Generated-Holography`](../cgh.md)
