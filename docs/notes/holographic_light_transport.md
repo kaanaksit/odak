@@ -6,7 +6,7 @@ This engineering note will provide a crash course on how light travels from a ph
 
 | <img src="https://github.com/kunguz/odak/raw/master/docs/notes/holographic_light_transport_files/hologram_generation.png" width="640" alt/> |
 |:--:| 
-| *Holographic image reconstruction. A collimated beam with a homogenous amplitude distribution (A=1) illuminates a phase-only hologram $u_0(x,y)$. Light from this hologram diffracts and arrive at an image plane $u(x,y)$ at a distance of z. Diffracted beams from each hologram pixel interfere at the image plane and, finally, reconstruct a target image.
+| *Holographic image reconstruction. A collimated beam with a homogenous amplitude distribution (A=1) illuminates a phase-only hologram $u_0(x,y)$. Light from this hologram diffracts and arrive at an image plane $u(x,y)$ at a distance of z. Diffracted beams from each hologram pixel interfere at the image plane and, finally, reconstruct a target image.*|
 
 
 As depicted in above figure, when such holograms are illuminated with a collimated coherent light (e.g. laser), these holograms can reconstruct an intended optical field at target depth levels.
