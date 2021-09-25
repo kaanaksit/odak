@@ -27,3 +27,6 @@ theme:
         - python
     plugins:
         - search
+    markdown_extensions:
+        - pymdownx.arithmatex:
+            generic: true
