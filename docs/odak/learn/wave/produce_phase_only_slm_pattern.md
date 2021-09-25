@@ -1,26 +1,37 @@
-# odak.learn.wave.custom
+# odak.learn.wave.produce_phase_only_slm_pattern
 
-`custom(field,kernel)`
+`produce_phase_only_slm_pattern(hologram,slm_range,bits=8,default_range=6.28,illumination=None)`
 
-A definition to calculate convolution based Fresnel approximation for beam propagation. Curious reader can consult `Learned Holographic Light Transport`, Applied Optics (2021) by `Koray Kavaklı, Hakan Urey and Kaan Akşit`.
-
+Definition for producing a pattern for a phase only Spatial Light Modulator (SLM) using a given field.
+ 
 **Parameters:**
 
-    field            : torch.complex
-                       Complex field (MxN).
-    kernel           : torch.complex
-                       Custom complex kernel for beam propagation.
+    hologram           : torch.cfloat
+                         Input holographic field.
+    slm_range          : float
+                         Range of the phase only SLM in radians for a working wavelength (i.e. two pi). See odak.wave.adjust_phase_only_slm_range() for more.
+    filename           : str
+                         Optional variable, if provided the patterns will be save to given location.
+    bits               : int
+                         Quantization bits.
+    default_ramge      : float
+                         Default range of phase only SLM.
+    illumination       : torch.tensor
+                         Spatial illumination distribution.
+
+
                        
 **Returns**
 
-    result           : torch.complex
-                       Final complex field (MxN).
+    pattern            : torch.cfloat
+                         Adjusted phase only pattern.
+    hologram_digital   : np.int
+                         Digital representation of the hologram.
 
 ## Notes
 
-Unless you know what you are doing, we do not suggest you to use this function directly. Rather stick to [`odak.learn.wave.propagate_beam`](propagate_beam.md) for  your beam propagation code. Note that this function can also be used as convolution operation between two complex arrays.
+Regarding usage of this definition, you can find use cases in the engineering notes, specifically at [`Optimizing holograms using Odak`](../../../notes/optimizing_holograms_using_odak.md).
 
 ## See also
 
 * [`Computer Generated-Holography`](../../../cgh.md)
-* [`odak.learn.wave.propagate_beam`](propagate_beam.md)
