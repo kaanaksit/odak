@@ -2,7 +2,7 @@
 
 `odak.learn.propagate_beam(field,k,distance,dx,wavelength,propagation_type='IR Fresnel',kernel=None)`
 
-This is the primary holographic light transport definition. It links to Fresnel impulse respone (IR), Fresnel Transfer Function (TF), Fraunhofer diffraction. Curious users can consult "Computational Fourier Optics" by David Vuelz.
+This is the primary holographic light transport definition. It links to Fresnel impulse respone (IR), Fresnel Transfer Function (TF), Fraunhofer diffraction. Curious users can consult `Computational Fourier Optics` by David Vuelz.
 
 **Parameters:**
 
