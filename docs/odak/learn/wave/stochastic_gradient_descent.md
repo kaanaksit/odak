@@ -3,8 +3,8 @@
 `stochastic_gradient_descent(field,wavelength,distance,dx,resolution,propogation_type,n_iteration=100,loss_function=None,cuda=False,learning_rate=0.1)`
 
 Definition to generate phase and reconstruction from target image via stochastic gradient descent.
-For more on the method, see: `uxin Chen, Yuejie Chi, Jianqing Fan, and Cong Ma.`, `Gradient descent with random initialization: fast global convergence for nonconvex phase retrieval.` Mathematical Programming 176 (2019), 1436–4646.
-
+For more on the method, see: `Yuxin Chen, Yuejie Chi, Jianqing Fan, and Cong Ma.`, `Gradient descent with random initialization: fast global convergence for nonconvex phase retrieval.` Mathematical Programming 176 (2019), 1436–4646.
+In addition this work is a great related read: `Peng, Y., Choi, S., Padmanaban, N., & Wetzstein, G.` (2020). `Neural holography with camera-in-the-loop training.` ACM Transactions on Graphics (TOG), 39(6), 1-14.
 **Parameters:**
 
     field                   : torch.Tensor
