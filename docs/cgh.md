@@ -14,5 +14,4 @@ In the rest of this document, you will find engineering notes and relevant funct
 | Function      | Description   |
 | ------------- |:-------------:|
 | [odak.learn.wave.propagate_beam](odak/learn/wave/propagate_beam.md) | Optical beam propagation. |
-
-
+| [odak.learn.wave.custom](odak/learn/wave/custom.md)                 | Optical beam propagation with a custom complex kernel. |
