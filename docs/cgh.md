@@ -29,3 +29,7 @@ In the rest of this document, you will find engineering notes and relevant funct
 | [odak.learn.wave.gerchberg_saxton](odak/learn/wave/gerchberg_saxton.md) | Phase-only hologram optimization using Gerchberg-Saxton algorithm. |
 | [odak.learn.wave.stochastic_gradient_descent](odak/learn/wave/stochastic_gradient_descent.md) | Phase-only hologram optimization using Stochastic Gradient Descent optimization. |
 | [odak.learn.wave.point_wise](odak/learn/wave/point_wise.md) | Phase-only hologram optimization using point wise integration method. |
+| [odak.learn.wave.quadratic_phase_function](odak/learn/wave/quadratic_phase_function.md) | Quadratic phase function, a lens.|
+| [odak.learn.wave.prism_phase_function](odak/learn/wave/prism_phase_function.md) | Prism phase function, a prism.|
+| [odak.learn.wave.linear_grating](odak/learn/wave/linear_grating.md) | One or two axis linear grating.|
+
