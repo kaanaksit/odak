@@ -1,32 +1,41 @@
-# odak.learn.wave.gerchberg_saxton
+# odak.learn.wave.stochastic_gradient_descent
 
-`gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,propagation_type='IR Fresnel')`
+`stochastic_gradient_descent(field,wavelength,distance,dx,resolution,propogation_type,n_iteration=100,loss_function=None,cuda=False,learning_rate=0.1)`
 
-Definition to compute a hologram using an iterative method called Gerchberg-Saxton phase retrieval algorithm. 
-For more on the method, see: `Gerchberg, Ralph W.`, `A practical algorithm for the determination of phase from image and diffraction plane pictures.` Optik 35 (1972): 237-246.
+Definition to generate phase and reconstruction from target image via stochastic gradient descent.
+For more on the method, see: `uxin Chen, Yuejie Chi, Jianqing Fan, and Cong Ma.`, `Gradient descent with random initialization: fast global convergence for nonconvex phase retrieval.` Mathematical Programming 176 (2019), 1436–4646.
 
 **Parameters:**
 
-    field            : torch.cfloat
-                       Complex field (MxN).
-    distance         : float
-                       Propagation distance.
-    dx               : float
-                       Size of one single pixel in the field grid (in meters).
-    wavelength       : float
-                       Wavelength of the electric field.
-    slm_range        : float
-                       Typically this is equal to two pi. See odak.wave.adjust_phase_only_slm_range() for more.
-    propagation_type : str
-                       Type of the propagation (IR Fresnel, TR Fresnel, Fraunhofer).
+    field                   : torch.Tensor
+                              Target field intensity.
+    wavelength              : double
+                              Set if the converted array requires gradient.
+    distance                : double
+                              Hologaram plane distance wrt SLM plane
+    dx                      : float
+                              SLM pixel pitch
+    resolution              : array
+                              SLM resolution
+    propogation type        : str
+                              Type of the propagation (IR Fresnel, Angular Spectrum, Bandlimited Angular Spectrum, TR Fresnel, Fraunhofer)
+    n_iteration:            : int
+                              Max iteratation 
+    loss_function:          : function
+                              If none it is set to be l2 loss
+    cuda                    : boolean
+                              GPU enabled
+    learning_rate           : float
+                              Learning rate.
 
                        
 **Returns**
 
-    hologram         : torch.cfloat
-                       Calculated complex hologram.
-    reconstruction   : torch.cfloat
-                       Calculated reconstruction using calculated hologram.
+    hologram                : torch.Tensor
+                              Phase only hologram as torch array
+
+    reconstruction_intensity: torch.Tensor
+                              Reconstruction as torch array
 
 ## Notes
 
@@ -34,26 +43,27 @@ To optimize a phase-only hologram using Gerchberg-Saxton algorithm, please follo
 
 ```
 import torch
-from odak.learn.wave import gerchberg_saxton
-from odak import np
-wavelength              = 0.000000532
-dx                      = 0.0000064
-distance                = 0.2
-target_field            = torch.zeros((500,500),dtype=torch.complex64)
-target_field[0::50,:]  += 1
-iteration_number        = 3
-hologram,reconstructed  = gerchberg_saxton(
-                                           target_field,
-                                           iteration_number,
-                                           distance,
-                                           dx,
-                                           wavelength,
-                                           np.pi*2,
-                                           'TR Fresnel'
-                                          )
+from odak.learn.wave import stochastic_gradient_descent
+wavelength               = 0.000000532
+dx                       = 0.0000064
+distance                 = 0.1
+cuda                     = False
+resolution               = [1080,1920]
+target_field             = torch.zeros(resolution[0],resolution[1])
+target_field[500::600,:] = 1
+iteration_number         = 5
+hologram,reconstructed   = stochastic_gradient_descent(
+                                                       target_field,
+                                                       wavelength,
+                                                       distance,
+                                                       dx,
+                                                       resolution,
+                                                       'TR Fresnel',
+                                                       iteration_number,
+                                                       learning_rate=0.1,
+                                                       cuda=cuda
+                                                      )
 ```
-
-
 
 ## See also
 
