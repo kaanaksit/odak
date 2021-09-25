@@ -235,8 +235,8 @@ def stochastic_gradient_descent(field,wavelength,distance,dx,resolution,propogat
 
     Parameters
     ----------
-    field                   : ndarray
-                              Input field as Numpy array.
+    field                   : torch.Tensor
+                              Target field amplitude.
     wavelength              : double
                               Set if the converted array requires gradient.
     distance                : double

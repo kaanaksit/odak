@@ -6,14 +6,13 @@ def test():
     wavelength               = 0.000000532
     dx                       = 0.0000064
     distance                 = 0.1
-    resolution               = [1080,1920]
     cuda                     = False
-    device                   = torch.device("cuda" if cuda else "cpu")
-    input_field              = torch.zeros(resolution[0],resolution[1]).to(device)
-    input_field[500::600,:]  = 1
-    iteration_number         = 50
+    resolution               = [1080,1920]
+    target_field             = torch.zeros(resolution[0],resolution[1])
+    target_field[500::600,:] = 1
+    iteration_number         = 5
     hologram,reconstructed   = stochastic_gradient_descent(
-                                                           input_field,
+                                                           target_field,
                                                            wavelength,
                                                            distance,
                                                            dx,
