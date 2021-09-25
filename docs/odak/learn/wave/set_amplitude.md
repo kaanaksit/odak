@@ -1,26 +1,26 @@
-# odak.learn.wave.custom
+# odak.learn.wave.set_amplitude
 
-`custom(field,kernel)`
+`set_amplitude(field,amplitude)`
 
-A definition to calculate convolution based Fresnel approximation for beam propagation. Curious reader can consult `Learned Holographic Light Transport`, Applied Optics (2021) by `Koray Kavaklı, Hakan Urey and Kaan Akşit`.
-
+Definition to keep phase as is and change the amplitude of a given field.
+ 
 **Parameters:**
 
-    field            : torch.complex
-                       Complex field (MxN).
-    kernel           : torch.complex
-                       Custom complex kernel for beam propagation.
+    field        : torch.cfloat
+                   Complex field.
+    amplitude    : torch.cfloat or torch.float
+                   Amplitudes.
+
                        
 **Returns**
 
-    result           : torch.complex
-                       Final complex field (MxN).
+    new_field    : torch.cfloat
+                   Complex field.
 
 ## Notes
 
-Unless you know what you are doing, we do not suggest you to use this function directly. Rather stick to [`odak.learn.wave.propagate_beam`](propagate_beam.md) for  your beam propagation code. Note that this function can also be used as convolution operation between two complex arrays.
+Regarding usage of this definition, you can find use cases in the engineering notes, specifically at [`Optimizing holograms using Odak`](../../../notes/optimizing_holograms_using_odak.md).
 
 ## See also
 
 * [`Computer Generated-Holography`](../../../cgh.md)
-* [`odak.learn.wave.propagate_beam`](propagate_beam.md)
