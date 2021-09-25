@@ -8,8 +8,6 @@ Definition to calculate amplitude of a single or multiple given electric field(s
 
     field        : torch.cfloat
                    Electric fields or an electric field.
-    deg          : bool
-                   If set True, the angles will be returned in degrees.
                        
 **Returns**
 
