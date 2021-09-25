@@ -36,7 +36,7 @@ To optimize a phase-only hologram using Gerchberg-Saxton algorithm, please follo
 import torch
 from odak.learn.wave import gerchberg_saxton
 from odak import np
-wavelength             = 0.000000532
+wavelength              = 0.000000532
 dx                      = 0.0000064
 distance                = 0.2
 target_field            = torch.zeros((500,500),dtype=torch.complex64)
