@@ -15,6 +15,12 @@ In the rest of this document, you will find engineering notes and relevant funct
 | Function      | Description   |
 | ------------- |:-------------:|
 | [odak.learn.wave.wavenumber](odak/learn/wave/wavenumber.md) | Wave number. |
+| [odak.learn.wave.calculate_phase](odak/learn/wave/calculate_phase.md) | Calculate phase of a complex field. |
+| [odak.learn.wave.calculate_amplitude](odak/learn/wave/calculate_phase.md) | Calculate amplitude of a complex field. |
+| [odak.learn.wave.set_amplitude](odak/learn/wave/set_amplitude.md) | Set amplitude of a complex field. |
+| [odak.learn.wave.generate_complex_field](odak/learn/wave/generate_complex_field.md) | Generate a complex field from an amplitude and a phase value. |
+| [odak.learn.wave.adjust_phase_only_slm_range](odak/learn/wave/adjust_phase_only_slm_range.md) | Adjust the range of a spatial light modulator. |
+| [odak.learn.wave.produce_phase_only_slm_pattern](odak/learn/wave/produce_phase_only_slm_pattern.md) | Produce phase-only hologram for a spatial light modulator with given phase range. |
 | [odak.learn.wave.propagate_beam](odak/learn/wave/propagate_beam.md) | General function for optical beam propagation. |
 | [odak.learn.wave.custom](odak/learn/wave/custom.md)                 | Optical beam propagation with a custom complex kernel. |
 | [odak.learn.wave.transfer_function_kernel](odak/learn/wave/transfer_function_kernel.md) | Optical beam propagation with transfer function kernel. |
