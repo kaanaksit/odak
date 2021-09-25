@@ -68,5 +68,5 @@ hologram,reconstructed   = stochastic_gradient_descent(
 ## See also
 
 * [`Computer Generated-Holography`](../../../cgh.md)
-* [`odak.learn.wave.stochastic_gradient_descent`](stochastic_gradient_descent.md)
+* [`odak.learn.wave.gerchberg_saxton`](gerchberg_saxton.md)
 * [`odak.learn.wave.point_wise`](point_wise.md)
