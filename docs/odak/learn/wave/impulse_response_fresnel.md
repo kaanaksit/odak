@@ -1,9 +1,10 @@
-# odak.learn.wave.transfer_function_fresnel
+# odak.learn.wave.impulse_response_fresnel
 
-`transfer_function_fresnel(field,k,distance,dx,wavelength)`
+`impulse_response_fresnel(field,k,distance,dx,wavelength)`
 
-A definition to calculate convolution based Fresnel approximation for beam propagation.
+A definition to calculate impulse response based Fresnel approximation for beam propagation.
 Curious users can consult `Computational Fourier Optics` by David Vuelz.
+**Refer to Issue 19 for more. This definition is unreliable.**
 
 **Parameters:**
 
@@ -26,7 +27,8 @@ Curious users can consult `Computational Fourier Optics` by David Vuelz.
 
 ## Notes
 
-Unless you know what you are doing, we do not suggest you to use this function directly. Rather stick to [`odak.learn.wave.propagate_beam`](propagate_beam.md) for  your beam propagation code. 
+Unless you know what you are doing, we do not suggest you to use this function directly. 
+Rather stick to [`odak.learn.wave.propagate_beam`](propagate_beam.md) for  your beam propagation code. 
 
 ## See also
 
