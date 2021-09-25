@@ -19,7 +19,7 @@ where field at a target image plane, $u(x,y)$, is calculated by integrating over
 Note that, for the above equation, $r$ represents the optical path between a selected point over a hologram and a selected point in the image plane, theta represents the angle between these two points, k represents the wavenumber ($\frac{2\pi}{\lambda}$) and $\lambda$ represents the wavelength of light.
 In this described light transport model, optical fields, $u_0(x,y)$ and $u(x,y)$, are represented with a complex value,
 
-$u_0(x,y)=\amplitude(x,y)e^{j\phase(x,y)},$
+$u_0(x,y)=A(x,y)e^{j\phi(x,y)},$
 
 where A represents the spatial distribution of amplitude and $\phi$ represents the spatial distribution of phase across a hologram plane.
 The described holographic light transport model is often simplified into a single convolution with a fixed spatially invariant complex kernel, $h(x,y)$ (`Sypek, Maciej. "Light propagation in the Fresnel region. New numerical approach." Optics communications 116.1-3 (1995): 43-48.`).
