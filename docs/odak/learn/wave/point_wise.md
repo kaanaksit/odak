@@ -1,62 +1,56 @@
-# odak.learn.wave.gerchberg_saxton
+# odak.learn.wave.point_wise
 
-`gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,propagation_type='IR Fresnel')`
+`point_wise(target,wavelength,distance,dx,device,lens_size=401)`
 
-Definition to compute a hologram using an iterative method called Gerchberg-Saxton phase retrieval algorithm. 
-For more on the method, see: `Gerchberg, Ralph W.`, `A practical algorithm for the determination of phase from image and diffraction plane pictures.` Optik 35 (1972): 237-246.
+Naive point-wise hologram calculation method. 
+For more information, refer to `Maimone, Andrew, Andreas Georgiou, and Joel S. Kollin`. `Holographic near-eye displays for virtual and augmented reality.` ACM Transactions on Graphics (TOG) 36.4 (2017): 1-16.
 
 **Parameters:**
 
-    field            : torch.cfloat
-                       Complex field (MxN).
+    target           : torch.float
+                       float input target to be converted into a hologram (Target should be in range of 0 and 1).
+    wavelength       : float
+                       Wavelength of the electric field.
     distance         : float
                        Propagation distance.
     dx               : float
                        Size of one single pixel in the field grid (in meters).
-    wavelength       : float
-                       Wavelength of the electric field.
-    slm_range        : float
-                       Typically this is equal to two pi. See odak.wave.adjust_phase_only_slm_range() for more.
-    propagation_type : str
-                       Type of the propagation (IR Fresnel, TR Fresnel, Fraunhofer).
+    device           : torch.device
+                       Device type (cuda or cpu)`.
+    lens_size        : int
+                       Size of lens for masking sub holograms(in pixels).
 
                        
 **Returns**
 
     hologram         : torch.cfloat
                        Calculated complex hologram.
-    reconstruction   : torch.cfloat
-                       Calculated reconstruction using calculated hologram.
 
 ## Notes
 
-To optimize a phase-only hologram using Gerchberg-Saxton algorithm, please follow and observe the below example:
+To optimize a phase-only hologram using point wise algorithm, please follow and observe the below example:
 
 ```
 import torch
-from odak.learn.wave import gerchberg_saxton
-from odak import np
-wavelength              = 0.000000532
-dx                      = 0.0000064
-distance                = 0.2
-target_field            = torch.zeros((500,500),dtype=torch.complex64)
-target_field[0::50,:]  += 1
-iteration_number        = 3
-hologram,reconstructed  = gerchberg_saxton(
-                                           target_field,
-                                           iteration_number,
-                                           distance,
-                                           dx,
-                                           wavelength,
-                                           np.pi*2,
-                                           'TR Fresnel'
-                                          )
+from odak.learn.wave import point_wise
+wavelength               = 0.000000515
+dx                       = 0.000008
+distance                 = 0.15
+resolution               = [1080,1920]
+target                   = torch.zeros(resolution[0],resolution[1])
+target[540:600,960:1020] = 1
+hologram                 = point_wise(
+                                      target,
+                                      wavelength,
+                                      distance,
+                                      dx,
+                                      device,
+                                      lens_size=401
+                                     )
 ```
-
-
 
 ## See also
 
 * [`Computer Generated-Holography`](../../../cgh.md)
 * [`odak.learn.wave.stochastic_gradient_descent`](stochastic_gradient_descent.md)
-* [`odak.learn.wave.point_wise`](point_wise.md)
+* [`odak.learn.wave.gerchberg_saxton`](gerchberg_saxton.md)
