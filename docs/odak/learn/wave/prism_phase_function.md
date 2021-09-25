@@ -1,24 +1,53 @@
-# odak.learn.wave.calculate_phase
+# odak.learn.wave.prism_phase_function
 
-`calculate_phase(field,deg=False)`
+`prism_phase_function(nx,ny,k,angle,dx=0.001,axis='x')`
 
- Definition to calculate phase of a single or multiple given electric field(s).
+A definition to generate 2D phase function that represents a prism. 
+See Goodman's Introduction to Fourier Optics book for more.
+
  
 **Parameters:**
 
-    field        : torch.cfloat
-                   Electric fields or an electric field.
-    deg          : bool
-                   If set True, the angles will be returned in degrees.
+    nx         : int
+                 Size of the output along X.
+    ny         : int
+                 Size of the output along Y.
+    k          : odak.wave.wavenumber
+                 See odak.wave.wavenumber for more.
+    angle      : float
+                 Tilt angle of the prism in degrees.
+    dx         : float
+                 Pixel pitch.
+    axis       : str
+                 Axis of the prism.
+
                        
 **Returns**
 
-    phase        : torch.float
-                   Phase or phases of electric field(s) in radians.
+    prism      : torch.tensor
+                 Generated phase function for a prism.
 
 ## Notes
 
-Regarding usage of this definition, you can find use cases in the engineering notes, specifically at [`Optimizing holograms using Odak`](../../../notes/optimizing_holograms_using_odak.md).
+Here is a short example on how to use this function:
+
+```
+from odak.wave import wavenumber,quadratic_phase_function
+wavelength                 = 0.5*pow(10,-6)
+pixeltom                   = 6*pow(10,-6)
+distance                   = 10.0
+resolution                 = [1080,1920]
+k                          = wavenumber(wavelength)
+
+lens_field                 = prism_phase_function(
+                                                  resolution[0],
+                                                  resolution[1],
+                                                  k,
+                                                  fangle=0.1,
+                                                  dx=pixeltom,
+                                                  axis='x'
+                                                 )
+```
 
 ## See also
 
