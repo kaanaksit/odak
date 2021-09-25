@@ -42,3 +42,7 @@ Note that beam propagation can also be learned for physical setups to avoid impe
 * `Peng, Yifan, et al. "Neural holography with camera-in-the-loop training." ACM Transactions on Graphics (TOG) 39.6 (2020): 1-14.`,
 * `Chakravarthula, Praneeth, et al. "Learned hardware-in-the-loop phase retrieval for holographic near-eye displays." ACM Transactions on Graphics (TOG) 39.6 (2020): 1-18.`,
 * `Kavaklı, Koray, Hakan Urey, and Kaan Akşit. "Learned holographic light transport." Applied Optics (2021).`.
+
+## See also
+
+* [`Computer Generated-Holography`](../../../cgh.md)
