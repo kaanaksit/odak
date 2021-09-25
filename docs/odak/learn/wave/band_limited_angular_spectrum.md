@@ -1,9 +1,9 @@
-# odak.learn.wave.transfer_function_fresnel
+# odak.learn.wave.band_limited_angular_spectrum
 
-`transfer_function_fresnel(field,k,distance,dx,wavelength)`
+`band_limited_angular_spectrum(field,k,distance,dx,wavelength)`
 
-A definition to calculate convolution based Fresnel approximation for beam propagation.
-Curious users can consult `Computational Fourier Optics` by David Vuelz.
+A definition to calculate bandlimited angular spectrum based beam propagation. 
+For more `Matsushima, Kyoji, and Tomoyoshi Shimobaba`, `Band-limited angular spectrum method for numerical simulation of free-space propagation in far and near fields.` Optics express 17.22 (2009): 19662-19673.
 
 **Parameters:**
 
