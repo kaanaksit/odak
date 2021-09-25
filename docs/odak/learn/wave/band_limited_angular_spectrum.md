@@ -26,7 +26,8 @@ For more `Matsushima, Kyoji, and Tomoyoshi Shimobaba`, `Band-limited angular spe
 
 ## Notes
 
-Unless you know what you are doing, we do not suggest you to use this function directly. Rather stick to [`odak.learn.wave.propagate_beam`](propagate_beam.md) for  your beam propagation code. 
+Unless you know what you are doing, we do not suggest you to use this function directly. 
+Rather stick to [`odak.learn.wave.propagate_beam`](propagate_beam.md) for  your beam propagation code. 
 
 ## See also
 
