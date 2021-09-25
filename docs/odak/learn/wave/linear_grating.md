@@ -1,24 +1,47 @@
-# odak.learn.wave.calculate_phase
+# odak.learn.wave.linear_grating
 
-`calculate_phase(field,deg=False)`
+`linear_grating(nx,ny,every=2,add=3.14,axis='x')`
 
- Definition to calculate phase of a single or multiple given electric field(s).
+A definition to generate a linear grating.
+
  
 **Parameters:**
 
-    field        : torch.cfloat
-                   Electric fields or an electric field.
-    deg          : bool
-                   If set True, the angles will be returned in degrees.
+    nx         : int
+                 Size of the output along X.
+    ny         : int
+                 Size of the output along Y.
+    every      : int
+                 Add the add value at every given number.
+    add        : float
+                 Angle to be added.
+    axis       : string
+                 Axis eiter X,Y or both.
                        
 **Returns**
 
-    phase        : torch.float
-                   Phase or phases of electric field(s) in radians.
+    field      : torch.tensor
+                 Linear grating term.
 
 ## Notes
 
-Regarding usage of this definition, you can find use cases in the engineering notes, specifically at [`Optimizing holograms using Odak`](../../../notes/optimizing_holograms_using_odak.md).
+Here is a short example on how to use this function:
+
+```
+from odak.learn.wave import wavenumber,quadratic_phase_function
+wavelength                 = 0.5*pow(10,-6)
+pixeltom                   = 6*pow(10,-6)
+distance                   = 10.0
+resolution                 = [1080,1920]
+k                          = wavenumber(wavelength)
+plane_field                = linear_grating(
+                                            resolution[0],
+                                            resolution[1],
+                                            every=2,
+                                            add=3.14,
+                                            axis='x'
+                                           )
+```
 
 ## See also
 
