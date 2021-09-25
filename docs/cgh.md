@@ -20,3 +20,5 @@ In the rest of this document, you will find engineering notes and relevant funct
 | [odak.learn.wave.band_limited_angular_spectrum](odak/learn/wave/band_limited_angular_spectrum.md) | Optical beam propagation with banlimited angular spectrum. |
 | [odak.learn.wave.impulse_response_fresnel](odak/learn/wave/impulse_response_fresnel.md) | Optical beam propagation with impulse response fresnel. |
 | [odak.learn.wave.gerchberg_saxton](odak/learn/wave/gerchberg_saxton.md) | Phase-only hologram optimization using Gerchberg-Saxton algorithm. |
+| [odak.learn.wave.stochastic_gradient_descent](odak/learn/wave/stochastic_gradient_descent.md) | Phase-only hologram optimization using Stochastic Gradient Descent optimization. |
+| [odak.learn.wave.point_wise](odak/learn/wave/point_wise.md) | Phase-only hologram optimization using point wise integration method. |
