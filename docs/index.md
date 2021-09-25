@@ -1,5 +1,5 @@
 # Getting started
-Odak (pronounced "O-dac") is the fundamental library for scientific computing in optical and visual perception sciences.
+Odak (pronounced "O-dac") is the fundamental library for scientific computing in optical sciences, computer graphics and visual perception.
 We designed this page to help first time users, new contributors, and existing users to get an idea about where to go within this documentation when they need help about certain aspects of Odak.
 
 ## New Users
