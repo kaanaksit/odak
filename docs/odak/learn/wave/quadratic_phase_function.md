@@ -1,24 +1,50 @@
-# odak.learn.wave.calculate_phase
+# odak.learn.wave.quadratic_phase_function
 
-`calculate_phase(field,deg=False)`
+`quadratic_phase_function(nx,ny,k,focal=0.4,dx=0.001,offset=[0,0])`
 
- Definition to calculate phase of a single or multiple given electric field(s).
+ A definition to generate 2D quadratic phase function, which is typically use to represent lenses.
  
 **Parameters:**
 
-    field        : torch.cfloat
-                   Electric fields or an electric field.
-    deg          : bool
-                   If set True, the angles will be returned in degrees.
+    nx         : int
+                 Size of the output along X.
+    ny         : int
+                 Size of the output along Y.
+    k          : odak.wave.wavenumber
+                 See odak.wave.wavenumber for more.
+    focal      : float
+                 Focal length of the quadratic phase function.
+    dx         : float
+                 Pixel pitch.
+    offset     : list
+                 Deviation from the center along X and Y axes.
+
                        
 **Returns**
 
-    phase        : torch.float
-                   Phase or phases of electric field(s) in radians.
+    function   : torch.tensor
+                 Generated quadratic phase function.
 
 ## Notes
 
-Regarding usage of this definition, you can find use cases in the engineering notes, specifically at [`Optimizing holograms using Odak`](../../../notes/optimizing_holograms_using_odak.md).
+Here is a short example on how to use this function:
+
+```
+from odak.wave import wavenumber,quadratic_phase_function
+wavelength                 = 0.5*pow(10,-6)
+pixeltom                   = 6*pow(10,-6)
+distance                   = 10.0
+resolution                 = [1080,1920]
+k                          = wavenumber(wavelength)
+
+lens_field                 = quadratic_phase_function(
+                                                      resolution[0],
+                                                      resolution[1],
+                                                      k,
+                                                      focal=0.3,
+                                                      dx=pixeltom
+                                                     )
+```
 
 ## See also
 
