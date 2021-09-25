@@ -37,7 +37,8 @@ wavelength               = 0.000000515
 dx                       = 0.000008
 distance                 = 0.15
 resolution               = [1080,1920]
-target                   = torch.zeros(resolution[0],resolution[1])
+device                   = torch.device("cuda" if cuda else "cpu")
+target                   = torch.zeros(resolution[0],resolution[1]).to(device)
 target[540:600,960:1020] = 1
 hologram                 = point_wise(
                                       target,
