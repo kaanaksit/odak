@@ -46,9 +46,12 @@ This submodule is based on `Numpy`. This submodule existed much before `odak.lea
 | [odak.wave.calculate_amplitude](odak/wave/calculate_amplitude.md) | Calculate amplitude of a complex field. |
 | [odak.wave.calculate_intensity](odak/wave/calculate_intensity.md) | Calculate intensity of a complex field. |
 | [odak.wave.calculate_phase](odak/wave/calculate_phase.md) | Calculate phase of a complex field. |
+| [odak.wave.electric_field_per_plane_wave](odak/wave/electric_field_per_plane_wave.md) | Return the state of a plane wave at a particular distance and time. |
 | [odak.wave.generate_complex_field](odak/wave/generate_complex_field.md) | Generate a complex field from an amplitude and a phase value. |
 | [odak.wave.rayleigh_resolution](odak/wave/rayleigh_resolution.md) | Calculate Rayleigh resolution limit. |
 | [odak.wave.rotationspeed](odak/wave/rotationspeed.md) | Calculate rotation speed of a wave. |
 | [odak.wave.produce_phase_only_slm_pattern](odak/wave/produce_phase_only_slm_pattern.md) | Produce phase-only hologram for a spatial light modulator with given phase range. |
+| [odak.wave.propagate_field](odak/wave/propagate_field.md) | Propagate a given array of spherical sources to given set of points in space. |
+| [odak.wave.propagate_plane_waves](odak/wave/propagate_plane_waves.md) | Propagate a given plane wave in space and time. |
 | [odak.wave.set_amplitude](odak/wave/set_amplitude.md) | Set amplitude of a complex field. |
 | [odak.wave.wavenumber](odak/wave/wavenumber.md) | Wave number. |
