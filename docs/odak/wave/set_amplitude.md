@@ -1,22 +1,20 @@
-# odak.wave.wavenumber
+# odak.wave.set_amplitude
 
-`wavenumber(wavelength)`
+`set_amplitude(field,amplitude)`
 
 Definition for calculating the wavenumber of a plane wave
  
 **Parameters:**
 
-    wavelength   : float
-                   Wavelength of a wave in mm.
+    field        : np.complex64
+                   Complex field.
+    amplitude    : np.array or np.complex64
+                   Amplitudes.
                        
 **Returns**
 
-    k            : float
-                   Wave number for a given wavelength.
-
-## Notes
-
-Regarding usage of this definition, you can find use cases in the engineering notes, specifically at [`Optimizing holograms using Odak`](../../../notes/hologram_optimization.md).
+    new_field    : np.complex64
+                   Complex field.
 
 ## See also
 
