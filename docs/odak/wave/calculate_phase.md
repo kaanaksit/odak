@@ -1,22 +1,20 @@
-# odak.wave.wavenumber
+# odak.wave.calculate_phase
 
-`wavenumber(wavelength)`
+`calculate_phase(field,deg=False)`
 
-Definition for calculating the wavenumber of a plane wave
+Definition to calculate phase of a single or multiple given electric field(s).
  
 **Parameters:**
 
-    wavelength   : float
-                   Wavelength of a wave in mm.
+    field        : ndarray.complex or complex
+                   Electric fields or an electric field.
+    deg          : bool
+                   If set True, the angles will be returned in degrees.
                        
 **Returns**
 
-    k            : float
-                   Wave number for a given wavelength.
-
-## Notes
-
-Regarding usage of this definition, you can find use cases in the engineering notes, specifically at [`Optimizing holograms using Odak`](../../../notes/hologram_optimization.md).
+    phase        : float
+                   Phase or phases of electric field(s) in radians.
 
 ## See also
 
