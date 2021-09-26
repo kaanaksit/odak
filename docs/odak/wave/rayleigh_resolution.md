@@ -1,23 +1,25 @@
-# odak.wave.wavenumber
+# odak.wave.rayleigh_resolution
 
-`wavenumber(wavelength)`
+`rayleigh_resolution(diameter,focal=None,wavelength=0.0005)`
 
 Definition for calculating the wavenumber of a plane wave
  
 **Parameters:**
 
-    wavelength   : float
-                   Wavelength of a wave in mm.
+    diameter    : float
+                  Diameter of a lens.
+    focal       : float
+                  Focal length of a lens, when focal length is provided, spatial resolution is provided at the focal plane. When focal length isn't provided angular resolution is provided.
+    wavelength  : float
+                  Wavelength of light.
+
+
                        
 **Returns**
 
-    k            : float
-                   Wave number for a given wavelength.
-
-## Notes
-
-Regarding usage of this definition, you can find use cases in the engineering notes, specifically at [`Optimizing holograms using Odak`](../../../notes/hologram_optimization.md).
-
+    resolution  : float
+                  Resolvable angular or spatial spot size, see focal in parameters to know what to expect.
+                  
 ## See also
 
 * [`Computer Generated-Holography`](../../cgh.md)
