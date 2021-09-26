@@ -1,23 +1,29 @@
-# odak.wave.wavenumber
+# odak.wave.prism_phase_function
 
-`wavenumber(wavelength)`
+`prism_phase_function(nx,ny,k,angle,dx=0.001,axis='x')`
 
-Definition for calculating the wavenumber of a plane wave
+A definition to generate 2D phase function that represents a prism. See Goodman's Introduction to Fourier Optics book for more.
  
 **Parameters:**
 
-    wavelength   : float
-                   Wavelength of a wave in mm.
+    nx         : int
+                 Size of the output along X.
+    ny         : int
+                 Size of the output along Y.
+    k          : odak.wave.wavenumber
+                 See odak.wave.wavenumber for more.
+    angle      : float
+                 Tilt angle of the prism in degrees.
+    dx         : float
+                 Pixel pitch.
+    axis       : str
+                 Axis of the prism.
                        
 **Returns**
 
-    k            : float
-                   Wave number for a given wavelength.
-
-## Notes
-
-Regarding usage of this definition, you can find use cases in the engineering notes, specifically at [`Optimizing holograms using Odak`](../../../notes/hologram_optimization.md).
-
+    prism      : ndarray
+                 Generated phase function for a prism.
+                 
 ## See also
 
 * [`Computer Generated-Holography`](../../cgh.md)
