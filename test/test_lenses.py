@@ -2,7 +2,7 @@ import sys
 import os
 import odak
 from odak import np
-from odak.wave import wavenumber,plane_tilt,prism_phase_function,quadratic_phase_function
+from odak.wave import wavenumber,prism_phase_function,quadratic_phase_function
 
 def main():
     # Variables to be set.
@@ -12,14 +12,6 @@ def main():
     propagation_type           = 'Fraunhofer'
     k                          = wavenumber(wavelength)
     sample_field               = np.random.rand(150,150).astype(np.complex64)
-    plane_field                = plane_tilt(
-                                            sample_field.shape[0],
-                                            sample_field.shape[1],
-                                            k,
-                                            [0.3,0.9,1.,1.],
-                                            dx=pixeltom,
-                                            axis='x'
-                                           )
     lens_field                 = quadratic_phase_function(
                                                           sample_field.shape[0],
                                                           sample_field.shape[1],
