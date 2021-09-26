@@ -276,41 +276,6 @@ def angular_spectrum(field,k,distance,dx,wavelength):
     U1     = np.fft.fft2(np.fft.fftshift(field))
     U2     = h*U1
     result = np.fft.ifftshift(np.fft.ifft2(U2))
-    print('hello')
-    return result
-
-def angular_spectrum(field,k,distance,dx,wavelength):
-    """
-    A definition to calculate angular spectrum based beam propagation.
-
-    Parameters
-    ----------
-    field            : np.complex
-                       Complex field (MxN).
-    k                : odak.wave.wavenumber
-                       Wave number of a wave, see odak.wave.wavenumber for more.
-    distance         : float
-                       Propagation distance.
-    dx               : float
-                       Size of one single pixel in the field grid (in meters).
-    wavelength       : float
-                       Wavelength of the electric field.
-
-    Returns
-    =======
-    result           : np.complex
-                       Final complex field (MxN).
-    """
-    nv,nu  = field.shape
-    x      = np.linspace(-nu/2*dx,nu/2*dx,nu)
-    y      = np.linspace(-nv/2*dx,nv/2*dx,nv)
-    X,Y    = np.meshgrid(x,y)
-    Z      = X**2+Y**2
-    h      = 1./(1j*wavelength*distance)*np.exp(1j*k*(distance+Z/2/distance))
-    h      = np.fft.fft2(np.fft.fftshift(h))*dx**2
-    U1     = np.fft.fft2(np.fft.fftshift(field))
-    U2     = h*U1
-    result = np.fft.ifftshift(np.fft.ifft2(U2))
     return result
 
 def impulse_response_fresnel(field,k,distance,dx,wavelength):
@@ -534,69 +499,6 @@ def gerchberg_saxton(field,n_iterations,distance,dx,wavelength,slm_range=6.28,pr
                                     center[1]-orig_shape[1]:center[1]+orig_shape[1]
                                    ]
     return hologram,reconstruction
-
-def point_wise(field,distances,k,dx,wavelength,lens_method='ideal',propagation_method='Bandlimited Angular Spectrum',n_iteration=3):
-    """
-    Point-wise hologram calculation method. For more Maimone, Andrew, Andreas Georgiou, and Joel S. Kollin. "Holographic near-eye displays for virtual and augmented reality." ACM Transactions on Graphics (TOG) 36.4 (2017): 1-16.
-
-    Parameters
-    ----------
-    field            : ndarray
-                       Complex input field to be converted into a hologram.
-    distances        : ndarray
-                       Depth map of the input field.
-    k                : odak.wave.wavenumber
-                       Wave number of a wave, see odak.wave.wavenumber for more.
-    dx               : float
-                       Pixel pitch.
-    wavelength       : float
-                       Wavelength of the light.
-    lens_model       : str
-                       Method to calculate the lens patterns.
-    propagation_mode : str
-                       Beam propagation method to be used if the lens_model is not equal to `ideal`.
-    n_iteration      : int
-                       Number of iterations.
-
-    Returns
-    ----------
-    hologram   : ndarray
-                 Generated complex hologram.
-    """
-    hologram      = np.zeros(field.shape,dtype=np.complex64)
-    nx,ny         = field.shape
-    cx            = int(nx/2)
-    cy            = int(ny/2)
-    non_zeros     = np.asarray((np.abs(field)>0).nonzero())
-    unique_dist   = np.unique(distances)
-    unique_dist   = unique_dist[unique_dist!=0]
-    target        = np.zeros((nx,ny),dtype=np.complex64)
-    target[cx,cy] = 1.
-    lenses        = []
-    for distance in tqdm(unique_dist,leave=False):
-        if lens_method == 'ideal':
-            new_lens = quadratic_phase_function(nx,ny,k,focal=distance,dx=dx)
-            lenses.append(new_lens)
-        elif lens_method == 'Gerchberg-Saxton':
-            new_lens,_ = gerchberg_saxton(
-                                          target,
-                                          n_iteration,
-                                          distance,
-                                          dx,
-                                          wavelength,
-                                          np.pi*2,
-                                          propagation_method
-                                         )
-            lenses.append(new_lens)
-    for m in tqdm(range(non_zeros.shape[1]),leave=False):
-        i         = int(non_zeros[0,m])
-        j         = int(non_zeros[1,m])
-        lens_id   = int(np.argwhere(unique_dist==distances[i,j]))
-        lens      = lenses[lens_id]
-        lens      = np.roll(lens,i-cx,axis=0)
-        lens      = np.roll(lens,j-cy,axis=1)
-        hologram += lens*field[i,j]
-    return hologram
 
 def gerchberg_saxton_3d(fields,n_iterations,distances,dx,wavelength,slm_range=6.28,propagation_type='IR Fresnel',initial_phase=None,target_type='no constraint',coefficients=None):
     """
