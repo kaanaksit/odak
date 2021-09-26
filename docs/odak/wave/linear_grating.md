@@ -1,22 +1,26 @@
-# odak.wave.wavenumber
+# odak.wave.linear_grating
 
-`wavenumber(wavelength)`
+`linear_grating(nx,ny,every=2,add=3.14,axis='x')`
 
-Definition for calculating the wavenumber of a plane wave
+A definition to generate a linear grating.
  
 **Parameters:**
 
-    wavelength   : float
-                   Wavelength of a wave in mm.
+    nx         : int
+                 Size of the output along X.
+    ny         : int
+                 Size of the output along Y.
+    every      : int
+                 Add the add value at every given number.
+    add        : float
+                 Angle to be added.
+    axis       : string
+                 Axis eiter X,Y or both.
                        
 **Returns**
 
-    k            : float
-                   Wave number for a given wavelength.
-
-## Notes
-
-Regarding usage of this definition, you can find use cases in the engineering notes, specifically at [`Optimizing holograms using Odak`](../../../notes/hologram_optimization.md).
+    field      : ndarray
+                 Linear grating term.
 
 ## See also
 
