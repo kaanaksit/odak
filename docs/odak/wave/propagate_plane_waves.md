@@ -1,22 +1,27 @@
-# odak.wave.wavenumber
+# odak.wave.propagate_plane_waves
 
-`wavenumber(wavelength)`
+`propagate_plane_waves(field,opd,k,w=0,t=0)`
 
-Definition for calculating the wavenumber of a plane wave
+Definition to propagate a field representing a plane wave at a particular distance and time.
  
 **Parameters:**
 
-    wavelength   : float
-                   Wavelength of a wave in mm.
+    field        : complex
+                   Complex field.
+    opd          : float
+                   Optical path difference in mm.
+    k            : float
+                   Wave number of a wave, see odak.wave.parameters.wavenumber for more.
+    w            : float
+                   Rotation speed of a wave, see odak.wave.parameters.rotationspeed for more.
+    t            : float
+                   Time in seconds.
+
                        
 **Returns**
 
-    k            : float
-                   Wave number for a given wavelength.
-
-## Notes
-
-Regarding usage of this definition, you can find use cases in the engineering notes, specifically at [`Optimizing holograms using Odak`](../../../notes/hologram_optimization.md).
+    new_field     : complex
+                    A complex number that provides the resultant field in the complex form A*e^(j(wt+phi)).
 
 ## See also
 
