@@ -1,5 +1,6 @@
 from odak import np
 from odak.tools import distance_between_two_points
+from .utils import calculate_amplitude,calculate_phase
 
 def propagate_field(points0,points1,field0,wave_number,direction=1):
     """
