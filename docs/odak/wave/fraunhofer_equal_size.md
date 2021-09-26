@@ -1,22 +1,24 @@
-# odak.wave.wavenumber
+# odak.wave.fraunhofer_equal_size_adjust
 
-`wavenumber(wavelength)`
+`fraunhofer_equal_size_adjust(field,distance,dx,wavelength)`
 
-Definition for calculating the wavenumber of a plane wave
+A definition to match the physical size of the original field with the propagated field.
  
 **Parameters:**
 
-    wavelength   : float
-                   Wavelength of a wave in mm.
+    field            : np.complex
+                       Complex field (MxN).
+    distance         : float
+                       Propagation distance.
+    dx               : float
+                       Size of one single pixel in the field grid (in meters).
+    wavelength       : float
+                       Wavelength of the electric field.
                        
 **Returns**
 
-    k            : float
-                   Wave number for a given wavelength.
-
-## Notes
-
-Regarding usage of this definition, you can find use cases in the engineering notes, specifically at [`Optimizing holograms using Odak`](../../../notes/hologram_optimization.md).
+    new_field        : np.complex
+                       Final complex field (MxN).
 
 ## See also
 
