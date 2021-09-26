@@ -9,7 +9,7 @@ def test():
     distance               = 2.0
     input_field            = np.zeros((500,500),dtype=np.complex64)
     input_field[0::50,:]  += 1
-    iteration_number       = 200
+    iteration_number       = 2
     distance_light_slm     = 2.0
     k                      = wavenumber(wavelength)
     initial_phase          = double_convergence(
