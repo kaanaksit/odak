@@ -40,8 +40,8 @@ This submodule is based on `Numpy`. This submodule existed much before `odak.lea
 
 | Function      | Description   |
 | ------------- |:-------------:|
-| [odak.wave.adaptive_sampling_angular_spectrum](odak/learn/wave/adaptive_sampling_angular_spectrum.md) | Propagate coherent beams with adaptive sampling angular spectrum method. |
-| [odak.wave.angular_spectrum](odak/learn/wave/angular_spectrum.md) | Optical beam propagation with angular spectrum. |
+| [odak.wave.adaptive_sampling_angular_spectrum](odak/wave/adaptive_sampling_angular_spectrum.md) | Propagate coherent beams with adaptive sampling angular spectrum method. |
+| [odak.wave.angular_spectrum](odak/wave/angular_spectrum.md) | Optical beam propagation with angular spectrum. |
 | [odak.wave.add_phase](odak/wave/add_phase.md) | Add a given phase to a given complex field. |
 | [odak.wave.add_random_phase](odak/wave/add_random_phase.md) | Add a random phase to a given complex field. |
 | [odak.wave.adjust_phase_only_slm_range](odak/wave/adjust_phase_only_slm_range.md) | Adjust the range of a spatial light modulator. |
