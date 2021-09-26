@@ -1,22 +1,18 @@
-# odak.wave.wavenumber
+# odak.wave.calculate_intensity
 
-`wavenumber(wavelength)`
+`calculate_intensity(field)`
 
 Definition for calculating the wavenumber of a plane wave
  
 **Parameters:**
 
-    wavelength   : float
-                   Wavelength of a wave in mm.
+    field        : ndarray.complex or complex
+                   Electric fields or an electric field.
                        
 **Returns**
 
-    k            : float
-                   Wave number for a given wavelength.
-
-## Notes
-
-Regarding usage of this definition, you can find use cases in the engineering notes, specifically at [`Optimizing holograms using Odak`](../../../notes/hologram_optimization.md).
+    intensity    : float
+                   Intensity or intensities of electric field(s).
 
 ## See also
 
