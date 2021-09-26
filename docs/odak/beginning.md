@@ -1,5 +1,5 @@
 # What is Odak?
-Odak (pronounced "O-dac") is the fundamental library for scientific computing in optical and visual perception sciences.
+Odak (pronounced "O-dac") is the fundamental library for scientific computing in optical sciences, computer graphics and visual perception.
 
 ## Why does it exist?
 This question has two answers. 
