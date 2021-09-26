@@ -40,4 +40,15 @@ This submodule is based on `Numpy`. This submodule existed much before `odak.lea
 
 | Function      | Description   |
 | ------------- |:-------------:|
+| [odak.wave.add_phase](odak/wave/add_phase.md) | Add a given phase to a given complex field. |
+| [odak.wave.add_random_phase](odak/wave/add_random_phase.md) | Add a random phase to a given complex field. |
+| [odak.wave.adjust_phase_only_slm_range](odak/wave/adjust_phase_only_slm_range.md) | Adjust the range of a spatial light modulator. |
+| [odak.wave.calculate_amplitude](odak/wave/calculate_amplitude.md) | Calculate amplitude of a complex field. |
+| [odak.wave.calculate_intensity](odak/wave/calculate_intensity.md) | Calculate intensity of a complex field. |
+| [odak.wave.calculate_phase](odak/wave/calculate_phase.md) | Calculate phase of a complex field. |
+| [odak.wave.generate_complex_field](odak/wave/generate_complex_field.md) | Generate a complex field from an amplitude and a phase value. |
+| [odak.wave.rayleigh_resolution](odak/wave/rayleigh_resolution.md) | Calculate Rayleigh resolution limit. |
+| [odak.wave.rotationspeed](odak/wave/rotationspeed.md) | Calculate rotation speed of a wave. |
+| [odak.wave.produce_phase_only_slm_pattern](odak/wave/produce_phase_only_slm_pattern.md) | Produce phase-only hologram for a spatial light modulator with given phase range. |
+| [odak.wave.set_amplitude](odak/wave/set_amplitude.md) | Set amplitude of a complex field. |
 | [odak.wave.wavenumber](odak/wave/wavenumber.md) | Wave number. |
