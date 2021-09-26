@@ -1,22 +1,26 @@
-# odak.wave.wavenumber
+# odak.wave.double_convergence
 
-`wavenumber(wavelength)`
+`double_convergence(nx,ny,k,r,dx)`
 
-Definition for calculating the wavenumber of a plane wave
+A definition to generate initial phase for a Gerchberg-Saxton method. For more details consult Sun, Peng, et al. "Holographic near-eye display system based on double-convergence light Gerchberg-Saxton algorithm." Optics express 26.8 (2018): 10140-10151.
  
 **Parameters:**
 
-    wavelength   : float
-                   Wavelength of a wave in mm.
+    nx         : int
+                 Size of the output along X.
+    ny         : int
+                 Size of the output along Y.
+    k          : odak.wave.wavenumber
+                 See odak.wave.wavenumber for more.
+    r          : float
+                 The distance between location of a light source and an image plane.
+    dx         : float
+                 Pixel pitch.
                        
 **Returns**
 
-    k            : float
-                   Wave number for a given wavelength.
-
-## Notes
-
-Regarding usage of this definition, you can find use cases in the engineering notes, specifically at [`Optimizing holograms using Odak`](../../../notes/hologram_optimization.md).
+    function   : ndarray
+                 Generated phase pattern for a Gerchberg-Saxton method.
 
 ## See also
 
