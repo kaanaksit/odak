@@ -50,7 +50,7 @@ This submodule is based on `Numpy`. This submodule existed much before `odak.lea
 | [odak.wave.electric_field_per_plane_wave](odak/wave/electric_field_per_plane_wave.md) | Return the state of a plane wave at a particular distance and time. |
 | [odak.wave.generate_complex_field](odak/wave/generate_complex_field.md) | Generate a complex field from an amplitude and a phase value. |
 | [odak.wave.linear_grating](odak/wave/linear_grating.md) | One or two axis linear grating.|
-| [odak.wave.prism_phase_function](odak/wave/produce_phase_only_slm_pattern.md) | Prism phase function, a prism. |
+| [odak.wave.prism_phase_function](odak/wave/prism_phase_function.md) | Prism phase function, a prism. |
 | [odak.wave.produce_phase_only_slm_pattern](odak/wave/produce_phase_only_slm_pattern.md) | Produce phase-only hologram for a spatial light modulator with given phase range. |
 | [odak.wave.propagate_field](odak/wave/propagate_field.md) | Propagate a given array of spherical sources to given set of points in space. |
 | [odak.wave.propagate_plane_waves](odak/wave/propagate_plane_waves.md) | Propagate a given plane wave in space and time. |
