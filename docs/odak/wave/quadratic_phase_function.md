@@ -1,22 +1,28 @@
-# odak.wave.wavenumber
+# odak.wave.quadratic_phase_function
 
-`wavenumber(wavelength)`
+`quadratic_phase_function(nx,ny,k,focal=0.4,dx=0.001,offset=[0,0])`
 
-Definition for calculating the wavenumber of a plane wave
+A definition to generate 2D quadratic phase function, which is typically use to represent lenses.
  
 **Parameters:**
 
-    wavelength   : float
-                   Wavelength of a wave in mm.
+    nx         : int
+                 Size of the output along X.
+    ny         : int
+                 Size of the output along Y.
+    k          : odak.wave.wavenumber
+                 See odak.wave.wavenumber for more.
+    focal      : float
+                 Focal length of the quadratic phase function.
+    dx         : float
+                 Pixel pitch.
+    offset     : list
+                 Deviation from the center along X and Y axes.
                        
 **Returns**
 
-    k            : float
-                   Wave number for a given wavelength.
-
-## Notes
-
-Regarding usage of this definition, you can find use cases in the engineering notes, specifically at [`Optimizing holograms using Odak`](../../../notes/hologram_optimization.md).
+    function   : ndarray
+                 Generated quadratic phase function.
 
 ## See also
 
