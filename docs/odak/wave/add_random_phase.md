@@ -1,22 +1,18 @@
-# odak.wave.wavenumber
+# odak.wave.add_random_phase
 
-`wavenumber(wavelength)`
+`add_random_phase(field)`
 
-Definition for calculating the wavenumber of a plane wave
+Definition for adding a random phase to a given complex field.
  
 **Parameters:**
 
-    wavelength   : float
-                   Wavelength of a wave in mm.
+    field        : np.complex64
+                   Complex field.
                        
 **Returns**
 
-    k            : float
-                   Wave number for a given wavelength.
-
-## Notes
-
-Regarding usage of this definition, you can find use cases in the engineering notes, specifically at [`Optimizing holograms using Odak`](../../../notes/hologram_optimization.md).
+    new_field    : np.complex64
+                   Complex field..
 
 ## See also
 
