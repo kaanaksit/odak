@@ -1,22 +1,19 @@
-# odak.wave.wavenumber
+# odak.wave.rotationspeed
 
-`wavenumber(wavelength)`
+`rotationspeed(wavelength,c=3*10**11)`
 
-Definition for calculating the wavenumber of a plane wave
+Definition for calculating rotation speed of a wave (w in A*e^(j(wt+phi))).
  
 **Parameters:**
 
     wavelength   : float
                    Wavelength of a wave in mm.
+    c            : float
+                   Speed of wave in mm/seconds. Default is the speed of light in the void!
                        
 **Returns**
 
-    k            : float
-                   Wave number for a given wavelength.
-
-## Notes
-
-Regarding usage of this definition, you can find use cases in the engineering notes, specifically at [`Optimizing holograms using Odak`](../../../notes/hologram_optimization.md).
+    w            : float
 
 ## See also
 
