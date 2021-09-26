@@ -1,22 +1,28 @@
-# odak.wave.wavenumber
+# odak.wave.band_limited_angular_spectrum
 
-`wavenumber(wavelength)`
+`band_limited_angular_spectrum(field,k,distance,dx,wavelength)`
 
-Definition for calculating the wavenumber of a plane wave
+A definition to calculate bandlimited angular spectrum based beam propagation. 
+For more `Matsushima, Kyoji, and Tomoyoshi Shimobaba. "Band-limited angular spectrum method for numerical simulation of free-space propagation in far and near fields." Optics express 17.22 (2009): 19662-19673`.
  
 **Parameters:**
 
-    wavelength   : float
-                   Wavelength of a wave in mm.
+    field            : np.complex
+                       Complex field (MxN).
+    k                : odak.wave.wavenumber
+                       Wave number of a wave, see odak.wave.wavenumber for more.
+    distance         : float
+                       Propagation distance.
+    dx               : float
+                       Size of one single pixel in the field grid (in meters).
+    wavelength       : float
+                       Wavelength of the electric field.
+
                        
 **Returns**
 
-    k            : float
-                   Wave number for a given wavelength.
-
-## Notes
-
-Regarding usage of this definition, you can find use cases in the engineering notes, specifically at [`Optimizing holograms using Odak`](../../../notes/hologram_optimization.md).
+    result           : np.complex
+                       Final complex field (MxN).
 
 ## See also
 
