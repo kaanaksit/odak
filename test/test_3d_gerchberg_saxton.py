@@ -8,7 +8,7 @@ def test():
     dx                           = 0.0000064
     distances                    = np.array([0.2,0.1])
     input_fields                 = np.random.rand(2,500,500).astype(np.complex64)
-    iteration_number             = 100
+    iteration_number             = 3
     distance_light_slm           = 2.0
     k                            = wavenumber(wavelength)
     hologram                     = gerchberg_saxton_3d(
