@@ -1,22 +1,20 @@
-# odak.wave.wavenumber
+# odak.wave.generate_complex_field
 
-`wavenumber(wavelength)`
+`generate_complex_field(amplitude,phase)`
 
 Definition for calculating the wavenumber of a plane wave
  
 **Parameters:**
 
-    wavelength   : float
-                   Wavelength of a wave in mm.
+    amplitude         : ndarray
+                        Amplitude of the field.
+    phase             : ndarray
+                        Phase of the field.
                        
 **Returns**
 
-    k            : float
-                   Wave number for a given wavelength.
-
-## Notes
-
-Regarding usage of this definition, you can find use cases in the engineering notes, specifically at [`Optimizing holograms using Odak`](../../../notes/hologram_optimization.md).
+    field             : ndarray
+                        Complex field.
 
 ## See also
 
