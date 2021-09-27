@@ -13,6 +13,7 @@ We designed this page to help first time users, new contributors, and existing u
 - `Inverse problems`
 - `General purpose toolkit`
 - `Optical design`
+- `Optimization`
 - [`Visual perception`](perception.md)
 
 ## New contributors
