@@ -10,6 +10,7 @@ We designed this page to help first time users, new contributors, and existing u
 ## Use cases
 
 - [`Computer-generated holography`](cgh.md)
+- `Computer graphics`
 - `Inverse problems`
 - `General purpose toolkit`
 - `Optical design`
