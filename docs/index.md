@@ -9,6 +9,7 @@ We designed this page to help first time users, new contributors, and existing u
 
 ## Use cases
 
+- `General purpose toolkit`
 - [`Computer-Generated Holography`](cgh.md)
 - [`Visual perception`](perception.md)
 
