@@ -10,7 +10,7 @@ We designed this page to help first time users, new contributors, and existing u
 ## Use cases
 
 - [`Computer-Generated Holography`](cgh.md)
-- `Computational Imaging`
+- `Computational Optics`
 - `General purpose toolkit`
 - `Optical design`
 - [`Visual perception`](perception.md)
