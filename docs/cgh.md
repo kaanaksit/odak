@@ -10,6 +10,7 @@ Note that, the creators of this documentation are from `Computational Displays` 
 | ------------- |:-------------:|
 | [`Holographic light transport`](notes/holographic_light_transport.md) | This engineering note will give you an idea about how coherent light propagates in free space. |
 | [`Optimizing holograms using Odak`](notes/optimizing_holograms_using_odak.md) | This engineering note will give you an idea about how to calculate phase-only holograms using Odak. |
+| [`Learning the model of a holographic display`](https://github.com/complight/realistic_holography) | This link navigates to a project website that provides a codebase that can learn the model of a holographic display using a single complex kernel. |
 
 ## odak.learn.wave
 This submodule is based on `torch`, therefore the functions provided here are differentiable and can be used with provided optimizers in `torch`.
