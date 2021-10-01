@@ -17,8 +17,11 @@ In such cases, `odak.tools` is the go to submodule.
 | Function      | Description   |
 | ------------- |:-------------:|
 | [odak.tools.check_directory](odak/tools/check_directory.md) | Check if directory exist, if not create it. |
+| [odak.tools.convert_bytes](odak/tools/convert_bytes.md) | Convert bytes to other units (e.g., MB). |
 | [odak.tools.load_image](odak/tools/load_image.md) | Load an image. |
 | [odak.tools.load_dictionary](odak/tools/load_dictionary.md) | Load a dictionary. |
+| [odak.tools.list_files](odak/tools/list_files.md) | List files in a given path. |
 | [odak.tools.save_image](odak/tools/save_image.md) | Save as an image. |
 | [odak.tools.save_dictionary](odak/tools/save_dictionary.md) | Save a dictionary. |
+| [odak.tools.size_of_a_file](odak/tools/size_of_a_file.md) | Geet size of a file in units (e.g., MB). |
 | [odak.tools.shell_command](odak/tools/shell_command.md) | Trigger a shell command. |

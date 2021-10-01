@@ -1,4 +1,6 @@
 # Installation
+We use odak with Linux operating systems. 
+Therefore, we don't know if it can work with Windows or Mac operating systems.
 Odak can be installed in multiple ways. 
 However, our recommended method for installing Odak is using [pip](https://pypi.org/project/pip) distribution system. 
 We update Odak within pip with each new version.
