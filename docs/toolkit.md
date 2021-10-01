@@ -8,6 +8,7 @@ When working with odak, we strongly suggest sticking to the general toolkit to p
 | Note          | Description   |
 | ------------- |:-------------:|
 | `Working with images` | This engineering note will give you an idea about how read and write images using odak. |
+| `Working with dictionaries` | This engineering note will give you an idea about how read and write dictionaries using odak. |
 
 ## odak.tools
 This submodule is based on `numpy`. If you are using functions outside of `odak.learn` submodule, we recommend you to use this specific set of tools.
@@ -21,6 +22,7 @@ In such cases, `odak.tools` is the go to submodule.
 | [odak.tools.load_image](odak/tools/load_image.md) | Load an image. |
 | [odak.tools.load_dictionary](odak/tools/load_dictionary.md) | Load a dictionary. |
 | [odak.tools.list_files](odak/tools/list_files.md) | List files in a given path. |
+| [odak.tools.resize_image](odak/tools/resize_image.md) | Resize a given image. |
 | [odak.tools.save_image](odak/tools/save_image.md) | Save as an image. |
 | [odak.tools.save_dictionary](odak/tools/save_dictionary.md) | Save a dictionary. |
 | [odak.tools.size_of_a_file](odak/tools/size_of_a_file.md) | Geet size of a file in units (e.g., MB). |

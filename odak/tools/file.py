@@ -7,6 +7,24 @@ from odak import np
 from PIL import Image
 
 def resize_image(img,target_size):
+    """
+    Definition to resize a given image to a target shape.
+
+
+    Parameters
+    ----------
+    img           : ndarray
+                    MxN image to be resized.
+    target_size   : list
+                    Target shape.
+
+
+    Returns
+    ----------
+    img           : ndarray
+                    Resized image.
+
+    """
     if np.__name__ == 'cupy':
         import numpy
         img = np.asnumpy(img)
