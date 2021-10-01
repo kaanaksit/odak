@@ -11,7 +11,7 @@ We designed this page to help first time users, new contributors, and existing u
 
 - [`Computer-generated holography`](cgh.md)
 - `Computer graphics`
-- `Inverse problems`
+- `Computational imaging`
 - [`General toolkit`](toolkit.md)
 - `Optical design`
 - `Optimization`
