@@ -60,9 +60,6 @@ class BlurLoss():
                                 Image to compute loss for. Should be an RGB image in NCHW format (4 dimensions)
         target              : torch.tensor
                                 Ground truth target image to compute loss for. Should be an RGB image in NCHW format (4 dimensions)
-        image_colorspace    : str
-                                The current colorspace of your image and target. Ignored if input does not have 3 channels.
-                                accepted values: RGB, YCrCb.
         gaze                : list
                                 Gaze location in the image, in normalized image coordinates (range [0, 1]) relative to the top left of the image.
         
