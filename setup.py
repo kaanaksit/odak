@@ -39,8 +39,7 @@ setup(
                               'odak/manager',
                               'odak/measurement',
                               'odak/catalog',
-                              'odak/learn',
-                              'odak/oldschool'
+                              'odak/learn'
                              ],
       package_dir          = {'odak': 'odak'},
       package_data         = {'odak': ['catalog/data/*.json']},
