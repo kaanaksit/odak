@@ -127,4 +127,5 @@ class plano_convex_lens():
         """
 #        which_surface
 #        refract
-        return output_rays
+#        return output_rays
+        return None

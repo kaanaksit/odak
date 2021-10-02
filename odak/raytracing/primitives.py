@@ -66,7 +66,7 @@ def bring_plane_to_origin(point, plane, shape=[10., 10.], center=[0., 0., 0.], a
         mode=reverse_mode,
     )
     if transformed_points.shape[0] == 1:
-        transformed_points = transformed.points.reshape((3,))
+        transformed_points = transformed_points.reshape((3,))
     return transformed_points
 
 

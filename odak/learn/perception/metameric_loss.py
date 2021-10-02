@@ -5,6 +5,7 @@ import math
 from .color_conversion import ycrcb_2_rgb, rgb_2_ycrcb
 from .spatial_steerable_pyramid import SpatialSteerablePyramid
 from .radially_varying_blur import RadiallyVaryingBlur
+from .foveation import make_radial_map
 
 
 class MetamericLoss():
