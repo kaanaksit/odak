@@ -1,4 +1,7 @@
-[![DOI](https://zenodo.org/badge/3987171.svg)](https://zenodo.org/badge/latestdoi/3987171) [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0) [![Inline docs](https://img.shields.io/readthedocs/odak)](https://kunguz.github.io/odak/)
+[![DOI](https://zenodo.org/badge/3987171.svg)](https://zenodo.org/badge/latestdoi/3987171) 
+[![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0) 
+[![PyPI version](https://badge.fury.io/py/odak.svg)](https://badge.fury.io/py/odak)
+[![Inline docs](https://img.shields.io/readthedocs/odak)](https://kunguz.github.io/odak/)
 
 # Odak
 Odak (pronounced "O-dac") is the fundamental library for scientific computing in optical sciences, computer graphics and visual perception.
