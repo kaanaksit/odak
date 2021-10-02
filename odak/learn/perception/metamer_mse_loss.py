@@ -4,6 +4,7 @@ import math
 from .metameric_loss import MetamericLoss
 from .color_conversion import ycrcb_2_rgb, rgb_2_ycrcb
 
+
 class MetamerMSELoss():
     """ 
     Measures the MSE between a given image and a metamer of the given target image.
@@ -29,14 +30,15 @@ class MetamerMSELoss():
                                 Number of orientations in the steerable pyramid. Can be 1, 2, 4 or 6.
                                 Increasing this will increase runtime.
     """
-    def __init__(self, device=torch.device("cpu"),\
-        alpha=0.08, real_image_width=0.2, real_viewing_distance=0.7, mode="quadratic",
-        n_pyramid_levels=5, n_orientations=2):
+
+    def __init__(self, device=torch.device("cpu"),
+                 alpha=0.08, real_image_width=0.2, real_viewing_distance=0.7, mode="quadratic",
+                 n_pyramid_levels=5, n_orientations=2):
         self.target = None
         self.target_metamer = None
-        self.metameric_loss = MetamericLoss(device=device, alpha=alpha, real_image_width=real_image_width,\
-            real_viewing_distance=real_viewing_distance, 
-            n_pyramid_levels=n_pyramid_levels, n_orientations=n_orientations, use_l2_foveal_loss=False)
+        self.metameric_loss = MetamericLoss(device=device, alpha=alpha, real_image_width=real_image_width,
+                                            real_viewing_distance=real_viewing_distance,
+                                            n_pyramid_levels=n_pyramid_levels, n_orientations=n_orientations, use_l2_foveal_loss=False)
         self.loss_func = torch.nn.MSELoss()
 
     def gen_metamer(self, image, gaze):
@@ -50,7 +52,7 @@ class MetamerMSELoss():
                 Image to compute metamer for. Should be an RGB image in NCHW format (4 dimensions)
         gaze    : list
                 Gaze location in the image, in normalized image coordinates (range [0, 1]) relative to the top left of the image.
-        
+
         Returns
         =======
 
@@ -58,38 +60,44 @@ class MetamerMSELoss():
                 The generated metamer image
         """
         image = rgb_2_ycrcb(image)
-        target_stats = self.metameric_loss.calc_statsmaps(image, gaze=gaze, alpha=self.metameric_loss.alpha)        
+        target_stats = self.metameric_loss.calc_statsmaps(
+            image, gaze=gaze, alpha=self.metameric_loss.alpha)
         target_means = target_stats[::2]
         target_stdevs = target_stats[1::2]
         torch.manual_seed(0)
         noise_image = torch.rand_like(image)
-        noise_pyramid = self.metameric_loss.pyramid_maker.construct_pyramid(noise_image, self.metameric_loss.n_pyramid_levels)
-        input_pyramid = self.metameric_loss.pyramid_maker.construct_pyramid(image, self.metameric_loss.n_pyramid_levels)
+        noise_pyramid = self.metameric_loss.pyramid_maker.construct_pyramid(
+            noise_image, self.metameric_loss.n_pyramid_levels)
+        input_pyramid = self.metameric_loss.pyramid_maker.construct_pyramid(
+            image, self.metameric_loss.n_pyramid_levels)
 
         def match_level(input_level, target_mean, target_std):
             level = input_level.clone()
             level -= torch.mean(level)
             input_std = torch.sqrt(torch.mean(level * level))
             eps = 1e-6
-            input_std[input_std < eps] = eps #Safeguard against divide by zero
+            # Safeguard against divide by zero
+            input_std[input_std < eps] = eps
             level /= input_std
             level *= target_std
             level += target_mean
             return level
 
         nbands = len(noise_pyramid[0]["b"])
-        noise_pyramid[0]["h"] = match_level(noise_pyramid[0]["h"], target_means[0], target_stdevs[0])
+        noise_pyramid[0]["h"] = match_level(
+            noise_pyramid[0]["h"], target_means[0], target_stdevs[0])
         for l in range(len(noise_pyramid)-1):
             for b in range(nbands):
-                noise_pyramid[l]["b"][b] = match_level(noise_pyramid[l]["b"][b], target_means[1 + l * nbands + b], target_stdevs[1 + l * nbands + b])
+                noise_pyramid[l]["b"][b] = match_level(
+                    noise_pyramid[l]["b"][b], target_means[1 + l * nbands + b], target_stdevs[1 + l * nbands + b])
         noise_pyramid[-1]["l"] = input_pyramid[-1]["l"]
 
-        metamer = self.metameric_loss.pyramid_maker.reconstruct_from_pyramid(noise_pyramid)
+        metamer = self.metameric_loss.pyramid_maker.reconstruct_from_pyramid(
+            noise_pyramid)
         metamer = ycrcb_2_rgb(metamer)
         return metamer
 
-    
-    def __call__(self, image, target, gaze=[0.5,0.5]):
+    def __call__(self, image, target, gaze=[0.5, 0.5]):
         """ 
         Calculates the Metamer MSE Loss.
 
@@ -116,16 +124,17 @@ class MetamerMSELoss():
         required_width = math.ceil(width / min_divisor) * min_divisor
         if required_height > height or required_width > width:
             # We need to pad!
-            pad = torch.nn.ReflectionPad2d((0,0,required_height-height, required_width-width))
+            pad = torch.nn.ReflectionPad2d(
+                (0, 0, required_height-height, required_width-width))
             image = pad(image)
             target = pad(target)
 
         if target is not self.target or self.target is None:
             self.target_metamer = self.gen_metamer(target, gaze)
             self.target = target
-        
+
         return self.loss_func(image, self.target_metamer)
-    
+
     def to(self, device):
         self.metameric_loss = self.metameric_loss.to(device)
         return self

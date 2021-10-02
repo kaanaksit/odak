@@ -6,6 +6,7 @@ import math
 
 from .foveation import make_pooling_size_map_lod
 
+
 class RadiallyVaryingBlur():
     """ 
     This class is used to apply a radially varying blur to input images. Given a gaze location and information about the 
@@ -18,6 +19,7 @@ class RadiallyVaryingBlur():
     If you are repeatedly applying blur to images of different sizes (e.g. a pyramid) for best performance use one instance
     of this class per image size.
     """
+
     def __init__(self):
         self.lod_map = None
 
@@ -62,7 +64,8 @@ class RadiallyVaryingBlur():
                 self.real_viewing_distance != real_viewing_distance or\
                 self.centre != centre or\
                 self.mode != mode:
-            self.lod_map = make_pooling_size_map_lod(centre, (image.size(-2), image.size(-1)), alpha, real_image_width, real_viewing_distance, mode)
+            self.lod_map = make_pooling_size_map_lod(
+                centre, (image.size(-2), image.size(-1)), alpha, real_image_width, real_viewing_distance, mode)
             self.size = size
             self.n_channels = image.size(1)
             self.alpha = alpha
@@ -71,7 +74,8 @@ class RadiallyVaryingBlur():
             self.centre = centre
             self.lod_map = self.lod_map.to(image.device)
             self.lod_fraction = torch.fmod(self.lod_map, 1.0)
-            self.lod_fraction = self.lod_fraction[None,None,...].repeat(1,image.size(1),1,1)
+            self.lod_fraction = self.lod_fraction[None, None, ...].repeat(
+                1, image.size(1), 1, 1)
             self.mode = mode
 
         if self.lod_map.device != image.device:
@@ -80,21 +84,24 @@ class RadiallyVaryingBlur():
             self.lod_fraction = self.lod_fraction.to(image.device)
 
         mipmap = [image]
-        while mipmap[-1].size(-1) > 1 and mipmap[-1].size(-2) > 1: 
-            mipmap.append(torch.nn.functional.interpolate(mipmap[-1], scale_factor=0.5, mode="area", recompute_scale_factor=False))
+        while mipmap[-1].size(-1) > 1 and mipmap[-1].size(-2) > 1:
+            mipmap.append(torch.nn.functional.interpolate(
+                mipmap[-1], scale_factor=0.5, mode="area", recompute_scale_factor=False))
         if mipmap[-1].size(-1) == 2:
-            final_mip = torch.mean(mipmap[-1], axis=-1)[...,None]
+            final_mip = torch.mean(mipmap[-1], axis=-1)[..., None]
             mipmap.append(final_mip)
         if mipmap[-1].size(-2) == 2:
-            final_mip = torch.mean(mipmap[-2], axis=-2)[...,None,:]
+            final_mip = torch.mean(mipmap[-2], axis=-2)[..., None, :]
             mipmap.append(final_mip)
 
         for l in range(len(mipmap)):
             if l == len(mipmap)-1:
-                mipmap[l] = mipmap[l] * torch.ones(image.size(), device=image.device)
+                mipmap[l] = mipmap[l] * \
+                    torch.ones(image.size(), device=image.device)
             else:
                 for l2 in range(l-1, -1, -1):
-                    mipmap[l] = torch.nn.functional.interpolate(mipmap[l], size=(image.size(-2), image.size(-1)), mode="bilinear", align_corners=False, recompute_scale_factor=False)
+                    mipmap[l] = torch.nn.functional.interpolate(mipmap[l], size=(
+                        image.size(-2), image.size(-1)), mode="bilinear", align_corners=False, recompute_scale_factor=False)
 
         output = torch.zeros(image.size(), device=image.device)
         for l in range(len(mipmap)):
@@ -103,15 +110,16 @@ class RadiallyVaryingBlur():
             elif l == len(mipmap)-1:
                 mask = self.lod_map >= l
             else:
-                mask = torch.logical_and(self.lod_map >= l, self.lod_map < (l+1))
+                mask = torch.logical_and(
+                    self.lod_map >= l, self.lod_map < (l+1))
 
             if l == len(mipmap)-1:
                 blended_levels = mipmap[l]
             else:
-                blended_levels = (1 - self.lod_fraction)*mipmap[l] + self.lod_fraction*mipmap[l+1]
-            mask = mask[None,None,...]
-            mask = mask.repeat(1,image.size(1),1,1)
+                blended_levels = (1 - self.lod_fraction) * \
+                    mipmap[l] + self.lod_fraction*mipmap[l+1]
+            mask = mask[None, None, ...]
+            mask = mask.repeat(1, image.size(1), 1, 1)
             output[mask] = blended_levels[mask]
-        
-        
+
         return output

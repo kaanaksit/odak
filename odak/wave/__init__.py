@@ -11,7 +11,8 @@ from .classical import *
 from .lens import *
 from odak.tools import save_image
 
-def rayleigh_resolution(diameter,focal=None,wavelength=0.0005):
+
+def rayleigh_resolution(diameter, focal=None, wavelength=0.0005):
     """
     Definition to calculate rayleigh resolution limit of a lens with a certain focal length and an aperture. Lens is assumed to be focusing a plane wave at a focal distance.
 
@@ -35,6 +36,7 @@ def rayleigh_resolution(diameter,focal=None,wavelength=0.0005):
         resolution *= focal
     return resolution
 
+
 def calculate_intensity(field):
     """
     Definition to calculate intensity of a single or multiple given electric field(s).
@@ -51,6 +53,7 @@ def calculate_intensity(field):
     """
     intensity = np.abs(field)**2
     return intensity
+
 
 def wavenumber(wavelength):
     """
@@ -69,7 +72,8 @@ def wavenumber(wavelength):
     k = 2*np.pi/wavelength
     return k
 
-def rotationspeed(wavelength,c=3*10**11):
+
+def rotationspeed(wavelength, c=3*10**11):
     """
     Definition for calculating rotation speed of a wave (w in A*e^(j(wt+phi))).
 
@@ -89,6 +93,7 @@ def rotationspeed(wavelength,c=3*10**11):
     w = 2*np.pi*f
     return w
 
+
 def add_random_phase(field):
     """
     Definition for adding a random phase to a given complex field.
@@ -104,10 +109,11 @@ def add_random_phase(field):
                    Complex field.
     """
     random_phase = np.pi*np.random.random(field.shape)
-    new_field    = add_phase(field,random_phase)
+    new_field = add_phase(field, random_phase)
     return new_field
 
-def add_phase(field,new_phase):
+
+def add_phase(field, new_phase):
     """
     Definition for adding a phase to a given complex field.
 
@@ -123,12 +129,14 @@ def add_phase(field,new_phase):
     new_field    : np.complex64
                    Complex field.
     """
-    phase        = calculate_phase(field)
-    amplitude    = calculate_amplitude(field)
-    new_field    = amplitude*np.cos(phase+new_phase)+1j*amplitude*np.sin(phase+new_phase)
+    phase = calculate_phase(field)
+    amplitude = calculate_amplitude(field)
+    new_field = amplitude*np.cos(phase+new_phase) + \
+        1j*amplitude*np.sin(phase+new_phase)
     return new_field
 
-def set_amplitude(field,amplitude):
+
+def set_amplitude(field, amplitude):
     """
     Definition to keep phase as is and change the amplitude of a given field.
 
@@ -145,11 +153,12 @@ def set_amplitude(field,amplitude):
                    Complex field.
     """
     amplitude = calculate_amplitude(amplitude)
-    phase     = calculate_phase(field)
+    phase = calculate_phase(field)
     new_field = amplitude*np.cos(phase)+1j*amplitude*np.sin(phase)
     return new_field
 
-def generate_complex_field(amplitude,phase):
+
+def generate_complex_field(amplitude, phase):
     """
     Definition to generate a complex field with a given amplitude and phase.
 
@@ -168,7 +177,8 @@ def generate_complex_field(amplitude,phase):
     field = amplitude*np.cos(phase)+1j*amplitude*np.sin(phase)
     return field
 
-def adjust_phase_only_slm_range(native_range,working_wavelength,native_wavelength):
+
+def adjust_phase_only_slm_range(native_range, working_wavelength, native_wavelength):
     """
     Definition for calculating the phase range of the Spatial Light Modulator (SLM) for a given wavelength. Here you prove maximum angle as the lower bound is typically zero. If the lower bound isn't zero in angles, you can use this very same definition for calculating lower angular bound as well.
 
@@ -189,7 +199,8 @@ def adjust_phase_only_slm_range(native_range,working_wavelength,native_wavelengt
     new_range = native_range/working_wavelength*native_wavelength
     return new_range
 
-def produce_phase_only_slm_pattern(hologram,slm_range,filename=None,bits=8,default_range=6.28,illumination=None):
+
+def produce_phase_only_slm_pattern(hologram, slm_range, filename=None, bits=8, default_range=6.28, illumination=None):
     """
     Definition for producing a pattern for a phase only Spatial Light Modulator (SLM) using a given field.
 
@@ -216,23 +227,23 @@ def produce_phase_only_slm_pattern(hologram,slm_range,filename=None,bits=8,defau
                          Digital representation of the hologram.
     """
     #hologram_phase   = calculate_phase(hologram) % default_range
-    hologram_phase   = calculate_phase(hologram)
-    hologram_phase   = hologram_phase % slm_range
-    hologram_phase  /= slm_range
-    hologram_phase  *= 2**bits
-    hologram_phase   = hologram_phase.astype(np.int)
+    hologram_phase = calculate_phase(hologram)
+    hologram_phase = hologram_phase % slm_range
+    hologram_phase /= slm_range
+    hologram_phase *= 2**bits
+    hologram_phase = hologram_phase.astype(np.int)
     hologram_digital = np.copy(hologram_phase)
     if type(filename) != type(None):
         save_image(
-                   filename,
-                   hologram_phase,
-                   cmin=0,
-                   cmax=2**bits
-                  )
-    hologram_phase   = hologram_phase.astype(np.float)
-    hologram_phase  *= slm_range/2**bits
+            filename,
+            hologram_phase,
+            cmin=0,
+            cmax=2**bits
+        )
+    hologram_phase = hologram_phase.astype(np.float)
+    hologram_phase *= slm_range/2**bits
     if type(illumination) == type(None):
         A = 1.
     else:
         A = illumination
-    return A*np.cos(hologram_phase)+A*1j*np.sin(hologram_phase),hologram_digital
+    return A*np.cos(hologram_phase)+A*1j*np.sin(hologram_phase), hologram_digital

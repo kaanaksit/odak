@@ -1,7 +1,8 @@
 from odak import np
 import torch
 
-def convert_to_torch(a,grad=True):
+
+def convert_to_torch(a, grad=True):
     """
     A definition to convert Numpy/Cupy arrays to Torch.
 
@@ -24,6 +25,7 @@ def convert_to_torch(a,grad=True):
     c = torch.from_numpy(b)
     c.requires_grad_(grad)
     return c
+
 
 def convert_to_numpy(a):
     """

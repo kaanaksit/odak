@@ -6,6 +6,7 @@ import socket
 host = 'localhost'
 port = 8082
 
+
 def send_msg(cmds):
     """
     Definition to send command to blender server started by `odak/visualize/blender/server.py`.Make sure that you call init() definition from `odak/visualize/blender/__init__.py` to start the server first.
@@ -24,14 +25,15 @@ def send_msg(cmds):
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     except:
         return False
-    client.connect((host,port))
+    client.connect((host, port))
     for cmd in cmds:
         client.sendall(cmd.encode('utf-8') + b'\x00')
     client.shutdown(0)
     client.close()
     return True
 
-def import_ply(filename,location=[0,0,0],angle=[0,0,0],scale=[1,1,1]):
+
+def import_ply(filename, location=[0, 0, 0], angle=[0, 0, 0], scale=[1, 1, 1]):
     """
     Definition to import a PLY object.
 
@@ -52,13 +54,15 @@ def import_ply(filename,location=[0,0,0],angle=[0,0,0],scale=[1,1,1]):
                       Command sent by a client.
     """
     cmd = [
-           'import_ply(filename="%s",location=%s,angle=%s,scale=%s)' % (filename,location,angle,scale),
-          ]
+        'import_ply(filename="%s",location=%s,angle=%s,scale=%s)' % (
+            filename, location, angle, scale),
+    ]
     print(cmd)
     send_msg(cmd)
     return cmd
 
-def prepare(resolution=[1920,1080],camera_fov=40.0,camera_location=[0.,0.,-15.],camera_lookat=[0.,0.,0.],clip=[0.1,100000000.],device='GPU',intensity=2.,world_color=[0.3,0.3,0.3]):
+
+def prepare(resolution=[1920, 1080], camera_fov=40.0, camera_location=[0., 0., -15.], camera_lookat=[0., 0., 0.], clip=[0.1, 100000000.], device='GPU', intensity=2., world_color=[0.3, 0.3, 0.3]):
     """
     Definition to prepare the viewport in Blender.
 
@@ -78,18 +82,20 @@ def prepare(resolution=[1920,1080],camera_fov=40.0,camera_location=[0.,0.,-15.],
                       World's illumination intensity.
     world_color     : list
                       RGB color of the world's illumination.
- 
+
     Returns
     ----------
     cmd             : str
                       Command sent by a client.
-    """ 
+    """
     cmd = [
-           'prepare(resolution=%s,camera_fov=%s,camera_location=%s,camera_lookat=%s,clip=%s,device="%s",intensity=%s,world_color=%s)' % (resolution,camera_fov,camera_location,camera_lookat,clip,device,intensity,world_color),
-          ]
+        'prepare(resolution=%s,camera_fov=%s,camera_location=%s,camera_lookat=%s,clip=%s,device="%s",intensity=%s,world_color=%s)' % (
+            resolution, camera_fov, camera_location, camera_lookat, clip, device, intensity, world_color),
+    ]
     print(cmd)
     send_msg(cmd)
     return cmd
+
 
 def delete_the_cube():
     """
@@ -101,13 +107,14 @@ def delete_the_cube():
                       Command sent by a client.   Returns
     """
     cmd = [
-           'delete_object("Cube")'
-          ]
+        'delete_object("Cube")'
+    ]
     print(cmd)
     send_msg(cmd)
     return cmd
 
-def render(fn,exit=False):
+
+def render(fn, exit=False):
     """
     Definition to render a scene, and save it as a PNG file.
 
@@ -124,13 +131,14 @@ def render(fn,exit=False):
                      When set to True blender exits upon rendering completion.                      
     """
     cmd = [
-           'render("%s",exit=%s)' % (fn,exit),
-          ]
+        'render("%s",exit=%s)' % (fn, exit),
+    ]
     print(cmd)
     send_msg(cmd)
     return cmd
 
-def cylinder_between(start_loc,end_loc,r=0.1,objname='cylinder',color=[0.,0.5,0.,0.]):
+
+def cylinder_between(start_loc, end_loc, r=0.1, objname='cylinder', color=[0., 0.5, 0., 0.]):
     """ 
     Definition to create a cylinder in between two points with a certain radius.
 
@@ -153,8 +161,9 @@ def cylinder_between(start_loc,end_loc,r=0.1,objname='cylinder',color=[0.,0.5,0.
                      Created cylinder.
     """
     cmd = [
-           'cylinder_between(%s,%s,r=%s,objname="%s",color=%s)' %(start_loc,end_loc,r,objname,color)
-          ]
+        'cylinder_between(%s,%s,r=%s,objname="%s",color=%s)' % (
+            start_loc, end_loc, r, objname, color)
+    ]
     print(cmd)
     send_msg(cmd)
     return cmd
@@ -170,8 +179,8 @@ def quit():
                       Command sent by a client.   
     """
     cmd = [
-           'quit',
-          ]
+        'quit',
+    ]
     print(cmd)
     send_msg(cmd)
     return cmd

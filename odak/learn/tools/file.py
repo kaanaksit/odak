@@ -3,6 +3,7 @@ import odak.tools
 import torch
 import numpy as np_cpu
 
+
 def load_image(fn):
     """
     Definition to load an image from a given location as a Numpy array.
@@ -23,7 +24,8 @@ def load_image(fn):
     image = torch.from_numpy(image)
     return image
 
-def save_image(fn,img,cmin=0,cmax=255):
+
+def save_image(fn, img, cmin=0, cmax=255):
     """
     Definition to save a Numpy array as an image.
 
@@ -45,4 +47,4 @@ def save_image(fn,img,cmin=0,cmax=255):
 
     """
     img = img.cpu().detach().numpy()
-    return odak.tools.save_image(fn,img,cmin,cmax)
+    return odak.tools.save_image(fn, img, cmin, cmax)
