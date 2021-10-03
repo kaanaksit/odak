@@ -20,25 +20,6 @@ def test_plano_convex():
     )
     lens = catalog.plano_convex_lens()
     normals, distances = lens.intersect(rays)
-    return True
-
-    from odak import np
-    import plotly
-    import plotly.graph_objs as go
-    if np.__name__ == 'cupy':
-        df = np.asnumpy(normals[:, 0])
-        dx = np.asnumpy(end_points)
-        dy = np.asnumpy(start_point)
-    else:
-        df = normals[:, 0]
-        dx = end_points
-        dy = start_point
-    trace0 = go.Scatter3d(x=df[:, 0], y=df[:, 1], z=df[:, 2])
-    trace1 = go.Scatter3d(x=dx[:, 0], y=dx[:, 1], z=dx[:, 2])
-    trace2 = go.Scatter3d(x=[dy[0], ], y=[dy[1], ], z=[dy[2], ])
-    data = [trace0, trace1, trace2]
-    fig = dict(data=data)
-    plotly.offline.plot(fig)
     assert True == True
 
 
