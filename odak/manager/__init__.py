@@ -6,7 +6,10 @@ Provides necessary definition for submitting, running and gathering compute.
 """
 
 import threading
-import dispy
+try:
+    import dispy
+except:
+    print('odak.manager relies on dispy. Install it using: pip install dispy')
 from tqdm import tqdm
 from odak.tools import shell_command
 

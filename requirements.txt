@@ -1,6 +1,5 @@
 numpy>=1.16.2
-dispy>=4.11.1
-pillow>=6.1.0
-tqdm>=4.40.2
-plyfile>=0.7.2
 torch>=1.8.0
+pillow>=6.1.0
+plyfile>=0.7.2
+tqdm>=4.40.2
