@@ -7,7 +7,7 @@ Definition to resize a given image to a target shape.
 **Parameters:**
                        
     img           : ndarray
-                    MxN image to be resized.
+                    MxN image to be resized. Image must be normalized (0-1).
     target_size   : list
                     Target shape.
 
