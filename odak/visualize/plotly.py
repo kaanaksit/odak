@@ -1,6 +1,10 @@
-import plotly.graph_objects as go
 import sys
-from plotly.subplots import make_subplots
+try:
+    import plotly.graph_objects as go
+    from plotly.subplots import make_subplots
+exception:
+    print('odak.visualize.plotly requires plotly and 
+           kaleido to be installed: pip install plotly and kaleido')
 from odak import np
 from odak.wave import calculate_phase, calculate_amplitude, calculate_intensity
 

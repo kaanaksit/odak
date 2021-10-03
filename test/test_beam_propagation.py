@@ -41,17 +41,6 @@ def main():
         wavelength,
         propagation_type
     )
-
-    #from odak.visualize.plotly import detectorshow
-    #detector       = detectorshow()
-    # detector.add_field(sample_field)
-    # detector.show()
-    #detector       = detectorshow()
-    # detector.add_field(hologram)
-    # detector.show()
-    #detector       = detectorshow()
-    # detector.add_field(reconstruction)
-    # detector.show()
     assert True == True
 
 
