@@ -1,6 +1,5 @@
 from odak import np
 import pkg_resources
-import finufft
 
 
 def nufft2(field, fx, fy, size=None, sign=1, eps=10**(-12)):
@@ -27,6 +26,10 @@ def nufft2(field, fx, fy, size=None, sign=1, eps=10**(-12)):
     result      : ndarray
                   Inverse NUFFT of the input field.
     """
+    try:
+        import finufft
+    except:
+        print('odak.tools.nufft2 requires finufft to be installed: pip install finufft')
     if np.__name__ == 'cupy':
         fx = np.asnumpy(fx).astype(np.float64)
         fy = np.asnumpy(fy).astype(np.float64)
@@ -68,6 +71,10 @@ def nuifft2(field, fx, fy, size=None, sign=1, eps=10**(-12)):
     result      : ndarray
                   NUFFT of the input field.
     """
+    try:
+        import finufft
+    except:
+        print('odak.tools.nuifft2 requires finufft to be installed: pip install finufft')
     if np.__name__ == 'cupy':
         fx = np.asnumpy(fx).astype(np.float64)
         fy = np.asnumpy(fy).astype(np.float64)
