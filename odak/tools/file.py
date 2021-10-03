@@ -2,7 +2,6 @@ import subprocess
 import os
 import json
 import pathlib
-import scipy.misc
 from odak import np
 from PIL import Image
 
@@ -16,6 +15,7 @@ def resize_image(img, target_size):
     ----------
     img           : ndarray
                     MxN image to be resized.
+                    Image must be normalized (0-1).
     target_size   : list
                     Target shape.
 
@@ -27,11 +27,13 @@ def resize_image(img, target_size):
 
     """
     if np.__name__ == 'cupy':
-        import numpy
         img = np.asnumpy(img)
-    img = scipy.misc.imresize(img, (target_size[0], target_size[1]))
+    img = Image.fromarray(np.uint8(img))
+    img = img.resize(target_size[0], target_size[1])
     if np.__name__ == 'cupy':
-        img = np.asarray(img)
+        import numpy
+        img = numpy.asarray(img)
+    img = np.asarray(img)
     return img
 
 
