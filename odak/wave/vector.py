@@ -1,8 +1,9 @@
 from odak import np
 from odak.tools import distance_between_two_points
-from .utils import calculate_amplitude,calculate_phase
+from .utils import calculate_amplitude, calculate_phase
 
-def propagate_field(points0,points1,field0,wave_number,direction=1):
+
+def propagate_field(points0, points1, field0, wave_number, direction=1):
     """
     Definition to propagate a field from points to an another points in space: propagate a given array of spherical sources to given set of points in space.
 
@@ -24,22 +25,23 @@ def propagate_field(points0,points1,field0,wave_number,direction=1):
     field1        : ndarray
                     Field for given end points.
     """
-    field1 = np.zeros(points1.shape[0],dtype=np.complex64)
+    field1 = np.zeros(points1.shape[0], dtype=np.complex64)
     for point_id in range(points0.shape[0]):
-        point     = points0[point_id]
+        point = points0[point_id]
         distances = distance_between_two_points(
-                                                point,
-                                                points1
-                                               )
-        field1   += electric_field_per_plane_wave(
-                                                  calculate_amplitude(field0[point_id]),
-                                                  distances*direction,
-                                                  wave_number,
-                                                  phase=calculate_phase(field0[point_id])
-                                                 )
+            point,
+            points1
+        )
+        field1 += electric_field_per_plane_wave(
+            calculate_amplitude(field0[point_id]),
+            distances*direction,
+            wave_number,
+            phase=calculate_phase(field0[point_id])
+        )
     return field1
 
-def propagate_plane_waves(field,opd,k,w=0,t=0):
+
+def propagate_plane_waves(field, opd, k, w=0, t=0):
     """
     Definition to propagate a field representing a plane wave at a particular distance and time.
 
@@ -64,7 +66,8 @@ def propagate_plane_waves(field,opd,k,w=0,t=0):
     new_field = field*np.exp(1j*(-w*t+opd*k))/opd**2
     return new_field
 
-def electric_field_per_plane_wave(amplitude,opd,k,phase=0,w=0,t=0):
+
+def electric_field_per_plane_wave(amplitude, opd, k, phase=0, w=0, t=0):
     """
     Definition to return state of a plane wave at a particular distance and time.
 

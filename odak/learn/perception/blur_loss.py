@@ -2,6 +2,7 @@ import torch
 
 from .radially_varying_blur import RadiallyVaryingBlur
 
+
 class BlurLoss():
     """ 
     BlurLoss implements two different blur losses.
@@ -32,8 +33,9 @@ class BlurLoss():
     blur_source             : bool
                                 If true, blurs the source image as well as the target before computing the loss.
     """
-    def __init__(self, device=torch.device("cpu"),\
-        alpha=0.08, real_image_width=0.2, real_viewing_distance=0.7, mode="quadratic", blur_source=False):
+
+    def __init__(self, device=torch.device("cpu"),
+                 alpha=0.08, real_image_width=0.2, real_viewing_distance=0.7, mode="quadratic", blur_source=False):
         self.target = None
         self.device = device
         self.alpha = alpha
@@ -49,8 +51,7 @@ class BlurLoss():
             self.blur = RadiallyVaryingBlur()
         return self.blur.blur(image, self.alpha, self.real_image_width, self.real_viewing_distance, gaze, self.mode)
 
-    
-    def __call__(self, image, target, gaze=[0.5,0.5]):
+    def __call__(self, image, target, gaze=[0.5, 0.5]):
         """ 
         Calculates the Blur Loss.
 
@@ -62,7 +63,7 @@ class BlurLoss():
                                 Ground truth target image to compute loss for. Should be an RGB image in NCHW format (4 dimensions)
         gaze                : list
                                 Gaze location in the image, in normalized image coordinates (range [0, 1]) relative to the top left of the image.
-        
+
         Returns
         =======
 
@@ -75,8 +76,7 @@ class BlurLoss():
             return self.loss_func(blurred_image, blurred_target)
         else:
             return self.loss_func(image, blurred_target)
-    
+
     def to(self, device):
         self.device = device
         return self
-

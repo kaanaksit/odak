@@ -1,7 +1,8 @@
 from odak import np
 import torch
 
-def quadratic_phase_function(nx,ny,k,focal=0.4,dx=0.001,offset=[0,0]):
+
+def quadratic_phase_function(nx, ny, k, focal=0.4, dx=0.001, offset=[0, 0]):
     """ 
     A definition to generate 2D quadratic phase function, which is typically use to represent lenses.
 
@@ -25,17 +26,18 @@ def quadratic_phase_function(nx,ny,k,focal=0.4,dx=0.001,offset=[0,0]):
     function   : torch.tensor
                  Generated quadratic phase function.
     """
-    size  = [nx,ny]
-    x     = torch.linspace(-size[0]*dx/2,size[0]*dx/2,size[0])-offset[1]*dx
-    y     = torch.linspace(-size[1]*dx/2,size[1]*dx/2,size[1])-offset[0]*dx
-    X,Y   = torch.meshgrid(x,y)
-    Z     = X**2+Y**2
+    size = [nx, ny]
+    x = torch.linspace(-size[0]*dx/2, size[0]*dx/2, size[0])-offset[1]*dx
+    y = torch.linspace(-size[1]*dx/2, size[1]*dx/2, size[1])-offset[0]*dx
+    X, Y = torch.meshgrid(x, y)
+    Z = X**2+Y**2
     focal = torch.tensor([focal])
-    k     = torch.tensor([k])
-    qwf   = torch.exp(1j*k*0.5*torch.sin(Z/focal))
+    k = torch.tensor([k])
+    qwf = torch.exp(1j*k*0.5*torch.sin(Z/focal))
     return qwf
 
-def prism_phase_function(nx,ny,k,angle,dx=0.001,axis='x'):
+
+def prism_phase_function(nx, ny, k, angle, dx=0.001, axis='x'):
     """
     A definition to generate 2D phase function that represents a prism. See Goodman's Introduction to Fourier Optics book for more.
 
@@ -60,17 +62,18 @@ def prism_phase_function(nx,ny,k,angle,dx=0.001,axis='x'):
                  Generated phase function for a prism.
     """
     angle = torch.deg2rad(torch.tensor([angle]))
-    size  = [ny,nx]
-    x     = torch.linspace(-size[0]*dx/2,size[0]*dx/2,size[0])
-    y     = torch.linspace(-size[1]*dx/2,size[1]*dx/2,size[1])
-    X,Y   = torch.meshgrid(x,y)
+    size = [ny, nx]
+    x = torch.linspace(-size[0]*dx/2, size[0]*dx/2, size[0])
+    y = torch.linspace(-size[1]*dx/2, size[1]*dx/2, size[1])
+    X, Y = torch.meshgrid(x, y)
     if axis == 'y':
         prism = torch.exp(-1j*k*torch.sin(angle)*Y)
     elif axis == 'x':
         prism = torch.exp(-1j*k*torch.sin(angle)*X)
     return prism
 
-def linear_grating(nx,ny,every=2,add=3.14,axis='x'):
+
+def linear_grating(nx, ny, every=2, add=3.14, axis='x'):
     """
     A definition to generate a linear grating.
 
@@ -92,15 +95,15 @@ def linear_grating(nx,ny,every=2,add=3.14,axis='x'):
     field      : torch.tensor
                  Linear grating term.
     """
-    grating = torch.zeros((nx,ny),dtype=torch.complex64)
+    grating = torch.zeros((nx, ny), dtype=torch.complex64)
     if axis == 'x':
-        grating[::every,:] = torch.exp(torch.tensor(1j*add))
+        grating[::every, :] = torch.exp(torch.tensor(1j*add))
     if axis == 'y':
-        grating[:,::every] = torch.exp(torch.tensor(1j*add))
+        grating[:, ::every] = torch.exp(torch.tensor(1j*add))
     if axis == 'xy':
-        checker  = np.indices((nx,ny)).sum(axis=0) % every
-        checker  = torch.from_numpy(checker)
+        checker = np.indices((nx, ny)).sum(axis=0) % every
+        checker = torch.from_numpy(checker)
         checker += 1
-        checker  = checker % 2
-        grating  = torch.exp(1j*checker*add)
+        checker = checker % 2
+        grating = torch.exp(1j*checker*add)
     return grating

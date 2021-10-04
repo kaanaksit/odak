@@ -1,9 +1,10 @@
 from odak import np
 from odak.raytracing import create_ray_from_angles
-from odak.tools.transformation import rotate_point,rotate_points
-from odak.tools.vector import same_side,point_to_ray_distance
+from odak.tools.transformation import rotate_point, rotate_points
+from odak.tools.vector import same_side, point_to_ray_distance
 
-def define_plane(point,angles=[0.,0.,0.]):
+
+def define_plane(point, angles=[0., 0., 0.]):
     """ 
     Definition to generate a rotation matrix along X axis.
 
@@ -20,17 +21,18 @@ def define_plane(point,angles=[0.,0.,0.]):
                    Points defining plane.
     """
     plane = np.array([
-                      [ 10., 10., 0.],
-                      [  0., 10., 0.],
-                      [  0.,  0., 0.]
-                     ],dtype=np.float)
+        [10., 10., 0.],
+        [0., 10., 0.],
+        [0.,  0., 0.]
+    ], dtype=np.float)
     point = np.asarray(point)
-    for i in range(0,plane.shape[0]):
-        plane[i],_,_,_  = rotate_point(plane[i],angles=angles)
-        plane[i]        = plane[i]+point
+    for i in range(0, plane.shape[0]):
+        plane[i], _, _, _ = rotate_point(plane[i], angles=angles)
+        plane[i] = plane[i]+point
     return plane
 
-def bring_plane_to_origin(point,plane,shape=[10.,10.],center=[0.,0.,0.],angles=[0.,0.,0.],mode='XYZ'):
+
+def bring_plane_to_origin(point, plane, shape=[10., 10.], center=[0., 0., 0.], angles=[0., 0., 0.], mode='XYZ'):
     """
     Definition to bring points back to reference origin with respect to a plane.
 
@@ -53,18 +55,18 @@ def bring_plane_to_origin(point,plane,shape=[10.,10.],center=[0.,0.,0.],angles=[
                          Point(s) that are brought back to reference origin with respect to given plane.
     """
     if point.shape[0] == 3:
-        point = point.reshape((1,3))
-    reverse_mode       = mode[::-1]
-    angles             = [-angles[0],-angles[1],-angles[2]]
-    center             = np.asarray(center).reshape((1,3))
+        point = point.reshape((1, 3))
+    reverse_mode = mode[::-1]
+    angles = [-angles[0], -angles[1], -angles[2]]
+    center = np.asarray(center).reshape((1, 3))
     transformed_points = point-center
     transformed_points = rotate_points(
-                                       transformed_points,
-                                       angles=angles,
-                                       mode=reverse_mode,
-                                      )
+        transformed_points,
+        angles=angles,
+        mode=reverse_mode,
+    )
     if transformed_points.shape[0] == 1:
-        transformed_points = transformed.points.reshape((3,))
+        transformed_points = transformed_points.reshape((3,))
     return transformed_points
 
 
@@ -78,11 +80,12 @@ def center_of_triangle(triangle):
                     An array that contains three points defining a triangle (Mx3). It can also parallel process many triangles (NxMx3).
     """
     if len(triangle.shape) == 2:
-        triangle = triangle.reshape((1,3,3))
-    center = np.mean(triangle,axis=1)
+        triangle = triangle.reshape((1, 3, 3))
+    center = np.mean(triangle, axis=1)
     return center
 
-def is_it_on_triangle(pointtocheck,point0,point1,point2):
+
+def is_it_on_triangle(pointtocheck, point0, point1, point2):
     """
     Definition to check if a given point is inside a triangle. If the given point is inside a defined triangle, this definition returns True.
 
@@ -99,15 +102,18 @@ def is_it_on_triangle(pointtocheck,point0,point1,point2):
     """
     # point0, point1 and point2 are the corners of the triangle.
     pointtocheck = np.asarray(pointtocheck).reshape(3)
-    point0 = np.asarray(point0); point1 = np.asarray(point1); point2 = np.asarray(point2)
-    side0        = same_side(pointtocheck,point0,point1,point2)
-    side1        = same_side(pointtocheck,point1,point0,point2)
-    side2        = same_side(pointtocheck,point2,point0,point1)
+    point0 = np.asarray(point0)
+    point1 = np.asarray(point1)
+    point2 = np.asarray(point2)
+    side0 = same_side(pointtocheck, point0, point1, point2)
+    side1 = same_side(pointtocheck, point1, point0, point2)
+    side2 = same_side(pointtocheck, point2, point0, point1)
     if side0 == True and side1 == True and side2 == True:
         return True
     return False
 
-def define_circle(center,radius,angles):
+
+def define_circle(center, radius, angles):
     """
     Definition to describe a circle in a single variable packed form.
 
@@ -125,15 +131,16 @@ def define_circle(center,radius,angles):
     circle  : list
               Single variable packed form.
     """
-    points  = define_plane(center,angles=angles)
-    circle  = [
-               points,
-               center,
-               radius
-              ]
+    points = define_plane(center, angles=angles)
+    circle = [
+        points,
+        center,
+        radius
+    ]
     return circle
 
-def define_sphere(center,radius):
+
+def define_sphere(center, radius):
     """
     Definition to define a sphere.
 
@@ -149,10 +156,12 @@ def define_sphere(center,radius):
     sphere     : ndarray
                  Single variable packed form.
     """
-    sphere = np.array([center[0],center[1],center[2],radius],dtype=np.float)
+    sphere = np.array(
+        [center[0], center[1], center[2], radius], dtype=np.float)
     return sphere
 
-def sphere_function(point,sphere):
+
+def sphere_function(point, sphere):
     """
     Definition of a sphere function. Evaluate a point against a sphere function.
 
@@ -170,11 +179,13 @@ def sphere_function(point,sphere):
     """
     point = np.asarray(point)
     if len(point.shape) == 1:
-        point = point.reshape((1,3)) 
-    result = (point[:,0]-sphere[0])**2 + (point[:,1]-sphere[1])**2 + (point[:,2]-sphere[2])**2 - sphere[3]**2
+        point = point.reshape((1, 3))
+    result = (point[:, 0]-sphere[0])**2 + (point[:, 1]-sphere[1]
+                                           )**2 + (point[:, 2]-sphere[2])**2 - sphere[3]**2
     return result
 
-def define_cylinder(center,radius,rotation=[0.,0.,0.]):
+
+def define_cylinder(center, radius, rotation=[0., 0., 0.]):
     """
     Definition to define a cylinder
 
@@ -192,22 +203,24 @@ def define_cylinder(center,radius,rotation=[0.,0.,0.]):
     cylinder   : ndarray
                  Single variable packed form.
     """
-    cylinder_ray = create_ray_from_angles(np.asarray(center),np.asarray(rotation))
-    cylinder     = np.array(
-                            [
-                             center[0],
-                             center[1],
-                             center[2],
-                             radius,
-                             center[0]+cylinder_ray[1,0],
-                             center[1]+cylinder_ray[1,1],
-                             center[2]+cylinder_ray[1,2]
-                            ],
-                            dtype=np.float
-                            )
+    cylinder_ray = create_ray_from_angles(
+        np.asarray(center), np.asarray(rotation))
+    cylinder = np.array(
+        [
+            center[0],
+            center[1],
+            center[2],
+            radius,
+            center[0]+cylinder_ray[1, 0],
+            center[1]+cylinder_ray[1, 1],
+            center[2]+cylinder_ray[1, 2]
+        ],
+        dtype=np.float
+    )
     return cylinder
 
-def cylinder_function(point,cylinder):
+
+def cylinder_function(point, cylinder):
     """
     Definition of a cylinder function. Evaluate a point against a cylinder function. Inspired from https://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html
 
@@ -225,12 +238,12 @@ def cylinder_function(point,cylinder):
     """
     point = np.asarray(point)
     if len(point.shape) == 1:
-        point = point.reshape((1,3))
+        point = point.reshape((1, 3))
     distance = point_to_ray_distance(
-                                     point,
-                                     np.array([cylinder[0],cylinder[1],cylinder[2]],dtype=np.float),
-                                     np.array([cylinder[4],cylinder[5],cylinder[6]],dtype=np.float)
-                                    )
-    r        = cylinder[3]
-    result   = distance-r**2
+        point,
+        np.array([cylinder[0], cylinder[1], cylinder[2]], dtype=np.float),
+        np.array([cylinder[4], cylinder[5], cylinder[6]], dtype=np.float)
+    )
+    r = cylinder[3]
+    result = distance-r**2
     return result
