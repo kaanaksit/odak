@@ -2,11 +2,11 @@ import subprocess
 import os
 import json
 import pathlib
-import scipy.misc
 from odak import np
 from PIL import Image
 
-def resize_image(img,target_size):
+
+def resize_image(img, target_size):
     """
     Definition to resize a given image to a target shape.
 
@@ -15,6 +15,7 @@ def resize_image(img,target_size):
     ----------
     img           : ndarray
                     MxN image to be resized.
+                    Image must be normalized (0-1).
     target_size   : list
                     Target shape.
 
@@ -26,14 +27,17 @@ def resize_image(img,target_size):
 
     """
     if np.__name__ == 'cupy':
-        import numpy
         img = np.asnumpy(img)
-    img = scipy.misc.imresize(img, (target_size[0],target_size[1]))
+    img = Image.fromarray(np.uint8(img))
+    img = img.resize(target_size[0], target_size[1])
     if np.__name__ == 'cupy':
-        img = np.asarray(img)
+        import numpy
+        img = numpy.asarray(img)
+    img = np.asarray(img)
     return img
 
-def save_image(fn,img,cmin=0,cmax=255):
+
+def save_image(fn, img, cmin=0, cmax=255):
     """
     Definition to save a Numpy array as an image.
 
@@ -54,25 +58,26 @@ def save_image(fn,img,cmin=0,cmax=255):
                     True if successful.
 
     """
-    input_img                  = np.copy(img).astype(np.float)
-    colorflag                  = False
-    if  len(input_img.shape) == 3:
+    input_img = np.copy(img).astype(np.float)
+    colorflag = False
+    if len(input_img.shape) == 3:
         if input_img.shape[2] > 1:
-           input_img        = input_img[:,:,0:3]
-           colorflag        = True
-    input_img[input_img<cmin]  = cmin
-    input_img[input_img>cmax]  = cmax
-    input_img                 /= cmax
-    input_img                 *= 255
-    input_img                  = input_img.astype(np.uint8)
+            input_img = input_img[:, :, 0:3]
+            colorflag = True
+    input_img[input_img < cmin] = cmin
+    input_img[input_img > cmax] = cmax
+    input_img /= cmax
+    input_img *= 255
+    input_img = input_img.astype(np.uint8)
     if np.__name__ == 'cupy':
         input_img = np.asnumpy(input_img)
-    if colorflag==True:
-       result_img = Image.fromarray(input_img)
+    if colorflag == True:
+        result_img = Image.fromarray(input_img)
     elif colorflag == False:
-       result_img = Image.fromarray(input_img).convert("L")
+        result_img = Image.fromarray(input_img).convert("L")
     result_img.save(fn)
     return True
+
 
 def load_image(fn):
     """ 
@@ -92,7 +97,8 @@ def load_image(fn):
     image = Image.open(fn)
     return np.array(image)
 
-def shell_command(cmd,cwd='.',timeout=None,check=True):
+
+def shell_command(cmd, cwd='.', timeout=None, check=True):
     """
     Definition to initiate shell commands.
 
@@ -118,18 +124,19 @@ def shell_command(cmd,cwd='.',timeout=None,check=True):
 
     """
     proc = subprocess.Popen(
-                            cmd,
-                            cwd=cwd,
-                            stdout=subprocess.PIPE
-                           )
+        cmd,
+        cwd=cwd,
+        stdout=subprocess.PIPE
+    )
     if check == False:
-        return proc,None,None
+        return proc, None, None
     try:
         outs, errs = proc.communicate(timeout=timeout)
     except subprocess.TimeoutExpired:
         proc.kill()
         outs, errs = proc.communicate()
-    return proc,outs,errs
+    return proc, outs, errs
+
 
 def check_directory(directory):
     """
@@ -141,11 +148,12 @@ def check_directory(directory):
                     Full directory path.
     """
     if not os.path.exists(directory):
-       os.makedirs(directory)
-       return False
+        os.makedirs(directory)
+        return False
     return True
 
-def save_dictionary(settings,filename):
+
+def save_dictionary(settings, filename):
     """
     Definition to load a dictionary (JSON) file.
 
@@ -157,9 +165,10 @@ def save_dictionary(settings,filename):
     filename      : str
                     Filename.
     """
-    with open(filename,'w',encoding='utf-8') as f:
-        json.dump(settings,f,ensure_ascii=False, indent=4)
+    with open(filename, 'w', encoding='utf-8') as f:
+        json.dump(settings, f, ensure_ascii=False, indent=4)
     return settings
+
 
 def load_dictionary(filename):
     """
@@ -180,7 +189,8 @@ def load_dictionary(filename):
     settings = json.load(open(filename))
     return settings
 
-def list_files(path,key='*.*',recursive=True):
+
+def list_files(path, key='*.*', recursive=True):
     """
     Definition to list files in a given path with a given key.
 
@@ -207,6 +217,7 @@ def list_files(path,key='*.*',recursive=True):
         files_list.append(str(item))
     return files_list
 
+
 def convert_bytes(num):
     """
     A definition to convert bytes to semantic scheme (MB,GB or alike). Inspired from https://stackoverflow.com/questions/2104080/how-can-i-check-file-size-in-python#2104083.
@@ -227,7 +238,8 @@ def convert_bytes(num):
         if num < 1024.0:
             return num, x
         num /= 1024.0
-    return None,None
+    return None, None
+
 
 def size_of_a_file(file_path):
     """
@@ -247,6 +259,6 @@ def size_of_a_file(file_path):
     """
     if os.path.isfile(file_path):
         file_info = os.stat(file_path)
-        a,b       = convert_bytes(file_info.st_size)
-        return a,b
-    return None,None
+        a, b = convert_bytes(file_info.st_size)
+        return a, b
+    return None, None

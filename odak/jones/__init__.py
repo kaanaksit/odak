@@ -5,7 +5,8 @@ Provides necessary definitions for jones calculus. See "Introduction to Fourier 
 """
 from odak import np
 
-def electricfield(px,py):
+
+def electricfield(px, py):
     """
     Definition to create an electric field vector (polarization vector).
 
@@ -21,10 +22,11 @@ def electricfield(px,py):
     field        : ndarray
                    An electric field vector (polarization vector).
     """
-    field = np.array([[px],[py]])
+    field = np.array([[px], [py]])
     return field
 
-def linearpolarizer(field,rotation=0):
+
+def linearpolarizer(field, rotation=0):
     """
     Definition that represents a linear polarizer.
 
@@ -40,14 +42,16 @@ def linearpolarizer(field,rotation=0):
     result       : ndarray
                    Polarization vector of an output beam.
     """
-    rotation        = np.radians(rotation)
-    rotmat          = np.array(
-                               [
-                                [ float(np.cos(rotation)), float(np.sin(rotation))],
-                                [float(-np.sin(rotation)), float(np.cos(rotation))]
-                               ]
-                              )
-    linearpolarizer = np.array([[1,0],[0,0]])
-    linearpolarizer = np.dot(rotmat.transpose(),np.dot(linearpolarizer,rotmat))
-    result          = np.dot(linearpolarizer,field)
+    rotation = np.radians(rotation)
+    rotmat = np.array(
+        [
+            [float(np.cos(rotation)), float(np.sin(rotation))],
+            [float(-np.sin(rotation)),
+             float(np.cos(rotation))]
+        ]
+    )
+    linearpolarizer = np.array([[1, 0], [0, 0]])
+    linearpolarizer = np.dot(
+        rotmat.transpose(), np.dot(linearpolarizer, rotmat))
+    result = np.dot(linearpolarizer, field)
     return result

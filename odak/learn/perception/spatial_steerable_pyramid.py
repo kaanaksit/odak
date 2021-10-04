@@ -4,6 +4,7 @@ import numpy as np
 
 from .spatial_steerable_pyramid import get_steerable_pyramid_filters
 
+
 class SpatialSteerablePyramid():
     """
     This implements a real-valued steerable pyramid where the filtering is carried out spatially (using convolution)
@@ -32,13 +33,15 @@ class SpatialSteerablePyramid():
                                 torch device the input images will be supplied from.
     """
 
-    def __init__(self, use_bilinear_downup=True, n_channels=1, 
-        filter_size=9, n_orientations=6, filter_type="full",
-        device=torch.device('cpu')):
+    def __init__(self, use_bilinear_downup=True, n_channels=1,
+                 filter_size=9, n_orientations=6, filter_type="full",
+                 device=torch.device('cpu')):
         self.use_bilinear_downup = use_bilinear_downup
         self.device = device
 
-        filters = get_steerable_pyramid_filters(filter_size, n_orientations, filter_type)
+        filters = get_steerable_pyramid_filters(
+            filter_size, n_orientations, filter_type)
+
         def make_pad(filter):
             filter_size = filter.size(-1)
             pad_amt = (filter_size-1) // 2
@@ -58,13 +61,15 @@ class SpatialSteerablePyramid():
 
         if n_channels != 1:
             def add_channels_to_filter(filter):
-                padded = torch.zeros(n_channels, n_channels, filter.size()[2], filter.size()[3]).to(device)
+                padded = torch.zeros(n_channels, n_channels, filter.size()[
+                                     2], filter.size()[3]).to(device)
                 for channel in range(n_channels):
                     padded[channel, channel, :, :] = filter
                 return padded
             self.filt_h0 = add_channels_to_filter(self.filt_h0)
             for b in range(len(self.band_filters)):
-                self.band_filters[b] = add_channels_to_filter(self.band_filters[b])
+                self.band_filters[b] = add_channels_to_filter(
+                    self.band_filters[b])
             self.filt_l0 = add_channels_to_filter(self.filt_l0)
             if not self.use_bilinear_downup:
                 self.filt_l = add_channels_to_filter(self.filt_l)
@@ -84,7 +89,7 @@ class SpatialSteerablePyramid():
         multiple_highpass   : bool
                                 If true, computes a highpass for each level of the pyramid.
                                 These extra levels are redundant (not used for reconstruction).
-        
+
         Returns
         =======
 
@@ -100,16 +105,18 @@ class SpatialSteerablePyramid():
 
         # Make level 0, containing highpass, lowpass and the bands
         level0 = {}
-        level0['h'] = torch.nn.functional.conv2d(self.pad_h0(image), self.filt_h0)
+        level0['h'] = torch.nn.functional.conv2d(
+            self.pad_h0(image), self.filt_h0)
         #plt.imshow(level0['h'][0,0,...], cmap="gray", vmin=0, vmax=1)
-        #plt.show()
+        # plt.show()
         lowpass = torch.nn.functional.conv2d(self.pad_l0(image), self.filt_l0)
         level0['l'] = lowpass.clone()
         #np.save("lowpass_filtered.npy", level0['l'][0,...].permute(1,2,0).numpy())
-        #quit()
+        # quit()
         bands = []
         for filt_b in self.band_filters:
-            bands.append(torch.nn.functional.conv2d(self.pad_b(lowpass), filt_b))
+            bands.append(torch.nn.functional.conv2d(
+                self.pad_b(lowpass), filt_b))
         level0['b'] = bands
         pyramid.append(level0)
 
@@ -117,28 +124,34 @@ class SpatialSteerablePyramid():
         for l in range(n_levels-2):
             level = {}
             if self.use_bilinear_downup:
-                lowpass = torch.nn.functional.interpolate(lowpass, scale_factor=0.5, mode="area", recompute_scale_factor=False)
+                lowpass = torch.nn.functional.interpolate(
+                    lowpass, scale_factor=0.5, mode="area", recompute_scale_factor=False)
             else:
-                lowpass = torch.nn.functional.conv2d(self.pad_l(lowpass), self.filt_l)
-                lowpass = lowpass[:,:,::2,::2]
+                lowpass = torch.nn.functional.conv2d(
+                    self.pad_l(lowpass), self.filt_l)
+                lowpass = lowpass[:, :, ::2, ::2]
             level['l'] = lowpass.clone()
             bands = []
             for filt_b in self.band_filters:
-                bands.append(torch.nn.functional.conv2d(self.pad_b(lowpass), filt_b))
+                bands.append(torch.nn.functional.conv2d(
+                    self.pad_b(lowpass), filt_b))
             level['b'] = bands
             if multiple_highpass:
                 #downsampled = torch.nn.functional.interpolate(image, scale_factor=0.5, mode="area")
                 #level['h'] = torch.nn.functional.conv2d(self.pad_h0(downsampled), self.filt_h0)
-                level['h'] = torch.nn.functional.conv2d(self.pad_h0(lowpass), self.filt_h0)
+                level['h'] = torch.nn.functional.conv2d(
+                    self.pad_h0(lowpass), self.filt_h0)
             pyramid.append(level)
-        
+
         # Make final level (lowpass residual)
         level = {}
         if self.use_bilinear_downup:
-            lowpass = torch.nn.functional.interpolate(lowpass, scale_factor=0.5, mode="area", recompute_scale_factor=False)
+            lowpass = torch.nn.functional.interpolate(
+                lowpass, scale_factor=0.5, mode="area", recompute_scale_factor=False)
         else:
-            lowpass = torch.nn.functional.conv2d(self.pad_l(lowpass), self.filt_l)
-            lowpass = lowpass[:,:,::2,::2]
+            lowpass = torch.nn.functional.conv2d(
+                self.pad_l(lowpass), self.filt_l)
+            lowpass = lowpass[:, :, ::2, ::2]
         level['l'] = lowpass
         pyramid.append(level)
 
@@ -155,7 +168,7 @@ class SpatialSteerablePyramid():
                     The steerable pyramid.
                     Should be in the same format as output by construct_steerable_pyramid().
                     The number of channels should match num_channels when the pyramid maker was created.
-        
+
         Returns
         =======
 
@@ -166,19 +179,23 @@ class SpatialSteerablePyramid():
             if self.use_bilinear_downup:
                 return torch.nn.functional.interpolate(image, size=size, mode="bilinear", align_corners=False, recompute_scale_factor=False)
             else:
-                zeros = torch.zeros((image.size()[0], image.size()[1], image.size()[2]*2, image.size()[3]*2)).to(self.device)
-                zeros[:,:,::2,::2] = image
-                zeros = torch.nn.functional.conv2d(self.pad_l(zeros), self.filt_l)
+                zeros = torch.zeros((image.size()[0], image.size()[1], image.size()[
+                                    2]*2, image.size()[3]*2)).to(self.device)
+                zeros[:, :, ::2, ::2] = image
+                zeros = torch.nn.functional.conv2d(
+                    self.pad_l(zeros), self.filt_l)
                 return zeros
 
         image = pyramid[-1]['l']
         for level in reversed(pyramid[:-1]):
             image = upsample(image, level['b'][0].size()[2:])
             for b in range(len(level['b'])):
-                b_filtered = torch.nn.functional.conv2d(self.pad_b(level['b'][b]), -self.band_filters[b])
+                b_filtered = torch.nn.functional.conv2d(
+                    self.pad_b(level['b'][b]), -self.band_filters[b])
                 image += b_filtered
 
         image = torch.nn.functional.conv2d(self.pad_l0(image), self.filt_l0)
-        image += torch.nn.functional.conv2d(self.pad_h0(pyramid[0]['h']), self.filt_h0)
-        
+        image += torch.nn.functional.conv2d(
+            self.pad_h0(pyramid[0]['h']), self.filt_h0)
+
         return image

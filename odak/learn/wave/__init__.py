@@ -9,6 +9,7 @@ import torch
 from .classical import *
 from .lens import *
 
+
 def wavenumber(wavelength):
     """
     Definition for calculating the wavenumber of a plane wave.
@@ -26,7 +27,8 @@ def wavenumber(wavelength):
     k = 2*np.pi/wavelength
     return k
 
-def calculate_phase(field,deg=False):
+
+def calculate_phase(field, deg=False):
     """ 
     Definition to calculate phase of a single or multiple given electric field(s).
 
@@ -47,6 +49,7 @@ def calculate_phase(field,deg=False):
         phase *= 180./3.14
     return phase
 
+
 def calculate_amplitude(field):
     """ 
     Definition to calculate amplitude of a single or multiple given electric field(s).
@@ -64,7 +67,8 @@ def calculate_amplitude(field):
     amplitude = torch.abs(field)
     return amplitude
 
-def set_amplitude(field,amplitude):
+
+def set_amplitude(field, amplitude):
     """
     Definition to keep phase as is and change the amplitude of a given field.
 
@@ -81,11 +85,12 @@ def set_amplitude(field,amplitude):
                    Complex field.
     """
     amplitude = calculate_amplitude(amplitude)
-    phase     = calculate_phase(field)
+    phase = calculate_phase(field)
     new_field = amplitude*torch.cos(phase)+1j*amplitude*torch.sin(phase)
     return new_field
 
-def generate_complex_field(amplitude,phase):
+
+def generate_complex_field(amplitude, phase):
     """
     Definition to generate a complex field with a given amplitude and phase.
 
@@ -102,17 +107,18 @@ def generate_complex_field(amplitude,phase):
                         Complex field.
     """
     if type(phase) == 'torch.Tensor':
-        phase     = torch.tensor(phase,requires_grad=True)
+        phase = torch.tensor(phase, requires_grad=True)
     elif type(phase) == type(1.):
-        phase     = torch.tensor([phase],requires_grad=True)
+        phase = torch.tensor([phase], requires_grad=True)
     if type(amplitude) == 'torch.Tensor':
-        amplitude = torch.tensor(amplitude,requires_grad=True)
+        amplitude = torch.tensor(amplitude, requires_grad=True)
     elif type(amplitude) == type(1.):
-        amplitude = torch.tensor([amplitude],requires_grad=True)
-    field     = amplitude*torch.cos(phase)+1j*amplitude*torch.sin(phase)
+        amplitude = torch.tensor([amplitude], requires_grad=True)
+    field = amplitude*torch.cos(phase)+1j*amplitude*torch.sin(phase)
     return field
 
-def adjust_phase_only_slm_range(native_range,working_wavelength,native_wavelength):
+
+def adjust_phase_only_slm_range(native_range, working_wavelength, native_wavelength):
     """
     Definition for calculating the phase range of the Spatial Light Modulator (SLM) for a given wavelength. Here you prove maximum angle as the lower bound is typically zero. If the lower bound isn't zero in angles, you can use this very same definition for calculating lower angular bound as well.
 
@@ -133,7 +139,8 @@ def adjust_phase_only_slm_range(native_range,working_wavelength,native_wavelengt
     new_range = native_range/working_wavelength*native_wavelength
     return new_range
 
-def produce_phase_only_slm_pattern(hologram,slm_range,bits=8,default_range=6.28,illumination=None):
+
+def produce_phase_only_slm_pattern(hologram, slm_range, bits=8, default_range=6.28, illumination=None):
     """
     Definition for producing a pattern for a phase only Spatial Light Modulator (SLM) using a given field.
 
@@ -160,15 +167,15 @@ def produce_phase_only_slm_pattern(hologram,slm_range,bits=8,default_range=6.28,
                          Digital representation of the hologram.
     """
 #    hologram_phase    = calculate_phase(hologram) % default_range
-    hologram_phase    = calculate_phase(hologram)
-    hologram_phase    = hologram_phase % slm_range
-    hologram_phase   /= slm_range
-    hologram_phase   *= 2**bits
-    hologram_digital  = hologram_phase.detach().clone()
-    hologram_phase    = torch.ceil(hologram_phase)
-    hologram_phase   *= slm_range/2**bits
+    hologram_phase = calculate_phase(hologram)
+    hologram_phase = hologram_phase % slm_range
+    hologram_phase /= slm_range
+    hologram_phase *= 2**bits
+    hologram_digital = hologram_phase.detach().clone()
+    hologram_phase = torch.ceil(hologram_phase)
+    hologram_phase *= slm_range/2**bits
     if type(illumination) == type(None):
         A = torch.tensor([1.]).to(hologram_phase.device)
     else:
         A = illumination
-    return A*torch.cos(hologram_phase)+A*1j*torch.sin(hologram_phase),hologram_digital
+    return A*torch.cos(hologram_phase)+A*1j*torch.sin(hologram_phase), hologram_digital

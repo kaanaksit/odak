@@ -1,6 +1,7 @@
 from odak import np
 
-def calculate_phase(field,deg=False):
+
+def calculate_phase(field, deg=False):
     """ 
     Definition to calculate phase of a single or multiple given electric field(s).
 
@@ -21,6 +22,7 @@ def calculate_phase(field,deg=False):
         phase *= 180./np.pi
     return phase
 
+
 def calculate_amplitude(field):
     """ 
     Definition to calculate amplitude of a single or multiple given electric field(s).
@@ -37,4 +39,3 @@ def calculate_amplitude(field):
     """
     amplitude = np.abs(field)
     return amplitude
-
