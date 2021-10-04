@@ -2,7 +2,9 @@
 
 The `perception` module of `odak` focuses on visual perception, and in particular on gaze-contingent perceptual loss functions. 
 
-It contains an implementation of a metameric loss function. When used in optimisation tasks, this loss function enforces the optimised image to be a metamer to the ground truth image.
+It contains an implementation of a metameric loss function. When used in optimisation tasks, this loss function enforces the optimised image to be a [ventral metamer](https://www.nature.com/articles/nn.2889) to the ground truth image.
+
+This loss function is based on previous work on [fast metamer generation](https://vr-unity-viewer.cs.ucl.ac.uk/). It uses the same statistical model and many of the same acceleration techniques (e.g. MIP map sampling) to enable the metameric loss to run efficiently.
 
 ## Engineering notes
 
@@ -15,9 +17,11 @@ Our metameric loss function works in a very similar way to built in loss functio
 
 The loss function caches some information, and performs most efficiently when repeatedly calculating losses for the same image size, with the same gaze location and foveation settings. 
 
-We recommend adjusting the parameters of the loss function to match your application. Most importantly, please set the `real_image_width` and `real_viewing_distance` parameters to correspond to how your image will be displayed to the user. The `alpha` parameter controls the intensity of the foveation effect.
+We recommend adjusting the parameters of the loss function to match your application. Most importantly, please set the `real_image_width` and `real_viewing_distance` parameters to correspond to how your image will be displayed to the user. The `alpha` parameter controls the intensity of the foveation effect. You should only need to set `alpha` once - you can then adjust the width and viewing distance to achieve the same apparent foveation effect on a range of displays & viewing conditions. Note that we assume the pixels in the displayed image are square, and derive the height from the image dimensions.
 
-At the present time the metameric loss is implemented only for images displayed to a user on a flat 2D display (e.g. an LCD computer monitor). Support for equirectangular 3D images is planned for the future.
+We also provide two baseline loss functions `BlurLoss` and `MetamerMSELoss` which function in much the same way.
+
+At the present time the loss functions are implemented only for images displayed to a user on a flat 2D display (e.g. an LCD computer monitor). Support for equirectangular 3D images is planned for the future.
 
 ## odak.learn.perception
 

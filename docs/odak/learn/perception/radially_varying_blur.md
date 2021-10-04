@@ -2,7 +2,7 @@
 
 `odak.learn.perception.RadiallyVaryingBlur()`
 
-The `RadiallyVaryingBlur` class provides a way to apply a radially varying blur to an image. Given a gaze location and information about the image and foveation, it applies a blur that will achieve the proper pooling size. For more information on pooling sizes, see the [`foveation`](foveation.md) module.
+The `RadiallyVaryingBlur` class provides a way to apply a radially varying blur to an image. Given a gaze location and information about the image and foveation, it applies a blur that will achieve the proper pooling size. The pooling size is chosen to appear the same at a range of display sizes and viewing distances, for a given `alpha` parameter value. For more information on how the pooling sizes are computed, please see [link coming soon]().
 
 The blur is accelerated by generating and sampling from MIP maps of the input image.
 
