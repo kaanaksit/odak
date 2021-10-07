@@ -23,3 +23,7 @@ We also provide two baseline loss functions `BlurLoss` and `MetamerMSELoss` whic
 
 At the present time the loss functions are implemented only for images displayed to a user on a flat 2D display (e.g. an LCD computer monitor). 
 Support for equirectangular 3D images is planned for the future.
+
+## See also
+
+[`Visual perception`](../perception.md)
