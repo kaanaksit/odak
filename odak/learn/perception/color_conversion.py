@@ -12,7 +12,8 @@ def rgb_2_ycrcb(image):
                 Should be in NCHW format.
 
     Returns
-    =======
+    -------
+
     ycrcb   : torch.tensor
                 Image converted to YCrCb colourspace.
     """
@@ -35,7 +36,7 @@ def ycrcb_2_rgb(image):
                 Should be in NCHW format.
 
     Returns
-    =======
+    -------
     rgb     : torch.tensor
                 Image converted to RGB colourspace.
     """

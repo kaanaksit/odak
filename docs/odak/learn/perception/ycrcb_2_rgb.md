@@ -1,16 +1,9 @@
 # odak.learn.perception.ycrcb_2_rgb
 
-`ycrcb_2_rgb(image)`
+::: odak.learn.perception.ycrcb_2_rgb
+    selection:
+        docstring_style: numpy
 
-Converts an image from YCrCb colourspace to RGB colourspace.
+## See also
 
-**Parameters:**
-
-    image   : torch.tensor
-                Input image. Should be a YCrCb floating-point image with values in the range [0, 1]
-                Should be in NCHW format.
-
-**Returns**
-
-    rgb     : torch.tensor
-                Image converted to RGB colourspace.
+[`rgb_2_ycrcb()`](./rgb_2_ycrcb.md)
