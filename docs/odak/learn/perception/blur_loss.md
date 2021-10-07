@@ -50,4 +50,4 @@ Calculates the Metameric Loss.
 
 ## See also
 
-[`Perception`](../../../perception.md)
+[`Visual Perception`](../../../perception.md)

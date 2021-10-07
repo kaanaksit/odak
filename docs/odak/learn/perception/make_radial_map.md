@@ -15,3 +15,7 @@ Makes a simple radial map where each pixel contains distance in pixels from the 
 **Returns**
     radial_map  : torch.tensor
                     The radial map.
+
+## See also
+
+[`Visual perception`](../../../perception.md)

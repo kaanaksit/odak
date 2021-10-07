@@ -68,4 +68,4 @@ This function can be used on its own to generate a metamer for a desired image.
 
 ## See also
 
-[`Perception`](../../../perception.md)
+[`Visual perception`](../../../perception.md)

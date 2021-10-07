@@ -23,3 +23,7 @@ Assumes the viewpoint is located at the centre of the image, and the screen is p
 
     pooling_size_map        : torch.tensor
                                 The computed pooling size map, of size WxH.
+
+## See also
+
+[`Visual perception`](../../../perception.md)

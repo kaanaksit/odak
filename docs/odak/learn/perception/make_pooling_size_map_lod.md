@@ -22,3 +22,7 @@ to achieve the correct pooling region areas.
 
     pooling_size_map        : torch.tensor
                                 The computed pooling size map, of size WxH.
+
+## See also
+
+[`Visual perception`](../../../perception.md)

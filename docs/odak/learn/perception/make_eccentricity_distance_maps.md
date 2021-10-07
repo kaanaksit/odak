@@ -23,3 +23,7 @@ Makes a map of the eccentricity of each pixel in an image for a given fixation p
                                 The computed eccentricity map, of size WxH.
     distance_map            : torch.tensor
                                 The computed distance map, of size WxH
+
+## See also
+
+[`Visual perception`](../../../perception.md)

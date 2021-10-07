@@ -18,3 +18,6 @@ Makes a map of the real 3D location that each pixel in an image corresponds to, 
 
     map                     : torch.tensor
                                 The computed 3D location map, of size 3xWxH.
+## See also
+
+[`Visual perception`](../../../perception.md)
