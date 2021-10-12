@@ -16,6 +16,7 @@ This loss function is based on previous work on [fast metamer generation](https:
 | Function      | Description   |
 | ------------- |:-------------:|
 | [odak.learn.perception.MetamericLoss()](odak/learn/perception/metameric_loss.md) | Metameric loss function |
+| [odak.learn.perception.MetamericLossUniform()](odak/learn/perception/metameric_loss_uniform.md) | Metameric loss function (uniform, not foveated variant) |
 | [odak.learn.perception.MetamerMSELoss()](odak/learn/perception/metamer_mse_loss.md) | Metamer MSE loss function |
 | [odak.learn.perception.BlurLoss()](odak/learn/perception/blur_loss.md) | Blur function |
 | [odak.learn.perception.RadiallyVaryingBlur()](odak/learn/perception/radially_varying_blur.md) | Radially varying blur |
