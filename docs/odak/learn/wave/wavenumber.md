@@ -16,7 +16,7 @@ Definition for calculating the wavenumber of a plane wave
 
 ## Notes
 
-Regarding usage of this definition, you can find use cases in the engineering notes, specifically at [`Optimizing holograms using Odak`](../../../notes/hologram_optimization.md).
+Regarding usage of this definition, you can find use cases in the engineering notes, specifically at [`Optimizing holograms using Odak`](../../../notes/hologram_optimization).
 
 ## See also
 

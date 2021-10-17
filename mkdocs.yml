@@ -17,6 +17,7 @@ nav:
 
 theme:
     name: material
+    custom_dir: overrides
     theme:
         features:
             - navigation.instant
@@ -31,8 +32,17 @@ plugins:
    - search
    - mkdocstrings
 markdown_extensions:
+   - toc:
+       permalink: true
+   - admonition
+   - pymdownx.superfences
+   - pymdownx.details
    - pymdownx.arithmatex:
        generic: true
+   - pymdownx.emoji:
+       emoji_index: !!python/name:materialx.emoji.twemoji
+       emoji_generator: !!python/name:materialx.emoji.to_svg
+
 extra_javascript:
    - 'javascripts/config.js'
    - 'https://polyfill.io/v3/polyfill.min.js?features=es6'
