@@ -31,6 +31,7 @@ theme:
 plugins:
    - search
    - mkdocstrings
+   - autorefs
 markdown_extensions:
    - toc:
        permalink: true

@@ -17,22 +17,25 @@ class MetamericLossUniform():
     """
     Measures metameric loss between a given image and a metamer of the given target image.
     This variant of the metameric loss is not foveated - it applies uniform pooling sizes to the whole input image.
-
-    Parameters
-    ----------
-
-    pooling_size            : int
-                                Pooling size, in pixels. For example 32 will pool over 32x32 blocks of the image.
-    n_pyramid_levels        : int 
-                                Number of levels of the steerable pyramid. Note that the image is padded
-                                so that both height and width are multiples of 2^(n_pyramid_levels), so setting this value
-                                too high will slow down the calculation a lot.
-    n_orientations          : int 
-                                Number of orientations in the steerable pyramid. Can be 1, 2, 4 or 6.
-                                Increasing this will increase runtime.
     """
 
     def __init__(self, device=torch.device('cpu'), pooling_size=32, n_pyramid_levels=5, n_orientations=2):
+        """
+
+        Parameters
+        ----------
+
+        pooling_size : int
+                       Pooling size, in pixels. For example 32 will pool over 32x32 blocks of the image.
+        n_pyramid_levels        : int 
+                                    Number of levels of the steerable pyramid. Note that the image is padded
+                                    so that both height and width are multiples of 2^(n_pyramid_levels), so setting this value
+                                    too high will slow down the calculation a lot.
+        n_orientations          : int 
+                                    Number of orientations in the steerable pyramid. Can be 1, 2, 4 or 6.
+                                    Increasing this will increase runtime.
+
+        """
         self.target = None
         self.device = device
         self.pyramid_maker = None
@@ -119,7 +122,7 @@ class MetamericLossUniform():
                                 Shows a heatmap indicating which parts of the image contributed most to the loss. 
 
         Returns
-        =======
+        -------
 
         loss                : torch.tensor
                                 The computed loss.
