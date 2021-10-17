@@ -60,7 +60,7 @@ INFO     -  [22:15:22] Serving on http://127.0.0.1:8000/odak/
 INFO     -  [22:15:23] Browser connected: http://127.0.0.1:8000/odak/
 ```
 
-At this point, you can start your favourite browser and navigate to [`http://127.0.0.1:800/odak`](http://127.0.0.1:800/odak) to view documentation locally.
+At this point, you can start your favourite browser and navigate to [`http://127.0.0.1:8000/odak`](http://127.0.0.1:8000/odak) to view documentation locally.
 This local viewing is essential as it can help you view your changes locally on the spot before actually committing.
 One last thing to mention here is the fact that Odak's `docs` folder's structure is self-explanatory.
 It follows `markdown` rules, and `mkdocsstrings` style is `numpy`.
