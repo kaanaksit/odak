@@ -9,15 +9,15 @@ from .foveation import make_pooling_size_map_lod
 
 class RadiallyVaryingBlur():
     """ 
-    This class is used to apply a radially varying blur to input images. Given a gaze location and information about the 
-    image and foveation, it applies a blur that will achieve the proper pooling size.
+
+    The `RadiallyVaryingBlur` class provides a way to apply a radially varying blur to an image. Given a gaze location and information about the image and foveation, it applies a blur that will achieve the proper pooling size. The pooling size is chosen to appear the same at a range of display sizes and viewing distances, for a given `alpha` parameter value. For more information on how the pooling sizes are computed, please see [link coming soon]().
 
     The blur is accelerated by generating and sampling from MIP maps of the input image.
 
-    This class caches the foveation information. This means that if it is run repeatedly with the same foveation parameters,
-    gaze location and image size (e.g. in an optimisation loop) it won't recalculate the pooling maps.
-    If you are repeatedly applying blur to images of different sizes (e.g. a pyramid) for best performance use one instance
-    of this class per image size.
+    This class caches the foveation information. This means that if it is run repeatedly with the same foveation parameters, gaze location and image size (e.g. in an optimisation loop) it won't recalculate the pooling maps.
+
+    If you are repeatedly applying blur to images of different sizes (e.g. a pyramid) for best performance use one instance of this class per image size.
+
     """
 
     def __init__(self):
@@ -48,7 +48,7 @@ class RadiallyVaryingBlur():
                                     as you move away from the fovea. We got best results with "quadratic".
 
         Returns
-        =======
+        -------
 
         output                  : torch.tensor
                                     The blurred image

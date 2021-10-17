@@ -21,7 +21,7 @@ def make_3d_location_map(image_pixel_size, real_image_width=0.3, real_viewing_di
                                 The real distance from the user's viewpoint to the screen.
 
     Returns
-    =======
+    -------
 
     map                     : torch.tensor
                                 The computed 3D location map, of size 3xWxH.
@@ -60,7 +60,7 @@ def make_eccentricity_distance_maps(gaze_location, image_pixel_size, real_image_
                                 The real distance from the user's viewpoint to the screen.
 
     Returns
-    =======
+    -------
 
     eccentricity_map        : torch.tensor
                                 The computed eccentricity map, of size WxH.
@@ -94,6 +94,7 @@ def make_pooling_size_map_pixels(gaze_location, image_pixel_size, alpha=0.3, rea
     Makes a map of the pooling size associated with each pixel in an image for a given fixation point, when displayed to
     a user on a flat screen. Follows the idea that pooling size (in radians) should be directly proportional to eccentricity
     (also in radians). 
+
     Assumes the viewpoint is located at the centre of the image, and the screen is 
     perpendicular to the viewing direction. Output is the width of the pooling region in pixels.
 
@@ -112,7 +113,7 @@ def make_pooling_size_map_pixels(gaze_location, image_pixel_size, alpha=0.3, rea
                                 The real distance from the user's viewpoint to the screen.
 
     Returns
-    =======
+    -------
 
     pooling_size_map        : torch.tensor
                                 The computed pooling size map, of size WxH.
@@ -157,7 +158,7 @@ def make_pooling_size_map_lod(gaze_location, image_pixel_size, alpha=0.3, real_i
                                 The real distance from the user's viewpoint to the screen.
 
     Returns
-    =======
+    -------
 
     pooling_size_map        : torch.tensor
                                 The computed pooling size map, of size WxH.

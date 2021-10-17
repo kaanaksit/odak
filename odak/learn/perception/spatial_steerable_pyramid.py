@@ -11,31 +11,33 @@ class SpatialSteerablePyramid():
     as opposed to multiplication in the Fourier domain.
     This has a number of optimisations over previous implementations that increase efficiency, but introduce some
     reconstruction error.
-
-    Parameters
-    ----------
-
-    use_bilinear_downup     : bool
-                                This uses bilinear filtering when upsampling/downsampling, rather than the original approach
-                                of applying a large lowpass kernel and sampling even rows/columns
-    n_channels              : int
-                                Number of channels in the input images (e.g. 3 for RGB input)
-    filter_size             : int
-                                Desired size of filters (e.g. 3 will use 3x3 filters).
-    n_orientations          : int
-                                Number of oriented bands in each level of the pyramid.
-    filter_type             : str
-                                This can be used to select smaller filters than the original ones if desired.
-                                full: Original filter sizes
-                                cropped: Some filters are cut back in size by extracting the centre and scaling as appropriate.
-                                trained: Same as reduced, but the oriented kernels are replaced by learned 5x5 kernels.
-    device                  : torch.device
-                                torch device the input images will be supplied from.
     """
+
 
     def __init__(self, use_bilinear_downup=True, n_channels=1,
                  filter_size=9, n_orientations=6, filter_type="full",
                  device=torch.device('cpu')):
+        """
+        Parameters
+        ----------
+
+        use_bilinear_downup     : bool
+                                    This uses bilinear filtering when upsampling/downsampling, rather than the original approach
+                                    of applying a large lowpass kernel and sampling even rows/columns
+        n_channels              : int
+                                    Number of channels in the input images (e.g. 3 for RGB input)
+        filter_size             : int
+                                    Desired size of filters (e.g. 3 will use 3x3 filters).
+        n_orientations          : int
+                                    Number of oriented bands in each level of the pyramid.
+        filter_type             : str
+                                    This can be used to select smaller filters than the original ones if desired.
+                                    full: Original filter sizes
+                                    cropped: Some filters are cut back in size by extracting the centre and scaling as appropriate.
+                                    trained: Same as reduced, but the oriented kernels are replaced by learned 5x5 kernels.
+        device                  : torch.device
+                                    torch device the input images will be supplied from.
+        """
         self.use_bilinear_downup = use_bilinear_downup
         self.device = device
 
@@ -91,7 +93,7 @@ class SpatialSteerablePyramid():
                                 These extra levels are redundant (not used for reconstruction).
 
         Returns
-        =======
+        -------
 
         pyramid             : list of dicts of torch.tensor
                                 The computed steerable pyramid.
@@ -170,7 +172,7 @@ class SpatialSteerablePyramid():
                     The number of channels should match num_channels when the pyramid maker was created.
 
         Returns
-        =======
+        -------
 
         image   : torch.tensor
                     The reconstructed image, in NCHW format.         

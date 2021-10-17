@@ -1,6 +1,6 @@
-# Metameric Loss
+# Metameric Loss (Uniform)
 
-::: odak.learn.perception.MetamericLoss
+::: odak.learn.perception.MetamericLossUniform
     selection:
         docstring_style: numpy
 

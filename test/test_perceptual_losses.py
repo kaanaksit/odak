@@ -17,12 +17,15 @@ def test_perceptual_losses():
 
     # Create the 3 loss functions.
     my_metameric_loss = odak.learn.perception.MetamericLoss()
+    my_uniform_metameric_loss = odak.learn.perception.MetamericLossUniform()
     my_blur_loss = odak.learn.perception.BlurLoss()
     my_metamer_mse_loss = odak.learn.perception.MetamerMSELoss()
 
     # Measure and print the 3 losses.
     print("Metameric Loss:", my_metameric_loss(
         test_image, test_target, gaze=gaze).item())
+    print("Metameric Loss:", my_uniform_metameric_loss(
+        test_image, test_target).item())
     print("Metamer MSE Loss:", my_metamer_mse_loss(
         test_image, test_target, gaze=gaze).item())
     print("Blur Loss:", my_blur_loss(test_image, test_target, gaze=gaze).item())
