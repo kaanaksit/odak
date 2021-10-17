@@ -19,7 +19,7 @@ We designed this page to help first time users, new contributors, and existing u
 
 ## New contributors
 
-- `Guide to contribution`
+- [`Contributing to Odak`](contributing.md)
 
 ## Additional information
 
