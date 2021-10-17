@@ -16,6 +16,7 @@ jobs:
       - run: pip install numpy
       - run: pip install plyfile
       - run: pip install Pillow
+      - run: pip install tqdm
       - run: pip install mkdocs-material 
       - run: pip install mkdocstrings
       - run: pip install pytkdocs[numpy-style]
