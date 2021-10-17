@@ -1,0 +1,66 @@
+# Contributing to Odak
+
+Odak is in constant development. 
+We shape Odak according to the most current needs in our scientific research.
+We welcome both users and developers in the open-source community as long as they have good intentions (e.g., scientific research).
+For the most recent description of Odak, please consult [our description](odak/beginning.md).
+If you are planning to use Odak for industrial purposes, please reach out to [Kaan Akşit](mailto:kaanaksit@kaanaksit.com).
+All of the Odak contributors are listed in our [`THANKS.txt`](https://github.com/kunguz/odak/blob/master/THANKS.txt) and added to [`CITATION.cff`](https://github.com/kunguz/odak/blob/master/CITATION.cff) regardless of how much they contribute to the project.
+Their names are also included in our [Digital Object Identifier (DOI) page](https://zenodo.org/record/5526684).
+
+## Contributing process
+Contributions to Odak can come in different forms.
+It can either be code or documentation related contributions.
+Historically, Odak has evolved through scientific collaboration, in which authors of Odak identified a collaborative project with a new potential contributor.
+You can always reach out to [Kaan Akşit](kaanaksit@kaanaksit.com) to query your idea for potential collaborations in the future. 
+Another potential place to identify likely means to improve odak is to address outstanding [issues of Odak](https://github.com/kunguz/odak/issues).
+
+### Code
+Odak's `odak` directory contains the source code. 
+To add to it, please make sure that you can install and test Odak on your local computer.
+The [installation documentation](odak/installation.md) contains routines for installation and testing, please follow that page carefully.
+
+We typically work with `pull requests`. 
+If you want to add new code to Odak, please do not hesitate to fork Odak's git repository and have your modifications on your fork at first.
+Once you test the modified version, please do not hesitate to initiate a pull request.
+We will revise your code, and if found suitable, it will be merged to the master branch.
+Remember to follow `numpy` convention while adding documentation to your newly added functions to Odak.
+
+### Documentation
+Under Odak's source's root directory, you will find a folder named `docs`.
+This directory contains all the necessary information to generate the pages in this documentation.
+If you are interested in improving the documentation of Odak, this directory is the place where you will be adding things.
+
+Odak's documentation is built using [`mkdocs`](https://www.mkdocs.org/).
+At this point, I assume that you have successfully installed Odak on your system.
+If you haven't yet, please follow [installation documentation](odak/installation.md).
+To be able to run documentation locally, make sure to have the correct dependencies installed properly:
+
+```
+pip3 install plyfile
+pip3 install plyfile
+pip3 install Pillow
+pip3 install tqdm
+pip3 install mkdocs-material
+pip3 install mkdocstrings
+```
+
+Once you have dependencies appropriately installed, navigate to the source directory of Odak in your hard drive and run a test server:
+
+```
+cd odak
+mkdocs serve
+```
+
+If all goes well, you should see a bunch of lines on your terminal, and the final lines should look similar to these:
+
+```
+INFO     -  Documentation built in 4.45 seconds
+INFO     -  [22:15:22] Serving on http://127.0.0.1:8000/odak/
+INFO     -  [22:15:23] Browser connected: http://127.0.0.1:8000/odak/
+```
+
+At this point, you can start your favourite browser and navigate to [`http://127.0.0.1:800/odak`](http://127.0.0.1:800/odak) to view documentation locally.
+This local viewing is essential as it can help you view your changes locally on the spot before actually committing.
+One last thing to mention here is the fact that Odak's `docs` folder's structure is self-explanatory.
+It follows `markdown` rules, and `mkdocsstrings` style is `numpy`.
