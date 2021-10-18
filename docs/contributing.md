@@ -12,7 +12,7 @@ Their names are also included in our [Digital Object Identifier (DOI) page](http
 Contributions to Odak can come in different forms.
 It can either be code or documentation related contributions.
 Historically, Odak has evolved through scientific collaboration, in which authors of Odak identified a collaborative project with a new potential contributor.
-You can always reach out to [Kaan Akşit](kaanaksit@kaanaksit.com) to query your idea for potential collaborations in the future. 
+You can always reach out to [Kaan Akşit](mailto:kaanaksit@kaanaksit.com) to query your idea for potential collaborations in the future. 
 Another potential place to identify likely means to improve odak is to address outstanding [issues of Odak](https://github.com/kunguz/odak/issues).
 
 ### Code
