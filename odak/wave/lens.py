@@ -19,7 +19,7 @@ def double_convergence(nx, ny, k, r, dx):
                  Pixel pitch.
 
     Returns
-    ---------
+    -------
     function   : ndarray
                  Generated phase pattern for a Gerchberg-Saxton method.
     """
@@ -52,7 +52,7 @@ def quadratic_phase_function(nx, ny, k, focal=0.4, dx=0.001, offset=[0, 0]):
                  Deviation from the center along X and Y axes.
 
     Returns
-    ---------
+    -------
     function   : ndarray
                  Generated quadratic phase function.
     """
@@ -85,7 +85,7 @@ def prism_phase_function(nx, ny, k, angle, dx=0.001, axis='x'):
                  Axis of the prism.
 
     Returns
-    ----------
+    -------
     prism      : ndarray
                  Generated phase function for a prism.
     """
@@ -119,7 +119,7 @@ def linear_grating(nx, ny, every=2, add=3.14, axis='x'):
                  Axis eiter X,Y or both.
 
     Returns
-    ----------
+    -------
     field      : ndarray
                  Linear grating term.
     """

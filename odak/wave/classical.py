@@ -25,7 +25,7 @@ def propagate_beam(field, k, distance, dx, wavelength, propagation_type='IR Fres
                        Type of the propagation (IR Fresnel, Angular Spectrum, Bandlimited Angular Spectrum, TR Fresnel, Fraunhofer).
 
     Returns
-    =======
+    -------
     result           : np.complex
                        Final complex field (MxN).
     """
@@ -127,7 +127,7 @@ def fraunhofer_equal_size_adjust(field, distance, dx, wavelength):
                        Wavelength of the electric field.
 
     Returns
-    =======
+    -------
     new_field        : np.complex
                        Final complex field (MxN).
     """
@@ -161,7 +161,7 @@ def fraunhofer(field, k, distance, dx, wavelength):
                        Wavelength of the electric field.
 
     Returns
-    =======
+    -------
     result           : np.complex
                        Final complex field (MxN).
     """
@@ -197,7 +197,7 @@ def fraunhofer_inverse(field, k, distance, dx, wavelength):
                        Wavelength of the electric field.
 
     Returns
-    =======
+    -------
     result           : np.complex
                        Final complex field (MxN).
     """
@@ -309,7 +309,7 @@ def impulse_response_fresnel(field, k, distance, dx, wavelength):
                        Wavelength of the electric field.
 
     Returns
-    =======
+    -------
     result           : np.complex
                        Final complex field (MxN).
 
@@ -346,7 +346,7 @@ def transfer_function_fresnel(field, k, distance, dx, wavelength):
                        Wavelength of the electric field.
 
     Returns
-    -----------
+    -------
     result           : np.complex
                        Final complex field (MxN).
 
@@ -432,7 +432,7 @@ def rayleigh_sommerfeld(field, k, distance, dx, wavelength):
                        Wavelength of the electric field.
 
     Returns
-    =======
+    -------
     result           : np.complex
                        Final complex field (MxN).
     """
@@ -475,8 +475,8 @@ def gerchberg_saxton(field, n_iterations, distance, dx, wavelength, slm_range=6.
     initial_phase    : np.complex64
                        Phase to be added to the initial value.
 
-    Result
-    ---------
+    Returns
+    -------
     hologram         : np.complex
                        Calculated complex hologram.
     reconstruction   : np.complex
@@ -547,8 +547,8 @@ def gerchberg_saxton_3d(fields, n_iterations, distances, dx, wavelength, slm_ran
     target_type      : str
                        Target type. `No constraint` targets the input target as is. `Double constraint` follows the idea in this paper, which claims to suppress speckle: Chang, Chenliang, et al. "Speckle-suppressed phase-only holographic three-dimensional display based on double-constraint Gerchberg–Saxton algorithm." Applied optics 54.23 (2015): 6994-7001. 
 
-    Result
-    ---------
+    Returns
+    -------
     hologram         : np.complex
                        Calculated complex hologram.
     """

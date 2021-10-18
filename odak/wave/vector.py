@@ -21,7 +21,7 @@ def propagate_field(points0, points1, field0, wave_number, direction=1):
                     For propagating in forward direction set as 1, otherwise -1.
 
     Returns
-    ----------
+    -------
     field1        : ndarray
                     Field for given end points.
     """
@@ -59,7 +59,7 @@ def propagate_plane_waves(field, opd, k, w=0, t=0):
                    Time in seconds.
 
     Returns
-    ----------
+    -------
     new_field     : complex
                     A complex number that provides the resultant field in the complex form A*e^(j(wt+phi)).
     """
@@ -87,7 +87,7 @@ def electric_field_per_plane_wave(amplitude, opd, k, phase=0, w=0, t=0):
                    Time in seconds.
 
     Returns
-    ----------
+    -------
     field        : complex
                    A complex number that provides the resultant field in the complex form A*e^(j(wt+phi)).
     """

@@ -1,6 +1,6 @@
 """
 ``odak.wave``
-===================
+-------------
 Provides necessary definitions for merging geometric optics with wave theory and classical approaches in the wave theory as well. See "Introduction to Fourier Optcs" from Joseph Goodman for the theoratical explanation.
 
 """
@@ -65,7 +65,7 @@ def wavenumber(wavelength):
                    Wavelength of a wave in mm.
 
     Returns
-    ----------
+    -------
     k            : float
                    Wave number for a given wavelength.
     """
@@ -85,7 +85,7 @@ def rotationspeed(wavelength, c=3*10**11):
                    Speed of wave in mm/seconds. Default is the speed of light in the void!
 
     Returns
-    ----------
+    -------
     w            : float
 
     """
@@ -148,7 +148,7 @@ def set_amplitude(field, amplitude):
                    Amplitudes.
 
     Returns
-    ----------
+    -------
     new_field    : np.complex64
                    Complex field.
     """
@@ -170,7 +170,7 @@ def generate_complex_field(amplitude, phase):
                         Phase of the field.
 
     Returns
-    ----------
+    -------
     field             : ndarray
                         Complex field.
     """
@@ -205,7 +205,7 @@ def produce_phase_only_slm_pattern(hologram, slm_range, filename=None, bits=8, d
     Definition for producing a pattern for a phase only Spatial Light Modulator (SLM) using a given field.
 
     Parameters
-    ==========
+    ----------
     hologram           : np.complex64
                          Input holographic field.
     slm_range          : float
@@ -220,7 +220,7 @@ def produce_phase_only_slm_pattern(hologram, slm_range, filename=None, bits=8, d
                          Spatial illumination distribution.
 
     Returns
-    ==========
+    -------
     pattern            : np.complex64
                          Adjusted phase only pattern.
     hologram_digital   : np.int
