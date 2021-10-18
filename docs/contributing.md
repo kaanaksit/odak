@@ -25,6 +25,33 @@ If you want to add new code to Odak, please do not hesitate to fork Odak's git r
 Once you test the modified version, please do not hesitate to initiate a pull request.
 We will revise your code, and if found suitable, it will be merged to the master branch.
 Remember to follow `numpy` convention while adding documentation to your newly added functions to Odak.
+Another thing to mention is regarding to the code quality and standard.
+Although it hasn't been strictly followed since the start of Odak, note that Odak follows code conventions of `flake8`, which can be installed using:
+
+```
+pip3 install flake8
+```
+
+You can always check for code standard violations in Odak by running these two commands:
+
+```
+flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+```
+
+There are tools that can automatically fix code in terms of following standards.
+One primary tool that we are aware of is `autopep8`, which can be installed using:
+
+```
+pip3 install autopep8
+```
+
+Please once you are ready to have a pull request, make sure to add a unit test for your additions in `test` folder, and make sure to test all unit tests by running `pytest`.
+If your system do not have `pytest` installed, it can be installed using:
+
+``
+pip3 install pytest
+```
 
 ### Documentation
 Under Odak's source's root directory, you will find a folder named `docs`.
