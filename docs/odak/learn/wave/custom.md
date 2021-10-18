@@ -1,21 +1,8 @@
 # odak.learn.wave.custom
 
-`custom(field,kernel)`
-
-A definition to calculate convolution based Fresnel approximation for beam propagation. 
-Curious reader can consult `Learned Holographic Light Transport`, Applied Optics (2021) by `Koray Kavaklı, Hakan Urey and Kaan Akşit`.
-
-**Parameters:**
-
-    field            : torch.complex
-                       Complex field (MxN).
-    kernel           : torch.complex
-                       Custom complex kernel for beam propagation.
-                       
-**Returns**
-
-    result           : torch.complex
-                       Final complex field (MxN).
+::: odak.learn.wave.custom
+    selection:
+        docstring_style: numpy
 
 ## Notes
 

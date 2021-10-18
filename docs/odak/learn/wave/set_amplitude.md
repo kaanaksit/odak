@@ -1,21 +1,8 @@
 # odak.learn.wave.set_amplitude
 
-`set_amplitude(field,amplitude)`
-
-Definition to keep phase as is and change the amplitude of a given field.
- 
-**Parameters:**
-
-    field        : torch.cfloat
-                   Complex field.
-    amplitude    : torch.cfloat or torch.float
-                   Amplitudes.
-
-                       
-**Returns**
-
-    new_field    : torch.cfloat
-                   Complex field.
+::: odak.learn.wave.set_amplitude
+    selection:
+        docstring_style: numpy
 
 ## Notes
 

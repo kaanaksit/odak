@@ -1,30 +1,8 @@
 # odak.learn.wave.point_wise
 
-`point_wise(target,wavelength,distance,dx,device,lens_size=401)`
-
-Naive point-wise hologram calculation method. 
-For more information, refer to `Maimone, Andrew, Andreas Georgiou, and Joel S. Kollin`. `Holographic near-eye displays for virtual and augmented reality.` ACM Transactions on Graphics (TOG) 36.4 (2017): 1-16.
-
-**Parameters:**
-
-    target           : torch.float
-                       float input target to be converted into a hologram (Target should be in range of 0 and 1).
-    wavelength       : float
-                       Wavelength of the electric field.
-    distance         : float
-                       Propagation distance.
-    dx               : float
-                       Size of one single pixel in the field grid (in meters).
-    device           : torch.device
-                       Device type (cuda or cpu)`.
-    lens_size        : int
-                       Size of lens for masking sub holograms(in pixels).
-
-                       
-**Returns**
-
-    hologram         : torch.cfloat
-                       Calculated complex hologram.
+::: odak.learn.wave.point_wise
+    selection:
+        docstring_style: numpy
 
 ## Notes
 

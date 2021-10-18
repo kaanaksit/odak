@@ -13,7 +13,7 @@ def calculate_phase(field, deg=False):
                    If set True, the angles will be returned in degrees.
 
     Returns
-    ----------
+    -------
     phase        : float
                    Phase or phases of electric field(s) in radians.
     """
@@ -33,7 +33,7 @@ def calculate_amplitude(field):
                    Electric fields or an electric field.
 
     Returns
-    ----------
+    -------
     amplitude    : float
                    Amplitude or amplitudes of electric field(s).
     """

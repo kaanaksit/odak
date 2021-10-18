@@ -19,8 +19,8 @@ This submodule is based on `torch`, therefore the functions provided here are di
 | ------------- |:-------------:|
 | [odak.learn.wave.adjust_phase_only_slm_range](odak/learn/wave/adjust_phase_only_slm_range.md) | Adjust the range of a spatial light modulator. |
 | [odak.learn.wave.band_limited_angular_spectrum](odak/learn/wave/band_limited_angular_spectrum.md) | Optical beam propagation with bandlimited angular spectrum. |
-| [odak.learn.wave.calculate_phase](odak/learn/wave/calculate_phase.md) | Calculate phase of a complex field. |
 | [odak.learn.wave.calculate_amplitude](odak/learn/wave/calculate_amplitude.md) | Calculate amplitude of a complex field. |
+| [odak.learn.wave.calculate_phase](odak/learn/wave/calculate_phase.md) | Calculate phase of a complex field. |
 | [odak.learn.wave.custom](odak/learn/wave/custom.md)                 | Optical beam propagation with a custom complex kernel. |
 | [odak.learn.wave.generate_complex_field](odak/learn/wave/generate_complex_field.md) | Generate a complex field from an amplitude and a phase value. |
 | [odak.learn.wave.gerchberg_saxton](odak/learn/wave/gerchberg_saxton.md) | Phase-only hologram optimization using Gerchberg-Saxton algorithm. |

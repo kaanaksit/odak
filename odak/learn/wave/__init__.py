@@ -20,7 +20,7 @@ def wavenumber(wavelength):
                    Wavelength of a wave in mm.
 
     Returns
-    ----------
+    -------
     k            : float
                    Wave number for a given wavelength.
     """
@@ -40,7 +40,7 @@ def calculate_phase(field, deg=False):
                    If set True, the angles will be returned in degrees.
 
     Returns
-    ----------
+    -------
     phase        : torch.float
                    Phase or phases of electric field(s) in radians.
     """
@@ -60,7 +60,7 @@ def calculate_amplitude(field):
                    Electric fields or an electric field.
 
     Returns
-    ----------
+    -------
     amplitude    : torch.float
                    Amplitude or amplitudes of electric field(s).
     """
@@ -80,7 +80,7 @@ def set_amplitude(field, amplitude):
                    Amplitudes.
 
     Returns
-    ----------
+    -------
     new_field    : torch.cfloat
                    Complex field.
     """
@@ -102,7 +102,7 @@ def generate_complex_field(amplitude, phase):
                         Phase of the field.
 
     Returns
-    ----------
+    -------
     field             : ndarray
                         Complex field.
     """
@@ -132,7 +132,7 @@ def adjust_phase_only_slm_range(native_range, working_wavelength, native_wavelen
                          Wavelength which the SLM is designed for.
 
     Returns
-    ==========
+    -------
     new_range          : float
                          Calculated phase range in radians.
     """
@@ -145,22 +145,20 @@ def produce_phase_only_slm_pattern(hologram, slm_range, bits=8, default_range=6.
     Definition for producing a pattern for a phase only Spatial Light Modulator (SLM) using a given field.
 
     Parameters
-    ==========
+    ----------
     hologram           : torch.cfloat
                          Input holographic field.
     slm_range          : float
                          Range of the phase only SLM in radians for a working wavelength (i.e. two pi). See odak.wave.adjust_phase_only_slm_range() for more.
-    filename           : str
-                         Optional variable, if provided the patterns will be save to given location.
     bits               : int
                          Quantization bits.
-    default_ramge      : float
+    default_range      : float
                          Default range of phase only SLM.
     illumination       : torch.tensor
                          Spatial illumination distribution.
 
     Returns
-    ==========
+    -------
     pattern            : torch.cfloat
                          Adjusted phase only pattern.
     hologram_digital   : np.int

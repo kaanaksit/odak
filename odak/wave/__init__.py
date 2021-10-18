@@ -47,7 +47,7 @@ def calculate_intensity(field):
                    Electric fields or an electric field.
 
     Returns
-    ----------
+    -------
     intensity    : float
                    Intensity or intensities of electric field(s).
     """
@@ -104,7 +104,7 @@ def add_random_phase(field):
                    Complex field.
 
     Returns
-    ----------
+    -------
     new_field    : np.complex64
                    Complex field.
     """
@@ -125,7 +125,7 @@ def add_phase(field, new_phase):
                    Complex phase.
 
     Returns
-    ----------
+    -------
     new_field    : np.complex64
                    Complex field.
     """
@@ -192,7 +192,7 @@ def adjust_phase_only_slm_range(native_range, working_wavelength, native_wavelen
                          Wavelength which the SLM is designed for.
 
     Returns
-    ==========
+    -------
     new_range          : float
                          Calculated phase range in radians.
     """

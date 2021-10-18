@@ -1,18 +1,8 @@
 # odak.learn.wave.calculate_amplitude
 
-`calculate_amplitude(field)`
-
-Definition to calculate amplitude of a single or multiple given electric field(s).
- 
-**Parameters:**
-
-    field        : torch.cfloat
-                   Electric fields or an electric field.
-                       
-**Returns**
-
-    amplitude    : torch.float
-                   Amplitude or amplitudes of electric field(s).
+::: odak.learn.wave.calculate_amplitude
+    selection:
+        docstring_style: numpy
 
 ## Notes
 

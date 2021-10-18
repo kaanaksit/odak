@@ -22,7 +22,7 @@ def quadratic_phase_function(nx, ny, k, focal=0.4, dx=0.001, offset=[0, 0]):
                  Deviation from the center along X and Y axes.
 
     Returns
-    ---------
+    -------
     function   : torch.tensor
                  Generated quadratic phase function.
     """

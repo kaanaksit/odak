@@ -12,7 +12,7 @@ def propagate_beam(field, k, distance, dx, wavelength, propagation_type='IR Fres
     Definitions for Fresnel impulse respone (IR), Fresnel Transfer Function (TF), Fraunhofer diffraction in accordence with "Computational Fourier Optics" by David Vuelz.
 
     Parameters
-    ==========
+    ----------
     field            : torch.complex
                        Complex field (MxN).
     k                : odak.wave.wavenumber
@@ -29,7 +29,7 @@ def propagate_beam(field, k, distance, dx, wavelength, propagation_type='IR Fres
                        Custom complex kernel.
 
     Returns
-    =======
+    -------
     result           : torch.complex128
                        Final complex field (MxN).
     """
@@ -70,7 +70,7 @@ def custom(field, kernel):
                        Custom complex kernel for beam propagation.
 
     Returns
-    ---------
+    -------
     result           : torch.complex
                        Final complex field (MxN).
 
@@ -103,7 +103,7 @@ def transfer_function_fresnel(field, k, distance, dx, wavelength):
                        Wavelength of the electric field.
 
     Returns
-    ---------
+    -------
     result           : torch.complex
                        Final complex field (MxN).
 
@@ -125,7 +125,8 @@ def transfer_function_fresnel(field, k, distance, dx, wavelength):
 
 def band_limited_angular_spectrum(field, k, distance, dx, wavelength):
     """
-    A definition to calculate bandlimited angular spectrum based beam propagation. For more Matsushima, Kyoji, and Tomoyoshi Shimobaba. "Band-limited angular spectrum method for numerical simulation of free-space propagation in far and near fields." Optics express 17.22 (2009): 19662-19673.
+    A definition to calculate bandlimited angular spectrum based beam propagation. For more 
+    `Matsushima, Kyoji, and Tomoyoshi Shimobaba. "Band-limited angular spectrum method for numerical simulation of free-space propagation in far and near fields." Optics express 17.22 (2009): 19662-19673`.
 
     Parameters
     ----------
@@ -141,7 +142,7 @@ def band_limited_angular_spectrum(field, k, distance, dx, wavelength):
                        Wavelength of the electric field.
 
     Returns
-    =======
+    -------
     result           : torch.complex
                        Final complex field (MxN).
     """
@@ -185,7 +186,7 @@ def impulse_response_fresnel(field, k, distance, dx, wavelength):
                        Wavelength of the electric field.
 
     Returns
-    =======
+    -------
     result           : np.complex
                        Final complex field (MxN).
     """
@@ -225,8 +226,8 @@ def gerchberg_saxton(field, n_iterations, distance, dx, wavelength, slm_range=6.
     propagation_type : str
                        Type of the propagation (IR Fresnel, TR Fresnel, Fraunhofer).
 
-    Result
-    ---------
+    Returns
+    -------
     hologram         : torch.cfloat
                        Calculated complex hologram.
     reconstruction   : torch.cfloat
@@ -262,7 +263,7 @@ def stochastic_gradient_descent(field, wavelength, distance, dx, resolution, pro
                               SLM pixel pitch
     resolution              : array
                               SLM resolution
-    propogation type        : str
+    propogation type        : Str
                               Type of the propagation (IR Fresnel, Angular Spectrum, Bandlimited Angular Spectrum, TR Fresnel, Fraunhofer)
     n_iteration:            : int
                               Max iteratation 
@@ -274,7 +275,7 @@ def stochastic_gradient_descent(field, wavelength, distance, dx, resolution, pro
                               Learning rate.
 
     Returns
-    ----------
+    -------
     hologram                : torch.Tensor
                               Phase only hologram as torch array
 
@@ -339,7 +340,7 @@ def point_wise(target, wavelength, distance, dx, device, lens_size=401):
                        Size of lens for masking sub holograms(in pixels).
 
     Returns
-    ----------
+    -------
     hologram         : torch.cfloat
                        Calculated complex hologram.
     """

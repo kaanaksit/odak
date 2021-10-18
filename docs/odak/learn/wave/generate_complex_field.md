@@ -1,20 +1,8 @@
 # odak.learn.wave.generate_complex_field
 
-`generate_complex_field(amplitude,phase)`
-
-Definition to generate a complex field with a given amplitude and phase.
-
-**Parameters:**
-
-    amplitude         : ndarray or float
-                        Amplitude of the field.
-    phase             : ndarray or float
-                        Phase of the field.
-                       
-**Returns**
-
-    field             : ndarray
-                        Complex field.
+::: odak.learn.wave.generate_complex_field
+    selection:
+        docstring_style: numpy
 
 ## Notes
 

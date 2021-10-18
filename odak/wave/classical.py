@@ -73,7 +73,7 @@ def adaptive_sampling_angular_spectrum(field, k, distance, dx, wavelength):
                        Wavelength of the electric field.
 
     Returns
-    =======
+    -------
     result           : np.complex
                        Final complex field (MxN).
     """
@@ -234,7 +234,7 @@ def band_limited_angular_spectrum(field, k, distance, dx, wavelength):
                        Wavelength of the electric field.
 
     Returns
-    =======
+    -------
     result           : np.complex
                        Final complex field (MxN).
     """
@@ -274,7 +274,7 @@ def angular_spectrum(field, k, distance, dx, wavelength):
                        Wavelength of the electric field.
 
     Returns
-    =======
+    -------
     result           : np.complex
                        Final complex field (MxN).
     """
@@ -380,7 +380,7 @@ def band_extended_angular_spectrum(field, k, distance, dx, wavelength):
                        Wavelength of the electric field.
 
     Returns
-    =======
+    -------
     result           : np.complex
                        Final complex field (MxN).
     """
