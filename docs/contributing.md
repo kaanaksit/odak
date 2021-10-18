@@ -49,7 +49,7 @@ pip3 install autopep8
 Please once you are ready to have a pull request, make sure to add a unit test for your additions in `test` folder, and make sure to test all unit tests by running `pytest`.
 If your system do not have `pytest` installed, it can be installed using:
 
-``
+```
 pip3 install pytest
 ```
 
