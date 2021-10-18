@@ -5,7 +5,7 @@
 
 # Odak
 Odak (pronounced "O-dac") is the fundamental library for scientific computing in optical sciences, computer graphics and visual perception.
-Consult to our [documentation](https://kunguz.github.io/odak) for more!
+To learn more about what Odak can do to help your design, experimentation and development, consult to our [documentation](https://kunguz.github.io/odak/odak/)!
 
 ## Getting Started
 
