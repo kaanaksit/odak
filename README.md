@@ -10,6 +10,7 @@ To learn more about what Odak can do to help your design, experimentation and de
 ## Getting Started
 
 ### Installing
+For most recent guidance on installing Odak, please consult to [installation documentation](https://kunguz.github.io/odak/odak/installation/).
 Odak can be installed using [pip](https://pypi.org/project/pip):
 
 ```bash
