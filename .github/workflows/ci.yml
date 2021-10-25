@@ -11,9 +11,9 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
-          python-version: 3.x
+          python-version: 3.9
       - run: pip install --upgrade pip
-      - run: pip install torch==1.9.0 -f https://download.pytorch.org/whl/torch_stable.html
+      - run: pip install torch
       - run: pip install numpy
       - run: pip install plyfile
       - run: pip install Pillow
