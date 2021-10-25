@@ -13,7 +13,7 @@ jobs:
         with:
           python-version: 3.x
       - run: pip install --upgrade pip
-      - run: pip install torch==1.10.0
+      - run: pip install torch==1.10.0 -f https://download.pytorch.org/whl/torch_stable.html
       - run: pip install numpy
       - run: pip install plyfile
       - run: pip install Pillow
