@@ -13,6 +13,7 @@ jobs:
         with:
           python-version: 3.x
       - run: pip install --upgrade pip
+      - run: pip install torch
       - run: pip install numpy
       - run: pip install plyfile
       - run: pip install Pillow
