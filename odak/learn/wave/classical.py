@@ -7,7 +7,7 @@ from odak.learn.tools import zero_pad, crop_center
 from tqdm import tqdm
 
 
-def propagate_beam(field, k, distance, dx, wavelength, propagation_type='IR Fresnel', kernel=None):
+def propagate_beam(field, k, distance, dx, wavelength, propagation_type='IR Fresnel', kernel=None, zero_padding=False):
     """
     Definitions for Fresnel impulse respone (IR), Fresnel Transfer Function (TF), Fraunhofer diffraction in accordence with "Computational Fourier Optics" by David Vuelz.
 
@@ -39,9 +39,9 @@ def propagate_beam(field, k, distance, dx, wavelength, propagation_type='IR Fres
         result = band_limited_angular_spectrum(
             field, k, distance, dx, wavelength)
     elif propagation_type == 'TR Fresnel':
-        result = transfer_function_fresnel(field, k, distance, dx, wavelength)
+        result = transfer_function_fresnel(field, k, distance, dx, wavelength, zero_padding)
     elif propagation_type == 'custom':
-        result = custom(field, kernel)
+        result = custom(field, kernel, zero_padding)
     elif propagation_type == 'Fraunhofer':
         nv, nu = field.shape[-1], field.shape[-2]
         x = torch.linspace(-nv*dx/2, nv*dx/2, nv, dtype=torch.float32)
@@ -58,7 +58,7 @@ def propagate_beam(field, k, distance, dx, wavelength, propagation_type='IR Fres
     return result
 
 
-def custom(field, kernel):
+def custom(field, kernel, zero_padding = False):
     """
     A definition to calculate convolution based Fresnel approximation for beam propagation.
 
@@ -80,12 +80,15 @@ def custom(field, kernel):
     else:
         H = kernel
     U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field)))
-    U2 = H*U1
+    if zero_padding == False:
+        U2 = H*U1
+    elif zero_padding == True:
+        U2 = zero_pad(H*U1)
     result = torch.fft.ifftshift(torch.fft.ifft2(torch.fft.ifftshift(U2)))
     return result
 
 
-def transfer_function_fresnel(field, k, distance, dx, wavelength):
+def transfer_function_fresnel(field, k, distance, dx, wavelength, zero_padding = False):
     """
     A definition to calculate convolution based Fresnel approximation for beam propagation.
 
@@ -118,7 +121,10 @@ def transfer_function_fresnel(field, k, distance, dx, wavelength):
     H = torch.exp(1j*k*distance*(1-(FX*wavelength)**2-(FY*wavelength)**2)**0.5)
     H = H.to(field.device)
     U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field)))
-    U2 = H*U1
+    if zero_padding == False:
+        U2 = H*U1
+    elif zero_padding == True:
+        U2 = zero_pad(H*U1)
     result = torch.fft.ifftshift(torch.fft.ifft2(torch.fft.ifftshift(U2)))
     return result
 
