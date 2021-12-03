@@ -22,7 +22,7 @@ def resize(image, multiplier=0.5, mode='nearest'):
                     Resized image.
 
     """
-    scale = torch.nn.Upsample(scale_factor=mul, mode=mode)
+    scale = torch.nn.Upsample(scale_factor=multiplier, mode=mode)
     new_image = torch.zeros((int(image.shape[0]*mul), int(image.shape[1]*mul), 3)).to(image.device)
     for i in range(3):
         cache = image[:,:,i].unsqueeze(0)
