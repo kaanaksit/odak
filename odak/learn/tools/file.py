@@ -3,6 +3,35 @@ import odak.tools
 import torch
 import numpy as np_cpu
 
+def resize(image, multiplier=0.5, mode='nearest'):
+    """
+    Definition to resize an image.
+
+    Parameters
+    ----------
+    image         : torch.tensor
+                    Image with 3xMxN resolution.
+    multiplier    : float
+                    Multiplier used in resizing operation (e.g., 0.5 is half size in one axis).
+    mode          : str
+                    Mode to be used in scaling, nearest, bilinear, etc.
+
+    Returns
+    -------
+    new_image     : torch.tensor
+                    Resized image.
+
+    """
+    scale = torch.nn.Upsample(scale_factor=mul, mode=mode)
+    new_image = torch.zeros((int(image.shape[0]*mul), int(image.shape[1]*mul), 3)).to(image.device)
+    for i in range(3):
+        cache = image[:,:,i].unsqueeze(0)
+        cache = cache.unsqueeze(0)
+        new_cache = scale(cache).unsqueeze(0)
+        new_image[:,:,i] = new_cache.unsqueeze(0)
+    return new_image
+
+
 
 def load_image(fn):
     """
