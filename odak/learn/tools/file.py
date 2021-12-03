@@ -10,7 +10,7 @@ def resize(image, multiplier=0.5, mode='nearest'):
     Parameters
     ----------
     image         : torch.tensor
-                    Image with 3xMxN resolution.
+                    Image with MxNx3 resolution.
     multiplier    : float
                     Multiplier used in resizing operation (e.g., 0.5 is half size in one axis).
     mode          : str
