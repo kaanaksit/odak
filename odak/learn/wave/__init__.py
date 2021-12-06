@@ -8,6 +8,7 @@ from odak import np
 import torch
 from .classical import *
 from .lens import *
+from .loss import * 
 
 
 def wavenumber(wavelength):
