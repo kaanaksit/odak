@@ -15,7 +15,7 @@ class phase_gradient(nn.Module):
     """
     
 
-    def __init__(self, kernel = None, loss = nn.MSELoss(), device = torch.device('cuda')):
+    def __init__(self, kernel = None, loss = nn.MSELoss(), device=torch.device("cpu")):
         """
         Parameters
         ----------
@@ -28,9 +28,12 @@ class phase_gradient(nn.Module):
         self.device = device
         self.loss = loss
         if kernel == None:
-            self.kernel = torch.tensor([[[[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]]]], dtype=torch.float32)/8.
+            self.kernel = torch.tensor([[[[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]]]], dtype=torch.float32)/8
         else:
-            self.kernel = kernel
+            if len(kernel.shape) == 4:
+                self.kernel = kernel
+            else:
+                self.kernel = kernel.reshape((1, 1, kernel.shape[0], kernel.shape[1]))
         self.kernel = Variable(self.kernel.to(self.device))
         
 
@@ -49,6 +52,9 @@ class phase_gradient(nn.Module):
         loss_value              : torch.tensor
                                     The computed loss.
         """
+
+        if len(phase.shape) == 2:
+            phase = phase.reshape((1, 1, phase.shape[0], phase.shape[1]))
         edge_detect = self.functional_conv2d(phase)
         loss_value = self.loss(edge_detect, torch.zeros_like(edge_detect))
         return loss_value
@@ -68,7 +74,7 @@ class phase_gradient(nn.Module):
         edge_detect              : torch.tensor
                                     The computed phase gradient.
         """
-        edge_detect = F.conv2d(phase, self.kernel, padding=self.kernel.shape[-1])
+        edge_detect = F.conv2d(phase, self.kernel, padding=self.kernel.shape[-1]//2)
         return edge_detect
 
 
@@ -84,7 +90,7 @@ class speckle_contrast(nn.Module):
     """
     
 
-    def __init__(self, kernel_size = 11, step_size = (1, 1), loss = nn.MSELoss(), device = torch.device('cuda')):
+    def __init__(self, kernel_size = 11, step_size = (1, 1), loss = nn.MSELoss(), device=torch.device("cpu")):
         """
         Parameters
         ----------
@@ -119,6 +125,9 @@ class speckle_contrast(nn.Module):
         loss_value              : torch.tensor
                                     The computed loss.
         """
+
+        if len(intensity.shape) == 2:
+            intensity = intensity.reshape((1, 1, intensity.shape[0], intensity.shape[1]))
         Speckle_C = self.functional_conv2d(intensity)
         loss_value = self.loss(Speckle_C, torch.zeros_like(Speckle_C))
         return loss_value
