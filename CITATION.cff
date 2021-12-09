@@ -28,6 +28,11 @@ authors:
     given-names: David Robert
     orcid:  https://orcid.org/0000-0001-5879-9714
 
+  - family-names: Zhu
+    given-names: Runze
+    orcid:  https://orcid.org/0000-0003-3300-1694
+
+
 title: "Odak"
 version: 0.1.9
 doi: 10.5281/zenodo.5136406
