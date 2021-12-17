@@ -15,6 +15,7 @@ import odak.visualize
 import odak.jones
 import odak.catalog
 import odak.measurement
+import odak.learn
 
 version_info = 0, 1, 9
 __version__ = '.'.join(map(str, version_info))
