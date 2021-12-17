@@ -62,7 +62,7 @@ def prism_phase_function(nx, ny, k, angle, dx=0.001, axis='x'):
                  Generated phase function for a prism.
     """
     angle = torch.deg2rad(torch.tensor([angle]))
-    size = [ny, nx]
+    size = [nx, ny]
     x = torch.linspace(-size[0]*dx/2, size[0]*dx/2, size[0])
     y = torch.linspace(-size[1]*dx/2, size[1]*dx/2, size[1])
     X, Y = torch.meshgrid(x, y)
