@@ -32,6 +32,10 @@ authors:
     given-names: Runze
     orcid:  https://orcid.org/0000-0003-3300-1694
 
+  - family-names: Kingshott
+    given-names: Oliver
+    orcid:  https://orcid.org/0000-0002-1635-4079
+
 
 title: "Odak"
 version: 0.1.9

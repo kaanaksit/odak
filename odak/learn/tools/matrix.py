@@ -162,3 +162,39 @@ def blur_gaussian(field, kernel_length=[21, 21], nsigma=[3, 3]):
     blurred_field = convolve2d(field, kernel)
     blurred_field = blurred_field/torch.amax(blurred_field)
     return blurred_field
+
+
+def rfft2(image_field):
+    """
+    Compute the real-valued fourier transform of image_field, with the DC component at the center.
+
+    Parameters
+    ----------
+    image_field : torch.tensor
+                  Input image field.
+
+    Returns
+    ----------
+    fourier_field : torch.tensor
+                    Fourier field
+    """
+    fourier_field = fft.rfft2(fft.ifftshift(image_field))
+    return fourier_field
+
+
+def irfft2(fourier_field):
+    """
+    The inverse of rfft2.
+
+    Parameters
+    ----------
+    fourier_field : torch.tensor
+                    Input image field.
+
+    Returns
+    ----------
+    image_field : torch.tensor
+                  Fourier field
+    """
+    image_field = fft.fftshift(fft.irfft2(fourier_field))
+    return image_field

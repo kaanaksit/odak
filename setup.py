@@ -33,6 +33,7 @@ setup(
         'odak/jones',
         'odak/tools',
         'odak/wave',
+        'odak/learn/lensless',
         'odak/learn/wave',
         'odak/learn/tools',
         'odak/learn/perception',

@@ -19,21 +19,13 @@ class PhaseMaskCamera(LenslessCamera):
                   Real-valued point spread function measurement.
     """
     def __init__(self, psf):
-        self.h = rft(zero_pad(psf))
+        self.h = rfft2(zero_pad(psf))
 
     def autocorrelation(self):
         return self.h * self.h.conj()
 
     def forward(self, scene):
-        return crop_center(irft(self.h * rft(scene)))
+        return crop_center(irfft2(self.h * rfft2(scene)))
 
     def adjoint(self, error):
-        return irft(self.h.conj() * rft(zero_pad(error)))
-
-
-def rft(x):
-    return fft.rfft2(fft.ifftshift(x))
-
-
-def irft(x):
-    return fft.fftshift(fft.irfft2(x))
+        return irfft2(self.h.conj() * rfft2(zero_pad(error)))
