@@ -30,7 +30,7 @@ def reflect(input_ray, normal):
               + input_ray[:, 1, 1]*normal[:, 1, 1]
               + input_ray[:, 1, 2]*normal[:, 1, 2]) / div
     n = int(torch.amax(np.array([normal.shape[0], input_ray.shape[0]])))
-    output_ray = np.zeros((n, 2, 3))
+    output_ray = torch.zeros((n, 2, 3))
     output_ray[:, 0] = normal[:, 0]
     output_ray[:, 1] = input_ray[:, 1]-2*a*normal[:, 1]
     if output_ray.shape[0] == 1:
