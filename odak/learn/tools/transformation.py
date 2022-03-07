@@ -16,13 +16,12 @@ def rotmatx(angle):
     rotx         : ndarray
                     Rotation matrix along X axis.
     """
-    angle = torch.float(angle)
-    angle = torch.radians(angle)
-    rotx = torch.array([
+    angle = torch.deg2rad(torch.tensor(angle))
+    rotx = torch.tensor([
         [1.,               0.,               0.],
         [0.,  math.cos(angle), -math.sin(angle)],
         [0.,  math.sin(angle),  math.cos(angle)]
-    ], dtype=torch.float)
+    ])
     return rotx
 
 
@@ -40,12 +39,12 @@ def rotmaty(angle):
     roty         : ndarray
                    Rotation matrix along Y axis.
     """
-    angle = torch.radians(angle)
-    roty = torch.array([
+    angle = torch.deg2rad(torch.tensor(angle))
+    roty = torch.tensor([
         [math.cos(angle),  0., math.sin(angle)],
         [0.,               1.,              0.],
         [-math.sin(angle), 0., math.cos(angle)]
-    ], dtype=torch.float)
+    ])
     return roty
 
 
@@ -63,12 +62,12 @@ def rotmatz(angle):
     rotz         : ndarray
                    Rotation matrix along Z axis.
     """
-    angle = torch.radians(angle)
-    rotz = torch.array([
+    angle = torch.deg2rad(torch.tensor(angle))
+    rotz = torch.tensor([
         [math.cos(angle), -math.sin(angle), 0.],
         [math.sin(angle),  math.cos(angle), 0.],
         [0.,               0., 1.]
-    ], dtype=torch.float)
+    ])
     return rotz
 
 
@@ -105,15 +104,15 @@ def rotate_point(point, angles=[0, 0, 0], mode='XYZ', origin=[0, 0, 0], offset=[
     roty = rotmaty(angles[1])
     rotz = rotmatz(angles[2])
     if mode == 'XYZ':
-        result = torch.dot(rotz, torch.dot(roty, torch.dot(rotx, point)))
+        result = torch.mm(rotz, torch.mm(roty, torch.mm(rotx, point)))
     elif mode == 'XZY':
-        result = torch.dot(roty, torch.dot(rotz, torch.dot(rotx, point)))
+        result = torch.mm(roty, torch.mm(rotz, torch.mm(rotx, point)))
     elif mode == 'YXZ':
-        result = torch.dot(rotz, torch.dot(rotx, torch.dot(roty, point)))
+        result = torch.mm(rotz, torch.mm(rotx, torch.mm(roty, point)))
     elif mode == 'ZXY':
-        result = torch.dot(roty, torch.dot(rotx, torch.dot(rotz, point)))
+        result = torch.mm(roty, torch.mm(rotx, torch.mm(rotz, point)))
     elif mode == 'ZYX':
-        result = torch.dot(rotx, torch.dot(roty, torch.dot(rotz, point)))
+        result = torch.mm(rotx, torch.mm(roty, torch.mm(rotz, point)))
     result += origin
     result += offset
     return result, rotx, roty, rotz
@@ -149,15 +148,15 @@ def rotate_points(points, angles=[0, 0, 0], mode='XYZ', origin=[0, 0, 0], offset
     roty = rotmaty(angles[1])
     rotz = rotmatz(angles[2])
     if mode == 'XYZ':
-        result = torch.dot(rotz, torch.dot(roty, torch.dot(rotx, points.T))).T
+        result = torch.mm(rotz, torch.mm(roty, torch.mm(rotx, points.T))).T
     elif mode == 'XZY':
-        result = torch.dot(roty, torch.dot(rotz, torch.dot(rotx, points.T))).T
+        result = torch.mm(roty, torch.mm(rotz, torch.mm(rotx, points.T))).T
     elif mode == 'YXZ':
-        result = torch.dot(rotz, torch.dot(rotx, torch.dot(roty, points.T))).T
+        result = torch.mm(rotz, torch.mm(rotx, torch.mm(roty, points.T))).T
     elif mode == 'ZXY':
-        result = torch.dot(roty, torch.dot(rotx, torch.dot(rotz, points.T))).T
+        result = torch.mm(roty, torch.mm(rotx, torch.mm(rotz, points.T))).T
     elif mode == 'ZYX':
-        result = torch.dot(rotx, torch.dot(roty, torch.dot(rotz, points.T))).T
+        result = torch.mm(rotx, torch.mm(roty, torch.mm(rotz, points.T))).T
     result += torch.tensor(origin)
     result += torch.tensor(offset)
     return result
