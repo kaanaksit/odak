@@ -2,6 +2,42 @@ import torch
 from odak.learn.raytracing.primitives import is_it_on_triangle, center_of_triangle
 
 
+def reflect(input_ray, normal):
+    """ 
+    Definition to reflect an incoming ray from a surface defined by a surface normal. Used method described in G.H. Spencer and M.V.R.K. Murty, "General Ray-Tracing Procedure", 1961.
+
+    Parameters
+    ----------
+    input_ray    : ndarray
+                   A vector/ray (2x3). It can also be a list of rays (nx2x3).
+    normal       : ndarray
+                   A surface normal (2x3). It also be a list of normals (nx2x3).
+
+    Returns
+    ----------
+    output_ray   : ndarray
+                   Array that contains starting points and cosines of a reflected ray.
+    """
+    input_ray = torch.tensor(input_ray)
+    normal = torch.tensor(normal)
+    if len(input_ray.shape) == 2:
+        input_ray = input_ray.reshape((1, 2, 3))
+    if len(normal.shape) == 2:
+        normal = normal.reshape((1, 2, 3))
+    mu = 1
+    div = normal[:, 1, 0]**2 + normal[:, 1, 1]**2 + normal[:, 1, 2]**2
+    a = mu * (input_ray[:, 1, 0]*normal[:, 1, 0]
+              + input_ray[:, 1, 1]*normal[:, 1, 1]
+              + input_ray[:, 1, 2]*normal[:, 1, 2]) / div
+    n = int(torch.amax(np.array([normal.shape[0], input_ray.shape[0]])))
+    output_ray = np.zeros((n, 2, 3))
+    output_ray[:, 0] = normal[:, 0]
+    output_ray[:, 1] = input_ray[:, 1]-2*a*normal[:, 1]
+    if output_ray.shape[0] == 1:
+        output_ray = output_ray.reshape((2, 3))
+    return output_ray
+
+
 def intersect_w_triangle(ray, triangle):
     """
     Definition to find intersection point of a ray with a triangle. Returns False for each variable if the ray doesn't intersect with a given triangle.
