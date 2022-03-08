@@ -1,6 +1,5 @@
 import math
 import torch
-from odak import np
 
 
 def rotmatx(angle):
@@ -101,9 +100,9 @@ def rotate_point(point, angles=[0, 0, 0], mode='XYZ', origin=[0, 0, 0], offset=[
                    Rotation matrix along Z axis.
     """
     point = point - torch.tensor(origin)
-    rotx = rotmatx(angles[0])
-    roty = rotmaty(angles[1])
-    rotz = rotmatz(angles[2])
+    rotx = rotmatx(float(angles[0]))
+    roty = rotmaty(float(angles[1]))
+    rotz = rotmatz(float(angles[2]))
     if mode == 'XYZ':
         result = torch.mm(rotz, torch.mm(roty, torch.mm(rotx, point)))
     elif mode == 'XZY':
@@ -183,11 +182,11 @@ def tilt_towards(location, lookat):
     dy = location[1]-lookat[1]
     dz = location[2]-lookat[2]
     dist = torch.sqrt(torch.tensor(dx**2+dy**2+dz**2))
-    phi = np.arctan2(dy, dx)
+    phi = torch.atan2(torch.tensor(dy), torch.tensor(dx))
     theta = torch.arccos(dz/dist)
     angles = [
         0,
-        np.degrees(theta).tolist(),
-        np.degrees(phi).tolist()
+        float(torch.rad2deg(theta)),
+        float(torch.rad2deg(phi))
     ]
     return angles
