@@ -1,5 +1,6 @@
 import math
 import torch
+from odak import np
 
 
 def rotmatx(angle):
@@ -181,12 +182,12 @@ def tilt_towards(location, lookat):
     dx = location[0]-lookat[0]
     dy = location[1]-lookat[1]
     dz = location[2]-lookat[2]
-    dist = torch.sqrt(dx**2+dy**2+dz**2)
-    phi = torch.arctan2(dy, dx)
+    dist = torch.sqrt(torch.tensor(dx**2+dy**2+dz**2))
+    phi = np.arctan2(dy, dx)
     theta = torch.arccos(dz/dist)
     angles = [
         0,
-        torch.degrees(theta).tolist(),
-        torch.degrees(phi).tolist()
+        np.degrees(theta).tolist(),
+        np.degrees(phi).tolist()
     ]
     return angles
