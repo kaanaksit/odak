@@ -49,6 +49,10 @@ def create_ray_from_two_points(x0y0z0, x1y1z1):
     ray          : torch.tensor
                    Array that contains starting points and cosines of a created ray.
     """
+    if type(x0y0z0) == type([]):
+        x0y0z0 = torch.tensor(x0y0z0).detach().clone()
+    if type(x1y1z1) == type([]):
+        x1y1z1 = torch.tensor(x1y1z1).detach().clone()
     if len(x0y0z0.shape) == 1:
         x0y0z0 = x0y0z0.reshape((1, 3))
     if len(x1y1z1.shape) == 1:
