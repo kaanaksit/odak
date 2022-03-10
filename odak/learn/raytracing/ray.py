@@ -60,8 +60,8 @@ def create_ray_from_two_points(x0y0z0, x1y1z1):
     xdiff = x1y1z1[:, 0]-x0y0z0[:, 0]
     ydiff = x1y1z1[:, 1]-x0y0z0[:, 1]
     zdiff = x1y1z1[:, 2]-x0y0z0[:, 2]
-    s = torch.sqrt(torch.tensor([xdiff**2+ydiff**2+zdiff**2]))
-    s[s == 0] = np.NaN
+    s = torch.sqrt(xdiff**2+ydiff**2+zdiff**2)
+    s[s == 0] = float('nan')
     cosines = torch.zeros((xdiff.shape[0], 3))
     cosines[:, 0] = xdiff/s
     cosines[:, 1] = ydiff/s
