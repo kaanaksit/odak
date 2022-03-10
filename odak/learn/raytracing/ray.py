@@ -39,9 +39,9 @@ def create_ray_from_two_points(x0y0z0, x1y1z1):
 
     Parameters
     ----------
-    x0y0z0       : list
+    x0y0z0       : torch.tensor
                    List that contains X,Y and Z start locations of a ray (3). It can also be a list of points as well (mx3). This is the starting point.
-    x1y1z1       : list
+    x1y1z1       : torch.tensor
                    List that contains X,Y and Z ending locations of a ray (3). It can also be a list of points as well (mx3). This is the end point.
 
     Returns
@@ -49,8 +49,6 @@ def create_ray_from_two_points(x0y0z0, x1y1z1):
     ray          : torch.tensor
                    Array that contains starting points and cosines of a created ray.
     """
-    x0y0z0 = torch.tensor(x0y0z0, dtype=torch.float32)
-    x1y1z1 = torch.tensor(x1y1z1, dtype=torch.float32)
     if len(x0y0z0.shape) == 1:
         x0y0z0 = x0y0z0.reshape((1, 3))
     if len(x1y1z1.shape) == 1:
