@@ -1,5 +1,32 @@
 import torch
 from odak.learn.tools.vector import same_side
+from odak.learn.tools.transformation import rotate_point
+
+
+def define_plane(point, angles=[0., 0., 0.]):
+    """ 
+    Definition to generate a rotation matrix along X axis.
+
+    Parameters
+    ----------
+    point        : torch.tensor
+                   A point that is at the center of a plane.
+    angles       : list
+                   Rotation angles in degrees.
+    Returns
+    ----------
+    plane        : torch.tensor
+                   Points defining plane.
+    """
+    plane = torch.tensor([
+        [10., 10., 0.],
+        [0., 10., 0.],
+        [0.,  0., 0.]
+    ], dtype=torch.float)
+    for i in range(0, plane.shape[0]):
+        plane[i], _, _, _ = rotate_point(plane[i], angles=angles)
+        plane[i] = plane[i]+point
+    return plane
 
 
 def center_of_triangle(triangle):
