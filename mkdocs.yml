@@ -7,7 +7,7 @@ site_url: 'https://kunguz.github.io/odak/'
 repo_name: kunguz/odak
 repo_url: 'https://github.com/kunguz/odak'
 
-copyright: 'Copyright &copy; 2021'
+copyright: 'Copyright &copy; 2022'
 
 nav:
   - Getting started: 'index.md'
@@ -24,7 +24,7 @@ theme:
             - navigation.instant
             - navigation.tabs
     palette:
-        primary: red
+        primary: black
     highlightjs: true
     hljs_languages:
         - python
