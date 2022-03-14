@@ -23,7 +23,8 @@ This submodule is based on `torch`, therefore the functions provided here are di
 | [odak.learn.wave.calculate_phase](odak/learn/wave/calculate_phase.md) | Calculate phase of a complex field. |
 | [odak.learn.wave.custom](odak/learn/wave/custom.md)                 | Optical beam propagation with a custom complex kernel. |
 | [odak.learn.wave.generate_complex_field](odak/learn/wave/generate_complex_field.md) | Generate a complex field from an amplitude and a phase value. |
-| [odak.learn.wave.gerchberg_saxton](odak/learn/wave/gerchberg_saxton.md) | Phase-only hologram optimization using Gerchberg-Saxton algorithm. |
+| [odak.learn.wave.gerchberg_saxton](odak/learn/wave/gerchberg_saxton.md) | Phase-only hologram optimizasion using Gerchberg-Saxton algorithm. |
+| [odak.learn.wave.gradient_descent](odak/learn/wave/gradient_descent.md) | Phase-only hologram optimizasion using Gradient-Descent algorithm. |
 | [odak.learn.wave.impulse_response_fresnel](odak/learn/wave/impulse_response_fresnel.md) | Optical beam propagation with impulse response fresnel. |
 | [odak.learn.wave.linear_grating](odak/learn/wave/linear_grating.md) | One or two axis linear grating.|
 | [odak.learn.wave.phase_gradient](odak/learn/wave/phase_gradient.md) | Regularization function to measure the variation of the phase.|
