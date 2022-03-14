@@ -33,6 +33,7 @@ This submodule is based on `torch`, therefore the functions provided here are di
 | [odak.learn.wave.propagate_beam](odak/learn/wave/propagate_beam.md) | General function for optical beam propagation. |
 | [odak.learn.wave.quadratic_phase_function](odak/learn/wave/quadratic_phase_function.md) | Quadratic phase function, a lens.|
 | [odak.learn.wave.set_amplitude](odak/learn/wave/set_amplitude.md) | Set amplitude of a complex field. |
+| [odak.learn.wave.speckle_contrast](odak/learn/wave/phase_gradient.md) | Regularization function to measure the speckle contrast.|
 | [odak.learn.wave.stochastic_gradient_descent](odak/learn/wave/stochastic_gradient_descent.md) | Phase-only hologram optimization using Stochastic Gradient Descent optimization. |
 | [odak.learn.wave.transfer_function_kernel](odak/learn/wave/transfer_function_kernel.md) | Optical beam propagation with transfer function kernel. |
 | [odak.learn.wave.wavenumber](odak/learn/wave/wavenumber.md) | Wave number. |
