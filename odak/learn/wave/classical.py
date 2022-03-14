@@ -255,7 +255,7 @@ def gerchberg_saxton(field, n_iterations, distance, dx, wavelength, slm_range=6.
 
 def gradient_descent(field, wavelength, distance, dx, resolution, propagation_type, n_iteration=100, cuda=False, alpha=0.1):
     """
-    Definition to generate phase and reconstruction from target image via stochastic gradient descent.
+    Definition to generate phase and reconstruction from target image via gradient descent.
 
     Parameters
     ----------
