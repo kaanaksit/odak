@@ -94,8 +94,8 @@ class speckle_contrast(nn.Module):
         """
         Parameters
         ----------
-        kernel                  : torch.tensor
-                                    Convolution filter kernel, 11 by 11 average kernel by default.
+        kernel_size             : torch.tensor
+                                    Convolution filter kernel size, 11 by 11 average kernel by default.
         step_size               :tuple
                                     Convolution stride in height and width direction.
         loss                    : torch.nn.Module
@@ -139,8 +139,8 @@ class speckle_contrast(nn.Module):
 
         Parameters
         ----------
-        phase                   : torch.tensor
-                                    Phase of the complex amplitude.
+        intensity                : torch.tensor
+                                    Intensity of the complex field.
 
         Returns
         -------

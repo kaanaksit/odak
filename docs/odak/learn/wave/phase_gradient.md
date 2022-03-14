@@ -1,4 +1,4 @@
-# odak.wave.wavenumber
+# odak.learn.wave.phase_gradient
 
 ::: odak.learn.wave.phase_gradient
     selection:

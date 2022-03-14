@@ -1,6 +1,6 @@
-# odak.wave.wavenumber
+# odak.learn.wave.speckle_contrast
 
-::: odak.learn.wave.phase_gradient
+::: odak.learn.wave.speckle_contrast
     selection:
         docstring_style: numpy
 
