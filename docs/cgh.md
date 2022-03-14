@@ -26,6 +26,7 @@ This submodule is based on `torch`, therefore the functions provided here are di
 | [odak.learn.wave.gerchberg_saxton](odak/learn/wave/gerchberg_saxton.md) | Phase-only hologram optimization using Gerchberg-Saxton algorithm. |
 | [odak.learn.wave.impulse_response_fresnel](odak/learn/wave/impulse_response_fresnel.md) | Optical beam propagation with impulse response fresnel. |
 | [odak.learn.wave.linear_grating](odak/learn/wave/linear_grating.md) | One or two axis linear grating.|
+| [odak.learn.wave.phase_gradient](odak/learn/wave/phase_gradient.md) | Regularization function to measure the variation of the phase.|
 | [odak.learn.wave.point_wise](odak/learn/wave/point_wise.md) | Phase-only hologram optimization using point wise integration method. |
 | [odak.learn.wave.prism_phase_function](odak/learn/wave/prism_phase_function.md) | Prism phase function, a prism.|
 | [odak.learn.wave.produce_phase_only_slm_pattern](odak/learn/wave/produce_phase_only_slm_pattern.md) | Produce phase-only hologram for a spatial light modulator with given phase range. |
