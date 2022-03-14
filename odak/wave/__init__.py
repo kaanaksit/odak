@@ -87,6 +87,7 @@ def rotationspeed(wavelength, c=3*10**11):
     Returns
     -------
     w            : float
+                   Rotation speed.
 
     """
     f = c*wavelength

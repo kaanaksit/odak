@@ -269,7 +269,7 @@ def stochastic_gradient_descent(field, wavelength, distance, dx, resolution, pro
                               SLM pixel pitch
     resolution              : array
                               SLM resolution
-    propogation type        : Str
+    propogation_type        : str
                               Type of the propagation (IR Fresnel, Angular Spectrum, Bandlimited Angular Spectrum, TR Fresnel, Fraunhofer)
     n_iteration:            : int
                               Max iteratation 
