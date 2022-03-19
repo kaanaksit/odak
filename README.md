@@ -7,6 +7,12 @@
 Odak (pronounced "O-dac") is the fundamental library for scientific computing in optical sciences, computer graphics and visual perception.
 To learn more about what Odak can do to help your design, experimentation and development, consult to our [documentation](https://kunguz.github.io/odak/)!
 
+## Samples
+
+| | | |
+|:-------------------------:|:-------------------------:|:-------------------------:|
+|<img width="320" src="https://github.com/kunguz/odak/raw/master/media/phase_shifting_qwp.gif">  Phase-shifting Quadratic Phase Function | <img width="320" src="https://github.com/kunguz/odak/raw/master/media/phase_shifting_qwp.gif">  Phase-shifting Quadratic Phase Function | <img width="320" src="https://github.com/kunguz/odak/raw/master/media/phase_shifting_qwp.gif">  Phase-shifting Quadratic Phase Function |
+
 ## Getting Started
 
 ### Installing
