@@ -11,7 +11,7 @@ To learn more about what Odak can do to help your design, experimentation and de
 
 | | | |
 |:-------------------------:|:-------------------------:|:-------------------------:|
-|<img width="240" src="https://github.com/kunguz/odak/raw/master/media/phase_shifting_qwp.gif">  Phase-shifting Quadratic Phase Function | <img width="240" src="https://github.com/kunguz/odak/raw/master/media/learned_holographic_light_transport.gif">  [Learned Holographic Light Transport](https://github.com/complight/realistic_holography) | <img width="240" src="https://github.com/kunguz/odak/raw/master/media/phase_shifting_qwp.gif">  [Phase-shifting Trichromat Quadratic Phase Function](https://gist.github.com/kunguz/f9bcd8c72b4ef5e078dfb0a81b6806c5) |
+|<img width="240" src="https://github.com/kunguz/odak/raw/master/media/metameric_varifocal_hologram.gif"> [Metameric Varifocal Holograms](https://github.com/complight/metameric_holography) | <img width="240" src="https://github.com/kunguz/odak/raw/master/media/learned_holographic_light_transport.gif">  [Learned Holographic Light Transport](https://github.com/complight/realistic_holography) | <img width="240" src="https://github.com/kunguz/odak/raw/master/media/phase_shifting_qwp.gif">  [Phase-shifting Trichromat Quadratic Phase Function](https://gist.github.com/kunguz/f9bcd8c72b4ef5e078dfb0a81b6806c5) |
 
 ## Getting Started
 
