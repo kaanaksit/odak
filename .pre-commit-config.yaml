@@ -1,0 +1,20 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+    -   id: check-yaml
+    -   id: check-merge-conflict
+    -   id: check-json
+    -   id: requirements-txt-fixer
+-   repo: https://gitlab.com/pycqa/flake8.git
+    rev: 3.7.9
+    hooks:
+      - id: flake8
+        language_version: python3
+        args: ["--count", "--select=E9,F63,F7,F82", "--show-source", "--statistics"]
+-   repo: https://github.com/pre-commit/mirrors-autopep8
+    rev: v1.6.0
+    hooks:
+    -   id: autopep8
