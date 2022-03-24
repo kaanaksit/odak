@@ -80,7 +80,7 @@ def intersect_w_surface(ray, points):
     distance     : float
                    Distance in between starting point of a ray with it's intersection with a planar surface.
     """
-    points = torch.tensor(points)
+    points = torch.tensor(points).to(ray.device)
     normal = get_triangle_normal(points)
     if len(ray.shape) == 2:
         ray = ray.reshape((1, 2, 3))
