@@ -60,10 +60,10 @@ def is_it_on_triangle(pointtocheck, point0, point1, point2):
                     Third point of a triangle.
     """
     # point0, point1 and point2 are the corners of the triangle.
-    pointtocheck = torch.tensor(pointtocheck).reshape(3)
-    point0 = torch.tensor(point0)
-    point1 = torch.tensor(point1)
-    point2 = torch.tensor(point2)
+    pointtocheck = pointtocheck.reshape(3)
+    point0 = point0.to(pointtocheck.device)
+    point1 = point1.to(pointtocheck.device)
+    point2 = point2.to(pointtocheck.device)
     side0 = same_side(pointtocheck, point0, point1, point2)
     side1 = same_side(pointtocheck, point1, point0, point2)
     side2 = same_side(pointtocheck, point2, point0, point1)
