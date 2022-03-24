@@ -99,13 +99,13 @@ def rotate_point(point, angles=[0, 0, 0], mode='XYZ', origin=[0, 0, 0], offset=[
     rotz         : ndarray
                    Rotation matrix along Z axis.
     """
-    if angles[0] == 0 and angles[1] == 0 and angles[2] == 0:
-        result = torch.tensor(offset) + point
-        return result
-    point -= torch.tensor(origin)
     rotx = rotmatx(angles[0])
     roty = rotmaty(angles[1])
     rotz = rotmatz(angles[2])
+    if angles[0] == 0 and angles[1] == 0 and angles[2] == 0:
+        result = torch.tensor(offset) + point
+        return result, rotx, roty, rotz
+    point -= torch.tensor(origin)
     point = point.view(1, 3)
     if mode == 'XYZ':
         result = torch.mm(rotz, torch.mm(roty, torch.mm(rotx, point.T))).T
@@ -145,13 +145,13 @@ def rotate_points(points, angles=[0, 0, 0], mode='XYZ', origin=[0, 0, 0], offset
     result       : ndarray
                    Result of the rotation   
     """
-    if angles[0] == 0 and angles[1] == 0 and angles[2] == 0:
-        result = torch.tensor(offset) + points
-        return result
-    points -= torch.tensor(origin)
     rotx = rotmatx(angles[0])
     roty = rotmaty(angles[1])
     rotz = rotmatz(angles[2])
+    if angles[0] == 0 and angles[1] == 0 and angles[2] == 0:
+        result = torch.tensor(offset) + points
+        return result, rotx, roty, rotz
+    points -= torch.tensor(origin)
     if mode == 'XYZ':
         result = torch.mm(rotz, torch.mm(roty, torch.mm(rotx, points.T))).T
     elif mode == 'XZY':
