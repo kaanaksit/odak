@@ -3,6 +3,7 @@
 import sys
 import odak
 import odak.learn.raytracing
+import torch
 
 
 def test_ray_intersect_w_a_triangle():
@@ -23,11 +24,11 @@ def test_ray_intersect_w_a_triangle():
         ray_end_point_1
     )
     # Intersection with a triangle.
-    triangle = [
+    triangle = torch.tensor([
         [50.,  50., 1000.],
         [-5.,  -5., 1000.],
         [0.,  50., 1000.],
-    ]
+    ])
     normal_0, distance_0 = odak.learn.raytracing.intersect_w_triangle(
         ray_0,
         triangle
