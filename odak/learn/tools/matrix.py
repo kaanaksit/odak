@@ -131,7 +131,7 @@ def generate_2d_gaussian(kernel_length=[21, 21], nsigma=[3, 3]):
     """
     x = torch.linspace(-nsigma[0], nsigma[0], kernel_length[0]+1)
     y = torch.linspace(-nsigma[1], nsigma[1], kernel_length[1]+1)
-    xx, yy = torch.meshgrid(x, y)
+    xx, yy = torch.meshgrid(x, y, indexing='ij')
     nsigma = torch.tensor(nsigma)
     kernel_2d = torch.exp(-0.5*(torch.square(xx)/torch.square(
         nsigma[0]) + torch.square(yy)/torch.square(nsigma[1])))

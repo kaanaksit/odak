@@ -46,7 +46,7 @@ def propagate_beam(field, k, distance, dx, wavelength, propagation_type='IR Fres
         nv, nu = field.shape[-1], field.shape[-2]
         x = torch.linspace(-nv*dx/2, nv*dx/2, nv, dtype=torch.float32)
         y = torch.linspace(-nu*dx/2, nu*dx/2, nu, dtype=torch.float32)
-        Y, X = torch.meshgrid(y, x)
+        Y, X = torch.meshgrid(y, x, indexing='ij')
         Z = torch.pow(X, 2) + torch.pow(Y, 2)
         c = 1./(1j*wavelength*distance)*torch.exp(1j*k*0.5/distance*Z)
         c = c.to(field.device)
@@ -117,7 +117,7 @@ def transfer_function_fresnel(field, k, distance, dx, wavelength, zero_padding =
                         dtype=torch.float32).to(field.device)
     fy = torch.linspace(-1./2./dx, 1./2./dx, nv,
                         dtype=torch.float32).to(field.device)
-    FY, FX = torch.meshgrid(fx, fy)
+    FY, FX = torch.meshgrid(fx, fy, indexing='ij')
     H = torch.exp(1j*k*distance*(1-(FX*wavelength)**2-(FY*wavelength)**2)**0.5)
     H = H.to(field.device)
     U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field)))
@@ -156,7 +156,7 @@ def band_limited_angular_spectrum(field, k, distance, dx, wavelength):
     nv, nu = field.shape[-1], field.shape[-2]
     x = torch.linspace(-nv*dx/2, nv*dx/2, nv, dtype=torch.float32)
     y = torch.linspace(-nu*dx/2, nu*dx/2, nu, dtype=torch.float32)
-    Y, X = torch.meshgrid(y, x)
+    Y, X = torch.meshgrid(y, x, indexing='ij')
     Z = torch.pow(X, 2) + torch.pow(Y, 2)
     distance = torch.FloatTensor([distance])
     h = 1./(1j*wavelength*distance)*torch.exp(1j*k*(distance+Z/2/distance))
@@ -200,7 +200,7 @@ def impulse_response_fresnel(field, k, distance, dx, wavelength):
     nv, nu = field.shape[-1], field.shape[-2]
     x = torch.linspace(-nu/2*dx, nu/2*dx, nu)
     y = torch.linspace(-nv/2*dx, nv/2*dx, nv)
-    X, Y = torch.meshgrid(x, y)
+    X, Y = torch.meshgrid(x, y, indexing='ij')
     Z = X**2+Y**2
     distance = torch.tensor([distance]).to(field.device)
     h = torch.exp(1j*k*distance)/(1j*wavelength*distance) * \
@@ -428,7 +428,7 @@ def point_wise(target, wavelength, distance, dx, device, lens_size=401):
     ones = torch.ones(target.shape, requires_grad=False).to(device)
     x = torch.linspace(-nx/2, nx/2, nx).to(device)
     y = torch.linspace(-ny/2, ny/2, ny).to(device)
-    X, Y = torch.meshgrid(x, y)
+    X, Y = torch.meshgrid(x, y, indexing='ij')
     Z = (X**2+Y**2)**0.5
     mask = (torch.abs(Z) <= lens_size)
     mask[mask > 1] = 1

@@ -27,7 +27,7 @@ def grid_sample(no=[10, 10], size=[100., 100.], center=[0., 0., 0.], angles=[0.,
     ]
     x = torch.linspace(-size[0], size[0], no[0])
     y = torch.linspace(-size[1], size[1], no[1])
-    X, Y = torch.meshgrid(x, y)
+    X, Y = torch.meshgrid(x, y, indexing='ij')
     samples[:, :, 0] = X.detach().clone()
     samples[:, :, 1] = Y.detach().clone()
     samples = samples.reshape(

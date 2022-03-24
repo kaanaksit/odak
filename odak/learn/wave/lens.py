@@ -29,7 +29,7 @@ def quadratic_phase_function(nx, ny, k, focal=0.4, dx=0.001, offset=[0, 0]):
     size = [nx, ny]
     x = torch.linspace(-size[0]*dx/2, size[0]*dx/2, size[0])-offset[1]*dx
     y = torch.linspace(-size[1]*dx/2, size[1]*dx/2, size[1])-offset[0]*dx
-    X, Y = torch.meshgrid(x, y)
+    X, Y = torch.meshgrid(x, y, indexing='ij')
     Z = X**2+Y**2
     focal = torch.tensor([focal])
     k = torch.tensor([k])
@@ -65,7 +65,7 @@ def prism_phase_function(nx, ny, k, angle, dx=0.001, axis='x'):
     size = [nx, ny]
     x = torch.linspace(-size[0]*dx/2, size[0]*dx/2, size[0])
     y = torch.linspace(-size[1]*dx/2, size[1]*dx/2, size[1])
-    X, Y = torch.meshgrid(x, y)
+    X, Y = torch.meshgrid(x, y, indexing='ij')
     if axis == 'y':
         prism = torch.exp(-1j*k*torch.sin(angle)*Y)
     elif axis == 'x':
