@@ -17,8 +17,14 @@ def grid_sample(no=[10, 10], size=[100., 100.], center=[0., 0., 0.], angles=[0.,
                   Tilt of the surface.
     Returns
     ----------
-    samples     : ndarray
+    samples     : torch.tensor
                   Samples generated.
+    rotx        : torch.tensor
+                  Rotation matrix at X axis.
+    roty        : torch.tensor
+                  Rotation matrix at Y axis.
+    rotz        : torch.tensor
+                  Rotation matrix at Z axis.
     """
     samples = torch.zeros((no[0], no[1], 3))
     step = [
@@ -32,5 +38,5 @@ def grid_sample(no=[10, 10], size=[100., 100.], center=[0., 0., 0.], angles=[0.,
     samples[:, :, 1] = Y.detach().clone()
     samples = samples.reshape(
         (samples.shape[0]*samples.shape[1], samples.shape[2]))
-    samples = rotate_points(samples, angles=angles, offset=center)
-    return samples
+    samples, rotx, roty, rotz = rotate_points(samples, angles=angles, offset=center)
+    return samples, rotx, roty, rotz

@@ -144,6 +144,12 @@ def rotate_points(points, angles=[0, 0, 0], mode='XYZ', origin=[0, 0, 0], offset
     ----------
     result       : ndarray
                    Result of the rotation   
+    rotx         : torch.tensor
+                   Rotation matrix at X axis.
+    roty         : torch.tensor
+                   Rotation matrix at Y axis.
+    rotz         : torch.tensor
+                   Rotation matrix at Z axis.
     """
     rotx = rotmatx(angles[0])
     roty = rotmaty(angles[1])
@@ -164,7 +170,7 @@ def rotate_points(points, angles=[0, 0, 0], mode='XYZ', origin=[0, 0, 0], offset
         result = torch.mm(rotx, torch.mm(roty, torch.mm(rotz, points.T))).T
     result += torch.tensor(origin)
     result += torch.tensor(offset)
-    return result
+    return result, rotx, roty, rotz
 
 
 def tilt_towards(location, lookat):
