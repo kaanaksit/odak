@@ -39,7 +39,7 @@ def center_of_triangle(triangle):
                     An array that contains three points defining a triangle (Mx3). It can also parallel process many triangles (NxMx3).
     """
     if len(triangle.shape) == 2:
-        triangle = triangle.reshape((1, 3, 3))
+        triangle = triangle.view((1, 3, 3))
     center = torch.mean(triangle, axis=1)
     return center
 

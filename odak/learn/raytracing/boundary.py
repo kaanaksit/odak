@@ -136,14 +136,14 @@ def intersect_w_surface(ray, points):
     if len(normal.shape) == 2:
         normal = normal.view((1, 2, 3))
     f = normal[:, 0] - ray[:, 0]
-    distance = torch.mm(normal[:, 1], f.T) / torch.mm(normal[:, 1], ray[:, 1].T)
+    distance = torch.matmul(normal[:, 1], f.T) / torch.matmul(normal[:, 1], ray[:, 1].T)
     normal[:, 0] = ray[:, 0] + distance.T * ray[:, 1]
     distance = torch.abs(distance)
     if normal.shape[0] == 1:
-        normal = normal.reshape((2, 3))
-        distance = distance.reshape((1))
+        normal = normal.view((2, 3))
+        distance = distance.view((1))
     if distance.shape[0] == 1 and len(distance.shape) > 1:
-        distance = distance.reshape((distance.shape[1]))
+        distance = distance.view((distance.shape[1]))
     return normal, distance
 
 
@@ -164,7 +164,7 @@ def get_triangle_normal(triangle, triangle_center=None):
                       Surface normal at the point of intersection.
     """
     if len(triangle.shape) == 2:
-        triangle = triangle.reshape((1, 3, 3))
+        triangle = triangle.view((1, 3, 3))
     normal = torch.zeros((triangle.shape[0], 2, 3)).to(triangle.device)
     direction = torch.cross(
                             triangle[:, 0] - triangle[:, 1], 
@@ -176,7 +176,7 @@ def get_triangle_normal(triangle, triangle_center=None):
         normal[:, 0] = triangle_center
     normal[:, 1] = direction / torch.sum(direction, axis=1)[0]
     if normal.shape[0] == 1:
-        normal = normal.reshape((2, 3))
+        normal = normal.view((2, 3))
     return normal
 
 
