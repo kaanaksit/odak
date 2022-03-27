@@ -8,16 +8,16 @@ import torch
 
 def test_ray_intersect_w_a_triangle():
     # Input points to create a ray.
-    ray_start_point_0 = [5., 5., 0.]
-    ray_end_point_0 = [10., 10., 1000.]
+    ray_start_point_0 = torch.tensor([5., 5., 0.])
+    ray_end_point_0 = torch.tensor([10., 10., 1000.])
     # Create from two points.
     ray_0 = odak.learn.raytracing.create_ray_from_two_points(
         ray_start_point_0,
         ray_end_point_0
     )
     # Input points to create a ray.
-    ray_start_point_1 = [5., 5., 0.]
-    ray_end_point_1 = [0., 100., 1000.]
+    ray_start_point_1 = torch.tensor([5., 5., 0.])
+    ray_end_point_1 = torch.tensor([0., 100., 1000.])
     # Create from two points.
     ray_1 = odak.learn.raytracing.create_ray_from_two_points(
         ray_start_point_1,
