@@ -137,13 +137,15 @@ def intersect_w_surface(ray, points):
         normal = normal.view((1, 2, 3))
     f = normal[:, 0] - ray[:, 0]
     distance = torch.mm(normal[:, 1], f.T) / torch.mm(normal[:, 1], ray[:, 1].T)
-    normal[:, 0] = ray[:, 0] + distance.T * ray[:, 1]
-    if normal.shape[0] == 1:
-        normal = normal.view((2, 3))
+    new_normal = torch.zeros_like(normal)
+    new_normal[:, 0] = ray[:, 0] + distance.T * ray[:, 1]
+    new_normal[:, 1] = normal[:, 1]
+    if new_normal.shape[0] == 1:
+        new_normal = new_normal.view((2, 3))
         distance = distance.view((1))
     if len(distance.shape) > 1:
         distance = distance.view((distance.shape[1]))
-    return normal, distance
+    return new_normal, distance
 
 
 def get_triangle_normal(triangle, triangle_center=None):
