@@ -69,9 +69,9 @@ def reflect(input_ray, normal):
     input_ray = torch.tensor(input_ray)
     normal = torch.tensor(normal)
     if len(input_ray.shape) == 2:
-        input_ray = input_ray.reshape((1, 2, 3))
+        input_ray = input_ray.view((1, 2, 3))
     if len(normal.shape) == 2:
-        normal = normal.reshape((1, 2, 3))
+        normal = normal.view((1, 2, 3))
     mu = 1
     div = normal[:, 1, 0]**2 + normal[:, 1, 1]**2 + normal[:, 1, 2]**2
     a = mu * (input_ray[:, 1, 0]*normal[:, 1, 0]
@@ -82,7 +82,7 @@ def reflect(input_ray, normal):
     output_ray[:, 0] = normal[:, 0]
     output_ray[:, 1] = input_ray[:, 1]-2*a*normal[:, 1]
     if output_ray.shape[0] == 1:
-        output_ray = output_ray.reshape((2, 3))
+        output_ray = output_ray.view((2, 3))
     return output_ray
 
 
@@ -136,13 +136,12 @@ def intersect_w_surface(ray, points):
     if len(normal.shape) == 2:
         normal = normal.view((1, 2, 3))
     f = normal[:, 0] - ray[:, 0]
-    distance = torch.matmul(normal[:, 1], f.T) / torch.matmul(normal[:, 1], ray[:, 1].T)
+    distance = torch.mm(normal[:, 1], f.T) / torch.mm(normal[:, 1], ray[:, 1].T)
     normal[:, 0] = ray[:, 0] + distance.T * ray[:, 1]
-    distance = torch.abs(distance)
     if normal.shape[0] == 1:
         normal = normal.view((2, 3))
         distance = distance.view((1))
-    if distance.shape[0] == 1 and len(distance.shape) > 1:
+    if len(distance.shape) > 1:
         distance = distance.view((distance.shape[1]))
     return normal, distance
 

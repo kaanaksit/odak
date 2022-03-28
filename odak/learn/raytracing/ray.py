@@ -53,15 +53,15 @@ def create_ray_from_two_points(x0y0z0, x1y1z1):
         x0y0z0 = x0y0z0.view((1, 3))
     if len(x1y1z1.shape) == 1:
         x1y1z1 = x1y1z1.view((1, 3))
-    xdiff = x1y1z1[:, 0]-x0y0z0[:, 0]
-    ydiff = x1y1z1[:, 1]-x0y0z0[:, 1]
-    zdiff = x1y1z1[:, 2]-x0y0z0[:, 2]
+    xdiff = x1y1z1[:, 0] - x0y0z0[:, 0]
+    ydiff = x1y1z1[:, 1] - x0y0z0[:, 1]
+    zdiff = x1y1z1[:, 2] - x0y0z0[:, 2]
     s = (xdiff**2 + ydiff**2 + zdiff**2)**0.5
     s[s == 0] = float('nan')
     cosines = torch.zeros((xdiff.shape[0], 3)).to(x0y0z0.device)
-    cosines[:, 0] = xdiff/s
-    cosines[:, 1] = ydiff/s
-    cosines[:, 2] = zdiff/s
+    cosines[:, 0] = xdiff / s
+    cosines[:, 1] = ydiff / s
+    cosines[:, 2] = zdiff / s
     ray = torch.zeros((xdiff.shape[0], 2, 3)).to(x0y0z0.device)
     ray[:, 0] = x0y0z0
     ray[:, 1] = cosines
