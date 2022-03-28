@@ -1,3 +1,4 @@
+import torch
 from odak import np
 from plyfile import PlyData, PlyElement
 
@@ -26,6 +27,10 @@ class PLY_object():
         color       : list
                       List that contains red, green and blue color channel values (8 bit).
         """
+        if torch.is_tensor(point0):
+            point0 = point0.cpu().detach().numpy()
+        if torch.is_tensor(point1):
+            point1 = point1.cpu().detach().numpy()
         import numpy as np_cpu
         point0 = np_cpu.reshape(np_cpu.array(point0), (3))
         point1 = np_cpu.reshape(np_cpu.array(point1), (3))
