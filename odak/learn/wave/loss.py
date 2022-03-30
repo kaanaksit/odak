@@ -96,7 +96,7 @@ class speckle_contrast(nn.Module):
         ----------
         kernel_size             : torch.tensor
                                     Convolution filter kernel size, 11 by 11 average kernel by default.
-        step_size               :tuple
+        step_size               : tuple
                                     Convolution stride in height and width direction.
         loss                    : torch.nn.Module
                                     loss function, L2 Loss by default.
