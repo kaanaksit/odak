@@ -152,25 +152,22 @@ def band_limited_angular_spectrum(field, k, distance, dx, wavelength):
     result           : torch.complex
                        Final complex field (MxN).
     """
-    assert True == False, "Refer to Issue 19 for more. This definition is unreliable."
+    distance = torch.tensor([distance]).to(field.device)
     nv, nu = field.shape[-1], field.shape[-2]
-    x = torch.linspace(-nv*dx/2, nv*dx/2, nv, dtype=torch.float32)
-    y = torch.linspace(-nu*dx/2, nu*dx/2, nu, dtype=torch.float32)
-    Y, X = torch.meshgrid(y, x, indexing='ij')
-    Z = torch.pow(X, 2) + torch.pow(Y, 2)
-    distance = torch.FloatTensor([distance])
-    h = 1./(1j*wavelength*distance)*torch.exp(1j*k*(distance+Z/2/distance))
-    h = torch.fft.fft2(torch.fft.fftshift(h)) * pow(dx, 2)
-    h = h.to(field.device)
-    flimx = torch.ceil(1/(((2*distance*(1./(nv)))**2+1)**0.5*wavelength))
-    flimy = torch.ceil(1/(((2*distance*(1./(nu)))**2+1)**0.5*wavelength))
-    mask = torch.zeros((nu, nv), dtype=torch.cfloat).to(field.device)
-    mask[...] = torch.logical_and(
-        torch.lt(torch.abs(X), flimx), torch.lt(torch.abs(Y), flimy))
-    mask = set_amplitude(h, mask)
-    U1 = torch.fft.fft2(torch.fft.fftshift(field))
-    U2 = mask * U1
-    result = torch.fft.ifftshift(torch.fft.ifft2(U2))
+    y, x = (dx * float(nv), dx * float(nu))
+    fy = torch.linspace(-1 / (2 * dx) + 0.5 / (2 * x), 1 / (2 * dx) - 0.5 / (2 * x), nv, dtype=torch.float32).to(field.device)
+    fx = torch.linspace(-1 / (2 * dx) + 0.5 / (2 * x), 1 / (2 * dx) - 0.5 / (2 * x), nu, dtype=torch.float32).to(field.device)
+    FY, FX = torch.meshgrid(fx, fy, indexing='ij')
+    HH = 2 * np.pi * torch.sqrt(1 / wavelength**2 - (FX**2 + FY**2))
+    H_exp = HH.to(field.device)
+    H_exp = torch.mul(H_exp, distance)
+    fy_max = 1 / torch.sqrt((2 * distance * (1 / y))**2 + 1) / wavelength
+    fx_max = 1 / torch.sqrt((2 * distance * (1 / x))**2 + 1) / wavelength
+    H_filter = ((torch.abs(FX) < fx_max) & (torch.abs(FY) < fy_max)).clone().detach()
+    H = generate_complex_field(H_filter,H_exp)
+    U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field)))
+    U2 = H*U1
+    result = torch.fft.ifftshift(torch.fft.ifft2(torch.fft.ifftshift(U2)))
     return result
 
 
