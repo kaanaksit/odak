@@ -1,7 +1,8 @@
 from odak import np
 import torch
 import torch.fft
-from .__init__ import set_amplitude, produce_phase_only_slm_pattern, generate_complex_field, calculate_amplitude, quadratic_phase_function, calculate_phase
+from .util import set_amplitude, produce_phase_only_slm_pattern, generate_complex_field, calculate_amplitude, calculate_phase
+from .lens import quadratic_phase_function
 from odak.wave import wavenumber
 from odak.learn.tools import zero_pad, crop_center
 from tqdm import tqdm
@@ -440,3 +441,55 @@ def point_wise(target, wavelength, distance, dx, device, lens_size=401):
     hologram = generate_complex_field(ones, hologram_phase)
     hologram = crop_center(hologram)
     return hologram
+
+
+def shift_w_double_phase(phase, depth_shift, pixel_pitch, wavelength, propagation_type='TR Fresnel'):
+    """
+    Shift a phase-only hologram by propagating the complex hologram and double phase principle. Coded following: https://github.com/liangs111/tensor_holography/blob/6fdb26561a4e554136c579fa57788bb5fc3cac62/optics.py#L131-L207 and Shi, L., Li, B., Kim, C., Kellnhofer, P., & Matusik, W. (2021). Towards real-time photorealistic 3D holography with deep neural networks. Nature, 591(7849), 234-239.
+
+    Parameters
+    ----------
+    phase            : torch.tensor
+                       Phase value of a phase-only hologram.
+    depth_shift      : float
+                       Distance in meters.
+    pixel_pitch      : float
+                       Pixel pitch size in meters.
+    wavelength       : float
+                       Wavelength of light.
+    propagation_type : str
+                       Beam propagation type. For more see odak.learn.wave.propagate_beam().
+    """
+    ones = torch.ones_like(phase)
+    hologram = generate_complex_field(ones, phase)
+    k = wavenumber(wavelength)
+    hologram_padded = zero_pad(hologram)
+    shifted_field_padded = propagate_beam(
+                                          hologram_padded,
+                                          k,
+                                          depth_shift,
+                                          pixel_pitch,
+                                          wavelength,
+                                          propagation_type
+                                         )
+    shifted_field = crop_center(shifted_field_padded)
+    phase_shift = torch.exp(torch.tensor([-2 * np.pi * depth_shift / wavelength]).to(phase.device))
+    shift = torch.cos(phase_shift) + 1j * torch.sin(phase_shift)
+    shifted_complex_hologram = shifted_field * shift
+
+    shifted_amplitude = calculate_amplitude(shifted_complex_hologram)
+    shifted_amplitude = shifted_amplitude / torch.amax(shifted_amplitude)
+
+    shifted_phase = calculate_phase(shifted_complex_hologram)
+    phase_zero_mean = shifted_phase - torch.mean(shifted_phase)
+
+    phase_offset = torch.arccos(shifted_amplitude)
+    phase_low = phase_zero_mean - phase_offset
+    phase_high = phase_zero_mean + phase_offset
+
+    phase_only = torch.zeros_like(phase)
+    phase_only[0::2, 0::2] = phase_low[0::2, 0::2]
+    phase_only[0::2, 1::2] = phase_high[0::2, 1::2]
+    phase_only[1::2, 0::2] = phase_high[1::2, 0::2]
+    phase_only[1::2, 1::2] = phase_low[1::2, 1::2]
+    return phase_only
