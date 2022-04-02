@@ -4,7 +4,7 @@ import torch.fft
 from .util import set_amplitude, produce_phase_only_slm_pattern, generate_complex_field, calculate_amplitude, calculate_phase
 from .lens import quadratic_phase_function
 from odak.wave import wavenumber
-from odak.learn.tools import zero_pad, crop_center
+from odak.learn.tools import zero_pad, crop_center, generate_2d_gaussian
 from tqdm import tqdm
 
 
@@ -443,7 +443,7 @@ def point_wise(target, wavelength, distance, dx, device, lens_size=401):
     return hologram
 
 
-def shift_w_double_phase(phase, depth_shift, pixel_pitch, wavelength, propagation_type='TR Fresnel'):
+def shift_w_double_phase(phase, depth_shift, pixel_pitch, wavelength, propagation_type='TR Fresnel', kernel_length=4, sigma=0.5):
     """
     Shift a phase-only hologram by propagating the complex hologram and double phase principle. Coded following: https://github.com/liangs111/tensor_holography/blob/6fdb26561a4e554136c579fa57788bb5fc3cac62/optics.py#L131-L207 and Shi, L., Li, B., Kim, C., Kellnhofer, P., & Matusik, W. (2021). Towards real-time photorealistic 3D holography with deep neural networks. Nature, 591(7849), 234-239.
 
@@ -459,6 +459,10 @@ def shift_w_double_phase(phase, depth_shift, pixel_pitch, wavelength, propagatio
                        Wavelength of light.
     propagation_type : str
                        Beam propagation type. For more see odak.learn.wave.propagate_beam().
+    kernel_length    : int
+                       Kernel length for the Gaussian blur kernel.
+    sigma            : float
+                       Standard deviation for the Gaussian blur kernel.
     """
     ones = torch.ones_like(phase)
     hologram = generate_complex_field(ones, phase)
@@ -476,6 +480,25 @@ def shift_w_double_phase(phase, depth_shift, pixel_pitch, wavelength, propagatio
     phase_shift = torch.exp(torch.tensor([-2 * np.pi * depth_shift / wavelength]).to(phase.device))
     shift = torch.cos(phase_shift) + 1j * torch.sin(phase_shift)
     shifted_complex_hologram = shifted_field * shift
+
+    if kernel_length > 0 and sigma >0:
+        blur_kernel = generate_2d_gaussian(
+                                           [kernel_length, kernel_length],
+                                           [sigma, sigma]
+                                          ).to(phase.device)
+        blur_kernel = blur_kernel.unsqueeze(0)
+        blur_kernel = blur_kernel.unsqueeze(0)
+        field_imag = torch.imag(shifted_complex_hologram)
+        field_real = torch.real(shifted_complex_hologram)
+        field_imag = field_imag.unsqueeze(0)
+        field_imag = field_imag.unsqueeze(0)
+        field_real = field_real.unsqueeze(0)
+        field_real = field_real.unsqueeze(0)
+        field_imag = torch.nn.functional.conv2d(field_imag, blur_kernel, padding=2)
+        field_real = torch.nn.functional.conv2d(field_real, blur_kernel, padding=2)
+        shifted_complex_hologram = torch.complex(field_real, field_imag)
+        shifted_complex_hologram = shifted_complex_hologram.squeeze(0)
+        shifted_complex_hologram = shifted_complex_hologram.squeeze(0)
 
     shifted_amplitude = calculate_amplitude(shifted_complex_hologram)
     shifted_amplitude = shifted_amplitude / torch.amax(shifted_amplitude)
