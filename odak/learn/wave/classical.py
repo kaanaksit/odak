@@ -489,6 +489,7 @@ def shift_w_double_phase(phase, depth_shift, pixel_pitch, wavelength, propagatio
                                            [kernel_length, kernel_length],
                                            [sigma, sigma]
                                           ).to(phase.device)
+        blur_kernel = torch.abs(blur_kernel)
         blur_kernel = blur_kernel.unsqueeze(0)
         blur_kernel = blur_kernel.unsqueeze(0)
         field_imag = torch.imag(shifted_complex_hologram)
