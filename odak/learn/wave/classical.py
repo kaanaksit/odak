@@ -443,7 +443,7 @@ def point_wise(target, wavelength, distance, dx, device, lens_size=401):
     return hologram
 
 
-def shift_w_double_phase(phase, depth_shift, pixel_pitch, wavelength, propagation_type='TR Fresnel', kernel_length=4, sigma=0.5):
+def shift_w_double_phase(phase, depth_shift, pixel_pitch, wavelength, propagation_type='TR Fresnel', kernel_length=4, sigma=0.5, amplitude=None):
     """
     Shift a phase-only hologram by propagating the complex hologram and double phase principle. Coded following: https://github.com/liangs111/tensor_holography/blob/6fdb26561a4e554136c579fa57788bb5fc3cac62/optics.py#L131-L207 and Shi, L., Li, B., Kim, C., Kellnhofer, P., & Matusik, W. (2021). Towards real-time photorealistic 3D holography with deep neural networks. Nature, 591(7849), 234-239.
 
@@ -463,9 +463,12 @@ def shift_w_double_phase(phase, depth_shift, pixel_pitch, wavelength, propagatio
                        Kernel length for the Gaussian blur kernel.
     sigma            : float
                        Standard deviation for the Gaussian blur kernel.
+    amplitude        : torch.tensor
+                       Amplitude value of a complex hologram.
     """
-    ones = torch.ones_like(phase)
-    hologram = generate_complex_field(ones, phase)
+    if type(amplitude) == type(None):
+        amplitude = torch.ones_like(phase)
+    hologram = generate_complex_field(amplitude, phase)
     k = wavenumber(wavelength)
     hologram_padded = zero_pad(hologram)
     shifted_field_padded = propagate_beam(
