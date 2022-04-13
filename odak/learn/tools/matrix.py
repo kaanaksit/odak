@@ -157,8 +157,13 @@ def blur_gaussian(field, kernel_length=[21, 21], nsigma=[3, 3]):
     blurred_field : ndarray
                     Blurred field.
     """
+    field_padded = zero_pad(field)
     kernel = generate_2d_gaussian(kernel_length, nsigma).to(field.device)
-    kernel = zero_pad(kernel, field.shape)
-    blurred_field = convolve2d(field, kernel)
-    blurred_field = blurred_field/torch.amax(blurred_field)
+    kernel = kernel.view(1, 1, kernel.shape[-2], kernel.shape[-1])
+    if len(field.shape) == 2:
+        field_padded = field_padded.view(1, 1, field_padded.shape[-2], field_padded.shape[-1])
+    blurred_field_padded = torch.nn.functional.conv2d(field, kernel, padding='same')
+    blurred_field = crop_center(blurred_field)
+    if field.shape[1] == 1:
+        blurred_field = blurred_field.view(blurred_field.shape[-2], blurred_field.shape[-1])
     return blurred_field
