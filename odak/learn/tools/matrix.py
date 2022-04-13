@@ -139,31 +139,34 @@ def generate_2d_gaussian(kernel_length=[21, 21], nsigma=[3, 3]):
     return kernel_2d
 
 
-def blur_gaussian(field, kernel_length=[21, 21], nsigma=[3, 3]):
+def blur_gaussian(field, kernel_length=[21, 21], nsigma=[3, 3], padding='same'):
     """
     A definition to blur a field using a Gaussian kernel.
 
     Parameters
     ----------
-    field         : ndarray
+    field         : torch.tensor
                     MxN field.
     kernel_length : list
                     Length of the Gaussian kernel along X and Y axes.
     nsigma        : list
                     Sigma of the Gaussian kernel along X and Y axes.
+    padding       : int or string
+                    Padding value, see torch.nn.functional.conv2d() for more.
 
     Returns
     ----------
-    blurred_field : ndarray
+    blurred_field : torch.tensor
                     Blurred field.
     """
-    field_padded = zero_pad(field)
     kernel = generate_2d_gaussian(kernel_length, nsigma).to(field.device)
     kernel = kernel.view(1, 1, kernel.shape[-2], kernel.shape[-1])
     if len(field.shape) == 2:
-        field_padded = field_padded.view(1, 1, field_padded.shape[-2], field_padded.shape[-1])
-    blurred_field_padded = torch.nn.functional.conv2d(field, kernel, padding='same')
-    blurred_field = crop_center(blurred_field)
+        field = field.view(1, 1, field.shape[-2], field.shape[-1])
+    blurred_field = torch.nn.functional.conv2d(field, kernel, padding='same')
     if field.shape[1] == 1:
-        blurred_field = blurred_field.view(blurred_field.shape[-2], blurred_field.shape[-1])
+        blurred_field = blurred_field.view(
+                                           blurred_field.shape[-2],
+                                           blurred_field.shape[-1]
+                                          )
     return blurred_field
