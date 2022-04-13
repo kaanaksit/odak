@@ -30,20 +30,13 @@ def nufft2(field, fx, fy, size=None, sign=1, eps=10**(-12)):
         import finufft
     except:
         print('odak.tools.nufft2 requires finufft to be installed: pip install finufft')
-    if np.__name__ == 'cupy':
-        fx = np.asnumpy(fx).astype(np.float64)
-        fy = np.asnumpy(fy).astype(np.float64)
-        image = np.asnumpy(np.copy(field)).astype(np.complex128)
-    else:
-        image = np.copy(field).astype(np.complex128)
+    image = np.copy(field).astype(np.complex128)
     result = finufft.nufft2d2(
         fx.flatten(), fy.flatten(), image, eps=eps, isign=sign)
     if type(size) == type(None):
         result = result.reshape(field.shape)
     else:
         result = result.reshape(size)
-    if np.__name__ == 'cupy':
-        result = np.asarray(result)
     return result
 
 
@@ -75,12 +68,7 @@ def nuifft2(field, fx, fy, size=None, sign=1, eps=10**(-12)):
         import finufft
     except:
         print('odak.tools.nuifft2 requires finufft to be installed: pip install finufft')
-    if np.__name__ == 'cupy':
-        fx = np.asnumpy(fx).astype(np.float64)
-        fy = np.asnumpy(fy).astype(np.float64)
-        image = np.asnumpy(np.copy(field)).astype(np.complex128)
-    else:
-        image = np.copy(field).astype(np.complex128)
+    image = np.copy(field).astype(np.complex128)
     if type(size) == type(None):
         result = finufft.nufft2d1(
             fx.flatten(),
@@ -99,8 +87,7 @@ def nuifft2(field, fx, fy, size=None, sign=1, eps=10**(-12)):
             eps=eps,
             isign=sign
         )
-    if np.__name__ == 'cupy':
-        result = np.asarray(result)
+    result = np.asarray(result)
     return result
 
 

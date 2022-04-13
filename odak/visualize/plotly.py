@@ -131,10 +131,6 @@ class surfaceshow():
         opacity     : float
                       Opacity of the plot. The value must be between one to zero. Zero is fully trasnparent, while one is opaque.
         """
-        if np.__name__ == 'cupy':
-            data_x = np.asnumpy(data_x)
-            data_y = np.asnumpy(data_y)
-            data_z = np.asnumpy(data_z)
         self.fig.add_trace(
             go.Surface(
                 x=data_x,
@@ -260,9 +256,6 @@ class plotshow():
         """
         if type(data_y) == type(None):
             data_y = np.arange(0, data_x.shape[0])
-        if np.__name__ == 'cupy':
-            data_x = np.asnumpy(data_x)
-            data_y = np.asnumpy(data_y)
         self.fig.add_trace(
             go.Scatter(
                 x=data_x,
@@ -386,10 +379,6 @@ class detectorshow():
         amplitude = calculate_amplitude(field)
         phase = calculate_phase(field, deg=True)
         intensity = calculate_intensity(field)
-        if np.__name__ == 'cupy':
-            amplitude = np.asnumpy(amplitude)
-            phase = np.asnumpy(phase)
-            intensity = np.asnumpy(intensity)
         col = (col-1)*(self.settings["sub column no"])+1
         if self.settings["show amplitude"] == True:
             self.fig.add_trace(
@@ -502,8 +491,6 @@ class rayshow():
                          Column number of the figure.
 
         """
-        if np.__name__ == 'cupy':
-            point = np.asnumpy(point)
         self.fig.add_trace(
             go.Scatter3d(
                 x=point[:, 0].flatten(),
@@ -537,9 +524,6 @@ class rayshow():
         color          : str
                          Color of the lune to be drawn.
         """
-        if np.__name__ == 'cupy':
-            point_start = np.asnumpy(point_start)
-            point_end = np.asnumpy(point_end)
         if len(point_start.shape) == 1:
             point_start = point_start.reshape((1, 3))
         if len(point_end.shape) == 1:
@@ -556,8 +540,6 @@ class rayshow():
                 ]
             )
             points = points.reshape((2, 3))
-            if np.__name__ == 'cupy':
-                points = np.asnumpy(points)
             self.fig.add_trace(
                 go.Scatter3d(
                     x=points[:, 0],
@@ -595,11 +577,6 @@ class rayshow():
         opacity       : float
                         Opacity of the plot. The value must be between one to zero. Zero is fully trasnparent, while one is opaque.
         """
-        if np.__name__ == 'cupy':
-            data_x = np.asnumpy(data_x)
-            data_y = np.asnumpy(data_y)
-            data_z = np.asnumpy(data_z)
-            surface_color = np.asnumpy(surface_color)
         self.fig.add_trace(
             go.Surface(
                 x=data_x,

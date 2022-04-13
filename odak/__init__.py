@@ -4,10 +4,7 @@
 Odak is the fundamental Python library needed for scientific computing in optical sciences. It includes modules for geometric raytracing and wave optics.
 
 """
-try:
-    import cupy as np
-except:
-    import numpy as np
+import numpy as np
 import odak.tools
 import odak.raytracing
 import odak.wave

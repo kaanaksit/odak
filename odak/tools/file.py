@@ -26,13 +26,8 @@ def resize_image(img, target_size):
                     Resized image.
 
     """
-    if np.__name__ == 'cupy':
-        img = np.asnumpy(img)
     img = Image.fromarray(np.uint8(img))
     img = img.resize(target_size[0], target_size[1])
-    if np.__name__ == 'cupy':
-        import numpy
-        img = numpy.asarray(img)
     img = np.asarray(img)
     return img
 
@@ -69,8 +64,6 @@ def save_image(fn, img, cmin=0, cmax=255):
     input_img /= cmax
     input_img *= 255
     input_img = input_img.astype(np.uint8)
-    if np.__name__ == 'cupy':
-        input_img = np.asnumpy(input_img)
     if colorflag == True:
         result_img = Image.fromarray(input_img)
     elif colorflag == False:

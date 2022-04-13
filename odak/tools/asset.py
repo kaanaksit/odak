@@ -108,16 +108,9 @@ def write_PLY(triangles, savefn='output.ply'):
                     float(triangles[tri_id][i][2])
                 )
             )
-    if np.__name__ == 'cupy':
-        import numpy as np_cpu
-        tris = np_cpu.asarray(tris, dtype=[(
-            'vertex_indices', 'i4', (3,)), ('red', 'u1'), ('green', 'u1'), ('blue', 'u1')])
-        pnts = np_cpu.asarray(
-            pnts, dtype=[('x', 'f4'), ('y', 'f4'), ('z', 'f4')])
-    else:
-        tris = np.asarray(tris, dtype=[
+    tris = np.asarray(tris, dtype=[
                           ('vertex_indices', 'i4', (3,)), ('red', 'u1'), ('green', 'u1'), ('blue', 'u1')])
-        pnts = np.asarray(pnts, dtype=[('x', 'f4'), ('y', 'f4'), ('z', 'f4')])
+    pnts = np.asarray(pnts, dtype=[('x', 'f4'), ('y', 'f4'), ('z', 'f4')])
     # Save mesh.
     el1 = PlyElement.describe(pnts, 'vertex', comments=['Vertex data'])
     el2 = PlyElement.describe(tris, 'face', comments=['Face data'])

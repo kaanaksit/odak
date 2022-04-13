@@ -12,7 +12,7 @@ When working with odak, we strongly suggest sticking to the general toolkit to p
 
 ## odak.tools
 This submodule is based on `numpy`. If you are using functions outside of `odak.learn` submodule, we recommend you to use this specific set of tools.
-Note that there are also corner case like loading a dictionary when using `odak.learn`, which does not necessarily require to work with `odak.learn.tools` as `odak.tools.load_dictionary` works with `numpy`, `cupy` or `torch`.
+Note that there are also corner case like loading a dictionary when using `odak.learn`, which does not necessarily require to work with `odak.learn.tools` as `odak.tools.load_dictionary` works with `numpy` or `torch`.
 In such cases, `odak.tools` is the go to submodule.
 
 | Function      | Description   |

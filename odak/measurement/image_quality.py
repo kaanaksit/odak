@@ -15,12 +15,7 @@ def line_spread_function(line):
     result        : ndarray
                     Gradient of the given 1D array.
     """
-    if np.__name__ == 'cupy':
-        import numpy
-        cache = np.asnumpy(line)
-        result = numpy.gradient(cache)
-    else:
-        result = np.gradient(line)
+    result = np.gradient(line)
     result = np.asarray(result)
     return result
 

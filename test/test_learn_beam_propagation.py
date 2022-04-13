@@ -24,9 +24,6 @@ def compare():
         np.cos(random_phase)+1j*sample_field*np.sin(random_phase)
     sample_field = zero_pad(sample_field)
 
-    if np.__name__ == 'cupy':
-        sample_field = np.asnumpy(sample_field)
-
     sample_field_torch = torch.from_numpy(sample_field)
 
     # Propagate and reconstruct using torch.

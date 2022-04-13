@@ -18,10 +18,7 @@ def convert_to_torch(a, grad=True):
     c          : torch.Tensor
                  Converted array.
     """
-    if np.__name__ == 'cupy':
-        b = np.asnumpy(a)
-    else:
-        b = np.copy(a)
+    b = np.copy(a)
     c = torch.from_numpy(b)
     c.requires_grad_(grad)
     return c
@@ -33,16 +30,13 @@ def convert_to_numpy(a):
 
     Parameters
     ----------
-    a          : torch.Tensor or cupy.ndarray
-                 Input Cupy or Torch array.
+    a          : torch.Tensor
+                 Input Torch array.
 
     Returns
     ----------
     b          : numpy.ndarray
                  Converted array.
     """
-    if str(type(a)).find('torch') > 0:
-        b = a.to('cpu').detach().numpy()
-    elif str(type(a)).find('cupy') > 0:
-        b = np.asnumpy(a)
+    b = a.to('cpu').detach().numpy()
     return b
