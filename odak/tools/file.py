@@ -208,6 +208,7 @@ def list_files(path, key='*.*', recursive=True):
     files_list = []
     for item in search_result:
         files_list.append(str(item))
+    files_list = sorted(files_list)
     return files_list
 
 
