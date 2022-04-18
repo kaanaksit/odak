@@ -130,6 +130,7 @@ def transfer_function_fresnel(field, k, distance, dx, wavelength, zero_padding =
     result = torch.fft.ifftshift(torch.fft.ifft2(torch.fft.ifftshift(U2)))
     return result
 
+
 def angular_spectrum(field, k, distance, dx, wavelength, zero_padding = False):
     """
     A definition to calculate convolution with Angular Spectrum method for beam propagation.
