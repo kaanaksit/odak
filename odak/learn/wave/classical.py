@@ -36,9 +36,10 @@ def propagate_beam(field, k, distance, dx, wavelength, propagation_type='IR Fres
     """
     if propagation_type == 'IR Fresnel':
         result = impulse_response_fresnel(field, k, distance, dx, wavelength)
+    elif propagation_type == 'Angular Spectrum':
+        result = angular_spectrum(field, k, distance, dx, wavelength)
     elif propagation_type == 'Bandlimited Angular Spectrum':
-        result = band_limited_angular_spectrum(
-            field, k, distance, dx, wavelength)
+        result = band_limited_angular_spectrum(field, k, distance, dx, wavelength)
     elif propagation_type == 'TR Fresnel':
         result = transfer_function_fresnel(field, k, distance, dx, wavelength, zero_padding)
     elif propagation_type == 'custom':
@@ -120,6 +121,46 @@ def transfer_function_fresnel(field, k, distance, dx, wavelength, zero_padding =
                         dtype=torch.float32).to(field.device)
     FY, FX = torch.meshgrid(fx, fy, indexing='ij')
     H = torch.exp(1j*k*distance*(1-(FX*wavelength)**2-(FY*wavelength)**2)**0.5)
+    H = H.to(field.device)
+    U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field)))
+    if zero_padding == False:
+        U2 = H*U1
+    elif zero_padding == True:
+        U2 = zero_pad(H*U1)
+    result = torch.fft.ifftshift(torch.fft.ifft2(torch.fft.ifftshift(U2)))
+    return result
+
+def angular_spectrum(field, k, distance, dx, wavelength, zero_padding = False):
+    """
+    A definition to calculate convolution with Angular Spectrum method for beam propagation.
+
+    Parameters
+    ----------
+    field            : torch.complex
+                       Complex field (MxN).
+    k                : odak.wave.wavenumber
+                       Wave number of a wave, see odak.wave.wavenumber for more.
+    distance         : float
+                       Propagation distance.
+    dx               : float
+                       Size of one single pixel in the field grid (in meters).
+    wavelength       : float
+                       Wavelength of the electric field.
+
+    Returns
+    -------
+    result           : torch.complex
+                       Final complex field (MxN).
+
+    """
+    distance = torch.tensor([distance]).to(field.device)
+    nv, nu = field.shape[-1], field.shape[-2]
+    fx = torch.linspace(-1./2./dx, 1./2./dx, nu,
+                        dtype=torch.float32).to(field.device)
+    fy = torch.linspace(-1./2./dx, 1./2./dx, nv,
+                        dtype=torch.float32).to(field.device)
+    FY, FX = torch.meshgrid(fx, fy, indexing='ij')
+    H = torch.exp(1j  * distance * (2 * (np.pi * (1 / wavelength) * torch.sqrt(1. - (wavelength * FX) ** 2 - (wavelength * FY) ** 2))))
     H = H.to(field.device)
     U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field)))
     if zero_padding == False:

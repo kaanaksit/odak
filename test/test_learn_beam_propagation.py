@@ -12,7 +12,7 @@ def compare():
     wavelength = 0.5*pow(10, -6)
     pixeltom = 6*pow(10, -6)
     distance = 0.2
-    propagation_type = 'TR Fresnel'
+    propagation_types = ['TR Fresnel', 'Angular Spectrum', 'Bandlimited Angular Spectrum']
     k = wavenumber(wavelength)
     sample_field = np.zeros((500, 500), dtype=np.complex64)
     sample_field[
@@ -26,23 +26,25 @@ def compare():
 
     sample_field_torch = torch.from_numpy(sample_field)
 
-    # Propagate and reconstruct using torch.
-    hologram_torch = propagate_beam_torch(
-        sample_field_torch,
-        k,
-        distance,
-        pixeltom,
-        wavelength,
-        propagation_type
-    )
-    reconstruction_torch = propagate_beam_torch(
-        hologram_torch,
-        k,
-        -distance,
-        pixeltom,
-        wavelength,
-        propagation_type
-    )
+    for i in range(len(propagation_types)):
+        propagation_type = propagation_types[i]
+        # Propagate and reconstruct using torch.
+        hologram_torch = propagate_beam_torch(
+            sample_field_torch,
+            k,
+            distance,
+            pixeltom,
+            wavelength,
+            propagation_type
+        )
+        reconstruction_torch = propagate_beam_torch(
+            hologram_torch,
+            k,
+            -distance,
+            pixeltom,
+            wavelength,
+            propagation_type
+        )
 
     assert True == True
 
