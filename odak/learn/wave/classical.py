@@ -479,8 +479,6 @@ def point_wise(target, wavelength, distance, dx, device, lens_size=401):
     FFZ = torch.fft.fft2(torch.fft.fftshift(fz))
     H = torch.mul(FA, FFZ)
     hologram = torch.fft.ifftshift(torch.fft.ifft2(H))
-    hologram_phase = calculate_phase(hologram)
-    hologram = generate_complex_field(ones, hologram_phase)
     hologram = crop_center(hologram)
     return hologram
 
