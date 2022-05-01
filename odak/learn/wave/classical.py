@@ -473,7 +473,7 @@ def point_wise(target, wavelength, distance, dx, device, lens_size=401):
     mask = (torch.abs(Z) <= lens_size)
     mask[mask > 1] = 1
     fz = quadratic_phase_function(nx, ny, k, focal=-distance, dx=dx).to(device)
-    A = target**0.5
+    A = torch.nan_to_num(target**0.5, nan=0.0)
     fz = mask*fz
     FA = torch.fft.fft2(torch.fft.fftshift(A))
     FFZ = torch.fft.fft2(torch.fft.fftshift(fz))
