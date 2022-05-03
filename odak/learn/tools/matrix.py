@@ -113,7 +113,7 @@ def convolve2d(field, kernel):
     return new_field
 
 
-def generate_2d_gaussian(kernel_length=[21, 21], nsigma=[3, 3]):
+def generate_2d_gaussian(kernel_length=[21, 21], nsigma=[3, 3], mu=[0, 0]):
     """
     Generate 2D Gaussian kernel. Inspired from https://stackoverflow.com/questions/29731726/how-to-calculate-a-gaussian-kernel-matrix-efficiently-in-numpy
 
@@ -123,19 +123,22 @@ def generate_2d_gaussian(kernel_length=[21, 21], nsigma=[3, 3]):
                     Length of the Gaussian kernel along X and Y axes.
     nsigma        : list
                     Sigma of the Gaussian kernel along X and Y axes.
+    mu            : list
+                    Mu of the Gaussian kernel along X and Y axes.
 
     Returns
     ----------
     kernel_2d     : torch.tensor
                     Generated Gaussian kernel.
     """
-    x = torch.linspace(-nsigma[0], nsigma[0], kernel_length[0]+1)
-    y = torch.linspace(-nsigma[1], nsigma[1], kernel_length[1]+1)
-    xx, yy = torch.meshgrid(x, y, indexing='ij')
-    nsigma = torch.tensor(nsigma)
-    kernel_2d = torch.exp(-0.5*(torch.square(xx)/torch.square(
-        nsigma[0]) + torch.square(yy)/torch.square(nsigma[1])))
-    kernel_2d = kernel_2d/kernel_2d.sum()
+    x = torch.linspace(-kernel_length[0]/2., kernel_length[0]/2., kernel_length[0])
+    y = torch.linspace(-kernel_length[1]/2., kernel_length[1]/2., kernel_length[1])
+    X, Y = torch.meshgrid(x, y, indexing='ij')
+    if nsigma[0] == 0:
+        nsigma[0] = 1e-5
+    if nsigma[1] == 0:
+        nsigma[1] = 1e-5
+    kernel_2d = 1. / (2. * np.pi * nsigma[0] * nsigma[1]) * torch.exp(-((X - mu[0])**2. / (2. * nsigma[0]**2.) + (Y - mu[1])**2. / (2. * nsigma[1]**2.)))
     return kernel_2d
 
 
@@ -160,7 +163,7 @@ def blur_gaussian(field, kernel_length=[21, 21], nsigma=[3, 3], padding='same'):
                     Blurred field.
     """
     kernel = generate_2d_gaussian(kernel_length, nsigma).to(field.device)
-    kernel = kernel.view(1, 1, kernel.shape[-2], kernel.shape[-1])
+    kernel = kernel.unsqueeze(0).unsqueeze(0)
     if len(field.shape) == 2:
         field = field.view(1, 1, field.shape[-2], field.shape[-1])
     blurred_field = torch.nn.functional.conv2d(field, kernel, padding='same')
