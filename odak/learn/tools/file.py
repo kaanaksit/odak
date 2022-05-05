@@ -75,5 +75,10 @@ def save_image(fn, img, cmin=0, cmax=255):
                     True if successful.
 
     """
+    if len(img.shape) > 2 and torch.argmin(torch.tensor(img.shape)) == 0:
+        new_img = torch.zeros(img.shape[1], img.shape[2], img.shape[0]).to(img.device)
+        for i in range(img.shape[0]):
+            new_img[:, :, i] = img[i].detach().clone()
+        img = new_img.detach().clone()
     img = img.cpu().detach().numpy()
     return odak.tools.save_image(fn, img, cmin, cmax)
