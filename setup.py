@@ -51,7 +51,7 @@ setup(
         "Intended Audience :: Developers",
         "Topic :: Scientific/Engineering :: Physics",
         "Programming Language :: Python",
-        "License :: OSI Approved :: Mozilla Public License 2.0",
+        "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
     ],
     python_requires='>=3.7.5',
 )
