@@ -18,13 +18,9 @@ setup(
     version="0.2.0",
     author="Kaan Akşit",
     author_email="kunguz@gmail.com",
-    description=(
-        "Odak (pronounced O-dac) is the fundamental Python library"
-        "for scientific computing in optical sciences."
-        "Odak includes modules for geometric raytracing and wave optics."
-    ),
-    license="",
-    keywords="optics holography",
+    description="Odak, the fundamental Python library for scientific computing in optical sciences.",
+    license=read('LICENSE.txt'),
+    keywords="optics, holography, perception, graphics",
     url="https://github.com/kunguz/odak",
     install_requires=install_requires,
     packages=[
@@ -48,14 +44,14 @@ setup(
     package_data={'odak': ['catalog/data/*.json']},
     data_files=[
         ('', ['LICENSE.txt', 'README.md', 'THANKS.txt', 'requirements.txt'])],
-    long_description=read('README.md'),
+    long_description=read('short_readme.md'),
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Science/Research",
         "Intended Audience :: Developers",
         "Topic :: Scientific/Engineering :: Physics",
         "Programming Language :: Python",
-        "License :: OSI Approved :: Apache Software License",
+        "License :: OSI Approved :: Mozilla Public License 2.0",
     ],
     python_requires='>=3.7.5',
 )
