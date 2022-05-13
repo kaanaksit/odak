@@ -11,6 +11,7 @@ Note that, the creators of this documentation are from `Computational Displays` 
 | [`Holographic light transport`](notes/holographic_light_transport.md) | This engineering note will give you an idea about how coherent light propagates in free space. |
 | [`Optimizing phase-only single plane holograms using Odak`](notes/optimizing_holograms_using_odak.md) | This engineering note will give you an idea about how to calculate phase-only holograms using Odak. |
 | [`Learning the model of a holographic display`](https://github.com/complight/realistic_holography) | This link navigates to a project website that provides a codebase that can learn the model of a holographic display using a single complex kernel. |
+| [`Optimizing three-dimensional multiplane holograms using Odak`](https://github.com/complight/realistic_defocus) | This link navigates to a project website that provides a codebase that can help optimize a phase-only hologram representing multiplanar three-dimensional scenes. |
 
 ## odak.learn.wave
 This submodule is based on `torch`, therefore the functions provided here are differentiable and can be used with provided optimizers in `torch`.
@@ -34,6 +35,7 @@ This submodule is based on `torch`, therefore the functions provided here are di
 | [odak.learn.wave.propagate_beam](odak/learn/wave/propagate_beam.md) | General function for optical beam propagation. |
 | [odak.learn.wave.quadratic_phase_function](odak/learn/wave/quadratic_phase_function.md) | Quadratic phase function, a lens.|
 | [odak.learn.wave.set_amplitude](odak/learn/wave/set_amplitude.md) | Set amplitude of a complex field. |
+| [odak.learn.wave.shift_w_double_phase](odak/learn/wave/shift_w_double_phase.md) | Shift a phase-only hologram by propagating the complex hologram and later apply double phase principle. |
 | [odak.learn.wave.speckle_contrast](odak/learn/wave/phase_gradient.md) | Regularization function to measure the speckle contrast.|
 | [odak.learn.wave.stochastic_gradient_descent](odak/learn/wave/stochastic_gradient_descent.md) | Phase-only hologram optimization using Stochastic Gradient Descent optimization. |
 | [odak.learn.wave.transfer_function_kernel](odak/learn/wave/transfer_function_kernel.md) | Optical beam propagation with transfer function kernel. |
