@@ -2,7 +2,6 @@ from odak.learn.perception.steerable_pyramid_filters import get_steerable_pyrami
 import torch
 import numpy as np
 
-from .spatial_steerable_pyramid import get_steerable_pyramid_filters
 
 
 class SpatialSteerablePyramid():

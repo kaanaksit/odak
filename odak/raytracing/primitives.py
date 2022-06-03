@@ -1,5 +1,5 @@
 from odak import np
-from odak.raytracing import create_ray_from_angles
+from . import create_ray_from_angles
 from odak.tools.transformation import rotate_point, rotate_points
 from odak.tools.vector import same_side, point_to_ray_distance
 
