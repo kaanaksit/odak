@@ -18,8 +18,8 @@ jobs:
       - run: pip install plyfile
       - run: pip install Pillow
       - run: pip install tqdm
-      - run: pip install mkdocs-material==0.17.0
-      - run: pip install mkdocstrings==8.1.0
+      - run: pip install mkdocs-material==8.1.0
+      - run: pip install mkdocstrings==0.17.0
       - run: pip install pytkdocs[numpy-style]
       - run: mkdocs gh-deploy --force
 
