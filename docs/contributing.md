@@ -65,7 +65,6 @@ To be able to run documentation locally, make sure to have the correct dependenc
 
 ```
 pip3 install plyfile
-pip3 install plyfile
 pip3 install Pillow
 pip3 install tqdm
 pip3 install mkdocs-material
