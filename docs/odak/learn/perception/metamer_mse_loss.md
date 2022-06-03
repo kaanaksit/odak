@@ -1,7 +1,5 @@
 # Metameric Loss
 
-# Metameric Loss
-
 ::: odak.learn.perception.MetamerMSELoss
     selection:
         docstring_style: numpy
