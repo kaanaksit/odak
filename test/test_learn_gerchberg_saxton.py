@@ -3,8 +3,8 @@ import sys
 
 def test():
     import torch
+    import numpy as np
     from odak.learn.wave import gerchberg_saxton
-    from odak import np
     wavelength = 0.000000532
     dx = 0.0000064
     distance = 0.2

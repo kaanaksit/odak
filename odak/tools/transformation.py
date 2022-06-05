@@ -1,5 +1,5 @@
 import math
-from odak import np
+import numpy as np
 
 
 def rotmatx(angle):

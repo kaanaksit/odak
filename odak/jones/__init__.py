@@ -3,7 +3,7 @@
 ===================
 Provides necessary definitions for jones calculus. See "Introduction to Fourier Optics" by Joseph Goodman.
 """
-from odak import np
+import numpy as np
 
 
 def electricfield(px, py):

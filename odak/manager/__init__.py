@@ -11,7 +11,7 @@ try:
 except:
     print('odak.manager relies on dispy. Install it using: pip install dispy')
 from tqdm import tqdm
-from odak.tools import shell_command
+from ..tools import shell_command
 
 
 def start_server():

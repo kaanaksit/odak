@@ -1,10 +1,9 @@
-import odak.catalog
-from odak.wave import calculate_phase, calculate_amplitude, calculate_intensity
-from odak.raytracing.primitives import define_plane, bring_plane_to_origin
-from odak.raytracing.boundary import intersect_w_surface
-from odak.visualize.plotly import detectorshow
-from odak.tools.sample import grid_sample
-from odak import np
+import numpy as np
+from ..wave import calculate_phase, calculate_amplitude, calculate_intensity
+from ..raytracing.primitives import define_plane, bring_plane_to_origin
+from ..raytracing.boundary import intersect_w_surface
+from ..visualize.plotly import detectorshow
+from ..tools.sample import grid_sample
 
 
 class plane_detector():

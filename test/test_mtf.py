@@ -1,6 +1,6 @@
 import sys
 import odak
-from odak import np
+import numpy as np
 
 
 def test():

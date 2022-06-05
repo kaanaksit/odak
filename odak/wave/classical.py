@@ -1,5 +1,5 @@
-from odak import np
-from odak.tools import nufft2, nuifft2, zero_pad
+import numpy as np
+from ..tools import nufft2, nuifft2, zero_pad
 from .lens import quadratic_phase_function
 from .__init__ import wavenumber, calculate_amplitude, calculate_phase, set_amplitude, generate_complex_field, add_random_phase, add_phase
 from tqdm import tqdm

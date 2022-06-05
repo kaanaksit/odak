@@ -1,5 +1,5 @@
-from odak import np
-from odak.tools import rotate_points
+import numpy as np
+from ..tools import rotate_points
 
 
 def create_ray(x0y0z0, abg):

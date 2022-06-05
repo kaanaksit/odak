@@ -1,7 +1,7 @@
-from odak import np
-from odak.tools.vector import distance_between_two_points, closest_point_to_a_ray
-from odak.raytracing.primitives import is_it_on_triangle, center_of_triangle, sphere_function, cylinder_function
-from odak.raytracing.ray import create_ray_from_two_points, propagate_a_ray
+import numpy as np
+from ..tools.vector import distance_between_two_points, closest_point_to_a_ray
+from ..raytracing.primitives import is_it_on_triangle, center_of_triangle, sphere_function, cylinder_function
+from ..raytracing.ray import create_ray_from_two_points, propagate_a_ray
 
 
 def reflect(input_ray, normal):

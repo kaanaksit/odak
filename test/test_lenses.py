@@ -1,7 +1,7 @@
 import sys
 import os
 import odak
-from odak import np
+import numpy as np
 from odak.wave import wavenumber, prism_phase_function, quadratic_phase_function
 
 

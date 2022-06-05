@@ -4,6 +4,7 @@ import sys
 
 
 def test_plano_convex():
+    import odak
     import odak.raytracing as raytracer
     import odak.tools as tools
     import odak.catalog as catalog

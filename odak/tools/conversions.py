@@ -1,15 +1,15 @@
-from odak import np
+import numpy as np
 import torch
 
 
 def convert_to_torch(a, grad=True):
     """
-    A definition to convert Numpy/Cupy arrays to Torch.
+    A definition to convert Numpy arrays to Torch.
 
     Parameters
     ----------
     a          : ndarray
-                 Input Numpy or Cupy array.
+                 Input Numpy array.
     grad       : bool
                  Set if the converted array requires gradient.
 
@@ -26,7 +26,7 @@ def convert_to_torch(a, grad=True):
 
 def convert_to_numpy(a):
     """
-    A definition to convert Torch/Cupy to Numpy.
+    A definition to convert Torch to Numpy.
 
     Parameters
     ----------

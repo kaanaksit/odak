@@ -1,4 +1,4 @@
-from odak import np
+import numpy as np
 
 
 def line_spread_function(line):

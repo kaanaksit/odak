@@ -2,7 +2,7 @@ import subprocess
 import os
 import json
 import pathlib
-from odak import np
+import numpy as np
 from PIL import Image
 
 

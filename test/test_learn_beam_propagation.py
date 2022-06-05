@@ -1,7 +1,7 @@
 import sys
 import os
 import odak
-from odak import np
+import numpy as np
 from odak.wave import wavenumber, propagate_beam
 from odak.learn.wave import propagate_beam as propagate_beam_torch
 from odak.tools import zero_pad

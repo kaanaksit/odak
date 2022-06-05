@@ -4,8 +4,8 @@ try:
     from plotly.subplots import make_subplots
 except:
     print('odak.visualize.plotly requires plotly and kaleido to be installed: pip install plotly and kaleido')
-from odak import np
-from odak.wave import calculate_phase, calculate_amplitude, calculate_intensity
+import numpy as np
+from ..wave import calculate_phase, calculate_amplitude, calculate_intensity
 
 
 class surfaceshow():

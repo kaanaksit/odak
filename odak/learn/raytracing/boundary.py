@@ -1,5 +1,5 @@
 import torch
-from odak.learn.raytracing.primitives import is_it_on_triangle, center_of_triangle
+from .primitives import is_it_on_triangle, center_of_triangle
 
 
 def refract(vector, normvector, n1, n2, error=0.01):

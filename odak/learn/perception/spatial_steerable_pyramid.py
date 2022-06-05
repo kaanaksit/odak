@@ -1,4 +1,4 @@
-from odak.learn.perception.steerable_pyramid_filters import get_steerable_pyramid_filters
+from .steerable_pyramid_filters import get_steerable_pyramid_filters
 import torch
 import numpy as np
 

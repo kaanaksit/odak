@@ -1,5 +1,5 @@
 from plyfile import PlyData, PlyElement
-from odak import np
+import numpy as np
 from .transformation import rotate_point
 
 

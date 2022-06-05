@@ -1,4 +1,4 @@
-from odak import np
+import numpy as np
 
 
 def calculate_phase(field, deg=False):

@@ -1,7 +1,7 @@
-from odak import np
+import numpy as np
 from . import create_ray_from_angles
-from odak.tools.transformation import rotate_point, rotate_points
-from odak.tools.vector import same_side, point_to_ray_distance
+from ..tools.transformation import rotate_point, rotate_points
+from ..tools.vector import same_side, point_to_ray_distance
 
 
 def define_plane(point, angles=[0., 0., 0.]):

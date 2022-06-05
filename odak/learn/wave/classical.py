@@ -1,10 +1,10 @@
-from odak import np
+import numpy as np
 import torch
 import torch.fft
 from .util import set_amplitude, produce_phase_only_slm_pattern, generate_complex_field, calculate_amplitude, calculate_phase
 from .lens import quadratic_phase_function
-from odak.wave import wavenumber
-from odak.learn.tools import zero_pad, crop_center, generate_2d_gaussian
+from .util import wavenumber
+from ..tools import zero_pad, crop_center, generate_2d_gaussian
 from tqdm import tqdm
 
 

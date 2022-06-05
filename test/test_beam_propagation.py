@@ -1,7 +1,7 @@
 import sys
 import os
 import odak
-from odak import np
+import numpy as np
 from odak.wave import wavenumber, propagate_beam, add_random_phase
 
 

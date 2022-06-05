@@ -1,11 +1,11 @@
-from odak import np
+import numpy as np
 import odak.catalog
-from odak.raytracing.primitives import define_plane, bring_plane_to_origin
-from odak.raytracing.boundary import intersect_w_surface
-from odak.wave import wavenumber
-from odak.tools.sample import circular_uniform_sample, grid_sample
-from odak.tools.transformation import rotate_points, tilt_towards
-from odak.raytracing.ray import create_ray_from_two_points
+from ..raytracing.primitives import define_plane, bring_plane_to_origin
+from ..raytracing.boundary import intersect_w_surface
+from ..wave import wavenumber
+from ..tools.sample import circular_uniform_sample, grid_sample
+from ..tools.transformation import rotate_points, tilt_towards
+from ..raytracing.ray import create_ray_from_two_points
 
 
 class thin_diffuser():

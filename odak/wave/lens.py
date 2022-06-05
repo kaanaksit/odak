@@ -1,4 +1,4 @@
-from odak import np
+import numpy as np
 
 
 def double_convergence(nx, ny, k, r, dx):

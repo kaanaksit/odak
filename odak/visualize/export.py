@@ -1,5 +1,5 @@
 import torch
-from odak import np
+import numpy as np
 from plyfile import PlyData, PlyElement
 
 

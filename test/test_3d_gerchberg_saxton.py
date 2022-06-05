@@ -2,7 +2,7 @@ import sys
 
 
 def test():
-    from odak import np
+    import numpy as np
     from odak.wave import gerchberg_saxton_3d, adjust_phase_only_slm_range, produce_phase_only_slm_pattern, calculate_amplitude, wavenumber, propagate_beam
     from odak.tools import save_image
     wavelength = 0.000000532

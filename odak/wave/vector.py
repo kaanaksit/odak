@@ -1,5 +1,5 @@
-from odak import np
-from odak.tools import distance_between_two_points
+import numpy as np
+from ..tools import distance_between_two_points
 from .utils import calculate_amplitude, calculate_phase
 
 

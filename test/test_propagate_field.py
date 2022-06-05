@@ -1,6 +1,6 @@
 from odak import tools
-from odak import np
 from odak import wave
+import numpy as np
 import sys
 
 

@@ -1,11 +1,11 @@
-from odak import np
 import os
-import odak.catalog
-from odak.tools.transformation import rotate_point
-from odak.tools.vector import same_side
-from odak.tools.file import load_dictionary
-from odak.raytracing.primitives import define_sphere, define_circle
-from odak.raytracing.boundary import intersect_w_circle, intersect_w_sphere
+import numpy as np
+import odak
+from ..tools.transformation import rotate_point
+from ..tools.vector import same_side
+from ..tools.file import load_dictionary
+from ..raytracing.primitives import define_sphere, define_circle
+from ..raytracing.boundary import intersect_w_circle, intersect_w_sphere
 
 
 class plano_convex_lens():

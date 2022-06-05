@@ -1,4 +1,4 @@
-from odak import np
+import numpy as np
 
 
 def cross_product(vector1, vector2):
