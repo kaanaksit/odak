@@ -20,14 +20,14 @@ For most recent guidance on installing Odak, please consult to [installation doc
 Odak can be installed using [pip](https://pypi.org/project/pip):
 
 ```bash
+pip3 install odak
+```
+or you can follow this, but remember that it will install the latest version in the repository this way:
+
+```bash
 pip3 install git+https://github.com/kunguz/odak
 ```
 
-or:
-
-```bash
-pip3 install odak
-```
 
 ### Usage
 You can import Odak and start designing your next in Optics, Computer Graphics or Perception! 
