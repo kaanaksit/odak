@@ -25,7 +25,7 @@ def define_plane(point, angles=[0., 0., 0.]):
     ]).to(point.device)
     for i in range(0, plane.shape[0]):
         plane[i], _, _, _ = rotate_point(plane[i], angles = angles)
-        plane[i] = plane[i] + torch.tensor(point)
+        plane[i] = plane[i] + point
     return plane
 
 
