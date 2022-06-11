@@ -66,21 +66,20 @@ def reflect(input_ray, normal):
     output_ray   : torch.tensor
                    Array that contains starting points and cosines of a reflected ray.
     """
-    input_ray = torch.tensor(input_ray)
-    normal = torch.tensor(normal)
     if len(input_ray.shape) == 2:
         input_ray = input_ray.view((1, 2, 3))
     if len(normal.shape) == 2:
         normal = normal.view((1, 2, 3))
     mu = 1
     div = normal[:, 1, 0]**2 + normal[:, 1, 1]**2 + normal[:, 1, 2]**2
-    a = mu * (input_ray[:, 1, 0]*normal[:, 1, 0]
-              + input_ray[:, 1, 1]*normal[:, 1, 1]
-              + input_ray[:, 1, 2]*normal[:, 1, 2]) / div
+    a = mu * (input_ray[:, 1, 0] * normal[:, 1, 0]
+              + input_ray[:, 1, 1] * normal[:, 1, 1]
+              + input_ray[:, 1, 2] * normal[:, 1, 2]) / div
+    a = a.unsqueeze(1)
     n = int(torch.amax(torch.tensor([normal.shape[0], input_ray.shape[0]])))
     output_ray = torch.zeros((n, 2, 3))
     output_ray[:, 0] = normal[:, 0]
-    output_ray[:, 1] = input_ray[:, 1]-2*a*normal[:, 1]
+    output_ray[:, 1] = input_ray[:, 1] - 2 * a * normal[:, 1]
     if output_ray.shape[0] == 1:
         output_ray = output_ray.view((2, 3))
     return output_ray
