@@ -103,7 +103,7 @@ def rotate_point(point, angles=[0, 0, 0], mode='XYZ', origin=[0, 0, 0], offset=[
     roty = rotmaty(angles[1])
     rotz = rotmatz(angles[2])
     if angles[0] == 0 and angles[1] == 0 and angles[2] == 0:
-        result = torch.tensor(offset) + point
+        result = torch.tensor(offset).to(point.device) + point
         return result, rotx, roty, rotz
     point -= torch.tensor(origin)
     point = point.view(1, 3)
@@ -120,7 +120,7 @@ def rotate_point(point, angles=[0, 0, 0], mode='XYZ', origin=[0, 0, 0], offset=[
     point = point.view(3)
     result += torch.tensor(origin)
     result += torch.tensor(offset)
-    return result, rotx, roty, rotz
+    return result.to(point.device), rotx, roty, rotz
 
 
 def rotate_points(points, angles=[0, 0, 0], mode='XYZ', origin=[0, 0, 0], offset=[0, 0, 0]):

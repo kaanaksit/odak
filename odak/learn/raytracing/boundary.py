@@ -141,7 +141,7 @@ def intersect_w_surface(ray, points):
     new_normal[:, 1] = normal[:, 1]
     if new_normal.shape[0] == 1:
         new_normal = new_normal.view((2, 3))
-        distance = distance.view((0))
+        distance = distance.view((distance.shape[0]))
     if len(distance.shape) > 1:
         distance = distance.view((distance.shape[0]))
     return new_normal, distance
