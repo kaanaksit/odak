@@ -71,7 +71,7 @@ def reflect(input_ray, normal):
     if len(normal.shape) == 2:
         normal = normal.view((1, 2, 3))
     mu = 1
-    div = normal[:, 1, 0]**2 + normal[:, 1, 1]**2 + normal[:, 1, 2]**2
+    div = normal[:, 1, 0]**2 + normal[:, 1, 1]**2 + normal[:, 1, 2]**2 + 1e-8
     a = mu * (input_ray[:, 1, 0] * normal[:, 1, 0]
               + input_ray[:, 1, 1] * normal[:, 1, 1]
               + input_ray[:, 1, 2] * normal[:, 1, 2]) / div
