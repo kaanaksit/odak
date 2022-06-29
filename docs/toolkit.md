@@ -10,6 +10,14 @@ When working with odak, we strongly suggest sticking to the general toolkit to p
 | `Working with images` | This engineering note will give you an idea about how read and write images using odak. |
 | `Working with dictionaries` | This engineering note will give you an idea about how read and write dictionaries using odak. |
 
+## odak.learn.tools
+This submodule is based on `torch`, therefore the functions provided here are differentiable and can be used with provided optimizers in `torch`.
+
+| Function      | Description   |
+| ------------- |:-------------:|
+| [odak.learn.tools.peak_signal_to_noise_ratio](odak/learn/tools/peak_signal_to_noise_ratio.md) | Calculates signal-to-noise-ratio with respect to a ground truth. |
+
+
 ## odak.tools
 This submodule is based on `numpy`. If you are using functions outside of `odak.learn` submodule, we recommend you to use this specific set of tools.
 Note that there are also corner case like loading a dictionary when using `odak.learn`, which does not necessarily require to work with `odak.learn.tools` as `odak.tools.load_dictionary` works with `numpy` or `torch`.
@@ -27,3 +35,4 @@ In such cases, `odak.tools` is the go to submodule.
 | [odak.tools.save_dictionary](odak/tools/save_dictionary.md) | Save a dictionary. |
 | [odak.tools.size_of_a_file](odak/tools/size_of_a_file.md) | Geet size of a file in units (e.g., MB). |
 | [odak.tools.shell_command](odak/tools/shell_command.md) | Trigger a shell command. |
+
