@@ -1,6 +1,7 @@
 import torch
 
-def psnr(image0, image1, peak_value=1.0):
+
+def psnr(image, ground_truth, peak_value=1.0):
     """
     A function to calculate peak-signal-to-noise ratio of an image with respect to a ground truth image.
 
@@ -18,6 +19,6 @@ def psnr(image0, image1, peak_value=1.0):
     result        : torch.tensor
                     Peak-signal-to-noise ratio.
     """
-    l2 = torch.mean((image0 - image1)**2)
-    result = 20 * torch.log10(peak_value / torch.sqrt(l2))
+    mse = torch.mean((ground_truth - image)**2)
+    result = 20 * torch.log10(peak_value / torch.sqrt(mse))
     return result
