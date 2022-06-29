@@ -22,4 +22,4 @@ Definition to save a Numpy array as an image.
 
 ## See also
 
-* [`General toolkit`](../../toolkit.md)
+* [`General toolkit`](../../../toolkit.md)
