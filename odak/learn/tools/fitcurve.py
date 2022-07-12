@@ -8,7 +8,7 @@ class multi_layer_perceptron(nn.Module):
     """
     A flexible class to correlate one dimensional input data to an one dimensional output data.
     """
-    def __init__(self, n_input=1, n_hidden=64, n_output=1):
+    def __init__(self, n_input=1, n_hidden=64, n_output=1, n_layers=4):
         """
         Parameters
         ----------
@@ -18,29 +18,28 @@ class multi_layer_perceptron(nn.Module):
                           Hidden layer size [b].
         n_output        : int
                           Output size [c].
+        n_layers        : int
+                          Number of cascaded linear layers.
         """
         super(multi_layer_perceptron, self).__init__()
-        self.layer0 = torch.nn.Linear( n_input, n_hidden)
-        self.layer1 = torch.nn.Linear(n_hidden, n_hidden)
-        self.layer2 = torch.nn.Linear(n_hidden, n_hidden)
-        self.layer3 = torch.nn.Linear(n_hidden, n_hidden)
-        self.layer4 = torch.nn.Linear(n_hidden, n_output)
-        self.activation = torch.nn.ReLU()
+        self.layers = nn.ModuleList()
+        self.layers.append(torch.nn.Linear(n_input, n_hidden))
+        for i in range(n_layers):
+            new_layer = nn.Sequential(
+                                      torch.nn.Linear(n_hidden, n_hidden),
+                                      torch.nn.ReLU(inplace=True)
+                                     )
+            self.layers.append(new_layer)
+        self.layer_final = torch.nn.Linear(n_hidden, n_output)
 
 
     def forward(self, x):
         """
         Internal function representing the forward model.
         """
-        x = self.layer0(x)
-        x = self.activation(x)
-        x = self.layer1(x)
-        x = self.activation(x)
-        x = self.layer2(x)
-        x = self.activation(x)
-        x = self.layer3(x)
-        x = self.activation(x)
-        x = self.layer4(x)
+        for layer in self.layers:
+            x = layer(x)
+        x = self.layer_final(x)
         return x
 
 
