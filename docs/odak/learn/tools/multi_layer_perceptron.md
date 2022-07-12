@@ -22,7 +22,7 @@ def test():
     device = torch.device('cuda')
     x_val = torch.linspace(-10, 10, m).view(m, 1).to(device)
     y_val = 0.1 * x_val * torch.cos(x_val) + 0.3 * torch.rand(m, 1).to(device)
-    curve = odak.learn.tools.multi_layer_perceptron(n_hidden=512, device=device)
+    curve = odak.learn.tools.multi_layer_perceptron(n_hidden=512).to(device)
     curve.fit(x_val, y_val, epochs=10000, learning_rate=1e-4)
     estimate = torch.zeros_like(y_val)
     for i in range(estimate.shape[0]):
@@ -34,7 +34,8 @@ def test():
     ax.plot(x_val, y_val, color='r')
     ax.plot(x_val, estimate, color='b')
     plt.show()
-
+    print('Estimate vs ground truth difference:{:.4f}'.format(torch.sum(torch.abs(y_val - estimate))))
+    
 
 if __name__ == '__main__':
     sys.exit(test())
