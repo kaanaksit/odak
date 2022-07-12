@@ -1,13 +1,14 @@
 import torch
+import torch.nn as nn
 import torch.nn.functional as F
 from tqdm import tqdm
 
 
-class multi_layer_perceptron():
+class multi_layer_perceptron(nn.Module):
     """
     A flexible class to correlate one dimensional input data to an one dimensional output data.
     """
-    def __init__(self, n_input=1, n_hidden=64, n_output=1, device=None):
+    def __init__(self, n_input=1, n_hidden=64, n_output=1):
         """
         Parameters
         ----------
@@ -19,23 +20,12 @@ class multi_layer_perceptron():
                           Output size [c].
         """
         super(multi_layer_perceptron, self).__init__()
-        self.device = device
-        if isinstance(self.device, type(None)):
-            self.device = torch.device('cpu')
-        self.loss_function = torch.nn.MSELoss()
-        self.layer0 = torch.nn.Linear( n_input, n_hidden).to(self.device)
-        self.layer1 = torch.nn.Linear(n_hidden, n_hidden).to(self.device)
-        self.layer2 = torch.nn.Linear(n_hidden, n_hidden).to(self.device)
-        self.layer3 = torch.nn.Linear(n_hidden, n_hidden).to(self.device)
-        self.layer4 = torch.nn.Linear(n_hidden, n_output).to(self.device)
+        self.layer0 = torch.nn.Linear( n_input, n_hidden)
+        self.layer1 = torch.nn.Linear(n_hidden, n_hidden)
+        self.layer2 = torch.nn.Linear(n_hidden, n_hidden)
+        self.layer3 = torch.nn.Linear(n_hidden, n_hidden)
+        self.layer4 = torch.nn.Linear(n_hidden, n_output)
         self.activation = torch.nn.ReLU()
-        self.parameters = [
-                           self.layer0.weight,
-                           self.layer1.weight,
-                           self.layer2.weight,
-                           self.layer3.weight,
-                           self.layer4.weight
-                          ]
 
 
     def forward(self, x):
@@ -70,7 +60,8 @@ class multi_layer_perceptron():
                           Learning rate of the optimizer.
         """
         t = tqdm(range(epochs), leave=False)
-        self.optimizer = torch.optim.Adam(self.parameters, lr=learning_rate)
+        self.optimizer = torch.optim.Adam(self.parameters(), lr=learning_rate)
+        self.loss_function = torch.nn.MSELoss()
         for i in t:
             self.optimizer.zero_grad()
             estimate = self.forward(x_values)
@@ -83,9 +74,26 @@ class multi_layer_perceptron():
         return True
 
 
-    def to(self, device):
+    def save_weights(self, filename='./weights.pt'):
         """
-        Utilization function for setting the device.
+        Function to save the current weights of the multi layer perceptron to a file.
+
+        Parameters
+        ----------
+        filename        : str
+                          Filename.
         """
-        self.device = device
-        return self
+        torch.save(self.parameters, filename)
+
+
+    def load_weights(self, filename='./weights.pt'):
+        """
+        Function to load weights for this multi layer perceptron from a file.
+
+        Parameters
+        ----------
+        filename        : str
+                          Filename.
+        """
+        self.parameters = torch.load(filename)
+
