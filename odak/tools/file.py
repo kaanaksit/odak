@@ -72,7 +72,7 @@ def save_image(fn, img, cmin=0, cmax=255):
     return True
 
 
-def load_image(fn):
+def load_image(fn, normalizeby=0., torch_style=False):
     """ 
     Definition to load an image from a given location as a Numpy array.
 
@@ -80,6 +80,10 @@ def load_image(fn):
     ----------
     fn           : str
                    Filename.
+    normalizeby  : float
+                   Value to to normalize images with. Default value of zero will lead to no normalization.
+    torch_style  : bool
+                   If set True, it will load an image mxnx3 as 3xmxn.
 
     Returns
     ----------
@@ -87,8 +91,12 @@ def load_image(fn):
                     Image loaded as a Numpy array.
 
     """
-    image = Image.open(fn)
-    return np.array(image)
+    image = np.array(Image.open(fn))
+    if normalizeby != 0.:
+        image = image * 1. / normalizeby
+    if torch_style == True and len(image.shape) > 2:
+        image = np.moveaxis(image, -1, 0)
+    return image
 
 
 def shell_command(cmd, cwd='.', timeout=None, check=True):
