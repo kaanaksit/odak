@@ -49,7 +49,7 @@ def propagate_beam(field, k, distance, dx, wavelength, propagation_type='IR Fres
     elif propagation_type == 'custom':
         result = custom(field, kernel, zero_padding[1])
     elif propagation_type == 'Fraunhofer':
-        result = fraunhofer(fied, k, distance, dx, wavelength)
+        result = fraunhofer(field, k, distance, dx, wavelength)
     else:
         assert True == False, "Propagation type not recognized."
     if zero_padding[2]:
