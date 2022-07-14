@@ -8,7 +8,7 @@ from ..tools import zero_pad, crop_center, generate_2d_gaussian
 from tqdm import tqdm
 
 
-def propagate_beam(field, k, distance, dx, wavelength, propagation_type='IR Fresnel', kernel=None, zero_padding=False):
+def propagate_beam(field, k, distance, dx, wavelength, propagation_type='IR Fresnel', kernel=None, zero_padding=[False, False, False]):
     """
     Definitions for Fresnel impulse respone (IR), Fresnel Transfer Function (TF), Fraunhofer diffraction in accordence with "Computational Fourier Optics" by David Vuelz.
 
@@ -28,35 +28,67 @@ def propagate_beam(field, k, distance, dx, wavelength, propagation_type='IR Fres
                        Type of the propagation (IR Fresnel, TR Fresnel, Fraunhofer).
     kernel           : torch.complex
                        Custom complex kernel.
+    zero_padding     : list
+                       Zero padding the input field if the first item in the list set true. Zero padding in the Fourier domain if the second item in the list set to true. Cropping the result with half resolution if the third item in the list is set to true.
 
     Returns
     -------
     result           : torch.complex128
                        Final complex field (MxN).
     """
+    if zero_padding[0]:
+        field = zero_pad(field)
     if propagation_type == 'IR Fresnel':
         result = impulse_response_fresnel(field, k, distance, dx, wavelength)
     elif propagation_type == 'Angular Spectrum':
         result = angular_spectrum(field, k, distance, dx, wavelength)
     elif propagation_type == 'Bandlimited Angular Spectrum':
-        result = band_limited_angular_spectrum(field, k, distance, dx, wavelength)
+        result = band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_padding[1])
     elif propagation_type == 'TR Fresnel':
-        result = transfer_function_fresnel(field, k, distance, dx, wavelength, zero_padding)
+        result = transfer_function_fresnel(field, k, distance, dx, wavelength, zero_padding[1])
     elif propagation_type == 'custom':
-        result = custom(field, kernel, zero_padding)
+        result = custom(field, kernel, zero_padding[1])
     elif propagation_type == 'Fraunhofer':
-        nv, nu = field.shape[-1], field.shape[-2]
-        x = torch.linspace(-nv*dx/2, nv*dx/2, nv, dtype=torch.float32)
-        y = torch.linspace(-nu*dx/2, nu*dx/2, nu, dtype=torch.float32)
-        Y, X = torch.meshgrid(y, x, indexing='ij')
-        Z = torch.pow(X, 2) + torch.pow(Y, 2)
-        c = 1./(1j*wavelength*distance)*torch.exp(1j*k*0.5/distance*Z)
-        c = c.to(field.device)
-        result = c * \
-            torch.fft.ifftshift(torch.fft.fft2(
-                torch.fft.fftshift(field)))*pow(dx, 2)
+        result = fraunhofer(fied, k, distance, dx, wavelength)
     else:
         assert True == False, "Propagation type not recognized."
+    if zero_padding[2]:
+        result = crop_center(result)
+    return result
+
+
+def fraunhofer(field, k, distance, dx, wavelength):
+    """
+    A definition to calculate light transport usin Fraunhofer approximation.
+
+    Parameters
+    ----------
+    field            : torch.complex
+                       Complex field (MxN).
+    k                : odak.wave.wavenumber
+                       Wave number of a wave, see odak.wave.wavenumber for more.
+    distance         : float
+                       Propagation distance.
+    dx               : float
+                       Size of one single pixel in the field grid (in meters).
+    wavelength       : float
+                       Wavelength of the electric field.
+
+    Returns
+    -------
+    result           : torch.complex
+                       Final complex field (MxN).
+    """
+    nv, nu = field.shape[-1], field.shape[-2]
+    x = torch.linspace(-nv*dx/2, nv*dx/2, nv, dtype=torch.float32)
+    y = torch.linspace(-nu*dx/2, nu*dx/2, nu, dtype=torch.float32)
+    Y, X = torch.meshgrid(y, x, indexing='ij')
+    Z = torch.pow(X, 2) + torch.pow(Y, 2)
+    c = 1./(1j*wavelength*distance)*torch.exp(1j*k*0.5/distance*Z)
+    c = c.to(field.device)
+    result = c * \
+             torch.fft.ifftshift(torch.fft.fft2(
+             torch.fft.fftshift(field)))*pow(dx, 2)
     return result
 
 
@@ -172,7 +204,7 @@ def angular_spectrum(field, k, distance, dx, wavelength, zero_padding = False):
     return result
 
 
-def band_limited_angular_spectrum(field, k, distance, dx, wavelength):
+def band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_padding=False):
     """
     A definition to calculate bandlimited angular spectrum based beam propagation. For more 
     `Matsushima, Kyoji, and Tomoyoshi Shimobaba. "Band-limited angular spectrum method for numerical simulation of free-space propagation in far and near fields." Optics express 17.22 (2009): 19662-19673`.
@@ -209,7 +241,10 @@ def band_limited_angular_spectrum(field, k, distance, dx, wavelength):
     H_filter = ((torch.abs(FX) < fx_max) & (torch.abs(FY) < fy_max)).clone().detach()
     H = generate_complex_field(H_filter,H_exp)
     U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field)))
-    U2 = H*U1
+    if zero_padding == False:
+       U2 = H * U1
+    elif zero_padding == True:
+       U2 = zero_pad(H) * zero_pad(U1)
     result = torch.fft.ifftshift(torch.fft.ifft2(torch.fft.ifftshift(U2)))
     return result
 
