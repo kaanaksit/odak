@@ -4,6 +4,19 @@ import numpy as np
 import math
 
 def pad_image_for_pyramid(image, n_pyramid_levels):
+    """
+    Pads an image to the extent necessary to compute a steerable pyramid of the input image.
+    This involves padding so both height and width are divisible by 2**n_pyramid_levels.
+    Uses reflection padding.
+
+    Parameters
+    ----------
+
+    image: torch.tensor
+        Image to pad, in NCHW format
+    n_pyramid_levels: int
+        Number of levels in the pyramid you plan to construct.
+    """
     min_divisor = 2 ** n_pyramid_levels
     height = image.size(2)
     width = image.size(3)
