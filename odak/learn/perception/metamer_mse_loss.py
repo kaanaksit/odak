@@ -3,6 +3,7 @@ import math
 
 from .metameric_loss import MetamericLoss
 from .color_conversion import ycrcb_2_rgb, rgb_2_ycrcb
+from .spatial_steerable_pyramid import pad_image_for_pyramid
 
 
 class MetamerMSELoss():
@@ -66,6 +67,8 @@ class MetamerMSELoss():
                 The generated metamer image
         """
         image = rgb_2_ycrcb(image)
+        image = pad_image_for_pyramid(image, self.metameric_loss.n_pyramid_levels)
+
         target_stats = self.metameric_loss.calc_statsmaps(
             image, gaze=gaze, alpha=self.metameric_loss.alpha)
         target_means = target_stats[::2]
@@ -123,17 +126,8 @@ class MetamerMSELoss():
                                 The computed loss.
         """
         # Pad image and target if necessary
-        min_divisor = 2 ** self.metameric_loss.n_pyramid_levels
-        height = image.size(2)
-        width = image.size(3)
-        required_height = math.ceil(height / min_divisor) * min_divisor
-        required_width = math.ceil(width / min_divisor) * min_divisor
-        if required_height > height or required_width > width:
-            # We need to pad!
-            pad = torch.nn.ReflectionPad2d(
-                (0, 0, required_height-height, required_width-width))
-            image = pad(image)
-            target = pad(target)
+        image = pad_image_for_pyramid(image, self.metameric_loss.n_pyramid_levels)
+        target = pad_image_for_pyramid(target, self.metameric_loss.n_pyramid_levels)
 
         if target is not self.target or self.target is None:
             self.target_metamer = self.gen_metamer(target, gaze)
