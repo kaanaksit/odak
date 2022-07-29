@@ -67,6 +67,7 @@ class MetamerMSELoss():
                 The generated metamer image
         """
         image = rgb_2_ycrcb(image)
+        image_size = image.size()
         image = pad_image_for_pyramid(image, self.metameric_loss.n_pyramid_levels)
 
         target_stats = self.metameric_loss.calc_statsmaps(
@@ -104,6 +105,8 @@ class MetamerMSELoss():
         metamer = self.metameric_loss.pyramid_maker.reconstruct_from_pyramid(
             noise_pyramid)
         metamer = ycrcb_2_rgb(metamer)
+        # Crop to remove any padding
+        metamer = metamer[:image_size[0], :image_size[1], :image_size[2], :image_size[3]]
         return metamer
 
     def __call__(self, image, target, gaze=[0.5, 0.5]):
