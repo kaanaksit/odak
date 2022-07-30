@@ -15,7 +15,7 @@ class BlurLoss():
 
 
     def __init__(self, device=torch.device("cpu"),
-                 alpha=0.08, real_image_width=0.2, real_viewing_distance=0.7, mode="quadratic", blur_source=False):
+                 alpha=0.2, real_image_width=0.2, real_viewing_distance=0.7, mode="quadratic", blur_source=False):
         """
         Parameters
         ----------

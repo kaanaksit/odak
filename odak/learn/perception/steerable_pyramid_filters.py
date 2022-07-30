@@ -38,10 +38,6 @@ def crop_steerable_pyramid_filters(filters, size):
     sum_l0 = torch.sum(filters["l0"])
     filters["l0"] = crop_filter(filters["l0"], 2, normalise=False)
     filters["l0"] *= sum_l0 / torch.sum(filters["l0"])
-    # l0_sum = torch.sum(filters["l0"])
-    # filters["l0"] = crop_filter(filters["l0"], r)
-    # filters["l0"] /= torch.sum(filters["l0"])
-    # filters["l0"] *= l0_sum
     for b in range(len(filters["b"])):
         filters["b"][b] = crop_filter(filters["b"][b], r, normalise=True)
     return filters

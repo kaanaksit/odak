@@ -3,7 +3,7 @@ import torch
 import math
 
 from .color_conversion import ycrcb_2_rgb, rgb_2_ycrcb
-from .spatial_steerable_pyramid import SpatialSteerablePyramid
+from .spatial_steerable_pyramid import SpatialSteerablePyramid, pad_image_for_pyramid
 from .radially_varying_blur import RadiallyVaryingBlur
 from .foveation import make_radial_map
 
@@ -132,17 +132,8 @@ class MetamericLossUniform():
             raise Exception(
                 "MetamericLoss ERROR: Input and target must have same number of channels.")
         # Pad image and target if necessary
-        min_divisor = 2**self.n_pyramid_levels
-        height = image.size(2)
-        width = image.size(3)
-        required_height = math.ceil(height/min_divisor)*min_divisor
-        required_width = math.ceil(width/min_divisor)*min_divisor
-        if required_height > height or required_width > width:
-            # We need to pad!
-            pad = torch.nn.ReflectionPad2d(
-                (0, 0, required_height-height, required_width-width))
-            image = pad(image)
-            target = pad(target)
+        image = pad_image_for_pyramid(image, self.n_pyramid_levels)
+        target = pad_image_for_pyramid(target, self.n_pyramid_levels)
         if image.size(1) == 3 and image_colorspace == "RGB":
             image = rgb_2_ycrcb(image)
             target = rgb_2_ycrcb(target)
