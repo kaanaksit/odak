@@ -16,7 +16,7 @@ To learn more about what Odak can do to help your design, experimentation, and d
 ## Getting Started
 
 ### Installing
-For the most recent guidance on installing Odak, please consult to [installation documentation](https://kaanaksit.com/odak/installation/).
+For the most recent guidance on installing Odak, please consult to [installation documentation](https://kaanaksit.com/odak/odak/installation/).
 Odak can be installed using [pip](https://pypi.org/project/pip):
 
 ```bash
