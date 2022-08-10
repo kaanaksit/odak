@@ -16,7 +16,7 @@ To learn more about what Odak can do to help your design, experimentation, and d
 ## Getting Started
 
 ### Installing
-For the most recent guidance on installing Odak, please consult to [installation documentation](https://kaanaksit.com/odak/odak/installation/).
+For the most recent guidance on installing Odak, please consult to [installation documentation](https://kaanaksit.github.io/odak/odak/installation/).
 Odak can be installed using [pip](https://pypi.org/project/pip):
 
 ```bash
@@ -25,10 +25,10 @@ pip3 install odak
 or you can follow this, but remember that it will install the latest version in the repository this way:
 
 ```bash
-pip3 install git+https://github.com/kunguz/odak
+pip3 install git+https://github.com/kaanaksit/odak
 ```
 
 
 ### Usage
 You can import Odak and start designing your next in Optics, Computer Graphics, or Perception! 
-We prepared a [documentation](https://kunguz.github.io/odak) on usage and much more.
+We prepared a [documentation](https://kaanaksit.github.io/odak) on usage and much more.
