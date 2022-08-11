@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 def propagate_beam(field, k, distance, dx, wavelength, propagation_type='TR Fresnel', kernel=None, zero_padding=[False, False, False]):
     """
-    Definitions for Fresnel impulse respone (IR), Fresnel Transfer Function (TF), Fraunhofer diffraction in accordence with "Computational Fourier Optics" by David Vuelz.
+    Definitions for various beam propagation methods mostly in accordence with "Computational Fourier Optics" by David Vuelz.
 
     Parameters
     ----------
@@ -25,7 +25,7 @@ def propagate_beam(field, k, distance, dx, wavelength, propagation_type='TR Fres
     wavelength       : float
                        Wavelength of the electric field.
     propagation_type : str
-                       Type of the propagation (IR Fresnel, TR Fresnel, Fraunhofer).
+                       Type of the propagation (TR Fresnel, Angular Spectrum, Bandlimited Angular Spectrum, Fraunhofer).
     kernel           : torch.complex
                        Custom complex kernel.
     zero_padding     : list
@@ -38,9 +38,7 @@ def propagate_beam(field, k, distance, dx, wavelength, propagation_type='TR Fres
     """
     if zero_padding[0]:
         field = zero_pad(field)
-    if propagation_type == 'IR Fresnel':
-        result = impulse_response_fresnel(field, k, distance, dx, wavelength, zero_padding[1])
-    elif propagation_type == 'Angular Spectrum':
+    if propagation_type == 'Angular Spectrum':
         result = angular_spectrum(field, k, distance, dx, wavelength, zero_padding[1])
     elif propagation_type == 'Bandlimited Angular Spectrum':
         result = band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_padding[1])
@@ -260,52 +258,7 @@ def band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_paddi
     return result
 
 
-def impulse_response_fresnel(field, k, distance, dx, wavelength, zero_padding=False):
-    """
-    A definition to calculate impulse response based Fresnel approximation for beam propagation.
-
-    Parameters
-    ----------
-    field            : np.complex
-                       Complex field (MxN).
-    k                : odak.wave.wavenumber
-                       Wave number of a wave, see odak.wave.wavenumber for more.
-    distance         : float
-                       Propagation distance.
-    dx               : float
-                       Size of one single pixel in the field grid (in meters).
-    wavelength       : float
-                       Wavelength of the electric field.
-    zero_padding     : bool
-                       Zero pad in Fourier domain.
-
-
-    Returns
-    -------
-    result           : np.complex
-                       Final complex field (MxN).
-    """
-    assert True == False, "Refer to Issue 19 for more. This definition is unreliable."
-    nv, nu = field.shape[-1], field.shape[-2]
-    x = torch.linspace(-nu/2*dx, nu/2*dx, nu)
-    y = torch.linspace(-nv/2*dx, nv/2*dx, nv)
-    X, Y = torch.meshgrid(x, y, indexing='ij')
-    Z = X**2+Y**2
-    distance = torch.tensor([distance]).to(field.device)
-    H = torch.exp(1j*k*distance)/(1j*wavelength*distance) * \
-        torch.exp(1j*k/2/distance*Z)
-    H = torch.fft.fft2(torch.fft.fftshift(H))*dx**2
-    H = H.to(field.device)
-    U1 = torch.fft.fft2(torch.fft.fftshift(field))
-    if zero_padding == False:
-        U2 = H*U1
-    elif zero_padding == True:
-        U2 = zero_pad(H*U1)
-    result = torch.fft.ifftshift(torch.fft.ifft2(U2))
-    return result
-
-
-def gerchberg_saxton(field, n_iterations, distance, dx, wavelength, slm_range=6.28, propagation_type='IR Fresnel'):
+def gerchberg_saxton(field, n_iterations, distance, dx, wavelength, slm_range=6.28, propagation_type='TR Fresnel'):
     """
     Definition to compute a hologram using an iterative method called Gerchberg-Saxton phase retrieval algorithm. For more on the method, see: Gerchberg, Ralph W. "A practical algorithm for the determination of phase from image and diffraction plane pictures." Optik 35 (1972): 237-246.
 
@@ -322,7 +275,7 @@ def gerchberg_saxton(field, n_iterations, distance, dx, wavelength, slm_range=6.
     slm_range        : float
                        Typically this is equal to two pi. See odak.wave.adjust_phase_only_slm_range() for more.
     propagation_type : str
-                       Type of the propagation (IR Fresnel, TR Fresnel, Fraunhofer).
+                       Type of the propagation (see odak.learn.wave.propagate_beam).
 
     Returns
     -------
@@ -362,7 +315,7 @@ def gradient_descent(field, wavelength, distance, dx, resolution, propagation_ty
     resolution              : array
                               SLM resolution
     propagation_type        : str
-                              Type of the propagation (IR Fresnel, Angular Spectrum, Bandlimited Angular Spectrum, TR Fresnel, Fraunhofer)
+                              Type of the propagation (See odak.learn.wave.propagate_beam)
     n_iteration:            : int
                               Max iteratation 
     cuda                    : boolean
@@ -434,7 +387,7 @@ def stochastic_gradient_descent(field, wavelength, distance, dx, resolution, pro
     resolution              : array
                               SLM resolution
     propogation_type        : str
-                              Type of the propagation (IR Fresnel, Angular Spectrum, Bandlimited Angular Spectrum, TR Fresnel, Fraunhofer)
+                              Type of the propagation (see odak.learn.wave.propagate_beam())
     n_iteration:            : int
                               Max iteratation 
     loss_function:          : function
