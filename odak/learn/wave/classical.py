@@ -298,7 +298,7 @@ def impulse_response_fresnel(field, k, distance, dx, wavelength, zero_padding=Fa
     h = h.to(field.device)
     U1 = torch.fft.fft2(torch.fft.fftshift(field))
     if zero_padding == False:
-        U2 = H*U1
+        U2 = h*U1
     elif zero_padding == True:
         U2 = zero_pad(H*U1)
     result = torch.fft.ifftshift(torch.fft.ifft2(U2))
