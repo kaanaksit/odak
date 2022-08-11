@@ -292,13 +292,13 @@ def impulse_response_fresnel(field, k, distance, dx, wavelength, zero_padding=Fa
     X, Y = torch.meshgrid(x, y, indexing='ij')
     Z = X**2+Y**2
     distance = torch.tensor([distance]).to(field.device)
-    h = torch.exp(1j*k*distance)/(1j*wavelength*distance) * \
+    H = torch.exp(1j*k*distance)/(1j*wavelength*distance) * \
         torch.exp(1j*k/2/distance*Z)
-    h = torch.fft.fft2(torch.fft.fftshift(h))*dx**2
-    h = h.to(field.device)
+    H = torch.fft.fft2(torch.fft.fftshift(H))*dx**2
+    H = H.to(field.device)
     U1 = torch.fft.fft2(torch.fft.fftshift(field))
     if zero_padding == False:
-        U2 = h*U1
+        U2 = H*U1
     elif zero_padding == True:
         U2 = zero_pad(H*U1)
     result = torch.fft.ifftshift(torch.fft.ifft2(U2))
