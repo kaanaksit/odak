@@ -39,9 +39,9 @@ def propagate_beam(field, k, distance, dx, wavelength, propagation_type='IR Fres
     if zero_padding[0]:
         field = zero_pad(field)
     if propagation_type == 'IR Fresnel':
-        result = impulse_response_fresnel(field, k, distance, dx, wavelength)
+        result = impulse_response_fresnel(field, k, distance, dx, wavelength, zero_padding[1])
     elif propagation_type == 'Angular Spectrum':
-        result = angular_spectrum(field, k, distance, dx, wavelength)
+        result = angular_spectrum(field, k, distance, dx, wavelength, zero_padding[1])
     elif propagation_type == 'Bandlimited Angular Spectrum':
         result = band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_padding[1])
     elif propagation_type == 'TR Fresnel':
@@ -102,6 +102,8 @@ def custom(field, kernel, zero_padding = False):
                        Complex field (MxN).
     kernel           : torch.complex
                        Custom complex kernel for beam propagation.
+    zero_padding     : bool
+                       Zero pad in Fourier domain.
 
     Returns
     -------
@@ -138,6 +140,9 @@ def transfer_function_fresnel(field, k, distance, dx, wavelength, zero_padding =
                        Size of one single pixel in the field grid (in meters).
     wavelength       : float
                        Wavelength of the electric field.
+    zero_padding     : bool
+                       Zero pad in Fourier domain.
+
 
     Returns
     -------
@@ -179,6 +184,9 @@ def angular_spectrum(field, k, distance, dx, wavelength, zero_padding = False):
                        Size of one single pixel in the field grid (in meters).
     wavelength       : float
                        Wavelength of the electric field.
+    zero_padding     : bool
+                       Zero pad in Fourier domain.
+
 
     Returns
     -------
@@ -221,6 +229,9 @@ def band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_paddi
                        Size of one single pixel in the field grid (in meters).
     wavelength       : float
                        Wavelength of the electric field.
+    zero_padding     : bool
+                       Zero pad in Fourier domain.
+
 
     Returns
     -------
@@ -249,7 +260,7 @@ def band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_paddi
     return result
 
 
-def impulse_response_fresnel(field, k, distance, dx, wavelength):
+def impulse_response_fresnel(field, k, distance, dx, wavelength, zero_padding=False):
     """
     A definition to calculate impulse response based Fresnel approximation for beam propagation.
 
@@ -265,6 +276,9 @@ def impulse_response_fresnel(field, k, distance, dx, wavelength):
                        Size of one single pixel in the field grid (in meters).
     wavelength       : float
                        Wavelength of the electric field.
+    zero_padding     : bool
+                       Zero pad in Fourier domain.
+
 
     Returns
     -------
@@ -283,7 +297,10 @@ def impulse_response_fresnel(field, k, distance, dx, wavelength):
     h = torch.fft.fft2(torch.fft.fftshift(h))*dx**2
     h = h.to(field.device)
     U1 = torch.fft.fft2(torch.fft.fftshift(field))
-    U2 = h*U1
+    if zero_padding == False:
+        U2 = H*U1
+    elif zero_padding == True:
+        U2 = zero_pad(H*U1)
     result = torch.fft.ifftshift(torch.fft.ifft2(U2))
     return result
 
