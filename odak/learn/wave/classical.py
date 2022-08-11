@@ -8,7 +8,7 @@ from ..tools import zero_pad, crop_center, generate_2d_gaussian
 from tqdm import tqdm
 
 
-def propagate_beam(field, k, distance, dx, wavelength, propagation_type='IR Fresnel', kernel=None, zero_padding=[False, False, False]):
+def propagate_beam(field, k, distance, dx, wavelength, propagation_type='TR Fresnel', kernel=None, zero_padding=[False, False, False]):
     """
     Definitions for Fresnel impulse respone (IR), Fresnel Transfer Function (TF), Fraunhofer diffraction in accordence with "Computational Fourier Optics" by David Vuelz.
 
