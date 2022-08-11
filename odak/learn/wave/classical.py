@@ -29,7 +29,7 @@ def propagate_beam(field, k, distance, dx, wavelength, propagation_type='IR Fres
     kernel           : torch.complex
                        Custom complex kernel.
     zero_padding     : list
-                       Zero padding the input field if the first item in the list set true. Zero padding in the Fourier domain if the second item in the list set to true. Cropping the result with half resolution if the third item in the list is set to true.
+                       Zero padding the input field if the first item in the list set true. Zero padding in the Fourier domain if the second item in the list set to true. Cropping the result with half resolution if the third item in the list is set to true. Note that in Fraunhofer propagation, setting the second item True or False will have no effect.
 
     Returns
     -------
