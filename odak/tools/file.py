@@ -53,7 +53,7 @@ def save_image(fn, img, cmin=0, cmax=255):
                     True if successful.
 
     """
-    input_img = np.copy(img).astype(np.float)
+    input_img = np.copy(img).astype(np.float64)
     colorflag = False
     if len(input_img.shape) == 3:
         if input_img.shape[2] > 1:
