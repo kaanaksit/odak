@@ -3,6 +3,7 @@ import math
 
 from .metameric_loss import MetamericLoss
 from .color_conversion import ycrcb_2_rgb, rgb_2_ycrcb
+from .spatial_steerable_pyramid import pad_image_for_pyramid
 
 
 class MetamerMSELoss():
@@ -16,7 +17,7 @@ class MetamerMSELoss():
 
 
     def __init__(self, device=torch.device("cpu"),
-                 alpha=0.08, real_image_width=0.2, real_viewing_distance=0.7, mode="quadratic",
+                 alpha=0.2, real_image_width=0.2, real_viewing_distance=0.7, mode="quadratic",
                  n_pyramid_levels=5, n_orientations=2):
         """
         Parameters
@@ -66,6 +67,9 @@ class MetamerMSELoss():
                 The generated metamer image
         """
         image = rgb_2_ycrcb(image)
+        image_size = image.size()
+        image = pad_image_for_pyramid(image, self.metameric_loss.n_pyramid_levels)
+
         target_stats = self.metameric_loss.calc_statsmaps(
             image, gaze=gaze, alpha=self.metameric_loss.alpha)
         target_means = target_stats[::2]
@@ -101,6 +105,8 @@ class MetamerMSELoss():
         metamer = self.metameric_loss.pyramid_maker.reconstruct_from_pyramid(
             noise_pyramid)
         metamer = ycrcb_2_rgb(metamer)
+        # Crop to remove any padding
+        metamer = metamer[:image_size[0], :image_size[1], :image_size[2], :image_size[3]]
         return metamer
 
     def __call__(self, image, target, gaze=[0.5, 0.5]):
@@ -123,17 +129,8 @@ class MetamerMSELoss():
                                 The computed loss.
         """
         # Pad image and target if necessary
-        min_divisor = 2 ** self.metameric_loss.n_pyramid_levels
-        height = image.size(2)
-        width = image.size(3)
-        required_height = math.ceil(height / min_divisor) * min_divisor
-        required_width = math.ceil(width / min_divisor) * min_divisor
-        if required_height > height or required_width > width:
-            # We need to pad!
-            pad = torch.nn.ReflectionPad2d(
-                (0, 0, required_height-height, required_width-width))
-            image = pad(image)
-            target = pad(target)
+        image = pad_image_for_pyramid(image, self.metameric_loss.n_pyramid_levels)
+        target = pad_image_for_pyramid(target, self.metameric_loss.n_pyramid_levels)
 
         if target is not self.target or self.target is None:
             self.target_metamer = self.gen_metamer(target, gaze)

@@ -14,7 +14,7 @@ def rotmatx(angle):
     Returns
     ----------
     rotx         : ndarray
-                    Rotation matrix along X axis.
+                   Rotation matrix along X axis.
     """
     angle = torch.deg2rad(torch.tensor(angle))
     rotx = torch.tensor([

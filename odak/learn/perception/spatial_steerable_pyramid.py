@@ -1,7 +1,33 @@
 from .steerable_pyramid_filters import get_steerable_pyramid_filters
 import torch
 import numpy as np
+import math
 
+def pad_image_for_pyramid(image, n_pyramid_levels):
+    """
+    Pads an image to the extent necessary to compute a steerable pyramid of the input image.
+    This involves padding so both height and width are divisible by 2**n_pyramid_levels.
+    Uses reflection padding.
+
+    Parameters
+    ----------
+
+    image: torch.tensor
+        Image to pad, in NCHW format
+    n_pyramid_levels: int
+        Number of levels in the pyramid you plan to construct.
+    """
+    min_divisor = 2 ** n_pyramid_levels
+    height = image.size(2)
+    width = image.size(3)
+    required_height = math.ceil(height / min_divisor) * min_divisor
+    required_width = math.ceil(width / min_divisor) * min_divisor
+    if required_height > height or required_width > width:
+        # We need to pad!
+        pad = torch.nn.ReflectionPad2d(
+            (0, 0, required_height-height, required_width-width))
+        return pad(image)
+    return image
 
 
 class SpatialSteerablePyramid():
@@ -108,12 +134,8 @@ class SpatialSteerablePyramid():
         level0 = {}
         level0['h'] = torch.nn.functional.conv2d(
             self.pad_h0(image), self.filt_h0)
-        #plt.imshow(level0['h'][0,0,...], cmap="gray", vmin=0, vmax=1)
-        # plt.show()
         lowpass = torch.nn.functional.conv2d(self.pad_l0(image), self.filt_l0)
         level0['l'] = lowpass.clone()
-        #np.save("lowpass_filtered.npy", level0['l'][0,...].permute(1,2,0).numpy())
-        # quit()
         bands = []
         for filt_b in self.band_filters:
             bands.append(torch.nn.functional.conv2d(
@@ -138,8 +160,6 @@ class SpatialSteerablePyramid():
                     self.pad_b(lowpass), filt_b))
             level['b'] = bands
             if multiple_highpass:
-                #downsampled = torch.nn.functional.interpolate(image, scale_factor=0.5, mode="area")
-                #level['h'] = torch.nn.functional.conv2d(self.pad_h0(downsampled), self.filt_h0)
                 level['h'] = torch.nn.functional.conv2d(
                     self.pad_h0(lowpass), self.filt_h0)
             pyramid.append(level)

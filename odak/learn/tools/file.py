@@ -3,6 +3,7 @@ import odak.tools
 import torch
 import numpy as np_cpu
 
+
 def resize(image, multiplier=0.5, mode='nearest'):
     """
     Definition to resize an image.
@@ -33,7 +34,7 @@ def resize(image, multiplier=0.5, mode='nearest'):
 
 
 
-def load_image(fn):
+def load_image(fn, normalizeby=0., torch_style=False):
     """
     Definition to load an image from a given location as a Numpy array.
 
@@ -41,6 +42,10 @@ def load_image(fn):
     ----------
     fn           : str
                    Filename.
+    normalized   : float
+                   Value to to normalize images with. Default value of zero will lead to no normalization.
+    torch_style  : bool
+                   If set True, it will load an image mxnx3 as 3xmxn.
 
     Returns
     ----------
@@ -48,8 +53,7 @@ def load_image(fn):
                     Image loaded as a Numpy array.
 
     """
-    image = Image.open(fn)
-    image = np_cpu.array(image)
+    image = odak.tools.load_image(fn, normalizeby=normalizeby, torch_style=torch_style)
     image = torch.from_numpy(image)
     return image
 

@@ -113,7 +113,7 @@ def convolve2d(field, kernel):
     return new_field
 
 
-def generate_2d_gaussian(kernel_length=[21, 21], nsigma=[3, 3], mu=[0, 0]):
+def generate_2d_gaussian(kernel_length=[21, 21], nsigma=[3, 3], mu=[0, 0], normalize=False):
     """
     Generate 2D Gaussian kernel. Inspired from https://stackoverflow.com/questions/29731726/how-to-calculate-a-gaussian-kernel-matrix-efficiently-in-numpy
 
@@ -125,6 +125,8 @@ def generate_2d_gaussian(kernel_length=[21, 21], nsigma=[3, 3], mu=[0, 0]):
                     Sigma of the Gaussian kernel along X and Y axes.
     mu            : list
                     Mu of the Gaussian kernel along X and Y axes.
+    normalize     : bool
+                    If set True, normalize the output.
 
     Returns
     ----------
@@ -139,6 +141,8 @@ def generate_2d_gaussian(kernel_length=[21, 21], nsigma=[3, 3], mu=[0, 0]):
     if nsigma[1] == 0:
         nsigma[1] = 1e-5
     kernel_2d = 1. / (2. * np.pi * nsigma[0] * nsigma[1]) * torch.exp(-((X - mu[0])**2. / (2. * nsigma[0]**2.) + (Y - mu[1])**2. / (2. * nsigma[1]**2.)))
+    if normalize:
+        kernel_2d = kernel_2d / kernel_2d.max()
     return kernel_2d
 
 

@@ -130,7 +130,7 @@ def make_pooling_size_map_pixels(gaze_location, image_pixel_size, alpha=0.3, rea
     major_axis = (torch.tan(angle_max) - torch.tan(angle_min)) / \
         real_viewing_distance
     minor_axis = 2 * distance_to_pixel * torch.tan(pooling_rad*0.5)
-    area = math.pi * major_axis * minor_axis
+    area = math.pi * major_axis * minor_axis * 0.25
     # Should be +ve anyway, but check to ensure we don't take sqrt of negative number
     area = torch.abs(area)
     pooling_real = torch.sqrt(area)
