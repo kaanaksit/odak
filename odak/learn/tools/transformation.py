@@ -140,19 +140,19 @@ def get_rotation_matrix(self, tilt_angles=[0., 0., 0.], tilt_order='XYZ'):
     rotmat             : torch.tensor
                          Rotation matrix.
     """
-    rotmatx = odak.learn.tools.rotmatx(tilt_angles[0])
-    rotmaty = odak.learn.tools.rotmaty(tilt_angles[1])
-    rotmatz = odak.learn.tools.rotmatz(tilt_angles[2])
+    rotx = rotmatx(tilt_angles[0])
+    roty = rotmaty(tilt_angles[1])
+    rotz = rotmatz(tilt_angles[2])
     if tilt_order =='XYZ':
-        rotmat = torch.mm(rotmatz,torch.mm(rotmaty, rotmatx))
+        rotmat = torch.mm(rotz,torch.mm(roty, rotx))
     elif tilt_order == 'XZY':
-        rotmat = torch.mm(rotmaty,torch.mm(rotmatz, rotmatx))
+        rotmat = torch.mm(roty,torch.mm(rotz, rotx))
     elif tilt_order == 'ZXY':
-        rotmat = torch.mm(rotmaty,torch.mm(rotmatx, rotmatz))
+        rotmat = torch.mm(roty,torch.mm(rotx, rotz))
     elif tilt_order == 'YXZ':
-        rotmat = torch.mm(rotmatz,torch.mm(rotmatx, rotmaty))
+        rotmat = torch.mm(rotz,torch.mm(rotx, roty))
     elif tilt_order == 'ZYX':
-         rotmat = torch.mm(rotmatx,torch.mm(rotmaty, rotmatz))
+         rotmat = torch.mm(rotx,torch.mm(roty, rotz))
     return rotmat
 
 
