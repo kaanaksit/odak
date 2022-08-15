@@ -13,7 +13,7 @@ def test():
     curve.fit(x_val, y_val, epochs=500, learning_rate=1e-2)
     estimate = torch.zeros_like(y_val)
     for i in range(estimate.shape[0]):
-        estimate[i] = curve.forward(x_val[i].view(1, 1))
+        estimate[i] = curve.estimate(x_val[i].view(1, 1))
     print('Estimate vs ground truth difference:{:.4f}'.format(torch.sum(torch.abs(y_val - estimate))))
     torch.save(curve.state_dict(), 'weights.pt')
     curve.load_state_dict(torch.load('weights.pt'))

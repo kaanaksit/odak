@@ -42,6 +42,12 @@ class multi_layer_perceptron(nn.Module):
         x = self.layer_final(x)
         return x
 
+    def estimate(self, x):
+        """
+        Internal function representing the forward model w/o grad.
+        """
+        return self.forward(x).detach()
+
 
     def fit(self, x_values, y_values, epochs=100, learning_rate=1e-5):
         """

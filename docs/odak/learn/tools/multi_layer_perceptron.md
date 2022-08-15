@@ -26,7 +26,7 @@ def test():
     curve.fit(x_val, y_val, epochs=10000, learning_rate=1e-4)
     estimate = torch.zeros_like(y_val)
     for i in range(estimate.shape[0]):
-        estimate[i] = curve.forward(x_val[i].view(1, 1))
+        estimate[i] = curve.estimate(x_val[i].view(1, 1))
     fig, ax = plt.subplots(1)
     x_val = x_val.detach().cpu().view(m).numpy()
     y_val = y_val.detach().cpu().view(m).numpy()
