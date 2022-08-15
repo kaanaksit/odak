@@ -33,7 +33,7 @@ class multi_layer_perceptron(nn.Module):
         self.layer_final = torch.nn.Linear(n_hidden, n_output)
 
 
-    def forward_grad(self, x):
+    def forward(self, x):
         """
         Internal function representing the forward model.
         """
@@ -42,14 +42,11 @@ class multi_layer_perceptron(nn.Module):
         x = self.layer_final(x)
         return x
 
-    def forward(self, x):
+    def estimate(self, x):
         """
-        Internal function representing the forward model.
+        Internal function representing the forward model w/o grad.
         """
-        for layer in self.layers:
-            x = layer(x)
-        x = self.layer_final(x)
-        return x.detach()
+        return self.forward(x).detach()
 
 
     def fit(self, x_values, y_values, epochs=100, learning_rate=1e-5):
@@ -72,7 +69,7 @@ class multi_layer_perceptron(nn.Module):
         self.loss_function = torch.nn.MSELoss()
         for i in t:
             self.optimizer.zero_grad()
-            estimate = self.forward_grad(x_values)
+            estimate = self.forward(x_values)
             loss = self.loss_function(estimate, y_values)
             loss.backward(retain_graph=True)
             self.optimizer.step()
