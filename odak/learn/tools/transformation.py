@@ -123,9 +123,9 @@ def rotate_point(point, angles=[0, 0, 0], mode='XYZ', origin=[0, 0, 0], offset=[
     return result.to(point.device), rotx, roty, rotz
 
 
-def get_transformation_matrix(self, tilt_angles=[0., 0., 0.], tilt_order='XYZ'):
+def get_rotation_matrix(self, tilt_angles=[0., 0., 0.], tilt_order='XYZ'):
     """
-    Function to generate transformation matrix for given tilt angles and tilt order.
+    Function to generate rotation matrix for given tilt angles and tilt order.
 
 
     Parameters
