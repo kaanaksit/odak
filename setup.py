@@ -17,11 +17,11 @@ setup(
     name="odak",
     version="0.2.1",
     author="Kaan Akşit",
-    author_email="kunguz@gmail.com",
+    author_email="kaanaksit@kaanaksit.com",
     description="Odak, the fundamental Python library for scientific computing in optical sciences.",
     license=read('LICENSE.txt'),
     keywords="optics, holography, perception, graphics",
-    url="https://github.com/kunguz/odak",
+    url="https://github.com/kaanaksit/odak",
     install_requires=install_requires,
     packages=[
         'odak',
