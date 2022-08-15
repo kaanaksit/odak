@@ -1,6 +1,6 @@
-# odak.learn.tools.peak_signal_to_noise_ratio
+# odak.learn.odak.tools.get_transformation_matrix
 
-::: odak.learn.tools.peak_signal_to_noise_ratio
+::: odak.learn.tools.get_transformation_matrix
     selection:
         docstring_style: numpy
 

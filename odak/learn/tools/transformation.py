@@ -123,6 +123,39 @@ def rotate_point(point, angles=[0, 0, 0], mode='XYZ', origin=[0, 0, 0], offset=[
     return result.to(point.device), rotx, roty, rotz
 
 
+def get_transformation_matrix(self, tilt_angles=[0., 0., 0.], tilt_order='XYZ'):
+    """
+    Function to generate transformation matrix for given tilt angles and tilt order.
+
+
+    Parameters
+    ----------
+    tilt_angles        : list
+                         Tilt angles in degrees along XYZ axes.
+    tilt_order         : str
+                         Rotation order (e.g., XYZ, XZY, ZXY, YXZ, ZYX).
+
+    Returns
+    -------
+    rotmat             : torch.tensor
+                         Rotation matrix.
+    """
+    rotmatx = odak.learn.tools.rotmatx(tilt_angles[0])
+    rotmaty = odak.learn.tools.rotmaty(tilt_angles[1])
+    rotmatz = odak.learn.tools.rotmatz(tilt_angles[2])
+    if tilt_order =='XYZ':
+        rotmat = torch.mm(rotmatz,torch.mm(rotmaty, rotmatx))
+    elif tilt_order == 'XZY':
+        rotmat = torch.mm(rotmaty,torch.mm(rotmatz, rotmatx))
+    elif tilt_order == 'ZXY':
+        rotmat = torch.mm(rotmaty,torch.mm(rotmatx, rotmatz))
+    elif tilt_order == 'YXZ':
+        rotmat = torch.mm(rotmatz,torch.mm(rotmatx, rotmaty))
+    elif tilt_order == 'ZYX':
+         rotmat = torch.mm(rotmatx,torch.mm(rotmaty, rotmatz))
+    return rotmat
+
+
 def rotate_points(points, angles=[0, 0, 0], mode='XYZ', origin=[0, 0, 0], offset=[0, 0, 0]):
     """
     Definition to rotate points.
