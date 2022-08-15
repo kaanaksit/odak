@@ -1,6 +1,6 @@
-# odak.learn.tools.peak_signal_to_noise_ratio
+# odak.learn.tools.psnr
 
-::: odak.learn.tools.peak_signal_to_noise_ratio
+::: odak.learn.tools.psnr
     selection:
         docstring_style: numpy
 

@@ -16,7 +16,7 @@ This submodule is based on `torch`, therefore the functions provided here are di
 | Function      | Description   |
 | ------------- |:-------------:|
 | [odak.learn.tools,multi_layer_perceptron](odak/learn/tools/multi_layer_perceptron.md) | Curve fitting 1D signals with multilayer perceptrons. |
-| [odak.learn.tools.peak_signal_to_noise_ratio](odak/learn/tools/peak_signal_to_noise_ratio.md) | Calculates signal-to-noise-ratio with respect to a ground truth. |
+| [odak.learn.tools.psnr](odak/learn/tools/psnr.md) | Calculates signal-to-noise-ratio with respect to a ground truth. |
 | [odak.learn.tools.get_rotation_matrix](odak/learn/tools/get_rotation_matrix.md) | Calculate a transformation matrix for a specific rotation. |
 
 
