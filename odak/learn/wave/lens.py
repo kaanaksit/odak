@@ -73,7 +73,7 @@ def prism_phase_function(nx, ny, k, angle, dx=0.001, axis='x'):
     return prism
 
 
-def linear_grating(nx, ny, every=2, add=3.14, axis='x'):
+def linear_grating(nx, ny, every=2, add=None, axis='x'):
     """
     A definition to generate a linear grating.
 
@@ -95,6 +95,8 @@ def linear_grating(nx, ny, every=2, add=3.14, axis='x'):
     field      : torch.tensor
                  Linear grating term.
     """
+    if isinstance(add, type(None)):
+        add = np.pi
     grating = torch.zeros((nx, ny), dtype=torch.complex64)
     if axis == 'x':
         grating[::every, :] = torch.exp(torch.tensor(1j*add))
