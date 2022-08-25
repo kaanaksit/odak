@@ -1,5 +1,4 @@
 import torch
-from torch.functional import norm
 
 
 def crop_steerable_pyramid_filters(filters, size):

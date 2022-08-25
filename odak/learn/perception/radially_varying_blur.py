@@ -1,8 +1,4 @@
-import numpy as np
-import sys
 import torch
-from math import floor
-import math
 
 from .foveation import make_pooling_size_map_lod
 

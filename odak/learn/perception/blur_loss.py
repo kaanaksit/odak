@@ -1,6 +1,7 @@
 import torch
 
 from .radially_varying_blur import RadiallyVaryingBlur
+from .util import check_loss_inputs
 
 
 class BlurLoss():
@@ -68,6 +69,7 @@ class BlurLoss():
         loss                : torch.tensor
                                 The computed loss.
         """
+        check_loss_inputs("BlurLoss", image, target)
         blurred_target = self.blur_image(target, gaze)
         if self.blur_source:
             blurred_image = self.blur_image(image, gaze)

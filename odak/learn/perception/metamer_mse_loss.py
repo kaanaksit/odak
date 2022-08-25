@@ -1,9 +1,9 @@
 import torch
-import math
 
 from .metameric_loss import MetamericLoss
 from .color_conversion import ycrcb_2_rgb, rgb_2_ycrcb
 from .spatial_steerable_pyramid import pad_image_for_pyramid
+from .util import check_loss_inputs
 
 
 class MetamerMSELoss():
@@ -128,6 +128,7 @@ class MetamerMSELoss():
         loss                : torch.tensor
                                 The computed loss.
         """
+        check_loss_inputs("MetamerMSELoss", image, target)
         # Pad image and target if necessary
         image = pad_image_for_pyramid(image, self.metameric_loss.n_pyramid_levels)
         target = pad_image_for_pyramid(target, self.metameric_loss.n_pyramid_levels)
