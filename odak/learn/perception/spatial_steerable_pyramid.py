@@ -1,7 +1,7 @@
 from .steerable_pyramid_filters import get_steerable_pyramid_filters
 import torch
-import numpy as np
 import math
+
 
 def pad_image_for_pyramid(image, n_pyramid_levels):
     """

@@ -1,11 +1,10 @@
-from os import stat
 import torch
-import math
 
-from .color_conversion import ycrcb_2_rgb, rgb_2_ycrcb
+from .color_conversion import rgb_2_ycrcb
 from .spatial_steerable_pyramid import SpatialSteerablePyramid, pad_image_for_pyramid
 from .radially_varying_blur import RadiallyVaryingBlur
 from .foveation import make_radial_map
+from .util import check_loss_inputs
 
 
 class MetamericLoss():
@@ -208,13 +207,11 @@ class MetamericLoss():
         loss                : torch.tensor
                                 The computed loss.
         """
-        # TODO if input is RGB, convert to YCrCb.
-        if image.size(1) != target.size(1):
-            raise Exception(
-                "MetamericLoss ERROR: Input and target must have same number of channels.")
+        check_loss_inputs("MetamericLoss", image, target)
         # Pad image and target if necessary
         image = pad_image_for_pyramid(image, self.n_pyramid_levels)
         target = pad_image_for_pyramid(target, self.n_pyramid_levels)
+        # If input is RGB, convert to YCrCb.
         if image.size(1) == 3 and image_colorspace == "RGB":
             image = rgb_2_ycrcb(image)
             target = rgb_2_ycrcb(target)
