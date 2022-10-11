@@ -11,9 +11,17 @@ copyright: 'Copyright &copy; 2022'
 
 nav:
   - Getting started: 'index.md'
-  - Computer-Generated Holography: 'cgh.md'
-  - General toolkit: 'toolkit.md'
-  - Visual perception: 'perception.md'
+  - Computer-Generated Holography:
+    - Introduction: 'cgh.md'
+    - odak.wave: 'odak/wave.md'
+    - odak.learn.wave: 'odak/learn_wave.md'
+  - General toolkit:
+    - Introduction: 'toolkit.md'
+    - odak.tools: 'odak/tools.md'
+    - odak.learn.tools: 'odak/learn_tools.md'
+  - Visual perception:
+    - Introduction: 'perception.md'
+    - odak.learn.perception: 'odak/learn_perception.md'
   - Contributing: 'contributing.md'
 
 theme:

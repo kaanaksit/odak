@@ -4,8 +4,8 @@ We designed this page to help first time users, new contributors, and existing u
 
 ## New Users
 
-- [`What is Odak?`](odak/beginning.md)
-- [`Installation`](odak/installation.md)
+- [`What is Odak?`](beginning.md)
+- [`Installation`](installation.md)
 
 ## Use cases
 

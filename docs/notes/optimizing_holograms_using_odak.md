@@ -86,7 +86,7 @@ from odak.learn.wave import gerchberg_saxton
 ```
 
 and almost as easy as replacing `stochastic_gradient_descent` with `gerchberg_saxton` in the upcoming described hologram routine.
-For greater details, consult to [documentation of odak.learn.wave.gerchberg_saxton](../odak/wave/gerchberg_saxton.md).
+For greater details, consult to [documentation of odak.learn.wave](../odak/learn_wave.md).
 
 ## Stochastic Gradient Descent approach
 We have prepared a function for you to avoid compiling a differentiable hologram optimizer from scratch.

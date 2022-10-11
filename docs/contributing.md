@@ -3,7 +3,7 @@
 Odak is in constant development. 
 We shape Odak according to the most current needs in our scientific research.
 We welcome both users and developers in the open-source community as long as they have good intentions (e.g., scientific research).
-For the most recent description of Odak, please consult [our description](odak/beginning.md).
+For the most recent description of Odak, please consult [our description](beginning.md).
 If you are planning to use Odak for industrial purposes, please reach out to [Kaan Akşit](mailto:kaanaksit@kaanaksit.com).
 All of the Odak contributors are listed in our [`THANKS.txt`](https://github.com/kunguz/odak/blob/master/THANKS.txt) and added to [`CITATION.cff`](https://github.com/kunguz/odak/blob/master/CITATION.cff) regardless of how much they contribute to the project.
 Their names are also included in our [Digital Object Identifier (DOI) page](https://zenodo.org/record/5526684).
@@ -18,7 +18,7 @@ Another potential place to identify likely means to improve odak is to address o
 ### Code
 Odak's `odak` directory contains the source code. 
 To add to it, please make sure that you can install and test Odak on your local computer.
-The [installation documentation](odak/installation.md) contains routines for installation and testing, please follow that page carefully.
+The [installation documentation](installation.md) contains routines for installation and testing, please follow that page carefully.
 
 We typically work with `pull requests`. 
 If you want to add new code to Odak, please do not hesitate to fork Odak's git repository and have your modifications on your fork at first.
@@ -60,7 +60,7 @@ If you are interested in improving the documentation of Odak, this directory is 
 
 Odak's documentation is built using [`mkdocs`](https://www.mkdocs.org/).
 At this point, I assume that you have successfully installed Odak on your system.
-If you haven't yet, please follow [installation documentation](odak/installation.md).
+If you haven't yet, please follow [installation documentation](installation.md).
 To be able to run documentation locally, make sure to have the correct dependencies installed properly:
 
 ```
