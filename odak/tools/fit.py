@@ -34,6 +34,28 @@ def gradient_descent_1d(
                     ):
     """
     Vanilla Gradient Descent algorithm for 1D data.
+    
+    Parameters
+    ----------
+    input_data        : torch.tensor
+                        One-dimensional input data.
+    ground_truth_data : torch.tensor
+                        One-dimensional ground truth data.
+    parameters        : torch.tensor
+                        Parameters to be optimized.
+    function          : function
+                        Function to estimate an output using the parameters.
+    gradient_function : function
+                        Function used in estimating gradient to update parameters at each iteration.
+    learning rate     : float
+                        Learning rate.
+    iteration_number  : int
+                        Iteration number.
+                        
+    Returns
+    -------
+    parameters        : torch.tensor
+                        Optimized/estimated parameters.
     """
     t = tqdm(range(iteration_number))
     for i in t:
