@@ -3,7 +3,7 @@ import os
 import json
 import pathlib
 import numpy as np
-from PIL import Image
+import imageio
 
 
 def resize_image(img, target_size):
@@ -32,7 +32,7 @@ def resize_image(img, target_size):
     return img
 
 
-def save_image(fn, img, cmin=0, cmax=255):
+def save_image(fn, img, bit=8, cmin=0, cmax=255):
     """
     Definition to save a Numpy array as an image.
 
@@ -54,23 +54,19 @@ def save_image(fn, img, cmin=0, cmax=255):
 
     """
     input_img = np.copy(img).astype(np.float64)
-    colorflag = False
-    if len(input_img.shape) == 3:
-        if input_img.shape[2] > 1:
-            input_img = input_img[:, :, 0:3]
-            colorflag = True
     cmin = float(cmin)
     cmax = float(cmax)
     input_img[input_img < cmin] = cmin
     input_img[input_img > cmax] = cmax
     input_img /= cmax
-    input_img *= 255
-    input_img = input_img.astype(np.uint8)
-    if colorflag == True:
-        result_img = Image.fromarray(input_img)
-    elif colorflag == False:
-        result_img = Image.fromarray(input_img).convert("L")
-    result_img.save(fn)
+    if bit == 8:
+        input_img *= 255
+        input_img = input_img.astype(np.uint8)
+    if bit == 16:
+        input_img *= 65535
+        input_img = input_img.astype(np.uint16)
+    result_img = input_img
+    imageio.imwrite(fn, result_img, 'PNG-FI')
     return True
 
 
@@ -93,7 +89,7 @@ def load_image(fn, normalizeby=0., torch_style=False):
                     Image loaded as a Numpy array.
 
     """
-    image = np.array(Image.open(fn))
+    image = imageio.imread(fn, 'PNG-FI')
     if normalizeby != 0.:
         image = image * 1. / normalizeby
     if torch_style == True and len(image.shape) > 2:
