@@ -3,7 +3,7 @@ import os
 import json
 import pathlib
 import numpy as np
-import opencv
+import cv2
 
 
 def resize_image(img, target_size):
