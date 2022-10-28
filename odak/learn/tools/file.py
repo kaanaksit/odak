@@ -1,4 +1,3 @@
-from PIL import Image
 import odak.tools
 import torch
 import numpy as np_cpu
