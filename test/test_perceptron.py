@@ -37,6 +37,7 @@ def plot_data(x, y, w, show=True):
     """
     if show == False:
         return
+    import matplotlib.pyplot as plt
     figure = plt.figure()
     plt.scatter(x[:, 0], x[:, 1], c=y[:, 0])
     x1 = [min(x[:, 0]), max(x[:, 0])]
