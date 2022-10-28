@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import sys
 import odak
 
@@ -36,6 +35,8 @@ def plot_data(x, y, w, show=True):
     """
     Function to plot data and a boundary drawn using the given weights.
     """
+    if show == False:
+        return
     figure = plt.figure()
     plt.scatter(x[:, 0], x[:, 1], c=y[:, 0])
     x1 = [min(x[:, 0]), max(x[:, 0])]
@@ -43,8 +44,7 @@ def plot_data(x, y, w, show=True):
     n = - w[0] / w[2]
     x2 = m * x1 + n
     plt.plot(x1, x2)
-    if show == True:
-       plt.show()
+    plt.show()
 
 
 def main():
