@@ -66,10 +66,11 @@ def save_image(fn, img, cmin=0, cmax=255, color_depth=8):
     elif color_depth == 16:
         input_img = input_img.astype(np.uint16)
     if len(input_img.shape) > 2:
-        cache_img = np.copy(input_img)
-        cache_img[:, :, 0] = input_img[:, :, 2]
-        cache_img[:, :, 2] = input_img[:, :, 0]
-        input_img = cache_img
+        if input_img.shape[2] > 1:
+            cache_img = np.copy(input_img)
+            cache_img[:, :, 0] = input_img[:, :, 2]
+            cache_img[:, :, 2] = input_img[:, :, 0]
+            input_img = cache_img
     cv2.imwrite(fn, input_img)
     return True
 
