@@ -104,7 +104,7 @@ def perceptron(x, y, learning_rate=0.1, iteration_number=100):
         for data_id in range(x.shape[0]):
             x_i = np.insert(x[data_id], 0, 1).reshape(-1, 1)
             y_i = y[data_id]
-            y_hat = model(x_i, weights)
+            y_hat = threshold_linear_model(x_i, weights)
             if y_hat - y_i != 0:
                 unsuccessful += 1
                 weights = weights + learning_rate * (y_i - y_hat) * x_i 
