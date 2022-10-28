@@ -59,13 +59,17 @@ def save_image(fn, img, cmin=0, cmax=255, color_depth=8):
     input_img[input_img < cmin] = cmin
     input_img[input_img > cmax] = cmax
     input_img /= cmax
-    input_img *= 2**color_depth
+    input_img = input_img * 1. * (2**color_depth - 1)
+    print(input_img.max())
     if color_depth == 8:
         input_img = input_img.astype(np.uint8)
     elif color_depth == 16:
         input_img = input_img.astype(np.uint16)
     if len(input_img.shape) > 2:
-        input_img = cv2.cvtColor(input_img, cv2.COLOR_RGB2BGR)
+        cache_img = np.copy(input_img)
+        cache_img[:, :, 0] = input_img[:, :, 2]
+        cache_img[:, :, 2] = input_img[:, :, 0]
+        input_img = cache_img
     cv2.imwrite(fn, input_img)
     return True
 
@@ -91,7 +95,10 @@ def load_image(fn, normalizeby=0., torch_style=False):
     """
     image = cv2.imread(fn, cv2.IMREAD_UNCHANGED)
     if len(image.shape) > 2:
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        new_image = np.copy(image)
+        new_image[:, :, 0] = image[:, :, 2]
+        new_image[:, :, 2] = image[:, :, 0]
+        image = new_image
     if normalizeby != 0.:
         image = image * 1. / normalizeby
     if torch_style == True and len(image.shape) > 2:
