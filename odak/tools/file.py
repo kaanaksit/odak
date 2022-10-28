@@ -26,13 +26,11 @@ def resize_image(img, target_size):
                     Resized image.
 
     """
-    img = Image.fromarray(np.uint8(img))
-    img = img.resize(target_size[0], target_size[1])
-    img = np.asarray(img)
+    img = cv2.resize(img, dsize=(target_size[0], target_size[1]), interpolation=cv2.INTER_AREA)
     return img
 
 
-def save_image(fn, img, bit_depth=8, cmin=0, cmax=255):
+def save_image(fn, img, cmin=0, cmax=255, color_depth=8):
     """
     Definition to save a Numpy array as an image.
 
@@ -42,12 +40,12 @@ def save_image(fn, img, bit_depth=8, cmin=0, cmax=255):
                    Filename.
     img          : ndarray
                    A numpy array with NxMx3 or NxMx1 shapes.
-    bit_depth    : int
-                   Pixel color depth in bits, default is eight bits.
     cmin         : int
                    Minimum value that will be interpreted as 0 level in the final image.
     cmax         : int
                    Maximum value that will be interpreted as 255 level in the final image.
+    color_depth  : int
+                   Pixel color depth in bits, default is eight bits.
 
     Returns
     ----------
@@ -55,26 +53,21 @@ def save_image(fn, img, bit_depth=8, cmin=0, cmax=255):
                     True if successful.
 
     """
-    if pixel_depth == 8:
-        input_img = np.copy(img).astype(np.uint8)
-    elif pixel_depth == 16:
-        input_img = np.copy(img).astype(np.uint16)
-    colorflag = False
-    if len(input_img.shape) == 3:
-        if input_img.shape[2] > 1:
-            input_img = input_img[:, :, 0:3]
-            colorflag = True
+    input_img = np.copy(img).astype(np.float64)
     cmin = float(cmin)
     cmax = float(cmax)
     input_img[input_img < cmin] = cmin
     input_img[input_img > cmax] = cmax
     input_img /= cmax
-    input_img *= 2**bit_depth
-    if colorflag == True:
-        result_img = Image.fromarray(input_img)
-    elif colorflag == False:
-        result_img = Image.fromarray(input_img).convert("L")
-    result_img.save(fn)
+    input_img *= 2**color_depth
+    if color_depth == 8:
+        input_img = input_img.astype(np.uint8)
+        print('8 bit')
+    elif color_depth == 16:
+        input_img = input_img.astype(np.uint16)
+    if len(input_img.shape) > 2:
+        input_img = cv2.cvtColor(input_img, cv2.COLOR_RGB2BGR)
+    cv2.imwrite(fn, input_img)
     return True
 
 
@@ -98,7 +91,8 @@ def load_image(fn, normalizeby=0., torch_style=False):
 
     """
     image = cv2.imread(fn, cv2.IMREAD_UNCHANGED)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    if len(image.shape) > 2:
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     if normalizeby != 0.:
         image = image * 1. / normalizeby
     if torch_style == True and len(image.shape) > 2:
