@@ -32,7 +32,7 @@ def resize_image(img, target_size):
     return img
 
 
-def save_image(fn, img, cmin=0, cmax=255):
+def save_image(fn, bit_depth=8, img, cmin=0, cmax=255):
     """
     Definition to save a Numpy array as an image.
 
@@ -42,6 +42,8 @@ def save_image(fn, img, cmin=0, cmax=255):
                    Filename.
     img          : ndarray
                    A numpy array with NxMx3 or NxMx1 shapes.
+    bit_depth    : int
+                   Pixel color depth in bits, default is eight bits.
     cmin         : int
                    Minimum value that will be interpreted as 0 level in the final image.
     cmax         : int
@@ -53,7 +55,10 @@ def save_image(fn, img, cmin=0, cmax=255):
                     True if successful.
 
     """
-    input_img = np.copy(img).astype(np.float64)
+    if pixel_depth == 8:
+        input_img = np.copy(img).astype(np.uint8)
+    elif pixel_depth == 16:
+        input_img = np.copy(img).astype(np.uint16)
     colorflag = False
     if len(input_img.shape) == 3:
         if input_img.shape[2] > 1:
@@ -64,8 +69,7 @@ def save_image(fn, img, cmin=0, cmax=255):
     input_img[input_img < cmin] = cmin
     input_img[input_img > cmax] = cmax
     input_img /= cmax
-    input_img *= 255
-    input_img = input_img.astype(np.uint8)
+    input_img *= 2**bit_depth
     if colorflag == True:
         result_img = Image.fromarray(input_img)
     elif colorflag == False:
