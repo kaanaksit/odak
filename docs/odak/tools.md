@@ -2,7 +2,6 @@
 ::: odak.tools.asset
 ::: odak.tools.conversions
 ::: odak.tools.file
-::: odak.tools.fit
 ::: odak.tools.matrix
 ::: odak.tools.sample
 ::: odak.tools.vector
