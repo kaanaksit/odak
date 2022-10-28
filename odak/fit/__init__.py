@@ -1,3 +1,9 @@
+"""
+``odak.fit``
+===================
+Provides functions to fit models to a provided data. These functions could be best described as a catalog of machine learning models.
+"""
+
 import numpy as np
 from tqdm import tqdm
 
@@ -69,3 +75,63 @@ def gradient_descent_1d(
         description = 'Iteration number:{}, loss:{:0.4f}, parameters:{}'.format(i, loss, np.round(parameters, 2))
         t.set_description(description)
     return parameters
+
+
+def perceptron(x, y, learning_rate=0.1, iteration_number=100):
+    """
+    A function to train a perceptron model.
+
+    Parameters
+    ----------
+    x                : numpy.array
+                       Input X-Y pairs [m x 2].
+    y                : numpy.array
+                       Labels for the input data [m x 1]
+    learning_rate    : float
+                       Learning rate.
+    iteration_number : int
+                       Iteration number.
+
+    Returns
+    -------
+    weights          : numpy.array
+                       Trained weights of our model [3 x 1].
+    """
+    weights = np.zeros((x.shape[1] + 1, 1))
+    t = tqdm(range(iteration_number))
+    for step in t:
+        count_unsuccessful = 0
+        for data_id in range(x.shape[0]):
+            x_i = np.insert(x[data_id], 0, 1).reshape(-1, 1)
+            y_i = y[data_id]
+            y_hat = model(x_i, weights)
+            if y_hat - y_i != 0:
+                unsuccessful += 1
+                weights = weights + learning_rate * (y_i - y_hat) * x_i 
+            description = 'Unsuccessful count: {}/{}'.format(unsuccessful, x.shape[0])
+    return weights
+
+
+def threshold_linear_model(x, w, threshold=0):
+    """
+    A function for thresholding a linear model described with a dot product.
+
+    Parameters
+    ----------
+    x                : numpy.array
+                       Input data [3 x 1].
+    w                : numpy.array
+                       Weights [3 x 1].
+    threshold        : float
+                       Value for thresholding.
+
+    Returns
+    -------
+    result           : int
+                       Estimated class of the input data. It could either be one or zero.
+    """
+    value = np.dot(x.T, w)
+    result = 0
+    if value >= threshold:
+       result = 1
+    return result

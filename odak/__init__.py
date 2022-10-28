@@ -12,6 +12,7 @@ import odak.jones
 import odak.catalog
 import odak.measurement
 import odak.learn
+import odak.fit
 import torch
 import numpy as np
 

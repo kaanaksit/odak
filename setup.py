@@ -26,6 +26,7 @@ setup(
     packages=[
         'odak',
         'odak/raytracing',
+        'odak/fit',
         'odak/jones',
         'odak/tools',
         'odak/wave',
@@ -46,12 +47,12 @@ setup(
         ('', ['LICENSE.txt', 'README.md', 'THANKS.txt', 'requirements.txt'])],
     long_description=read('short_readme.md'),
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
-        "Intended Audience :: Science/Research",
-        "Intended Audience :: Developers",
-        "Topic :: Scientific/Engineering :: Physics",
-        "Programming Language :: Python",
-        "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Science/Research',
+        'Intended Audience :: Developers',
+        'Topic :: Scientific/Engineering :: Physics',
+        'Programming Language :: Python',
+        'License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)',
     ],
     python_requires='>=3.7.5',
 )

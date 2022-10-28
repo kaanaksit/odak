@@ -12,7 +12,7 @@ def test():
     x  = np.linspace(0, 100, 20)
     parameters = [4, 1]
     y  = function(x, parameters)
-    estimated_parameters = odak.tools.least_square_1d(x, y)
+    estimated_parameters = odak.fit.least_square_1d(x, y)
     estimations = function(x, estimated_parameters)
     assert True == True
 
