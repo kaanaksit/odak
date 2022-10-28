@@ -100,7 +100,7 @@ def perceptron(x, y, learning_rate=0.1, iteration_number=100):
     weights = np.zeros((x.shape[1] + 1, 1))
     t = tqdm(range(iteration_number))
     for step in t:
-        count_unsuccessful = 0
+        unsuccessful = 0
         for data_id in range(x.shape[0]):
             x_i = np.insert(x[data_id], 0, 1).reshape(-1, 1)
             y_i = y[data_id]
