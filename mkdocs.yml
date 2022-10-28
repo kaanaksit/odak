@@ -11,6 +11,7 @@ copyright: 'Copyright &copy; 2022'
 
 nav:
   - Getting started: 'index.md'
+  - Contributing: 'contributing.md'
   - Computer-Generated Holography:
     - Introduction: 'cgh.md'
     - odak.wave: 'odak/wave.md'
@@ -19,13 +20,16 @@ nav:
     - Introduction: 'toolkit.md'
     - odak.tools: 'odak/tools.md'
     - odak.learn.tools: 'odak/learn_tools.md'
-  - Visual perception:
-    - Introduction: 'perception.md'
-    - odak.learn.perception: 'odak/learn_perception.md'
   - Machine learning:
     - Introduction: 'machine_learning.md'
     - odak.fit: 'odak/fit.md'
-  - Contributing: 'contributing.md'
+  - Raytracing:
+    - Introduction: 'raytracing.md'
+    - odak.raytracing: 'odak/raytracing.md'
+    - odak.learn.raytracing: 'odak/learn_raytracing.md'
+  - Visual perception:
+    - Introduction: 'perception.md'
+    - odak.learn.perception: 'odak/learn_perception.md'
 
 theme:
     name: material
