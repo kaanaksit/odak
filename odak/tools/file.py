@@ -3,7 +3,7 @@ import os
 import json
 import pathlib
 import numpy as np
-from PIL import Image
+import opencv
 
 
 def resize_image(img, target_size):
@@ -93,7 +93,8 @@ def load_image(fn, normalizeby=0., torch_style=False):
                     Image loaded as a Numpy array.
 
     """
-    image = np.array(Image.open(fn))
+    image = cv2.imread(fn, cv2.IMREAD_UNCHANGED)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     if normalizeby != 0.:
         image = image * 1. / normalizeby
     if torch_style == True and len(image.shape) > 2:
