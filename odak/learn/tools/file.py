@@ -54,11 +54,11 @@ def load_image(fn, normalizeby=0., torch_style=False):
 
     """
     image = odak.tools.load_image(fn, normalizeby=normalizeby, torch_style=torch_style)
-    image = torch.from_numpy(image)
+    image = torch.from_numpy(image * 1.)
     return image
 
 
-def save_image(fn, img, cmin=0, cmax=255):
+def save_image(fn, img, bit=8, cmin=0, cmax=255):
     """
     Definition to save a Numpy array as an image.
 
@@ -68,6 +68,8 @@ def save_image(fn, img, cmin=0, cmax=255):
                    Filename.
     img          : ndarray
                    A numpy array with NxMx3 or NxMx1 shapes.
+    bit          : int
+                   Bit depth of the final image. Supports 8 and 16 bits.
     cmin         : int
                    Minimum value that will be interpreted as 0 level in the final image.
     cmax         : int
@@ -85,4 +87,4 @@ def save_image(fn, img, cmin=0, cmax=255):
             new_img[:, :, i] = img[i].detach().clone()
         img = new_img.detach().clone()
     img = img.cpu().detach().numpy()
-    return odak.tools.save_image(fn, img, cmin, cmax)
+    return odak.tools.save_image(fn, img, bit, cmin, cmax)

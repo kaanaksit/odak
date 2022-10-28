@@ -3,10 +3,11 @@ import os
 import json
 import pathlib
 import numpy as np
-from PIL import Image
+import imageio
+import skimage.transform as st
 
 
-def resize_image(img, target_size):
+def resize_image(img, target_size, bit=8):
     """
     Definition to resize a given image to a target shape.
 
@@ -26,13 +27,15 @@ def resize_image(img, target_size):
                     Resized image.
 
     """
-    img = Image.fromarray(np.uint8(img))
-    img = img.resize(target_size[0], target_size[1])
-    img = np.asarray(img)
-    return img
+    img_resized = st.resize(img, (target_size[0], target_size[1]))
+    if bit == 8:
+        img_resized = (255 * img_resized).astype(np.uint8)
+    if bit == 16:
+        img_resized = (65535 * img_resized).astype(np.uint16)
+    return img_resized
 
 
-def save_image(fn, img, cmin=0, cmax=255):
+def save_image(fn, img, bit=8, cmin=0, cmax=255):
     """
     Definition to save a Numpy array as an image.
 
@@ -42,6 +45,8 @@ def save_image(fn, img, cmin=0, cmax=255):
                    Filename.
     img          : ndarray
                    A numpy array with NxMx3 or NxMx1 shapes.
+    bit          : int
+                   Bit depth of the final image. Supports 8 and 16 bits. 
     cmin         : int
                    Minimum value that will be interpreted as 0 level in the final image.
     cmax         : int
@@ -54,23 +59,19 @@ def save_image(fn, img, cmin=0, cmax=255):
 
     """
     input_img = np.copy(img).astype(np.float64)
-    colorflag = False
-    if len(input_img.shape) == 3:
-        if input_img.shape[2] > 1:
-            input_img = input_img[:, :, 0:3]
-            colorflag = True
     cmin = float(cmin)
     cmax = float(cmax)
     input_img[input_img < cmin] = cmin
     input_img[input_img > cmax] = cmax
     input_img /= cmax
-    input_img *= 255
-    input_img = input_img.astype(np.uint8)
-    if colorflag == True:
-        result_img = Image.fromarray(input_img)
-    elif colorflag == False:
-        result_img = Image.fromarray(input_img).convert("L")
-    result_img.save(fn)
+    if bit == 8:
+        input_img *= 255
+        input_img = input_img.astype(np.uint8)
+    if bit == 16:
+        input_img *= 65535
+        input_img = input_img.astype(np.uint16)
+    result_img = input_img
+    imageio.imwrite(fn, result_img, 'PNG-FI')
     return True
 
 
@@ -93,7 +94,7 @@ def load_image(fn, normalizeby=0., torch_style=False):
                     Image loaded as a Numpy array.
 
     """
-    image = np.array(Image.open(fn))
+    image = imageio.imread(fn, 'PNG-FI')
     if normalizeby != 0.:
         image = image * 1. / normalizeby
     if torch_style == True and len(image.shape) > 2:
