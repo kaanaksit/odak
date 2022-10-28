@@ -32,7 +32,7 @@ def resize_image(img, target_size):
     return img
 
 
-def save_image(fn, bit_depth=8, img, cmin=0, cmax=255):
+def save_image(fn, img, bit_depth=8, cmin=0, cmax=255):
     """
     Definition to save a Numpy array as an image.
 
