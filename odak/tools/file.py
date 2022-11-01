@@ -53,7 +53,7 @@ def save_image(fn, img, cmin=0, cmax=255, color_depth=8):
                     True if successful.
 
     """
-    input_img = np.copy(img).astype(np.float64)
+    input_img = np.copy(img).astype(np.float32)
     cmin = float(cmin)
     cmax = float(cmax)
     input_img[input_img < cmin] = cmin
