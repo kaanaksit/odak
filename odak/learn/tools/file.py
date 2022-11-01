@@ -46,6 +46,7 @@ def load_image(fn, normalizeby=0., torch_style=False):
     torch_style  : bool
                    If set True, it will load an image mxnx3 as 3xmxn.
 
+
     Returns
     ----------
     image        :  ndarray
@@ -57,7 +58,7 @@ def load_image(fn, normalizeby=0., torch_style=False):
     return image
 
 
-def save_image(fn, img, cmin=0, cmax=255):
+def save_image(fn, img, cmin=0, cmax=255, color_depth=8):
     """
     Definition to save a Numpy array as an image.
 
@@ -71,6 +72,9 @@ def save_image(fn, img, cmin=0, cmax=255):
                    Minimum value that will be interpreted as 0 level in the final image.
     cmax         : int
                    Maximum value that will be interpreted as 255 level in the final image.
+    color_depth  : int
+                   Color depth of an image. Default is eight.
+
 
     Returns
     ----------
@@ -84,4 +88,4 @@ def save_image(fn, img, cmin=0, cmax=255):
             new_img[:, :, i] = img[i].detach().clone()
         img = new_img.detach().clone()
     img = img.cpu().detach().numpy()
-    return odak.tools.save_image(fn, img, cmin, cmax)
+    return odak.tools.save_image(fn, img, cmin=cmin, cmax=cmax, color_depth=color_depth)
