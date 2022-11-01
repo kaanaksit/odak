@@ -103,7 +103,7 @@ def load_image(fn, normalizeby=0., torch_style=False):
         image = image * 1. / normalizeby
     if torch_style == True and len(image.shape) > 2:
         image = np.moveaxis(image, -1, 0)
-    return image
+    return image.float()
 
 
 def shell_command(cmd, cwd='.', timeout=None, check=True):
