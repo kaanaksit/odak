@@ -53,7 +53,7 @@ def load_image(fn, normalizeby=0., torch_style=False):
 
     """
     image = odak.tools.load_image(fn, normalizeby=normalizeby, torch_style=torch_style)
-    image = torch.from_numpy(image)
+    image = torch.from_numpy(image).float()
     return image
 
 
