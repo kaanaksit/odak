@@ -47,3 +47,23 @@ def total_variation_loss(frame):
     pixel_count = frame.shape[0] * frame.shape[1] * frame.shape[2] * frame.shape[3]
     loss = ((diff_x**2).sum() + (diff_y**2).sum()) / pixel_count
     return loss
+
+
+def radial_basis_function(value, epsilon=0.5):
+    """
+    Function to pass a value into radial basis function with Gaussian description.
+
+    Parameters
+    ----------
+    value            : torch.tensor
+                       Value(s) to pass to the radial basis function. 
+    epsilon          : float
+                       Epsilon used in the Gaussian radial basis function (e.g., y=e^(-(epsilon x value)^2).
+
+    Returns
+    -------
+    output           : torch.tensor
+                       Output values.
+    """
+    output = torch.exp((-(epsilon * value)**2))
+    return output
