@@ -216,12 +216,12 @@ def make_equi_pooling_size_map_pixels(gaze_angles, image_pixel_size, alpha=0.3, 
     mode                : str
                             Foveation mode (how pooling size varies with eccentricity). Should be "quadratic" or "linear"
     """
-    view_direction = torch.tensor([torch.sin(gaze_angles[0])*torch.cos(gaze_angles[1]), torch.sin(gaze_angles[1]), torch.cos(gaze_angles[0])*torch.cos(gaze_angles[1])])
+    view_direction = torch.tensor([math.sin(gaze_angles[0])*math.cos(gaze_angles[1]), math.sin(gaze_angles[1]), math.cos(gaze_angles[0])*math.cos(gaze_angles[1])])
 
     yaw_angle_map = torch.linspace(-torch.pi, torch.pi, image_pixel_size[1])
-    yaw_angle_map = torch.repeat(yaw_angle_map[None,:], image_pixel_size[0], dim=0)[None,...]
+    yaw_angle_map = yaw_angle_map[None,:].repeat(image_pixel_size[0], 1)[None,...]
     pitch_angle_map = torch.linspace(-torch.pi*0.5, torch.pi*0.5, image_pixel_size[0])
-    pitch_angle_map = torch.repeat(pitch_angle_map[:,None], image_pixel_size[1], dim=1)[None,...]
+    pitch_angle_map = pitch_angle_map[:,None].repeat(1, image_pixel_size[1])[None,...]
 
     dir_map = torch.cat([torch.sin(yaw_angle_map)*torch.cos(pitch_angle_map), torch.sin(pitch_angle_map), torch.cos(yaw_angle_map)*torch.cos(pitch_angle_map)])
     
@@ -269,6 +269,7 @@ def make_equi_pooling_size_map_lod(gaze_angles, image_pixel_size, alpha=0.3, mod
                                 The computed pooling size map, of size HxW.
     """
     pooling_pixel = make_equi_pooling_size_map_pixels(gaze_angles, image_pixel_size, alpha, mode)
+    import matplotlib.pyplot as plt
     pooling_lod = torch.log2(1e-6+pooling_pixel)
     pooling_lod[pooling_lod < 0] = 0
     return pooling_lod

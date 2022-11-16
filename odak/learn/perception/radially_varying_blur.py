@@ -65,7 +65,7 @@ class RadiallyVaryingBlur():
                 self.centre != centre or\
                 self.mode != mode or\
                 self.equi != equi:
-            if not self.equi:
+            if not equi:
                 self.lod_map = make_pooling_size_map_lod(
                     centre, (image.size(-2), image.size(-1)), alpha, real_image_width, real_viewing_distance, mode)
             else:
