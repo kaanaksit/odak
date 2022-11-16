@@ -20,7 +20,7 @@ class MetamericLoss():
     def __init__(self, device=torch.device('cpu'), alpha=0.2, real_image_width=0.2,
                  real_viewing_distance=0.7, n_pyramid_levels=5, mode="quadratic",
                  n_orientations=2, use_l2_foveal_loss=True, fovea_weight=20.0, use_radial_weight=False,
-                 use_fullres_l0=False):
+                 use_fullres_l0=False, equi=False):
         """
         Parameters
         ----------
@@ -71,12 +71,13 @@ class MetamericLoss():
         self.fovea_weight = fovea_weight
         self.use_radial_weight = use_radial_weight
         self.use_fullres_l0 = use_fullres_l0
+        self.equi = equi
         if self.use_fullres_l0 and self.use_l2_foveal_loss:
             raise Exception(
                 "Can't use use_fullres_l0 and use_l2_foveal_loss options together in MetamericLoss!")
 
     def calc_statsmaps(self, image, gaze=None, alpha=0.01, real_image_width=0.3,
-                       real_viewing_distance=0.6, mode="quadratic"):
+                       real_viewing_distance=0.6, mode="quadratic", equi=False):
 
         if self.pyramid_maker is None or \
                 self.pyramid_maker.device != self.device or \
@@ -92,9 +93,9 @@ class MetamericLoss():
 
         def find_stats(image_pyr_level, blur):
             image_means = blur.blur(
-                image_pyr_level, alpha, real_image_width, real_viewing_distance, centre=gaze, mode=mode)
+                image_pyr_level, alpha, real_image_width, real_viewing_distance, centre=gaze, mode=mode, equi=self.equi)
             image_meansq = blur.blur(image_pyr_level*image_pyr_level, alpha,
-                                     real_image_width, real_viewing_distance, centre=gaze, mode=mode)
+                                     real_image_width, real_viewing_distance, centre=gaze, mode=mode, equi=self.equi)
 
             image_vars = image_meansq - (image_means*image_means)
             image_vars[image_vars < 1e-7] = 1e-7

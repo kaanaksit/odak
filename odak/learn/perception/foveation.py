@@ -192,3 +192,83 @@ def make_radial_map(size, gaze):
         torch.pow(cols - pix_gaze[1], 2)
     radii = torch.sqrt(dist_sq)
     return radii/torch.max(radii)
+
+def make_equi_pooling_size_map_pixels(gaze_angles, image_pixel_size, alpha=0.3, mode="quadratic"):
+    """
+    This function makes a map of pooling sizes in pixels, similarly to make_pooling_size_map_pixels, but works on 360 equirectangular images.
+    Input images are assumed to be in equirectangular form - i.e. if you consider a 3D viewing setup where y is the vertical axis, 
+    the x location in the image corresponds to rotation around the y axis (yaw), ranging from -pi to pi. The y location in the image
+    corresponds to pitch, ranging from -pi/2 to pi/2.
+
+    In this setup real_image_width and real_viewing_distance have no effect.
+
+    Note that rather than a 2D image gaze location in [0,1]^2, the gaze should be specified as gaze angles in [-pi,pi]x[-pi/2,pi/2] (yaw, then pitch).
+
+    Parameters
+    ----------
+
+    gaze_angles         : tuple of 2 floats
+                            Gaze direction expressed as angles, in radians.
+    image_pixel_size    : tuple of 2 ints
+                            Dimensions of the image in pixels, as a tuple of (height, width)
+    alpha               : float
+                            Parameter controlling extent of foveation
+    mode                : str
+                            Foveation mode (how pooling size varies with eccentricity). Should be "quadratic" or "linear"
+    """
+    view_direction = torch.tensor([torch.sin(gaze_angles[0])*torch.cos(gaze_angles[1]), torch.sin(gaze_angles[1]), torch.cos(gaze_angles[0])*torch.cos(gaze_angles[1])])
+
+    yaw_angle_map = torch.linspace(-torch.pi, torch.pi, image_pixel_size[1])
+    yaw_angle_map = torch.repeat(yaw_angle_map[None,:], image_pixel_size[0], dim=0)[None,...]
+    pitch_angle_map = torch.linspace(-torch.pi*0.5, torch.pi*0.5, image_pixel_size[0])
+    pitch_angle_map = torch.repeat(pitch_angle_map[:,None], image_pixel_size[1], dim=1)[None,...]
+
+    dir_map = torch.cat([torch.sin(yaw_angle_map)*torch.cos(pitch_angle_map), torch.sin(pitch_angle_map), torch.cos(yaw_angle_map)*torch.cos(pitch_angle_map)])
+    
+    # Work out the pooling region diameter in radians
+    view_dot_dir = torch.sum(view_direction[:,None,None] * dir_map, dim=0)
+    eccentricity = torch.acos(view_dot_dir)
+    pooling_rad = alpha * eccentricity
+    if mode == "quadratic":
+        pooling_rad *= eccentricity
+
+    # The actual pooling region will be an ellipse in the equirectangular image - the length of the major & minor axes
+    # depend on the x & y resolution of the image. We find these two axis lengths (in pixels) and then the area of the ellipse
+    pixels_per_rad_x = image_pixel_size[1] / (2*torch.pi)
+    pixels_per_rad_y = image_pixel_size[0] / (torch.pi)
+    pooling_axis_x = pooling_rad * pixels_per_rad_x
+    pooling_axis_y = pooling_rad * pixels_per_rad_y
+    area = torch.pi * pooling_axis_x * pooling_axis_y * 0.25
+
+    # Now finally find the length of the side of a square of the same area.
+    size = torch.sqrt(torch.abs(area))
+    return size
+
+
+def make_equi_pooling_size_map_lod(gaze_angles, image_pixel_size, alpha=0.3, mode="quadratic"):
+    """ 
+    This function is similar to make_equi_pooling_size_map_pixels, but instead returns a map of LOD levels to sample from
+    to achieve the correct pooling region areas.
+
+    Parameters
+    ----------
+
+    gaze_angles         : tuple of 2 floats
+                            Gaze direction expressed as angles, in radians.
+    image_pixel_size    : tuple of 2 ints
+                            Dimensions of the image in pixels, as a tuple of (height, width)
+    alpha               : float
+                            Parameter controlling extent of foveation
+    mode                : str
+                            Foveation mode (how pooling size varies with eccentricity). Should be "quadratic" or "linear"
+
+    Returns
+    -------
+
+    pooling_size_map        : torch.tensor
+                                The computed pooling size map, of size HxW.
+    """
+    pooling_pixel = make_equi_pooling_size_map_pixels(gaze_angles, image_pixel_size, alpha, mode)
+    pooling_lod = torch.log2(1e-6+pooling_pixel)
+    pooling_lod[pooling_lod < 0] = 0
+    return pooling_lod

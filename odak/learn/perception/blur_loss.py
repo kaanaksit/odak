@@ -16,7 +16,7 @@ class BlurLoss():
 
 
     def __init__(self, device=torch.device("cpu"),
-                 alpha=0.2, real_image_width=0.2, real_viewing_distance=0.7, mode="quadratic", blur_source=False):
+                 alpha=0.2, real_image_width=0.2, real_viewing_distance=0.7, mode="quadratic", blur_source=False, equi=False):
         """
         Parameters
         ----------
@@ -44,11 +44,12 @@ class BlurLoss():
         self.blur = None
         self.loss_func = torch.nn.MSELoss()
         self.blur_source = blur_source
+        self.equi = equi
 
     def blur_image(self, image, gaze):
         if self.blur is None:
             self.blur = RadiallyVaryingBlur()
-        return self.blur.blur(image, self.alpha, self.real_image_width, self.real_viewing_distance, gaze, self.mode)
+        return self.blur.blur(image, self.alpha, self.real_image_width, self.real_viewing_distance, gaze, self.mode, self.equi)
 
     def __call__(self, image, target, gaze=[0.5, 0.5]):
         """ 
