@@ -34,6 +34,11 @@ class BlurLoss():
                                     as you move away from the fovea. We got best results with "quadratic".
         blur_source             : bool
                                     If true, blurs the source image as well as the target before computing the loss.
+        equi                    : bool
+                                    If true, run the loss in equirectangular mode. The input is assumed to be an equirectangular
+                                    format 360 image. The settings real_image_width and real_viewing distance are ignored.
+                                    The gaze argument is instead interpreted as gaze angles, and should be in the range
+                                    [-pi,pi]x[-pi/2,pi]
         """
         self.target = None
         self.device = device

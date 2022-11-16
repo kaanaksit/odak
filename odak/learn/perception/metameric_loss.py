@@ -56,6 +56,11 @@ class MetamericLoss():
         use_fullres_l0          : bool 
                                     If true, stats for the lowpass residual are replaced with blurred versions
                                     of the full-resolution source and target images.
+        equi                    : bool
+                                    If true, run the loss in equirectangular mode. The input is assumed to be an equirectangular
+                                    format 360 image. The settings real_image_width and real_viewing distance are ignored.
+                                    The gaze argument is instead interpreted as gaze angles, and should be in the range
+                                    [-pi,pi]x[-pi/2,pi]
         """
         self.target = None
         self.device = device

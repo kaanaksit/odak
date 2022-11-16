@@ -46,6 +46,11 @@ class RadiallyVaryingBlur():
         mode                    : str 
                                     Foveation mode, either "quadratic" or "linear". Controls how pooling regions grow
                                     as you move away from the fovea. We got best results with "quadratic".
+        equi                    : bool
+                                    If true, run the blur function in equirectangular mode. The input is assumed to be an equirectangular
+                                    format 360 image. The settings real_image_width and real_viewing distance are ignored.
+                                    The centre argument is instead interpreted as gaze angles, and should be in the range
+                                    [-pi,pi]x[-pi/2,pi]
 
         Returns
         -------

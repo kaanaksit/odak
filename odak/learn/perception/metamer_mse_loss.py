@@ -40,6 +40,11 @@ class MetamerMSELoss():
         n_orientations          : int 
                                     Number of orientations in the steerable pyramid. Can be 1, 2, 4 or 6.
                                     Increasing this will increase runtime.
+        equi                    : bool
+                                    If true, run the loss in equirectangular mode. The input is assumed to be an equirectangular
+                                    format 360 image. The settings real_image_width and real_viewing distance are ignored.
+                                    The gaze argument is instead interpreted as gaze angles, and should be in the range
+                                    [-pi,pi]x[-pi/2,pi]
         """
         self.target = None
         self.target_metamer = None
