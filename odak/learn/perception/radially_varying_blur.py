@@ -18,6 +18,7 @@ class RadiallyVaryingBlur():
 
     def __init__(self):
         self.lod_map = None
+        self.equi = None
 
     def blur(self, image, alpha=0.2, real_image_width=0.2, real_viewing_distance=0.7, centre=None, mode="quadratic", equi=False):
         """
