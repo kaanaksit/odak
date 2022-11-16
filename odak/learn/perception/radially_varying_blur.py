@@ -82,6 +82,7 @@ class RadiallyVaryingBlur():
             self.lod_fraction = self.lod_fraction[None, None, ...].repeat(
                 1, image.size(1), 1, 1)
             self.mode = mode
+            self.equi = equi
 
         if self.lod_map.device != image.device:
             self.lod_map = self.lod_map.to(image.device)
