@@ -239,7 +239,7 @@ def band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_paddi
     distance = torch.tensor([distance]).to(field.device)
     nv, nu = field.shape[-1], field.shape[-2]
     y, x = (dx * float(nv), dx * float(nu))
-    fy = torch.linspace(-1 / (2 * dx) + 0.5 / (2 * x), 1 / (2 * dx) - 0.5 / (2 * x), nv, dtype=torch.float32).to(field.device)
+    fy = torch.linspace(-1 / (2 * dx) + 0.5 / (2 * y), 1 / (2 * dx) - 0.5 / (2 * y), nv, dtype=torch.float32).to(field.device)
     fx = torch.linspace(-1 / (2 * dx) + 0.5 / (2 * x), 1 / (2 * dx) - 0.5 / (2 * x), nu, dtype=torch.float32).to(field.device)
     FY, FX = torch.meshgrid(fx, fy, indexing='ij')
     HH = 2 * np.pi * torch.sqrt(1 / wavelength**2 - (FX**2 + FY**2))
