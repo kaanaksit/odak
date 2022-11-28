@@ -67,3 +67,37 @@ def radial_basis_function(value, epsilon=0.5):
     """
     output = torch.exp((-(epsilon * value)**2))
     return output
+
+
+def histogram_loss(frame, ground_truth, bins = 32, limits = [0., 1.]):
+    """
+    Function for evaluating a frame against a target using histogram.
+
+    Parameters
+    ----------
+    frame            : torch.tensor
+                       Input frame [1 x 3 x m x n]  or [3 x m x n] or [1 x m x n] or [m x n].
+    ground_truth     : torch.tensor
+                       Ground truth [1 x 3 x m x n] or  [3 x m x n] or [1 x m x n] or  [m x n].
+    bins             : int
+                       Number of bins.
+    limits           : list
+                       Limits.
+    
+    Returns
+    -------
+    loss             : float
+                       Loss from evaluation.
+    """
+    if len(frame.shape) == 2:
+        frame = frame.unsqueeze(0)
+    if len(frame.shape) == 3:
+        frame = frame.unsqueeze(0)
+    histogram_frame = torch.zeros(frame.shape[1], bins).to(frame.device)
+    histogram_ground_truth = torch.zeros(frame.shape[1], bins).to(frame.device)
+    l2 = torch.nn.MSELoss()
+    for i in range(frame.shape[1]):
+        histogram_frame[i] = torch.histc(frame[:, i].flatten(), bins = bins, min = limits[0], max = limits[1])
+        histogram_ground_truth[i] = torch.histc(frame[:, i].flatten(), bins = bins, min = limits[0], max = limits[1])
+    loss = l2(histogram_frame, histogram_ground_truth)
+    return loss
