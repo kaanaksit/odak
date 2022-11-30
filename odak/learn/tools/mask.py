@@ -21,7 +21,7 @@ def circular_binary_mask(px, py, r):
     """
     x = torch.linspace(-px / 2., px / 2., px)
     y = torch.linspace(-py / 2., py / 2., py)
-    X, Y = torch.meshgrid(x, y)
+    X, Y = torch.meshgrid(x, y, indexing='ij')
     Z = (X ** 2 + Y ** 2) ** 0.5
     mask = torch.zeros_like(Z)
     mask[Z < r] = 1
