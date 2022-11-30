@@ -177,3 +177,29 @@ def blur_gaussian(field, kernel_length=[21, 21], nsigma=[3, 3], padding='same'):
                                            blurred_field.shape[-1]
                                           )
     return blurred_field
+
+
+def convert_rgb_to_yuv(image):
+    """
+    Definition to convert red, green and blue images to YUV color space. Mostly inspired from: https://kornia.readthedocs.io/en/latest/_modules/kornia/color/yuv.html
+
+    Parameters
+    ----------
+    image           : torch.tensor
+                      Input image in RGB color space [k x 3 x m x n] or [3 x m x n].
+    
+    Returns
+    -------
+    image_yuv       : torch.tensor
+                      Output image in YUV color space [k x 3 x m x n].
+    """
+    if len(image.shape) == 3:
+       image = image.unsqueeze(0)
+    red = image[:, 0, :, :]
+    green = image[:, 1, :, :]
+    blue  = image[:, 2, :, :]
+    y = 0.299 * red + 0.587 * green + 0.114 * blue
+    u = -0.147 * red - 0.289 * green + 0.436 * blue
+    v = 0.615 * red - 0.515 * green - 0.100 * blue 
+    image_yuv = torch.stack([y, u, v], dim=0)
+    return image_yuv
