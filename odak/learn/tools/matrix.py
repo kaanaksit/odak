@@ -207,7 +207,7 @@ def convert_rgb_to_yuv(image):
 
 def convert_rgb_to_linear_rgb(image, threshold = 0.0031308):
     """
-    Definition to convert RGB images to linear RGB color space.
+    Definition to convert RGB images to linear RGB color space. Mostly inspired from: https://kornia.readthedocs.io/en/latest/_modules/kornia/color/rgb.html#linear_rgb_to_rgb
 
     Parameters
     ----------
