@@ -31,6 +31,7 @@ setup(
         'odak/tools',
         'odak/wave',
         'odak/learn/wave',
+        'odak/learn/models',
         'odak/learn/tools',
         'odak/learn/perception',
         'odak/learn/raytracing',
