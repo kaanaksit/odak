@@ -10,11 +10,9 @@ We designed this page to help first time users, new contributors, and existing u
 ## Use cases
 
 - [`Computer-generated holography`](cgh.md)
-- `Computer graphics`
-- `Computational imaging`
 - [`General toolkit`](toolkit.md)
-- `Optical design`
-- `Optimization`
+- [`Optical Raytracing`](raytracing.md)
+- [`Machine Learning`](machine_learning.md)
 - [`Visual perception`](perception.md)
 
 ## New contributors
