@@ -13,8 +13,8 @@ nav:
   - Getting started:
     - Introduction: 'index.md'
     - Installation: 'installation.md'
-    - What is Odak: 'beginning.md'
-  - Contributing: 'contributing.md'
+    - What is Odak?: 'beginning.md'
+    - Contributing: 'contributing.md'
   - Computer-Generated Holography:
     - Introduction:
        - Getting Started: 'cgh.md'
