@@ -108,7 +108,7 @@ def convert_yuv_to_rgb(image):
 
 def convert_rgb_to_linear_rgb(image, threshold = 0.0031308):
     """
-    Definition to convert RGB images to linear RGB color space. Mostly inspired from: https://kornia.readthedocs.io/en/latest/_modules/kornia/color/rgb.html#linear_rgb_to_rgb
+    Definition to convert RGB images to linear RGB color space. Mostly inspired from: https://kornia.readthedocs.io/en/latest/_modules/kornia/color/rgb.html
 
     Parameters
     ----------
@@ -124,6 +124,27 @@ def convert_rgb_to_linear_rgb(image, threshold = 0.0031308):
     """
     if len(image.shape) == 3:
         image = image.unsqueeze(0)
-    threshold = 0.0031308
+    image_linear = torch.where(image > 0.04045, torch.pow(((image + 0.055) / 1.055), 2.4), image / 12.92)
+    return image_linear
+
+
+def convert_linear_rgb_to_rgb(image, threshold = 0.0031308):
+    """
+    Definition to convert linear RGB images to RGB color space. Mostly inspired from: https://kornia.readthedocs.io/en/latest/_modules/kornia/color/rgb.html
+
+    Parameters
+    ----------
+    image           : torch.tensor
+                      Input image in linear RGB color space [k x 3 x m x n] or [3 x m x n]. Image(s) must be normalized between zero and one.
+    threshold       : float
+                      Threshold used in calculations.
+
+    Returns
+    -------
+    image_linear    : torch.tensor
+                      Output image in RGB color space [k x 3 x m x n] or [1 x 3 x m x n].
+    """
+    if len(image.shape) == 3:
+        image = image.unsqueeze(0)
     image_linear =  torch.where(image > threshold, 1.055 * torch.pow(image.clamp(min=threshold), 1 / 2.4) - 0.055, 12.92 * image)
     return image_linear
