@@ -10,10 +10,16 @@ repo_url: 'https://github.com/kaanaksit/odak'
 copyright: 'Copyright &copy; 2022'
 
 nav:
-  - Getting started: 'index.md'
+  - Getting started:
+    - Introduction: 'index.md'
+    - Installation: 'installation.md'
+    - What is Odak: 'beginning.md'
   - Contributing: 'contributing.md'
   - Computer-Generated Holography:
-    - Introduction: 'cgh.md'
+    - Introduction:
+       - Getting Started: 'cgh.md'
+       - Holographic Light Transport: 'notes/holographic_light_transport.md'
+       - Hologram Optimization: 'notes/optimizing_holograms_using_odak.md'
     - odak.wave: 'odak/wave.md'
     - odak.learn.wave: 'odak/learn_wave.md'
   - General toolkit:
@@ -29,7 +35,9 @@ nav:
     - odak.raytracing: 'odak/raytracing.md'
     - odak.learn.raytracing: 'odak/learn_raytracing.md'
   - Visual perception:
-    - Introduction: 'perception.md'
+    - Introduction: 
+       - Getting Started: 'perception.md'
+       - Using metameric loss: 'notes/using_metameric_loss.md'
     - odak.learn.perception: 'odak/learn_perception.md'
 
 theme:
