@@ -27,6 +27,33 @@ def convert_rgb_to_yuv(image):
     return image_yuv
 
 
+
+def convert_yuv_to_rgb(image):
+    """
+    Definition to convert YUV images to RGB color space. Mostly inspired from: https://kornia.readthedocs.io/en/latest/_modules/kornia/color/yuv.html
+
+    Parameters
+    ----------
+    image           : torch.tensor
+                      Input image in YUV color space [k x 3 x m x n] or [3 x m x n].
+    
+    Returns
+    -------
+    image_yuv       : torch.tensor
+                      Output image in RGB color space [k x 3 x m x n] or [1 x 3 x m x n].
+    """
+    if len(image.shape) == 3:
+       image = image.unsqueeze(0)
+    y = image[:, 0, :, :]
+    u = image[:, 1, :, :]
+    v = image[:, 2, :, :]
+    image_rgb = torch.zeros_like(image)
+    image_rgb[:, 0, :, :] = y + 1.14 * v
+    image_rgb[:, 1, :, :] = y + -0.396 * u - 0.581 * v
+    image_rgb[:, 2, :, :] = y + 2.029 * u
+    return image_rgb
+
+
 def convert_rgb_to_linear_rgb(image, threshold = 0.0031308):
     """
     Definition to convert RGB images to linear RGB color space. Mostly inspired from: https://kornia.readthedocs.io/en/latest/_modules/kornia/color/rgb.html#linear_rgb_to_rgb
