@@ -4,7 +4,7 @@ site_description: The fundamental library for scientific computing in optical an
 site_author: Kaan Akşit
 site_url: 'https://kaanaksit.github.io/odak/'
 
-repo_name: kunguz/odak
+repo_name: kaanaksit/odak
 repo_url: 'https://github.com/kaanaksit/odak'
 
 copyright: 'Copyright &copy; 2022'
