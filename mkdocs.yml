@@ -23,6 +23,7 @@ nav:
   - Machine learning:
     - Introduction: 'machine_learning.md'
     - odak.fit: 'odak/fit.md'
+    - odak.learn.models : 'odak/learn_models.md'
   - Raytracing:
     - Introduction: 'raytracing.md'
     - odak.raytracing: 'odak/raytracing.md'
