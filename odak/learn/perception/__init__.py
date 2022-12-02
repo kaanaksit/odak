@@ -15,4 +15,3 @@ from .metameric_loss import *
 from .metameric_loss_uniform import *
 from .metamer_mse_loss import *
 from .blur_loss import *
-from .color import *
