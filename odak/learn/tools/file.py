@@ -3,7 +3,7 @@ import torch
 import numpy as np_cpu
 
 
-def resize(image, multiplier=0.5, mode='nearest'):
+def resize(image, multiplier = 0.5, mode = 'nearest'):
     """
     Definition to resize an image.
 
@@ -22,7 +22,7 @@ def resize(image, multiplier=0.5, mode='nearest'):
                     Resized image.
 
     """
-    scale = torch.nn.Upsample(scale_factor=multiplier, mode=mode)
+    scale = torch.nn.Upsample(scale_factor = multiplier, mode = mode)
     new_image = torch.zeros((int(image.shape[0] * multiplier), int(image.shape[1] * multiplier), 3)).to(image.device)
     for i in range(3):
         cache = image[:,:,i].unsqueeze(0)
@@ -32,8 +32,7 @@ def resize(image, multiplier=0.5, mode='nearest'):
     return new_image
 
 
-
-def load_image(fn, normalizeby=0., torch_style=False):
+def load_image(fn, normalizeby = 0., torch_style = False):
     """
     Definition to load an image from a given location as a Numpy array.
 
