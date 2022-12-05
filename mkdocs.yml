@@ -4,16 +4,22 @@ site_description: The fundamental library for scientific computing in optical an
 site_author: Kaan Akşit
 site_url: 'https://kaanaksit.github.io/odak/'
 
-repo_name: kunguz/odak
+repo_name: kaanaksit/odak
 repo_url: 'https://github.com/kaanaksit/odak'
 
 copyright: 'Copyright &copy; 2022'
 
 nav:
-  - Getting started: 'index.md'
-  - Contributing: 'contributing.md'
+  - Getting started:
+    - Introduction: 'index.md'
+    - Installation: 'installation.md'
+    - What is Odak?: 'beginning.md'
+    - Contributing: 'contributing.md'
   - Computer-Generated Holography:
-    - Introduction: 'cgh.md'
+    - Introduction:
+       - Getting Started: 'cgh.md'
+       - Holographic Light Transport: 'notes/holographic_light_transport.md'
+       - Hologram Optimization: 'notes/optimizing_holograms_using_odak.md'
     - odak.wave: 'odak/wave.md'
     - odak.learn.wave: 'odak/learn_wave.md'
   - General toolkit:
@@ -23,12 +29,15 @@ nav:
   - Machine learning:
     - Introduction: 'machine_learning.md'
     - odak.fit: 'odak/fit.md'
+    - odak.learn.models : 'odak/learn_models.md'
   - Raytracing:
     - Introduction: 'raytracing.md'
     - odak.raytracing: 'odak/raytracing.md'
     - odak.learn.raytracing: 'odak/learn_raytracing.md'
   - Visual perception:
-    - Introduction: 'perception.md'
+    - Introduction: 
+       - Getting Started: 'perception.md'
+       - Using metameric loss: 'notes/using_metameric_loss.md'
     - odak.learn.perception: 'odak/learn_perception.md'
 
 theme:

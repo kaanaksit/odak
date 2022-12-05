@@ -10,7 +10,7 @@ class MetamerMSELoss():
     """ 
     The `MetamerMSELoss` class provides a perceptual loss function. This generates a metamer for the target image, and then optimises the source image to be the same as this target image metamer.
 
-    Please note this is different to [`MetamericLoss`](metameric_loss.md) which optimises the source image to be any metamer of the target image.
+    Please note this is different to [`MetamericLoss`](../../notes/using_metameric_loss/) which optimises the source image to be any metamer of the target image.
 
     Its interface is similar to other `pytorch` loss functions, but note that the gaze location must be provided in addition to the source and target images.
     """

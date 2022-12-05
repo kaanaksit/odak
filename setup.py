@@ -31,6 +31,7 @@ setup(
         'odak/tools',
         'odak/wave',
         'odak/learn/wave',
+        'odak/learn/models',
         'odak/learn/tools',
         'odak/learn/perception',
         'odak/learn/raytracing',
@@ -44,7 +45,7 @@ setup(
     package_dir={'odak': 'odak'},
     package_data={'odak': ['catalog/data/*.json']},
     data_files=[
-        ('', ['LICENSE.txt', 'README.md', 'THANKS.txt', 'requirements.txt'])],
+        ('', ['LICENSE.txt', 'README.md', 'THANKS.txt', 'requirements.txt', 'short_readme.md'])],
     long_description=read('short_readme.md'),
     classifiers=[
         'Development Status :: 5 - Production/Stable',

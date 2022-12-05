@@ -88,7 +88,7 @@ class multi_layer_perceptron(nn.Module):
         filename        : str
                           Filename.
         """
-        torch.save(self.parameters, filename)
+        torch.save(self.state_dict(), filename)
 
 
     def load_weights(self, filename='./weights.pt'):
@@ -100,5 +100,5 @@ class multi_layer_perceptron(nn.Module):
         filename        : str
                           Filename.
         """
-        self.parameters = torch.load(filename)
+        self.load_state_dict(torch.load(filename))
 
