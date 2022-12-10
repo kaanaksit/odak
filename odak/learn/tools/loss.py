@@ -27,12 +27,14 @@ def psnr(image, ground_truth, peak_value = 1.0):
 
 def multi_scale_total_variation_loss(frame, levels = 3):
     """
-    Function for evaluating a frame against a target using multi scale total variation approach.
+    Function for evaluating a frame against a target using multi scale total variation approach. Here, multi scale refers to image pyramid of an input frame, where at each level image resolution is half of the previous level.
         
     Parameters
     ----------
     frame         : torch.tensor
                     Input frame [1 x 3 x m x n] or [3 x m x n] or [m x n].
+    levels        : int
+                    Number of levels to go in the image pyriamid.
 
     Returns
     -------
