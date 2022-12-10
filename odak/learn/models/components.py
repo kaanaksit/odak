@@ -192,4 +192,45 @@ class double_convolution(torch.nn.Module):
         result = self.model(x)
         return result
 
-   
+
+class normalization(torch.nn.Module):
+    """
+    A normalization layer.
+    """
+    def __init__(
+                 self,
+                 dim = 0,
+                ):
+        """
+        Normalization layer.
+
+
+        Parameters
+        ----------
+        dim             : int
+                          Dimension (axis) to normalize.
+        """
+        super().__init__()
+        self.k = torch.nn.Parameter(torch.ones(1, dim, 1, 1))
+
+
+    def forward(self, x):
+        """
+        Forward model.
+        
+        Parameters
+        ----------
+        x             : torch.tensor
+                        Input data.
+      
+ 
+        Returns
+        ----------
+        result        : torch.tensor
+                        Estimated output.      
+        """
+        eps = 1e-5 if x.dtype == torch.float32 else 1e-3
+        var = torch.var(x, dim = 1, unbiased = False, keepdim = True)
+        mean = torch.mean(x, dim = 1, keepdim = True)
+        result =  (x - mean) * (var + eps).rsqrt() * self.k
+        return result 
