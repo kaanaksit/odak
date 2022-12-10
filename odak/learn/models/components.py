@@ -199,7 +199,7 @@ class normalization(torch.nn.Module):
     """
     def __init__(
                  self,
-                 dim = 0,
+                 dim = 1,
                 ):
         """
         Normalization layer.
