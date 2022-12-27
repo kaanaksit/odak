@@ -104,9 +104,9 @@ class plano_convex_lens():
             self.plane_surface[0][2]
         )
         surface_normals = np.array(
-            [convex_normal, plane_normal], dtype=np.float)
+            [convex_normal, plane_normal], dtype=np.float64)
         surface_distances = np.array(
-            [convex_distance, plane_distance], dtype=np.float)
+            [convex_distance, plane_distance], dtype=np.float64)
         which_surface = np.amin(surface_distances, axis=0)
         ids = np.where(surface_distances == which_surface)
         ids = np.asarray(ids)

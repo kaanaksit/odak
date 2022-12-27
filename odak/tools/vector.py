@@ -19,7 +19,7 @@ def cross_product(vector1, vector2):
     """
     angle = np.cross(vector1[1].T, vector2[1].T)
     angle = np.asarray(angle)
-    ray = np.array([vector1[0], angle], dtype=np.float)
+    ray = np.array([vector1[0], angle], dtype=np.float32)
     return ray
 
 

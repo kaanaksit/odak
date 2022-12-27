@@ -22,13 +22,13 @@ def create_ray(x0y0z0, abg):
     x0, y0, z0 = x0y0z0
     alpha, beta, gamma = abg
     # Create a vector with the given points and angles in each direction
-    point = np.array([x0, y0, z0], dtype=np.float)
+    point = np.array([x0, y0, z0], dtype=np.float64)
     alpha = np.cos(np.radians(alpha))
     beta = np.cos(np.radians(beta))
     gamma = np.cos(np.radians(gamma))
     # Cosines vector.
-    cosines = np.array([alpha, beta, gamma], dtype=np.float)
-    ray = np.array([point, cosines], dtype=np.float)
+    cosines = np.array([alpha, beta, gamma], dtype=np.float64)
+    ray = np.array([point, cosines], dtype=np.float64)
     return ray
 
 
@@ -48,8 +48,8 @@ def create_ray_from_two_points(x0y0z0, x1y1z1):
     ray          : ndarray
                    Array that contains starting points and cosines of a created ray.
     """
-    x0y0z0 = np.asarray(x0y0z0, dtype=np.float)
-    x1y1z1 = np.asarray(x1y1z1, dtype=np.float)
+    x0y0z0 = np.asarray(x0y0z0, dtype=np.float64)
+    x1y1z1 = np.asarray(x1y1z1, dtype=np.float64)
     if len(x0y0z0.shape) == 1:
         x0y0z0 = x0y0z0.reshape((1, 3))
     if len(x1y1z1.shape) == 1:
@@ -63,7 +63,7 @@ def create_ray_from_two_points(x0y0z0, x1y1z1):
     cosines[:, 0] = xdiff/s
     cosines[:, 1] = ydiff/s
     cosines[:, 2] = zdiff/s
-    ray = np.zeros((xdiff.shape[0], 2, 3), dtype=np.float)
+    ray = np.zeros((xdiff.shape[0], 2, 3), dtype=np.float64)
     ray[:, 0] = x0y0z0
     ray[:, 1] = cosines
     if ray.shape[0] == 1:
