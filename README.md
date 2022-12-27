@@ -42,7 +42,7 @@ We prepared a [documentation](https://kaanaksit.github.io/odak) on usage and muc
 If you have used `odak` in your research project, please consider citing any of the following works:
 
 
-```
+```bibtex
 @inproceedings{kavakli2022introduction,
   title={Introduction to Odak: a Differentiable Toolkit for Optical Sciences, Vision Sciences and Computer Graphics},
   author={Kavakl{\i}, Koray and Ak{\c{s}}it, Kaan},
