@@ -205,7 +205,7 @@ def quantize(image_field, bits=4):
     """
     divider = 2**(8-bits)
     new_field = image_field/divider
-    new_field = new_field.astype(np.int)
+    new_field = new_field.astype(np.int64)
     return new_field
 
 
