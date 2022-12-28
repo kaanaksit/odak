@@ -23,7 +23,7 @@ def create_ray(x0y0z0, abg):
     x0, y0, z0 = x0y0z0
     alpha, beta, gamma = abg
     # Create a vector with the given points and angles in each direction
-    point = torch.tensor([x0, y0, z0], dtype=np.float)
+    point = torch.tensor([x0, y0, z0], dtype=torch.float64)
     alpha = torch.cos(torch.radians(torch.tensor([alpha])))
     beta = torch.cos(torch.radians(torch.tensor([beta])))
     gamma = torch.cos(torch.radians(torch.tensor([gamma])))
