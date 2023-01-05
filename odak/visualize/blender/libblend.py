@@ -94,7 +94,7 @@ def create_ray_from_two_points(x0y0z0, x1y1z1):
     x0, y0, z0 = x0y0z0
     x1, y1, z1 = x1y1z1
     # Create a vector from two given points.
-    point = np.array([x0, y0, z0], dtype=np.float)
+    point = np.array([x0, y0, z0], dtype=np.float32)
     # Distance between two points.
     s = np.sqrt(pow((x0-x1), 2) + pow((y0-y1), 2) + pow((z0-z1), 2))
     if s != 0:
@@ -106,9 +106,9 @@ def create_ray_from_two_points(x0y0z0, x1y1z1):
         beta = float('nan')
         gamma = float('nan')
     # Cosines vector
-    cosines = np.array([alpha, beta, gamma], dtype=np.float)
+    cosines = np.array([alpha, beta, gamma], dtype=np.float32)
     # Returns vector and the distance.
-    ray = np.array([point, cosines], dtype=np.float)
+    ray = np.array([point, cosines], dtype=np.float32)
     return ray, s
 
 

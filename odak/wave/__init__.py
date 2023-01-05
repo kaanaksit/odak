@@ -232,7 +232,7 @@ def produce_phase_only_slm_pattern(hologram, slm_range, filename=None, bits=8, d
     hologram_phase = hologram_phase % slm_range
     hologram_phase /= slm_range
     hologram_phase *= 2**bits
-    hologram_phase = hologram_phase.astype(np.int)
+    hologram_phase = hologram_phase.astype(np.int32)
     hologram_digital = np.copy(hologram_phase)
     if type(filename) != type(None):
         save_image(
@@ -241,7 +241,7 @@ def produce_phase_only_slm_pattern(hologram, slm_range, filename=None, bits=8, d
             cmin=0,
             cmax=2**bits
         )
-    hologram_phase = hologram_phase.astype(np.float)
+    hologram_phase = hologram_phase.astype(np.float64)
     hologram_phase *= slm_range/2**bits
     if type(illumination) == type(None):
         A = 1.

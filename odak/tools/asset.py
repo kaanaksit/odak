@@ -43,7 +43,7 @@ def read_PLY(fn, offset=[0, 0, 0], angles=[0., 0., 0.], mode='XYZ'):
         triangle = np_ply.asarray(triangle)
         triangles.append(triangle)
     triangles = np_ply.array(triangles)
-    triangles = np.asarray(triangles, dtype=np.float)
+    triangles = np.asarray(triangles, dtype=np.float32)
     return triangles
 
 

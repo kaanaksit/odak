@@ -553,7 +553,7 @@ def gerchberg_saxton_3d(fields, n_iterations, distances, dx, wavelength, slm_ran
                        Calculated complex hologram.
     """
     k = wavenumber(wavelength)
-    targets = calculate_amplitude(np.asarray(fields)).astype(np.float)
+    targets = calculate_amplitude(np.asarray(fields)).astype(np.float64)
     hologram = generate_complex_field(np.ones(targets[0].shape), 0)
     hologram = zero_pad(hologram)
     if type(initial_phase) == type(None):

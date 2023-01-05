@@ -38,3 +38,29 @@ We prepared a [documentation](https://kaanaksit.github.io/odak) on usage and muc
 | <img width="240" src="https://github.com/kunguz/odak/raw/master/media/learned_holographic_light_transport.gif">  [Learned Holographic Light Transport](https://github.com/complight/realistic_holography) | <img width="240" src="https://github.com/kaanaksit/odak/raw/master/media/phase_shifting_qwp.gif">  [Phase-shifting Trichromat Quadratic Phase Function](https://gist.github.com/kaanaksit/f9bcd8c72b4ef5e078dfb0a81b6806c5) | | 
 
 
+## How to cite
+If you have used `odak` in your research project, please consider citing any of the following works:
+
+
+```bibtex
+@inproceedings{kavakli2022introduction,
+  title={Introduction to Odak: a Differentiable Toolkit for Optical Sciences, Vision Sciences and Computer Graphics},
+  author={Kavakl{\i}, Koray and Ak{\c{s}}it, Kaan},
+  booktitle={Frontiers in Optics},
+  pages={FTu1A--1},
+  year={2022},
+  organization={Optica Publishing Group}
+}
+
+
+@incollection{kavakli2022optimizing,
+  title={Optimizing vision and visuals: lectures on cameras, displays and perception},
+  author={Kavakli, Koray and Walton, David Robert and Antipa, Nick and Mantiuk, Rafa{\l} and Lanman, Douglas and Ak{\c{s}}it, Kaan},
+  booktitle={ACM SIGGRAPH 2022 Courses},
+  pages={1--66},
+  year={2022}
+}
+
+```
+
+For adding the link of this repository in your publication, please use [Zenodo's citation](https://zenodo.org/badge/latestdoi/3987171).

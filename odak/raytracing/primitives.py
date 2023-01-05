@@ -24,7 +24,7 @@ def define_plane(point, angles=[0., 0., 0.]):
         [10., 10., 0.],
         [0., 10., 0.],
         [0.,  0., 0.]
-    ], dtype=np.float)
+    ], dtype=np.float64)
     point = np.asarray(point)
     for i in range(0, plane.shape[0]):
         plane[i], _, _, _ = rotate_point(plane[i], angles=angles)
@@ -157,7 +157,7 @@ def define_sphere(center, radius):
                  Single variable packed form.
     """
     sphere = np.array(
-        [center[0], center[1], center[2], radius], dtype=np.float)
+        [center[0], center[1], center[2], radius], dtype=np.float64)
     return sphere
 
 
@@ -215,7 +215,7 @@ def define_cylinder(center, radius, rotation=[0., 0., 0.]):
             center[1]+cylinder_ray[1, 1],
             center[2]+cylinder_ray[1, 2]
         ],
-        dtype=np.float
+        dtype=np.float64
     )
     return cylinder
 
@@ -241,8 +241,8 @@ def cylinder_function(point, cylinder):
         point = point.reshape((1, 3))
     distance = point_to_ray_distance(
         point,
-        np.array([cylinder[0], cylinder[1], cylinder[2]], dtype=np.float),
-        np.array([cylinder[4], cylinder[5], cylinder[6]], dtype=np.float)
+        np.array([cylinder[0], cylinder[1], cylinder[2]], dtype=np.float64),
+        np.array([cylinder[4], cylinder[5], cylinder[6]], dtype=np.float64)
     )
     r = cylinder[3]
     result = distance-r**2

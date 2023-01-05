@@ -31,7 +31,7 @@ def reflect(input_ray, normal):
     a = mu * (input_ray[:, 1, 0]*normal[:, 1, 0]
               + input_ray[:, 1, 1]*normal[:, 1, 1]
               + input_ray[:, 1, 2]*normal[:, 1, 2]) / div
-    n = np.int(np.amax(np.array([normal.shape[0], input_ray.shape[0]])))
+    n = np.int64(np.amax(np.array([normal.shape[0], input_ray.shape[0]])))
     output_ray = np.zeros((n, 2, 3))
     output_ray[:, 0] = normal[:, 0]
     output_ray[:, 1] = input_ray[:, 1]-2*a*normal[:, 1]
@@ -68,7 +68,7 @@ def intersect_w_surface(ray, points):
         normal = normal.reshape((1, 2, 3))
     f = normal[:, 0]-ray[:, 0]
     distance = np.dot(normal[:, 1], f.T)/np.dot(normal[:, 1], ray[:, 1].T)
-    n = np.int(np.amax(np.array([ray.shape[0], normal.shape[0]])))
+    n = np.int64(np.amax(np.array([ray.shape[0], normal.shape[0]])))
     normal = np.zeros((n, 2, 3))
     normal[:, 0] = ray[:, 0]+distance.T*ray[:, 1]
     distance = np.abs(distance)

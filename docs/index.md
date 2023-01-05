@@ -21,6 +21,6 @@ We designed this page to help first time users, new contributors, and existing u
 
 ## Additional information
 
-- [`Citing Odak in a scientific publication`](https://zenodo.org/record/5526684/export/hx)
-- [`License of Odak`](https://github.com/kunguz/odak/blob/master/LICENSE.txt)
-- [`Reporting bugs or requesting a feature`](https://github.com/kunguz/odak/issues)
+- [`Citing Odak in a scientific publication using Zenodo`](https://github.com/kaanaksit/odak#how-to-cite)
+- [`License of Odak`](https://github.com/kaanaksit/odak/blob/master/LICENSE.txt)
+- [`Reporting bugs or requesting a feature`](https://github.com/kaanaksit/odak/issues)
