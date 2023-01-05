@@ -18,7 +18,7 @@ class MetamerMSELoss():
 
     def __init__(self, device=torch.device("cpu"),
                  alpha=0.2, real_image_width=0.2, real_viewing_distance=0.7, mode="quadratic",
-                 n_pyramid_levels=5, n_orientations=2):
+                 n_pyramid_levels=5, n_orientations=2, equi=False):
         """
         Parameters
         ----------
@@ -40,13 +40,19 @@ class MetamerMSELoss():
         n_orientations          : int 
                                     Number of orientations in the steerable pyramid. Can be 1, 2, 4 or 6.
                                     Increasing this will increase runtime.
+        equi                    : bool
+                                    If true, run the loss in equirectangular mode. The input is assumed to be an equirectangular
+                                    format 360 image. The settings real_image_width and real_viewing distance are ignored.
+                                    The gaze argument is instead interpreted as gaze angles, and should be in the range
+                                    [-pi,pi]x[-pi/2,pi]
         """
         self.target = None
         self.target_metamer = None
         self.metameric_loss = MetamericLoss(device=device, alpha=alpha, real_image_width=real_image_width,
                                             real_viewing_distance=real_viewing_distance,
-                                            n_pyramid_levels=n_pyramid_levels, n_orientations=n_orientations, use_l2_foveal_loss=False)
+                                            n_pyramid_levels=n_pyramid_levels, n_orientations=n_orientations, use_l2_foveal_loss=False, equi=equi)
         self.loss_func = torch.nn.MSELoss()
+        self.noise = None
 
     def gen_metamer(self, image, gaze):
         """ 
@@ -74,8 +80,9 @@ class MetamerMSELoss():
             image, gaze=gaze, alpha=self.metameric_loss.alpha)
         target_means = target_stats[::2]
         target_stdevs = target_stats[1::2]
-        torch.manual_seed(0)
-        noise_image = torch.rand_like(image)
+        if self.noise is None or self.noise.size() != image.size():
+            torch.manual_seed(0)
+            noise_image = torch.rand_like(image)
         noise_pyramid = self.metameric_loss.pyramid_maker.construct_pyramid(
             noise_image, self.metameric_loss.n_pyramid_levels)
         input_pyramid = self.metameric_loss.pyramid_maker.construct_pyramid(

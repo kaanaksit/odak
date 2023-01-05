@@ -16,7 +16,7 @@ class BlurLoss():
 
 
     def __init__(self, device=torch.device("cpu"),
-                 alpha=0.2, real_image_width=0.2, real_viewing_distance=0.7, mode="quadratic", blur_source=False):
+                 alpha=0.2, real_image_width=0.2, real_viewing_distance=0.7, mode="quadratic", blur_source=False, equi=False):
         """
         Parameters
         ----------
@@ -34,6 +34,11 @@ class BlurLoss():
                                     as you move away from the fovea. We got best results with "quadratic".
         blur_source             : bool
                                     If true, blurs the source image as well as the target before computing the loss.
+        equi                    : bool
+                                    If true, run the loss in equirectangular mode. The input is assumed to be an equirectangular
+                                    format 360 image. The settings real_image_width and real_viewing distance are ignored.
+                                    The gaze argument is instead interpreted as gaze angles, and should be in the range
+                                    [-pi,pi]x[-pi/2,pi]
         """
         self.target = None
         self.device = device
@@ -44,11 +49,12 @@ class BlurLoss():
         self.blur = None
         self.loss_func = torch.nn.MSELoss()
         self.blur_source = blur_source
+        self.equi = equi
 
     def blur_image(self, image, gaze):
         if self.blur is None:
             self.blur = RadiallyVaryingBlur()
-        return self.blur.blur(image, self.alpha, self.real_image_width, self.real_viewing_distance, gaze, self.mode)
+        return self.blur.blur(image, self.alpha, self.real_image_width, self.real_viewing_distance, gaze, self.mode, self.equi)
 
     def __call__(self, image, target, gaze=[0.5, 0.5]):
         """ 

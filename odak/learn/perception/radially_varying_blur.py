@@ -1,6 +1,6 @@
 import torch
 
-from .foveation import make_pooling_size_map_lod
+from .foveation import make_pooling_size_map_lod, make_equi_pooling_size_map_lod
 
 
 class RadiallyVaryingBlur():
@@ -18,8 +18,9 @@ class RadiallyVaryingBlur():
 
     def __init__(self):
         self.lod_map = None
+        self.equi = None
 
-    def blur(self, image, alpha=0.2, real_image_width=0.2, real_viewing_distance=0.7, centre=None, mode="quadratic"):
+    def blur(self, image, alpha=0.2, real_image_width=0.2, real_viewing_distance=0.7, centre=None, mode="quadratic", equi=False):
         """
         Apply the radially varying blur to an image.
 
@@ -33,15 +34,23 @@ class RadiallyVaryingBlur():
         real_image_width        : float 
                                     The real width of the image as displayed to the user.
                                     Units don't matter as long as they are the same as for real_viewing_distance.
+                                    Ignored in equirectangular mode (equi==True)
         real_viewing_distance   : float 
                                     The real distance of the observer's eyes to the image plane.
                                     Units don't matter as long as they are the same as for real_image_width.
+                                    Ignored in equirectangular mode (equi==True)
         centre                  : tuple of floats
                                     The centre of the radially varying blur (the gaze location).
                                     Should be a tuple of floats containing normalised image coordinates in range [0,1]
+                                    In equirectangular mode this should be yaw & pitch angles in [-pi,pi]x[-pi/2,pi/2]
         mode                    : str 
                                     Foveation mode, either "quadratic" or "linear". Controls how pooling regions grow
                                     as you move away from the fovea. We got best results with "quadratic".
+        equi                    : bool
+                                    If true, run the blur function in equirectangular mode. The input is assumed to be an equirectangular
+                                    format 360 image. The settings real_image_width and real_viewing distance are ignored.
+                                    The centre argument is instead interpreted as gaze angles, and should be in the range
+                                    [-pi,pi]x[-pi/2,pi]
 
         Returns
         -------
@@ -59,9 +68,14 @@ class RadiallyVaryingBlur():
                 self.real_image_width != real_image_width or\
                 self.real_viewing_distance != real_viewing_distance or\
                 self.centre != centre or\
-                self.mode != mode:
-            self.lod_map = make_pooling_size_map_lod(
-                centre, (image.size(-2), image.size(-1)), alpha, real_image_width, real_viewing_distance, mode)
+                self.mode != mode or\
+                self.equi != equi:
+            if not equi:
+                self.lod_map = make_pooling_size_map_lod(
+                    centre, (image.size(-2), image.size(-1)), alpha, real_image_width, real_viewing_distance, mode)
+            else:
+                self.lod_map = make_equi_pooling_size_map_lod(
+                    centre, (image.size(-2), image.size(-1)), alpha, mode)
             self.size = size
             self.n_channels = image.size(1)
             self.alpha = alpha
@@ -73,6 +87,7 @@ class RadiallyVaryingBlur():
             self.lod_fraction = self.lod_fraction[None, None, ...].repeat(
                 1, image.size(1), 1, 1)
             self.mode = mode
+            self.equi = equi
 
         if self.lod_map.device != image.device:
             self.lod_map = self.lod_map.to(image.device)
