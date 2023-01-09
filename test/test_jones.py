@@ -3,7 +3,7 @@
 import sys
 
 
-def test_jones():
+def test():
     import odak.jones as jones
     u_in = jones.electricfield(0.5, 0.)
     u_out = jones.linearpolarizer(u_in, rotation=0)
@@ -12,4 +12,4 @@ def test_jones():
 
 
 if __name__ == '__main__':
-    sys.exit(test_jones())
+    sys.exit(test())

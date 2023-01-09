@@ -6,7 +6,7 @@ import odak.learn.raytracing
 import torch
 
 
-def test_ray_intersect_w_a_triangle():
+def test():
     # Input points to create a ray.
     ray_start_point_0 = torch.tensor([5., 5., 0.])
     ray_end_point_0 = torch.tensor([10., 10., 1000.])
@@ -43,4 +43,4 @@ def test_ray_intersect_w_a_triangle():
 
 
 if __name__ == '__main__':
-    sys.exit(test_ray_intersect_w_a_triangle())
+    sys.exit(test())

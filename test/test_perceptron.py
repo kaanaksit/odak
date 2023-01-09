@@ -48,7 +48,7 @@ def plot_data(x, y, w, show=True):
     plt.show()
 
 
-def main():
+def test():
     x0, y0 = generate_data(100, offset=[ 4.,  4.], scale=[4., 4.], label=0)
     x1, y1 = generate_data(100, offset=[-4., -4.], scale=[5., 5.], label=1) 
     x_train = np.vstack((x0, x1)); y_train = np.vstack((y0, y1))
@@ -64,5 +64,5 @@ def main():
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(test())
 

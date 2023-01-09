@@ -8,7 +8,7 @@ from odak.tools import zero_pad
 import torch
 
 
-def compare():
+def test():
     wavelength = 0.5*pow(10, -6)
     pixeltom = 6*pow(10, -6)
     distance = 0.2
@@ -50,4 +50,4 @@ def compare():
 
 
 if __name__ == '__main__':
-    sys.exit(compare())
+    sys.exit(test())

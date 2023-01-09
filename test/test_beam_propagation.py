@@ -5,7 +5,7 @@ import numpy as np
 from odak.wave import wavenumber, propagate_beam, add_random_phase
 
 
-def main():
+def test():
     # Variables to be set.
     wavelength = 0.5*pow(10, -6)
     pixeltom = 6*pow(10, -6)
@@ -45,4 +45,4 @@ def main():
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(test())

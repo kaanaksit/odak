@@ -4,7 +4,7 @@ import odak
 import numpy as np
 
 
-def main():
+def test():
     n = [100, 100]
     ranges = [[500., 3000.], [10., 100.]]
     x, y = np.mgrid[0:n[0], 0:n[1]]
@@ -21,30 +21,30 @@ def main():
                 focal=resolutions[i, j, 0],
                 wavelength=wavelength
             )*1000  # Conversion to um.
-    figure = odak.visualize.surfaceshow(
-        title='Spatial resolution',
-        labels=[
-            'Throw distance (mm)',
-            'Aperture size (mm) ',
-            'Spatial resolution (um)'
-        ],
-        types=[
-            'log',
-            'log',
-            'log'
-        ],
-        font_size=16,
-        tick_no=[2, 2, 4],
-    )
-    figure.add_surface(
-        data_x=resolutions[:, :, 0],
-        data_y=resolutions[:, :, 1],
-        data_z=resolutions[:, :, 2],
-        contour=False
-    )
-    figure.show()
+#    figure = odak.visualize.surfaceshow(
+#        title='Spatial resolution',
+#        labels=[
+#            'Throw distance (mm)',
+#            'Aperture size (mm) ',
+#            'Spatial resolution (um)'
+#        ],
+#        types=[
+#            'log',
+#            'log',
+#            'log'
+#        ],
+#        font_size=16,
+#        tick_no=[2, 2, 4],
+#    )
+#    figure.add_surface(
+#        data_x=resolutions[:, :, 0],
+#        data_y=resolutions[:, :, 1],
+#        data_z=resolutions[:, :, 2],
+#        contour=False
+#    )
+#    figure.show()
     assert True == True
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(test())

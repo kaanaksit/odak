@@ -31,7 +31,7 @@ def test_multiple_rays_w_cylinder():
     assert True == True
 
 
-def test_all():
+def test():
     test_cylinder_intersection()
 #    test_multiple_rays_w_sphere()
 

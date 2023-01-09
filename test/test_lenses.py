@@ -5,7 +5,7 @@ import numpy as np
 from odak.wave import wavenumber, prism_phase_function, quadratic_phase_function
 
 
-def main():
+def test():
     wavelength = 0.5*pow(10, -6)
     pixeltom = 6*pow(10, -6)
     distance = 10.0
@@ -33,4 +33,4 @@ def main():
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(test())
