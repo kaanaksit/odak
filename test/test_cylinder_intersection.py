@@ -37,4 +37,4 @@ def test():
 
 
 if __name__ == '__main__':
-    sys.exit(test_all())
+    sys.exit(test())
