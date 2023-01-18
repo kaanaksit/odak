@@ -1,6 +1,6 @@
 import torch
 
-from .color_conversion import rgb_2_ycrcb
+from .color_conversion import rgb_2_ycrcb, ycrcb_2_rgb
 from .spatial_steerable_pyramid import SpatialSteerablePyramid, pad_image_for_pyramid
 from .util import check_loss_inputs
 
@@ -149,6 +149,67 @@ class MetamericLossUniform():
             return loss
         else:
             raise Exception("Target of incorrect type")
+
+    def gen_metamer(self, image):
+        """ 
+        Generates a metamer for an image, following the method in [this paper](https://dl.acm.org/doi/abs/10.1145/3450626.3459943)
+        This function can be used on its own to generate a metamer for a desired image.
+
+        Parameters
+        ----------
+        image   : torch.tensor
+                Image to compute metamer for. Should be an RGB image in NCHW format (4 dimensions)
+        gaze    : list
+                Gaze location in the image, in normalized image coordinates (range [0, 1]) relative to the top left of the image.
+
+        Returns
+        -------
+
+        metamer : torch.tensor
+                The generated metamer image
+        """
+        image = rgb_2_ycrcb(image)
+        image_size = image.size()
+        image = pad_image_for_pyramid(image, self.n_pyramid_levels)
+
+        target_stats = self.calc_statsmaps(
+            image, self.pooling_size)
+        target_means = target_stats[::2]
+        target_stdevs = target_stats[1::2]
+        torch.manual_seed(0)
+        noise_image = torch.rand_like(image)
+        noise_pyramid = self.pyramid_maker.construct_pyramid(
+            noise_image, self.n_pyramid_levels)
+        input_pyramid = self.pyramid_maker.construct_pyramid(
+            image, self.n_pyramid_levels)
+
+        def match_level(input_level, target_mean, target_std):
+            level = input_level.clone()
+            level -= torch.mean(level)
+            input_std = torch.sqrt(torch.mean(level * level))
+            eps = 1e-6
+            # Safeguard against divide by zero
+            input_std[input_std < eps] = eps
+            level /= input_std
+            level *= target_std
+            level += target_mean
+            return level
+
+        nbands = len(noise_pyramid[0]["b"])
+        noise_pyramid[0]["h"] = match_level(
+            noise_pyramid[0]["h"], target_means[0], target_stdevs[0])
+        for l in range(len(noise_pyramid)-1):
+            for b in range(nbands):
+                noise_pyramid[l]["b"][b] = match_level(
+                    noise_pyramid[l]["b"][b], target_means[1 + l * nbands + b], target_stdevs[1 + l * nbands + b])
+        noise_pyramid[-1]["l"] = input_pyramid[-1]["l"]
+
+        metamer = self.pyramid_maker.reconstruct_from_pyramid(
+            noise_pyramid)
+        metamer = ycrcb_2_rgb(metamer)
+        # Crop to remove any padding
+        metamer = metamer[:image_size[0], :image_size[1], :image_size[2], :image_size[3]]
+        return metamer
 
     def to(self, device):
         self.device = device
