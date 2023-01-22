@@ -78,7 +78,7 @@ def set_amplitude(field, amplitude):
     """
     amplitude = calculate_amplitude(amplitude)
     phase = calculate_phase(field)
-    new_field = amplitude*torch.cos(phase)+1j*amplitude*torch.sin(phase)
+    new_field = amplitude * torch.cos(phase) + 1j * amplitude * torch.sin(phase)
     return new_field
 
 
@@ -98,15 +98,11 @@ def generate_complex_field(amplitude, phase):
     field             : ndarray
                         Complex field.
     """
-    if type(phase) == 'torch.Tensor':
-        phase = torch.tensor(phase, requires_grad=True)
-    elif type(phase) == type(1.):
-        phase = torch.tensor([phase], requires_grad=True)
-    if type(amplitude) == 'torch.Tensor':
-        amplitude = torch.tensor(amplitude, requires_grad=True)
-    elif type(amplitude) == type(1.):
-        amplitude = torch.tensor([amplitude], requires_grad=True)
-    field = amplitude*torch.cos(phase)+1j*amplitude*torch.sin(phase)
+    if isinstance(type(phase), type(1.)):
+        phase = torch.tensor([phase], requires_grad = True)
+    if isinstance(type(amplitude), type(1.)):
+        amplitude = torch.tensor([amplitude], requires_grad =True)
+    field = amplitude * torch.cos(phase) + 1j * amplitude * torch.sin(phase)
     return field
 
 
