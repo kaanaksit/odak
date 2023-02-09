@@ -15,7 +15,7 @@ if os.path.isfile(requirementPath):
 
 setup(
     name="odak",
-    version="0.2.1",
+    version="0.2.2",
     author="Kaan Akşit",
     author_email="kaanaksit@kaanaksit.com",
     description="Odak, the fundamental Python library for scientific computing in optical sciences.",
