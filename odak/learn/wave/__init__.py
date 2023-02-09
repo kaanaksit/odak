@@ -10,3 +10,4 @@ from .classical import *
 from .lens import *
 from .loss import * 
 from .util import *
+from .optimizer import * 
