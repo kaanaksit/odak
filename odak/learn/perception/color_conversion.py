@@ -2,7 +2,7 @@ import math
 import torch
 
 
-def rgb_to_ycrcb(image):
+def rgb_2_ycrcb(image):
     """
     Converts an image from RGB colourspace to YCrCb colourspace.
 
@@ -27,7 +27,7 @@ def rgb_to_ycrcb(image):
     return ycrcb
 
 
-def ycrcb_to_rgb(image):
+def ycrcb_2_rgb(image):
     """
     Converts an image from YCrCb colourspace to RGB colourspace.
 

@@ -7,8 +7,8 @@ def test():
     device = torch.device('cpu')
     input_rgb_image = torch.randn((1, 3, 256, 256)).to(device)
 
-    ycrcb_image = odak.learn.perception.color_conversion.rgb_to_ycrcb(input_rgb_image)
-    rgb_image = odak.learn.perception.color_conversion.ycrcb_to_rgb(ycrcb_image)
+    ycrcb_image = odak.learn.perception.color_conversion.rgb_2_ycrcb(input_rgb_image)
+    rgb_image = odak.learn.perception.color_conversion.ycrcb_2_rgb(ycrcb_image)
 
     linear_rgb_image = odak.learn.perception.color_conversion.rgb_to_linear_rgb(rgb_image)
     rgb_image = odak.learn.perception.color_conversion.linear_rgb_to_rgb(linear_rgb_image)
