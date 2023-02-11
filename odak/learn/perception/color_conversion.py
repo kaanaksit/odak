@@ -51,7 +51,7 @@ def ycrcb_2_rgb(image):
     return rgb
 
 
-def convert_rgb_to_linear_rgb(image, threshold = 0.0031308):
+def rgb_to_linear_rgb(image, threshold = 0.0031308):
     """
     Definition to convert RGB images to linear RGB color space. Mostly inspired from: https://kornia.readthedocs.io/en/latest/_modules/kornia/color/rgb.html
 
@@ -73,7 +73,7 @@ def convert_rgb_to_linear_rgb(image, threshold = 0.0031308):
     return image_linear
 
 
-def convert_linear_rgb_to_rgb(image, threshold = 0.0031308):
+def linear_rgb_to_rgb(image, threshold = 0.0031308):
     """
     Definition to convert linear RGB images to RGB color space. Mostly inspired from: https://kornia.readthedocs.io/en/latest/_modules/kornia/color/rgb.html
 
@@ -95,7 +95,7 @@ def convert_linear_rgb_to_rgb(image, threshold = 0.0031308):
     return image_linear
 
 
-def convert_linear_rgb_to_xyz(image):
+def linear_rgb_to_xyz(image):
     """
     Definition to convert RGB space to CIE XYZ color space. Mostly inspired from : Rochester IT Color Conversion Algorithms (https://www.cs.rit.edu/~ncs/color/)
 
@@ -130,7 +130,7 @@ def convert_linear_rgb_to_xyz(image):
     return image_xyz
 
 
-def convert_xyz_to_linear_rgb(image):
+def xyz_to_linear_rgb(image):
     """
     Definition to convert CIE XYZ space to linear RGB color space. Mostly inspired from : Rochester IT Color Conversion Algorithms (https://www.cs.rit.edu/~ncs/color/)
 
