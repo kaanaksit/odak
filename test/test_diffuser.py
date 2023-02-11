@@ -3,7 +3,6 @@ import odak.catalog as catalog
 import sys
 from odak.tools.sample import grid_sample, batch_of_rays
 
-
 def test():
     sample_entry_points = grid_sample(
         no=[2, 2],
