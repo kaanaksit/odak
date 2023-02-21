@@ -171,15 +171,11 @@ class multiplane_hologram_optimizer():
                                       List of distances.
         """
         residual = self.scene_center - plane_id * self.image_spacing + delta
-        if self.image_location == 0:
-            location = self.zero_mode_distance
-            distances = [
-                         location,
-                         -(location + residual)
-                        ]
-        else:
-            location = self.image_location - residual
-            distances = [0., location]
+        location = self.zero_mode_distance
+        distances = [
+                     location,
+                     -(location + residual + self.image_location)
+                    ]
         return distances
 
 
@@ -266,10 +262,7 @@ class multiplane_hologram_optimizer():
             for plane_id in range(self.number_of_planes):
                 torch.no_grad()
                 distances = self.set_distances(plane_id)
-                if self.image_location == 0:
-                    distance = -distances[1]
-                else:
-                    distance = distances[1]
+                distance = distances[1]
                 hologram = generate_complex_field(self.amplitude, phase)
                 reconstruction = self.propagate(hologram, distance, padding=[True, False])
                 reconstruction_intensity = crop_center(calculate_amplitude(reconstruction)**2)
@@ -293,15 +286,6 @@ class multiplane_hologram_optimizer():
             description = "Gerchberg-Saxton, loss:{:.4f}".format(total_loss.item())
             t.set_description(description)
         print(description)
-        if self.image_location == 0:
-            start_location = distances[0]
-            phase = shift_w_double_phase(
-                                         phase,
-                                         start_location,
-                                         self.slm_pixel_pitch,
-                                         self.wavelength,
-                                         self.propagation_type
-                                        )
         hologram = generate_complex_field(self.amplitude, phase)
         return hologram
 
@@ -324,19 +308,16 @@ class multiplane_hologram_optimizer():
         for step in t:
             for plane_id in range(self.number_of_planes):
                 self.optimizer.zero_grad()
-                if self.image_location == 0: 
-                   shifted_phase = self.phase
-                   phase_zero_mean = shifted_phase - torch.mean(shifted_phase)
-                   phase_offset = self.offset
-                   phase_low = phase_zero_mean - phase_offset
-                   phase_high = phase_zero_mean + phase_offset
-                   phase = torch.zeros_like(self.phase)
-                   phase[0::2, 0::2] = phase_low[0::2, 0::2]
-                   phase[0::2, 1::2] = phase_high[0::2, 1::2]
-                   phase[1::2, 0::2] = phase_high[1::2, 0::2]
-                   phase[1::2, 1::2] = phase_low[1::2, 1::2]
-                else:
-                   phase = self.phase
+                shifted_phase = self.phase
+                phase_zero_mean = shifted_phase - torch.mean(shifted_phase)
+                phase_offset = self.offset
+                phase_low = phase_zero_mean - phase_offset
+                phase_high = phase_zero_mean + phase_offset
+                phase = torch.zeros_like(self.phase)
+                phase[0::2, 0::2] = phase_low[0::2, 0::2]
+                phase[0::2, 1::2] = phase_high[0::2, 1::2]
+                phase[1::2, 0::2] = phase_high[1::2, 0::2]
+                phase[1::2, 1::2] = phase_low[1::2, 1::2]
                 hologram = generate_complex_field(self.amplitude, phase)
                 distances = self.set_distances(plane_id)
                 reconstruction = self.model(hologram, distances)
@@ -379,10 +360,7 @@ class multiplane_hologram_optimizer():
                                           )
             phase = calculate_phase(self.model(field, [-self.image_spacing, 0]))
             distances = self.set_distances(plane_id)
-            if self.image_location == 0:
-                distance = distances[1]
-            else:
-                distance = -distances[1]
+            distance = distances[1]
             at_hologram = self.model(field, [distance, 0])
             total_field = total_field + at_hologram.detach().clone() / torch.max(torch.abs(at_hologram))
         start_location = distances[0]
