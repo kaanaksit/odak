@@ -24,7 +24,7 @@ Such an installation can be conducted using:
 git clone git@github.com:kaanaksit/odak.git
 cd odak
 pip3 install -r requirements.txt
-python3 setup.py install
+pip3 install -e .
 ```
 
 ## Notes before running
