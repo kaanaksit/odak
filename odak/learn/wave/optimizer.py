@@ -177,7 +177,7 @@ class multiplane_hologram_optimizer():
                                                  self.number_of_planes,
                                                  self.phase.shape[0],
                                                  self.phase.shape[1],
-                                                 requires_grad=False
+                                                 requires_grad =False
                                                 ).to(self.device)
         for plane_id in range(self.number_of_planes):
             distances = self.set_distances(plane_id)
@@ -185,7 +185,7 @@ class multiplane_hologram_optimizer():
                                         hologram,
                                         distances
                                        )
-            reconstruction_intensities[plane_id] = calculate_amplitude(reconstruction)**2
+            reconstruction_intensities[plane_id] = calculate_amplitude(reconstruction) ** 2
         return reconstruction_intensities
 
  
@@ -228,7 +228,7 @@ class multiplane_hologram_optimizer():
         hologram                   : torch.tensor
                                      Optimised hologram.
         """
-        t = tqdm(range(self.number_of_iterations),leave=False)
+        t = tqdm(range(self.number_of_iterations), leave = False)
         for step in t:
             for plane_id in range(self.number_of_planes):
                 self.optimizer.zero_grad()
