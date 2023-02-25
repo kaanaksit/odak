@@ -19,7 +19,6 @@ class multiplane_hologram_optimizer():
                  mask_limits=[0.2, 0.8, 0.05, 0.95],
                  number_of_planes=4,
                  zero_mode_distance=0.15,
-                 optimization_mode='SGD',
                  device=None
                 ):
         self.device = device
@@ -40,7 +39,6 @@ class multiplane_hologram_optimizer():
         self.number_of_planes = number_of_planes
         self.scene_center = self.image_spacing * (self.number_of_planes - 1) / 2.
         self.wavenumber = wavenumber(self.wavelength)
-        self.optimization_mode = optimization_mode
         self.zero_mode_distance = zero_mode_distance
         self.init_phase(phase_initial)
         self.init_amplitude(amplitude_initial)
@@ -79,10 +77,7 @@ class multiplane_hologram_optimizer():
         """
         Internal function to set the optimizer.
         """
-        if self.optimization_mode == 'Stochastic Gradient Descent':
-            self.optimizer = torch.optim.Adam([{'params': [self.phase, self.offset]}], lr=self.learning_rate)
-        else:
-            self.optimizer = torch.optim.Adam([{'params': [self.phase]}], lr=self.learning_rate)
+        self.optimizer = torch.optim.Adam([{'params': [self.phase, self.offset]}], lr=self.learning_rate)
 
 
     def init_loss_function(self, loss_function=None, reduction='mean'):
@@ -121,39 +116,6 @@ class multiplane_hologram_optimizer():
             return self.loss_function(input_image, target_image, plane_id)
 
 
-    def propagate(self, input_field, distance, padding=[True, True]):
-        """
-        Parameters
-        ----------
-        input_field         : torch.tensor
-                              Input complex input field.
-        distance            : float
-                              Propagation distance.
-
-        Returns
-        -------
-        output_field        : torch.tensor
-                              Propagated output complex field.
-        """
-        if padding[0] == True:
-            input_field_padded = zero_pad(input_field)
-        elif padding[0] == False:
-            input_field_padded = input_field
-        output_field_padded = propagate_beam(
-                                             input_field_padded,
-                                             self.wavenumber,
-                                             distance,
-                                             self.slm_pixel_pitch,
-                                             self.wavelength,
-                                             self.propagation_type,
-                                            )
-        if padding[1] == True:
-            output_field = crop_center(output_field_padded)
-        elif padding[1] == False:
-            output_field = output_field_padded
-        return output_field
-
-
     def set_distances(self, plane_id, delta=0.0):
         """
         Internal function to set distances.
@@ -190,14 +152,7 @@ class multiplane_hologram_optimizer():
         reconstruction_intensities : torch.tensor
                                      Intensities of the images reconstructed at each plane with the optimized phase-only hologram.
         """
-        if self.optimization_mode == 'Stochastic Gradient Descent':
-            hologram = self.stochastic_gradient_descent()
-        elif self.optimization_mode == 'Gerchberg-Saxton':
-            hologram = self.gerchberg_saxton()
-        elif self.optimization_mode == 'Double Phase':
-            hologram = self.double_phase()
-        else:
-            hologram = self.double_phase()
+        hologram = self.stochastic_gradient_descent()
         hologram_phase = calculate_phase(hologram)
         reconstruction_intensities = self.reconstruct(hologram_phase)
         return hologram_phase.detach().clone(), reconstruction_intensities.detach().clone()
@@ -240,54 +195,25 @@ class multiplane_hologram_optimizer():
         """
         Internal function for forward and inverse models.
         """
-        field = self.propagate(hologram, distances[0], padding=[pad[0], pad[1]])
-        reconstruction = self.propagate(field, distances[1], padding=[pad[2], pad[3]])
+        field = propagate_beam(
+                               hologram,
+                               self.wavenumber,
+                               distances[0],
+                               self.slm_pixel_pitch,
+                               self.wavelength,
+                               self.propagation_type,
+                               zero_padding = [pad[0], False, pad[1]]
+                              )
+        reconstruction = propagate_beam(
+                                        field,
+                                        self.wavenumber,
+                                        distances[1],
+                                        self.slm_pixel_pitch,
+                                        self.wavelength,
+                                        self.propagation_type,
+                                        zero_padding = [pad[2], False, pad[3]]
+                                       )
         return reconstruction
-
-
-    def gerchberg_saxton(self):
-        """
-        Function to optimize multiplane phase-only holograms using Gerchberg-Saxton algorithm.
-
-        Returns
-        -------
-        hologram                   : torch.tensor
-                                     Optimised hologram.
-
-        """
-        t = tqdm(range(self.number_of_iterations),leave=False)
-        phase = torch.rand_like(self.phase)
-        for step in t:
-            total_loss = 0
-            for plane_id in range(self.number_of_planes):
-                torch.no_grad()
-                distances = self.set_distances(plane_id)
-                distance = distances[1]
-                hologram = generate_complex_field(self.amplitude, phase)
-                reconstruction = self.propagate(hologram, distance, padding=[True, False])
-                reconstruction_intensity = crop_center(calculate_amplitude(reconstruction)**2)
-                new_target = (self.targets[plane_id].detach().clone() * self.mask)
-                new_phase = calculate_phase(reconstruction)
-                new_amplitude = calculate_amplitude(reconstruction)
-                new_amplitude[
-                              int(new_amplitude.shape[0]/2-new_target.shape[0]/2):int(new_amplitude.shape[0]/2+new_target.shape[0]/2),
-                              int(new_amplitude.shape[1]/2-new_target.shape[1]/2):int(new_amplitude.shape[1]/2+new_target.shape[1]/2)
-                             ] = new_target**0.5
-                new_amplitude = torch.nan_to_num(new_amplitude, nan=0.0)
-                reconstruction = generate_complex_field(new_amplitude, new_phase)
-                hologram = self.propagate(reconstruction, -distance, padding=[False, True])
-                phase = calculate_phase(hologram)
-                loss = self.evaluate(
-                                     reconstruction_intensity * self.mask,
-                                     new_target * self.mask,
-                                     plane_id
-                                    ) 
-                total_loss += loss
-            description = "Gerchberg-Saxton, loss:{:.4f}".format(total_loss.item())
-            t.set_description(description)
-        print(description)
-        hologram = generate_complex_field(self.amplitude, phase)
-        return hologram
 
 
     def stochastic_gradient_descent(self, delta=0.0):
@@ -334,56 +260,3 @@ class multiplane_hologram_optimizer():
         print(description)
         return hologram.detach().clone()
 
-
-    def double_phase(self):
-        """
-        Generating a hologram with double phase coding. For more see: Maimone, Andrew, Andreas Georgiou, and Joel S. Kollin. "Holographic near-eye displays for virtual and augmented reality." ACM Transactions on Graphics (Tog) 36.4 (2017): 1-16.
-
-        Returns
-        -------
-        hologram        : torch.tensor
-                          Complex hologram.
-        """
-        total_field = torch.zeros(
-                                  (self.phase.shape[0], self.phase.shape[1]), 
-                                  dtype=torch.complex64,
-                                  requires_grad=False
-                                 ).to(self.device)
-        phase = torch.rand_like(self.phase)
-        for plane_id in range(self.number_of_planes):
-            torch.no_grad()
-            amplitude = self.targets[0].detach().clone()**0.5
-            amplitude = torch.nan_to_num(amplitude, nan=0.0)
-            field = generate_complex_field(
-                                           amplitude,
-                                           phase
-                                          )
-            phase = calculate_phase(self.model(field, [-self.image_spacing, 0]))
-            distances = self.set_distances(plane_id)
-            distance = distances[1]
-            at_hologram = self.model(field, [distance, 0])
-            total_field = total_field + at_hologram.detach().clone() / torch.max(torch.abs(at_hologram))
-        start_location = distances[0]
-        phase = shift_w_double_phase(
-                                     calculate_phase(total_field),
-                                     start_location,
-                                     self.slm_pixel_pitch,
-                                     self.wavelength,
-                                     self.propagation_type,
-                                     amplitude=calculate_amplitude(total_field)
-                                    )
-        hologram = generate_complex_field(self.amplitude, phase)
-        return hologram.detach().clone()
-
-
-    def to(self, device):
-        """
-        Utilization function for setting the device.
-
-        Parameters
-        ----------
-        device       : torch.device
-                       Device to be used (e.g., CPU, Cuda, OpenCL).
-        """
-        self.device = device
-        return self
