@@ -11,14 +11,14 @@ class multiplane_hologram_optimizer():
     def __init__(self, wavelength, image_location, 
                  image_spacing, slm_pixel_pitch,
                  slm_resolution, targets,
-                 propagation_type='TR Fresnel', 
-                 number_of_iterations=10, learning_rate=0.1,
-                 phase_initial=None, amplitude_initial=None,
-                 loss_function=None,
-                 mask_limits=[0.2, 0.8, 0.05, 0.95],
-                 number_of_planes=4,
-                 zero_mode_distance=0.15,
-                 device=None
+                 propagation_type = 'TR Fresnel', 
+                 number_of_iterations = 10, learning_rate = 0.1,
+                 phase_initial = None, amplitude_initial = None,
+                 loss_function = None,
+                 mask_limits = [0.2, 0.8, 0.05, 0.95],
+                 number_of_planes = 4,
+                 zero_mode_distance = 0.15,
+                 device = None
                 ):
         self.device = device
         if isinstance(self.device, type(None)):
@@ -46,7 +46,7 @@ class multiplane_hologram_optimizer():
         self.init_loss_function(loss_function)
 
 
-    def init_amplitude(self,amplitude_initial):
+    def init_amplitude(self, amplitude_initial):
         """
         Internal function to set the amplitude of the illumination source.
         """
@@ -59,7 +59,7 @@ class multiplane_hologram_optimizer():
                                        ).to(self.device)
         
 
-    def init_phase(self,phase_initial):
+    def init_phase(self, phase_initial):
         """
         Internal function to set the starting phase of the phase-only hologram.
         """
