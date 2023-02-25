@@ -135,7 +135,6 @@ class multiplane_hologram_optimizer():
                      location,
                      -(location + residual + self.image_location)
                     ]
-        print(residual)
         return distances
 
 
