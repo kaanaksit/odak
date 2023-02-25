@@ -1,8 +1,7 @@
 import torch
 from tqdm import tqdm
 from .util import wavenumber, generate_complex_field, calculate_amplitude, calculate_phase
-from .classical import propagate_beam, shift_w_double_phase
-from ..tools import zero_pad, crop_center
+from .classical import propagate_beam
 
 
 class multiplane_hologram_optimizer():
