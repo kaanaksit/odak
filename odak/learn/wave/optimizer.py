@@ -149,7 +149,7 @@ class multiplane_hologram_optimizer():
         reconstruction_intensities : torch.tensor
                                      Intensities of the images reconstructed at each plane with the optimized phase-only hologram.
         """
-        hologram = self.stochastic_gradient_descent()
+        hologram = self.gradient_descent()
         hologram_phase = calculate_phase(hologram)
         reconstruction_intensities = self.reconstruct(hologram_phase)
         return hologram_phase.detach().clone(), reconstruction_intensities.detach().clone()
@@ -213,9 +213,9 @@ class multiplane_hologram_optimizer():
         return reconstruction
 
 
-    def stochastic_gradient_descent(self, delta=0.0):
+    def gradient_descent(self, delta=0.0):
         """
-        Function to optimize multiplane phase-only holograms using stochastic gradient descent.
+        Function to optimize multiplane phase-only holograms using gradient descent.
 
         Parameters
         ----------
@@ -244,7 +244,7 @@ class multiplane_hologram_optimizer():
                 hologram = generate_complex_field(self.amplitude, phase)
                 distances = self.set_distances(plane_id)
                 reconstruction = self.model(hologram, distances)
-                reconstruction_intensity = calculate_amplitude(reconstruction)**2
+                reconstruction_intensity = calculate_amplitude(reconstruction) ** 2
                 loss = self.evaluate(
                                      reconstruction_intensity * self.mask,
                                      self.targets[plane_id] * self.mask,
@@ -252,7 +252,7 @@ class multiplane_hologram_optimizer():
                                     )
                 loss.backward(retain_graph=True)
                 self.optimizer.step()
-            description = "Stochastic Gradient Descent, loss:{:.4f}".format(loss.item())
+            description = "Gradient Descent, loss:{:.4f}".format(loss.item())
             t.set_description(description)
         print(description)
         return hologram.detach().clone()
