@@ -14,14 +14,14 @@ One may want to install the latest and greatest odak in the source repository fo
 In this case, our recommended method is to rely on pip for installing Odak from the source using:
 
 ```bash
-pip3 install git+https://github.com/kunguz/odak
+pip3 install git+https://github.com/kaanaksit/odak
 ```
 
 One can also install Odak without pip by first getting a local copy and installing using Python. 
 Such an installation can be conducted using:
 
 ```bash
-git clone git@github.com:kunguz/odak.git
+git clone git@github.com:kaanaksit/odak.git
 cd odak
 pip3 install -r requirements.txt
 python3 setup.py install
@@ -48,4 +48,4 @@ cd odak
 pytest
 ```
 The tests should return no error.
-However, if an error is encountered, please [start a new issue](https://github.com/kunguz/odak/issues) to help us be aware of the issue.
+However, if an error is encountered, please [start a new issue](https://github.com/kaanaksit/odak/issues) to help us be aware of the issue.
