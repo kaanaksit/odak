@@ -97,11 +97,12 @@ class multiplane_hologram_optimizer():
         self.mask = torch.zeros(
                                 self.slm_resolution[0],
                                 self.slm_resolution[1],
-                                requires_grad=False
-                               ).to(self.device)
+                                requires_grad = False,
+                                device = self.device
+                               )
         self.mask[
-                  int(self.slm_resolution[0]*self.mask_limits[0]):int(self.slm_resolution[0]*self.mask_limits[1]),
-                  int(self.slm_resolution[1]*self.mask_limits[2]):int(self.slm_resolution[1]*self.mask_limits[3])
+                  int(self.slm_resolution[0] * self.mask_limits[0]):int(self.slm_resolution[0] * self.mask_limits[1]),
+                  int(self.slm_resolution[1] * self.mask_limits[2]):int(self.slm_resolution[1] * self.mask_limits[3])
                  ] = 1
 
 
