@@ -116,7 +116,7 @@ class multiplane_hologram_optimizer():
             return self.loss_function(input_image, target_image, plane_id)
 
 
-    def set_distances(self, plane_id, delta=0.0):
+    def set_distances(self, plane_id):
         """
         Internal function to set distances.
 
@@ -124,15 +124,13 @@ class multiplane_hologram_optimizer():
         ----------
         plane_id                    : int
                                       Plane number.
-        delta                       : float
-                                      A parameter to shift the image location.
 
         Returns
         -------
         distances                   : list
                                       List of distances.
         """
-        residual = self.scene_center - plane_id * self.image_spacing + delta
+        residual = self.scene_center - plane_id * self.image_spacing
         location = self.zero_mode_distance
         distances = [
                      location,
