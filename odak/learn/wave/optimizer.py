@@ -214,14 +214,10 @@ class multiplane_hologram_optimizer():
         return reconstruction
 
 
-    def gradient_descent(self, delta=0.0):
+    def gradient_descent(self):
         """
         Function to optimize multiplane phase-only holograms using gradient descent.
 
-        Parameters
-        ----------
-        delta                      : float
-                                     Incase you want to change the focus of the first plane, use this value in meters to electronically move the reconstructed image.
 
         Returns
         -------
