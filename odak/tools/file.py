@@ -70,7 +70,7 @@ def save_image(fn, img, cmin=0, cmax=255, color_depth=8):
             cache_img[:, :, 0] = input_img[:, :, 2]
             cache_img[:, :, 2] = input_img[:, :, 0]
             input_img = cache_img
-    cv2.imwrite(fn, input_img)
+    cv2.imwrite(os.path.expanduser(fn), input_img)
     return True
 
 
@@ -93,7 +93,7 @@ def load_image(fn, normalizeby=0., torch_style=False):
                     Image loaded as a Numpy array.
 
     """
-    image = cv2.imread(fn, cv2.IMREAD_UNCHANGED)
+    image = cv2.imread(os.path.expanduser(fn), cv2.IMREAD_UNCHANGED)
     if len(image.shape) > 2:
         new_image = np.copy(image)
         new_image[:, :, 0] = image[:, :, 2]

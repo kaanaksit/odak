@@ -25,7 +25,7 @@ def quantize(image_field, bits=4):
     return new_field
 
 
-def zero_pad(field, size=None, method='center'):
+def zero_pad(field, size = None, method = 'center'):
     """
     Definition to zero pad a MxN array to 2Mx2N array.
 
@@ -44,22 +44,27 @@ def zero_pad(field, size=None, method='center'):
                         Zeropadded version of the input field.
     """
     if type(size) == type(None):
-        hx = int(torch.ceil(torch.tensor([field.shape[0]/2])))
-        hy = int(torch.ceil(torch.tensor([field.shape[1]/2])))
+        resolution = [
+                      int(field.shape[0] * 2),
+                      int(field.shape[1] * 2)
+                     ]
     else:
-        hx = int(torch.ceil(torch.tensor([(size[0]-field.shape[0])/2])))
-        hy = int(torch.ceil(torch.tensor([(size[1]-field.shape[1])/2])))
+        resolution = size
+    field_zero_padded = torch.zeros(resolution[0], resolution[1], device = field.device, dtype = field.dtype)
     if method == 'center':
-        m = torch.nn.ZeroPad2d((hy, hy, hx, hx))
-    elif method == 'left aligned':
-        m = torch.nn.ZeroPad2d((0, hy*2, 0, hx*2))
-    field_zero_padded = m(field)
-    if type(size) != type(None):
-        field_zero_padded = field_zero_padded[0:size[0], 0:size[1]]
+       field_zero_padded[
+                         resolution[0] // 4: resolution[0] // 4 + field.shape[0],
+                         resolution[1] // 4: resolution[1] // 4 + field.shape[1]
+                        ] = field
+    elif method == 'left':
+       field_zero_padded[
+                         0: field.shape[0],
+                         0: field.shape[1]
+                        ] = field
     return field_zero_padded
 
 
-def crop_center(field, size=None):
+def crop_center(field, size = None):
     """
     Definition to crop the center of a field with 2Mx2N size. The outcome is a MxN array.
 
@@ -76,14 +81,14 @@ def crop_center(field, size=None):
                   Cropped version of the input field.
     """
     if type(size) == type(None):
-        qx = int(torch.ceil(torch.tensor(field.shape[0])/4))
-        qy = int(torch.ceil(torch.tensor(field.shape[1])/4))
-        cropped = field[qx:3*qx, qy:3*qy]
+        qx = int(field.shape[0] // 4)
+        qy = int(field.shape[1] // 4)
+        cropped = field[qx: qx + field.shape[0] // 2, qy:qy + field.shape[1] // 2]
     else:
-        cx = int(torch.ceil(torch.tensor(field.shape[0]/2)))
-        cy = int(torch.ceil(torch.tensor(field.shape[1]/2)))
-        hx = int(torch.ceil(torch.tensor(size[0]/2)))
-        hy = int(torch.ceil(torch.tensor(size[1]/2)))
+        cx = int(field.shape[0] // 2)
+        cy = int(field.shape[1] // 2)
+        hx = int(size[0] // 2)
+        hy = int(size[1] // 2)
         cropped = field[cx-hx:cx+hx, cy-hy:cy+hy]
     return cropped
 
