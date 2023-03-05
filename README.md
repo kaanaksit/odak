@@ -23,6 +23,14 @@ or you can follow this, but remember that it will install the latest version in 
 pip3 install git+https://github.com/kaanaksit/odak
 ```
 
+or this:
+
+```bash
+git clone git@github.com:kaanaksit/odak.git
+cd odak
+pip3 install -r requirements.txt
+pip3 install -e .
+```
 
 ### Usage
 You can import Odak and start designing your next in Optics, Computer Graphics, or Perception! 

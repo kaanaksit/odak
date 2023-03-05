@@ -16,6 +16,6 @@ import odak.fit
 import torch
 import numpy as np
 
-version_info = 0, 2, 1
+version_info = 0, 2, 3
 __version__ = '.'.join(map(str, version_info))
 pi = np.pi

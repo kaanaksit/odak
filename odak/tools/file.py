@@ -155,8 +155,8 @@ def check_directory(directory):
     directory     : str
                     Full directory path.
     """
-    if not os.path.exists(directory):
-        os.makedirs(directory)
+    if not os.path.exists(os.path.expanduser(directory)):
+        os.makedirs(os.path.expanduser(directory), exist_ok = True)
         return False
     return True
 
