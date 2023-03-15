@@ -9,5 +9,6 @@ import torch
 from .classical import *
 from .lens import *
 from .loss import * 
+from .optimizers import * 
+from .propagators import *
 from .util import *
-from .optimizer import * 

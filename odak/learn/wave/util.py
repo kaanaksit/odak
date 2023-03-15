@@ -16,7 +16,7 @@ def wavenumber(wavelength):
     k            : float
                    Wave number for a given wavelength.
     """
-    k = 2*np.pi/wavelength
+    k = 2 * np.pi / wavelength
     return k
 
 

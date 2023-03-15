@@ -1,7 +1,7 @@
 import torch
 from tqdm import tqdm
 from .util import wavenumber, generate_complex_field, calculate_amplitude, calculate_phase
-from .classical import propagate_beam
+from .propagators import back_and_forth_propagator
 
 
 class multiplane_hologram_optimizer():
@@ -31,6 +31,11 @@ class multiplane_hologram_optimizer():
         self.slm_resolution = slm_resolution
         self.targets = targets
         self.slm_pixel_pitch = slm_pixel_pitch
+        self.model = back_and_forth_propagator(
+                                               wavelength = self.wavelength,
+                                               pixel_pitch = self.slm_pixel_pitch,
+                                               device = self.device
+                                              )
         self.propagation_type = propagation_type
         self.mask_limits = mask_limits
         self.number_of_iterations = number_of_iterations
@@ -181,37 +186,36 @@ class multiplane_hologram_optimizer():
                                                 ).to(self.device)
         for plane_id in range(self.number_of_planes):
             distances = self.set_distances(plane_id)
-            reconstruction = self.model(
-                                        hologram,
-                                        distances
-                                       )
+            reconstruction = self.model(hologram, distances)
             reconstruction_intensities[plane_id] = calculate_amplitude(reconstruction) ** 2
         return reconstruction_intensities
 
- 
-    def model(self, hologram, distances, pad=[True, False, False, True]):
+
+    def double_phase_constrain(self, shifted_phase, phase_offset):
         """
-        Internal function for forward and inverse models.
+        Function for generating double phase encoding alike phase-only holograms.
+
+        Parameters
+        ----------
+        shifted_phase              : torch.tensor
+                                     Input phase [m x n].
+        phase_offset               : torch.tensor
+                                     Input offset [m x n].
+       
+        Returns
+        -------
+        phase                      : torch.tensor
+                                     Coded phase [m x n].
         """
-        field = propagate_beam(
-                               hologram,
-                               self.wavenumber,
-                               distances[0],
-                               self.slm_pixel_pitch,
-                               self.wavelength,
-                               self.propagation_type,
-                               zero_padding = [pad[0], False, pad[1]]
-                              )
-        reconstruction = propagate_beam(
-                                        field,
-                                        self.wavenumber,
-                                        distances[1],
-                                        self.slm_pixel_pitch,
-                                        self.wavelength,
-                                        self.propagation_type,
-                                        zero_padding = [pad[2], False, pad[3]]
-                                       )
-        return reconstruction
+        phase_zero_mean = shifted_phase - torch.mean(shifted_phase)
+        phase_low = phase_zero_mean - phase_offset
+        phase_high = phase_zero_mean + phase_offset
+        phase = torch.zeros_like(shifted_phase)
+        phase[0::2, 0::2] = phase_low[0::2, 0::2]
+        phase[0::2, 1::2] = phase_high[0::2, 1::2]
+        phase[1::2, 0::2] = phase_high[1::2, 0::2]
+        phase[1::2, 1::2] = phase_low[1::2, 1::2]
+        return phase
 
 
     def gradient_descent(self):
@@ -228,16 +232,7 @@ class multiplane_hologram_optimizer():
         for step in t:
             for plane_id in range(self.number_of_planes):
                 self.optimizer.zero_grad()
-                shifted_phase = self.phase
-                phase_zero_mean = shifted_phase - torch.mean(shifted_phase)
-                phase_offset = self.offset
-                phase_low = phase_zero_mean - phase_offset
-                phase_high = phase_zero_mean + phase_offset
-                phase = torch.zeros_like(self.phase)
-                phase[0::2, 0::2] = phase_low[0::2, 0::2]
-                phase[0::2, 1::2] = phase_high[0::2, 1::2]
-                phase[1::2, 0::2] = phase_high[1::2, 0::2]
-                phase[1::2, 1::2] = phase_low[1::2, 1::2]
+                phase = self.double_phase_constrain(self.phase, self.offset)
                 hologram = generate_complex_field(self.amplitude, phase)
                 distances = self.set_distances(plane_id)
                 reconstruction = self.model(hologram, distances)
