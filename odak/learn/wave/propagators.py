@@ -48,14 +48,19 @@ class back_and_forth_propagator():
                             -1 / (2 * dx) + 0.5 / (2 * x),
                             1 / (2 * dx) - 0.5 / (2 * x),
                             nu,
-                            dtype=torch.float32
+                            dtype = torch.float32,
+                            device = self.device
                            )
         fy = torch.linspace(
                             -1 / (2 * dx) + 0.5 / (2 * y),
-                            1 / (2 * dx) - 0.5 / (2 * y), nv, dtype=torch.float32)
+                            1 / (2 * dx) - 0.5 / (2 * y),
+                            nv,
+                            dtype = torch.float32,
+                            device = self.device
+                           )
         FY, FX = torch.meshgrid(fx, fy, indexing='ij')
         HH_exp = 2 * np.pi * torch.sqrt(1 / wavelength ** 2 - (FX ** 2 + FY ** 2))
-        distance = torch.tensor([distance])
+        distance = torch.tensor([distance], device = self.device)
         H_exp = torch.mul(HH_exp, distance)
         fx_max = 1 / torch.sqrt((2 * distance * (1 / x))**2 + 1) / wavelength
         fy_max = 1 / torch.sqrt((2 * distance * (1 / y))**2 + 1) / wavelength
@@ -109,7 +114,7 @@ class back_and_forth_propagator():
                                                   self.pixel_pitch,
                                                   self.wavelength,
                                                   distances[0]
-                                                 ).to(self.device)
+                                                 )
             self.kernels.append(kernel_forward)
         else:
             kernel_id = self.distances.index(distances[0])
@@ -122,7 +127,7 @@ class back_and_forth_propagator():
                                                    self.pixel_pitch,
                                                    self.wavelength,
                                                    distances[1]
-                                                  ).to(self.device)
+                                                  )
             self.kernels.append(kernel_backward)
         else:
             kernel_id = self.distances.index(distances[1])
