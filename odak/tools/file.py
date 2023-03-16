@@ -217,9 +217,9 @@ def list_files(path, key='*.*', recursive=True):
                   list of files found in a given path.
     """
     if recursive == True:
-        search_result = pathlib.Path(path).rglob(key)
+        search_result = pathlib.Path(os.path.expanduser(path)).rglob(key)
     elif recursive == False:
-        search_result = pathlib.Path(path).glob(key)
+        search_result = pathlib.Path(os.path.expanduser(path)).glob(key)
     files_list = []
     for item in search_result:
         files_list.append(str(item))
