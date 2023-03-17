@@ -1,7 +1,7 @@
 import torch
 from tqdm import tqdm
 from .util import wavenumber, generate_complex_field, calculate_amplitude, calculate_phase
-from .propagators import forward_propagator
+from .propagators import back_and_forth_propagator
 
 
 class multiplane_hologram_optimizer():
@@ -31,11 +31,11 @@ class multiplane_hologram_optimizer():
         self.slm_resolution = slm_resolution
         self.targets = targets
         self.slm_pixel_pitch = slm_pixel_pitch
-        self.model = forward_propagator(
-                                        wavelength = self.wavelength,
-                                        pixel_pitch = self.slm_pixel_pitch,
-                                        device = self.device
-                                       )
+        self.model = back_and_forth_propagator(
+                                               wavelength = self.wavelength,
+                                               pixel_pitch = self.slm_pixel_pitch,
+                                               device = self.device
+                                              )
         self.propagation_type = propagation_type
         self.mask_limits = mask_limits
         self.number_of_iterations = number_of_iterations
@@ -43,6 +43,7 @@ class multiplane_hologram_optimizer():
         self.number_of_planes = number_of_planes
         self.scene_center = self.image_spacing * (self.number_of_planes - 1) / 2.
         self.wavenumber = wavenumber(self.wavelength)
+        self.zero_mode_distance = zero_mode_distance
         self.init_phase(phase_initial)
         self.init_amplitude(amplitude_initial)
         self.init_optimizer()
@@ -120,29 +121,30 @@ class multiplane_hologram_optimizer():
             return self.loss_function(input_image, target_image, plane_id)
 
 
-    def set_distance(self, plane_id):
+    def set_distances(self, plane_id):
         """
-        Internal function to set distance.
-
+        Internal function to set distances.
         Parameters
         ----------
         plane_id                    : int
                                       Plane number.
-
         Returns
         -------
-        distance                    : float
-                                      Distance in meters.
+        distances                   : list
+                                      List of distances.
         """
         residual = self.scene_center - plane_id * self.image_spacing
-        distance = residual + self.image_location
-        return distance
+        location = self.zero_mode_distance
+        distances = [
+                     location,
+                     -(location + residual + self.image_location)
+                    ]
+        return distances
 
 
     def optimize(self):
         """
         Function to optimize multiplane phase-only holograms.
-
         Returns
         -------
         hologram_phase             : torch.tensor
@@ -159,8 +161,6 @@ class multiplane_hologram_optimizer():
     def reconstruct(self, hologram_phase):
         """
         Internal function to reconstruct a given hologram.
-
-
         Parameters
         ----------
         hologram_phase             : torch.tensor
@@ -180,8 +180,8 @@ class multiplane_hologram_optimizer():
                                                  requires_grad =False
                                                 ).to(self.device)
         for plane_id in range(self.number_of_planes):
-            distance = self.set_distance(plane_id)
-            reconstruction = self.model(hologram, distance)
+            distances = self.set_distances(plane_id)
+            reconstruction = self.model(hologram, distances)
             reconstruction_intensities[plane_id] = calculate_amplitude(reconstruction) ** 2
         return reconstruction_intensities
 
@@ -189,7 +189,6 @@ class multiplane_hologram_optimizer():
     def double_phase_constrain(self, shifted_phase, phase_offset):
         """
         Function for generating double phase encoding alike phase-only holograms.
-
         Parameters
         ----------
         shifted_phase              : torch.tensor
@@ -216,8 +215,6 @@ class multiplane_hologram_optimizer():
     def gradient_descent(self):
         """
         Function to optimize multiplane phase-only holograms using gradient descent.
-
-
         Returns
         -------
         hologram                   : torch.tensor
@@ -229,8 +226,8 @@ class multiplane_hologram_optimizer():
                 self.optimizer.zero_grad()
                 phase = self.double_phase_constrain(self.phase, self.offset)
                 hologram = generate_complex_field(self.amplitude, phase)
-                distance = self.set_distance(plane_id)
-                reconstruction = self.model(hologram, distance)
+                distances = self.set_distances(plane_id)
+                reconstruction = self.model(hologram, distances)
                 reconstruction_intensity = calculate_amplitude(reconstruction) ** 2
                 loss = self.evaluate(
                                      reconstruction_intensity * self.mask,
@@ -243,4 +240,3 @@ class multiplane_hologram_optimizer():
             t.set_description(description)
         print(description)
         return hologram.detach().clone()
-

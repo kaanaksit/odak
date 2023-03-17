@@ -202,7 +202,7 @@ class forward_propagator():
         H_exp = torch.mul(HH_exp, distance)
         fx_max = 1 / torch.sqrt((2 * distance * (1 / x))**2 + 1) / wavelength
         fy_max = 1 / torch.sqrt((2 * distance * (1 / y))**2 + 1) / wavelength
-        aperture_size = torch.min(torch.tensor([nu, nv])) / 2.
+        aperture_size = int(3e-3 / dx)
         mask = circular_binary_mask(nu, nv, aperture_size).to(self.device) * 1.
         H_filter = ((torch.abs(FX) < fx_max) & (torch.abs(FY) < fy_max)).clone().detach() * mask
         H = generate_complex_field(H_filter, H_exp)
