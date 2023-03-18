@@ -65,8 +65,8 @@ def prism_phase_function(nx, ny, k, angle, dx = 0.001, axis = 'x', phase_offset 
     """
     angle = torch.deg2rad(torch.tensor([angle]))
     phase_offset = torch.deg2rad(torch.tensor([phase_offset]))
-    x = torch.linspace(-nx * dx / 2., nx * dx / 2., nx)
-    y = torch.linspace(-ny * dy / 2., ny * dx / 2., ny)
+    x = torch.linspace(- nx * dx / 2., nx * dx / 2., nx)
+    y = torch.linspace(- ny * dx / 2., ny * dx / 2., ny)
     X, Y = torch.meshgrid(x, y, indexing='ij')
     if axis == 'y':
         prism = torch.exp(-1j * k * torch.sin(angle) * Y + phase_offset)
