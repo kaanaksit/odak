@@ -39,7 +39,7 @@ def quadratic_phase_function(nx, ny, k, focal=0.4, dx=0.001, offset=[0, 0]):
 
 def prism_phase_function(nx, ny, k, angle, dx = 0.001, axis = 'x', phase_offset = 0.):
     """
-    A definition to generate 2D phase function that represents a prism. See Goodman's Introduction to Fourier Optics book for more.
+    A definition to generate 2D phase function that represents a prism. See Goodman's Introduction to Fourier Optics book or Engström, David, et al. "Improved beam steering accuracy of a single beam with a 1D phase-only spatial light modulator." Optics express 16.22 (2008): 18275-18287. for more.
 
     Parameters
     ----------
