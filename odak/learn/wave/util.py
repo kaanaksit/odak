@@ -38,7 +38,7 @@ def calculate_phase(field, deg=False):
     """
     phase = field.imag.atan2(field.real)
     if deg == True:
-        phase *= 180./3.14
+        phase *= 180. / np.pi
     return phase
 
 
