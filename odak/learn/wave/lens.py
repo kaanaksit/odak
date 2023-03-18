@@ -37,38 +37,41 @@ def quadratic_phase_function(nx, ny, k, focal=0.4, dx=0.001, offset=[0, 0]):
     return qwf
 
 
-def prism_phase_function(nx, ny, k, angle, dx=0.001, axis='x'):
+def prism_phase_function(nx, ny, k, angle, dx = 0.001, axis = 'x', phase_offset = 0.):
     """
     A definition to generate 2D phase function that represents a prism. See Goodman's Introduction to Fourier Optics book for more.
 
     Parameters
     ----------
-    nx         : int
-                 Size of the output along X.
-    ny         : int
-                 Size of the output along Y.
-    k          : odak.wave.wavenumber
-                 See odak.wave.wavenumber for more.
-    angle      : float
-                 Tilt angle of the prism in degrees.
-    dx         : float
-                 Pixel pitch.
-    axis       : str
-                 Axis of the prism.
+    nx           : int
+                   Size of the output along X.
+    ny           : int
+                   Size of the output along Y.
+    k            : odak.wave.wavenumber
+                   See odak.wave.wavenumber for more.
+    angle        : float
+                   Tilt angle of the prism in degrees.
+    dx           : float
+                   Pixel pitch.
+    axis         : str
+                   Axis of the prism.
+    phase_offset : float
+                   Phase offset in angles. Default is zero.
 
     Returns
     ----------
-    prism      : torch.tensor
-                 Generated phase function for a prism.
+    prism        : torch.tensor
+                   Generated phase function for a prism.
     """
     angle = torch.deg2rad(torch.tensor([angle]))
-    x = torch.linspace(- nx * dx / 2, nx * dx / 2, nx)
-    y = torch.linspace(- ny * dx / 2, ny * dx / 2, ny)
+    phase_offset = torch.deg2rad(torch.tensor([phase_offset]))
+    x = torch.linspace(-nx * dx / 2., nx * dx / 2., nx)
+    y = torch.linspace(-ny * dy / 2., ny * dx / 2., ny)
     X, Y = torch.meshgrid(x, y, indexing='ij')
     if axis == 'y':
-        prism = torch.exp(-1j * k * torch.sin(angle) * Y)
+        prism = torch.exp(-1j * k * torch.sin(angle) * Y + phase_offset)
     elif axis == 'x':
-        prism = torch.exp(-1j * k * torch.sin(angle) * X)
+        prism = torch.exp(-1j * k * torch.sin(angle) * X + phase_offset)
     return prism
 
 
