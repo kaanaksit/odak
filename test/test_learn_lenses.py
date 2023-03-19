@@ -1,7 +1,7 @@
 import sys
 import os
 import odak
-from odak.learn.wave import wavenumber, linear_grating, prism_phase_function, quadratic_phase_function
+from odak.learn.wave import wavenumber, linear_grating, prism_grating, quadratic_phase_function
 
 
 def test():
@@ -24,7 +24,7 @@ def test():
         focal=0.3,
         dx=pixeltom
     )
-    prism_field = prism_phase_function(
+    prism_field = prism_grating(
         resolution[0],
         resolution[1],
         k,
