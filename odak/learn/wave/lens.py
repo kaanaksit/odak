@@ -37,7 +37,7 @@ def quadratic_phase_function(nx, ny, k, focal=0.4, dx=0.001, offset=[0, 0]):
     return qwf
 
 
-def prism_phase_function(nx, ny, k, angle, dx = 0.001, axis = 'x', phase_offset = 0.):
+def prism_grating(nx, ny, k, angle, dx = 0.001, axis = 'x', phase_offset = 0.):
     """
     A definition to generate 2D phase function that represents a prism. See Goodman's Introduction to Fourier Optics book or Engström, David, et al. "Improved beam steering accuracy of a single beam with a 1D phase-only spatial light modulator." Optics express 16.22 (2008): 18275-18287. for more.
 
@@ -65,19 +65,21 @@ def prism_phase_function(nx, ny, k, angle, dx = 0.001, axis = 'x', phase_offset 
     """
     angle = torch.deg2rad(torch.tensor([angle]))
     phase_offset = torch.deg2rad(torch.tensor([phase_offset]))
-    x = (torch.abs(torch.arange(-nx, 0)) * dx)
-    y = (torch.abs(torch.arange(-ny, 0)) * dx)
+    x = torch.arange(0, nx) * dx
+    y = torch.arange(0, ny) * dx
     X, Y = torch.meshgrid(x, y, indexing='ij')
     if axis == 'y':
-        prism = torch.exp(-1j * k * torch.sin(angle) * Y + phase_offset)
+        phase = k * torch.sin(angle) * Y + phase_offset
+        prism = torch.exp(-1j * phase)
     elif axis == 'x':
-        prism = torch.exp(-1j * k * torch.sin(angle) * X + phase_offset)
+        phase = k * torch.sin(angle) * X + phase_offset
+        prism = torch.exp(-1j * phase)
     return prism
 
 
 def blazed_grating(nx, ny, levels = 2, axis = 'x'):
     """
-    A defininition to generate a blazed grating. For more consult de Blas, Mario García, et al. "High resolution 2D beam steerer made from cascaded 1D liquid crystal phase gratings." Scientific Reports 12.1 (2022): 5145 and Igasaki, Yasunori, et al. "High efficiency electrically-addressable phase-only spatial light modulator." optical review 6 (1999): 339-344.
+    A defininition to generate a blazed grating (also known as ramp grating). For more consult de Blas, Mario García, et al. "High resolution 2D beam steerer made from cascaded 1D liquid crystal phase gratings." Scientific Reports 12.1 (2022): 5145 and Igasaki, Yasunori, et al. "High efficiency electrically-addressable phase-only spatial light modulator." optical review 6 (1999): 339-344.
 
 
     Parameters
