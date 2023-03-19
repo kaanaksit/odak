@@ -132,3 +132,63 @@ def histogram_loss(frame, ground_truth, bins = 32, limits = [0., 1.]):
         histogram_ground_truth[i] = torch.histc(frame[:, i].flatten(), bins = bins, min = limits[0], max = limits[1])
     loss = l2(histogram_frame, histogram_ground_truth)
     return loss
+    
+    
+def weber_contrast(image, roi_high, roi_low):
+    """
+    A function to calculate weber contrast ratio of given region of interests of the image.
+
+    Parameters
+    ----------
+    image         : torch.tensor
+                    Image to be tested [1 x 3 x m x n] or [3 x m x n] or [m x n].
+    roi_high      : torch.tensor
+                    Corner locations of the roi for high intensity area [m_start, m_end, n_start, n_end].
+    roi_low       : torch.tensor
+                    Corner locations of the roi for low intensity area [m_start, m_end, n_start, n_end].
+
+    Returns
+    -------
+    result        : torch.tensor
+                    Weber contrast for given regions. [1] or [3] depending on input image.
+    """
+    if len(image.shape) == 2:
+        image = image.unsqueeze(0)
+    if len(image.shape) == 3:
+        image = image.unsqueeze(0)
+    region_low = image[:, :, roi_low[0]:roi_low[1], roi_low[2]:roi_low[3]]
+    region_high = image[:, :, roi_high[0]:roi_high[1], roi_high[2]:roi_high[3]]
+    high = torch.mean(region_high, dim = (2, 3))
+    low = torch.mean(region_low, dim = (2, 3))
+    result = (high - low) / low
+    return result.squeeze(0)
+    
+ 
+def michelson_contrast(image, roi_high, roi_low):
+    """
+    A function to calculate michelson contrast ratio of given region of interests of the image.
+
+    Parameters
+    ----------
+    image         : torch.tensor
+                    Image to be tested [1 x 3 x m x n] or [3 x m x n] or [m x n].
+    roi_high      : torch.tensor
+                    Corner locations of the roi for high intensity area [m_start, m_end, n_start, n_end].
+    roi_low       : torch.tensor
+                    Corner locations of the roi for low intensity area [m_start, m_end, n_start, n_end].
+
+    Returns
+    -------
+    result        : torch.tensor
+                    Michelson contrast for the given regions. [1] or [3] depending on input image.
+    """
+    if len(image.shape) == 2:
+        image = image.unsqueeze(0)
+    if len(image.shape) == 3:
+        image = image.unsqueeze(0)
+    region_low = image[:, :, roi_low[0]:roi_low[1], roi_low[2]:roi_low[3]]
+    region_high = image[:, :, roi_high[0]:roi_high[1], roi_high[2]:roi_high[3]]
+    high = torch.mean(region_high, dim = (2, 3))
+    low = torch.mean(region_low, dim = (2, 3))
+    result = (high - low) / (high + low)
+    return result.squeeze(0)
