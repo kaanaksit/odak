@@ -65,8 +65,8 @@ def prism_phase_function(nx, ny, k, angle, dx = 0.001, axis = 'x', phase_offset 
     """
     angle = torch.deg2rad(torch.tensor([angle]))
     phase_offset = torch.deg2rad(torch.tensor([phase_offset]))
-    x = torch.linspace(- nx * dx / 2., nx * dx / 2., nx)
-    y = torch.linspace(- ny * dx / 2., ny * dx / 2., ny)
+    x = (torch.abs(torch.arange(-nx, 0)) * dx)
+    y = (torch.abs(torch.arange(-ny, 0)) * dx)
     X, Y = torch.meshgrid(x, y, indexing='ij')
     if axis == 'y':
         prism = torch.exp(-1j * k * torch.sin(angle) * Y + phase_offset)
@@ -75,9 +75,38 @@ def prism_phase_function(nx, ny, k, angle, dx = 0.001, axis = 'x', phase_offset 
     return prism
 
 
-def linear_grating(nx, ny, every=2, add=None, axis='x'):
+def blazed_grating(nx, ny, levels = 2, axis = 'x'):
     """
-    A definition to generate a linear grating.
+    A defininition to generate a blazed grating. For more consult de Blas, Mario García, et al. "High resolution 2D beam steerer made from cascaded 1D liquid crystal phase gratings." Scientific Reports 12.1 (2022): 5145 and Igasaki, Yasunori, et al. "High efficiency electrically-addressable phase-only spatial light modulator." optical review 6 (1999): 339-344.
+
+
+    Parameters
+    ----------
+    nx           : int
+                   Size of the output along X.
+    ny           : int
+                   Size of the output along Y.
+    levels       : int
+                   Number of pixels.
+    axis         : str
+                   Axis of glazed grating. It could be `x` or `y`.
+
+    """
+    if levels < 2:
+        levels = 2
+    x = (torch.abs(torch.arange(-nx, 0)) % levels) / levels * (2 * np.pi)
+    y = (torch.abs(torch.arange(-ny, 0)) % levels) / levels * (2 * np.pi)
+    X, Y = torch.meshgrid(x, y, indexing='ij')
+    if axis == 'x':
+        blazed_grating = torch.exp(1j * X)
+    elif axis == 'y':
+        blazed_grating = torch.exp(1j * Y)
+    return blazed_grating
+
+
+def linear_grating(nx, ny, every = 2, add = None, axis = 'x'):
+    """
+    A definition to generate a linear grating. This could also be interpreted as two levels blazed grating. For more on blazed gratings see odak.learn.wave.blazed_grating() function.
 
     Parameters
     ----------
