@@ -19,7 +19,7 @@ def test():
         focal=0.3,
         dx=pixeltom
     )
-    prism_field = prism_phase_function(
+    prism_field = prism_grating(
         sample_field.shape[0],
         sample_field.shape[1],
         k,
