@@ -88,9 +88,9 @@ def generate_complex_field(amplitude, phase):
 
     Parameters
     ----------
-    amplitude         : ndarray or float
+    amplitude         : torch.tensor
                         Amplitude of the field.
-    phase             : ndarray or float
+    phase             : torch.tensor
                         Phase of the field.
 
     Returns
@@ -98,10 +98,6 @@ def generate_complex_field(amplitude, phase):
     field             : ndarray
                         Complex field.
     """
-    if isinstance(type(phase), type(1.)):
-        phase = torch.tensor([phase], requires_grad = True)
-    if isinstance(type(amplitude), type(1.)):
-        amplitude = torch.tensor([amplitude], requires_grad =True)
     field = amplitude * torch.cos(phase) + 1j * amplitude * torch.sin(phase)
     return field
 
