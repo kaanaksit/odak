@@ -46,6 +46,7 @@ We prepared a [documentation](https://kaanaksit.github.io/odak) on usage and muc
 
 
 ## How to cite
+For adding the link of this repository in your publication, please use [Zenodo's citation](https://zenodo.org/badge/latestdoi/3987171). 
 If you have used `odak` in your research project, please consider citing any of the following works:
 
 
@@ -80,5 +81,3 @@ If you have used `odak` in your research project, please consider citing any of 
 }
 
 ```
-
-For adding the link of this repository in your publication, please use [Zenodo's citation](https://zenodo.org/badge/latestdoi/3987171).
