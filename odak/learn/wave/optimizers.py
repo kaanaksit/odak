@@ -118,7 +118,7 @@ class multiplane_hologram_optimizer():
         if self.loss_type == 'naive':
             return self.loss_function(input_image, target_image)
         else:
-            return self.loss_function(input_image, target_image, plane_id)
+            return self.loss_function(input_image.unsqueeze(0), target_image, plane_id)
 
 
     def set_distances(self, plane_id):
