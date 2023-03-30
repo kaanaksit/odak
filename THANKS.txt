@@ -1,9 +1,9 @@
+Ahmet Hamdi Güzel
 Ahmet Serdar Karadeniz
+David Robert Walton
+Jeanne Beyazian
+Koray Kavaklı
 Praneeth Chakravarthula
+Runze Zhu
 Yujie Wang
 Yuta Itoh
-Koray Kavaklı
-David Robert Walton
-Runze Zhu
-Jeanne Beyazian
-Ahmet Hamdi Güzel

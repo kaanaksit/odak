@@ -46,10 +46,22 @@ We prepared a [documentation](https://kaanaksit.github.io/odak) on usage and muc
 
 
 ## How to cite
+For adding the link of this repository in your publication, please use [Zenodo's citation](https://zenodo.org/badge/latestdoi/3987171). 
 If you have used `odak` in your research project, please consider citing any of the following works:
 
 
 ```bibtex
+
+@inproceedings{akcsit2023flexible,
+  title={Flexible modeling of next-generation displays using a differentiable toolkit},
+  author={Ak{\c{s}}it, Kaan and Kavakl{\i}, Koray},
+  booktitle={Practical Holography XXXVII: Displays, Materials, and Applications},
+  volume={12445},
+  pages={131--132},
+  year={2023},
+  organization={SPIE}
+}
+
 @inproceedings{kavakli2022introduction,
   title={Introduction to Odak: a Differentiable Toolkit for Optical Sciences, Vision Sciences and Computer Graphics},
   author={Kavakl{\i}, Koray and Ak{\c{s}}it, Kaan},
@@ -69,5 +81,3 @@ If you have used `odak` in your research project, please consider citing any of 
 }
 
 ```
-
-For adding the link of this repository in your publication, please use [Zenodo's citation](https://zenodo.org/badge/latestdoi/3987171).
