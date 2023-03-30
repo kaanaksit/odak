@@ -37,8 +37,7 @@ You can import Odak and start designing your next in Optics, Computer Graphics, 
 We prepared a [documentation](https://kaanaksit.github.io/odak) on usage and much more.
 
 
-## Samples
-
+## Sample Projects
 
 | | | |
 |:-------------------------:|:-------------------------:|:-------------------------:|
