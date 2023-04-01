@@ -145,7 +145,8 @@ class double_convolution(torch.nn.Module):
                  mid_channels = 8,
                  output_channels = 2,
                  kernel_size = 3, 
-                 bias = False
+                 bias = False,
+                 activation = None
                 ):
         """
         Double convolution model.
@@ -161,20 +162,26 @@ class double_convolution(torch.nn.Module):
                           Kernel size.
         bias            : bool 
                           Set to True to let convolutional layers have bias term.
+        activation      : torch.nn
+                          Nonlinear activation layer to be used. If None, uses torch.nn.ReLU().
         """
         super().__init__()
+        if isinstance(activation, type(None)):
+            activation = torch.nn.ReLU()
         self.model = torch.nn.Sequential(
                                          convolution_layer(
                                                            input_channels = input_channels,
                                                            output_channels = mid_channels,
                                                            kernel_size = kernel_size,
-                                                           bias = bias
+                                                           bias = bias,
+                                                           activation = activation
                                                           ),
                                          convolution_layer(
                                                            input_channels = mid_channels,
                                                            output_channels = output_channels,
                                                            kernel_size = kernel_size,
-                                                           bias = bias
+                                                           bias = bias,
+                                                           activation = activation
                                                           )
                                         )
 
