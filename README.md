@@ -37,12 +37,12 @@ You can import Odak and start designing your next in Optics, Computer Graphics, 
 We prepared a [documentation](https://kaanaksit.github.io/odak) on usage and much more.
 
 
-## Samples
+## Sample Projects
 
 | | | |
 |:-------------------------:|:-------------------------:|:-------------------------:|
-|<img width="240" src="https://complightlab.com/publications/media/holobeam.png"> [HoloBeam: Paper-Thin Near-Eye Displays](https://complightlab.com/publications/holobeam/) | <img width="240" src="https://media.githubusercontent.com/media/complight/cameras-displays-perception-course/main/media/representative_image.png"> [Optimizing Vision and Visuals: Lectures on Cameras, Displays and Perception](https://github.com/complight/cameras-displays-perception-course) | <img width="240" src="https://github.com/complight/realistic_defocus/blob/master/teaser.png">  [Realistic Defocus Blur for Multiplane Computer-Generated Holography](https://github.com/complight/realistic_defocus) 
-|<img width="240" src="https://github.com/kunguz/odak/raw/master/media/metameric_varifocal_hologram.gif"> [Metameric Varifocal Computer-Generated Holography](https://github.com/complight/metameric_holography) | <img width="240" src="https://github.com/kunguz/odak/raw/master/media/learned_holographic_light_transport.gif">  [Learned Holographic Light Transport](https://github.com/complight/realistic_holography) | <img width="240" src="https://github.com/kaanaksit/odak/raw/master/media/phase_shifting_qwp.gif">  [Phase-shifting Trichromat Quadratic Phase Function](https://gist.github.com/kaanaksit/f9bcd8c72b4ef5e078dfb0a81b6806c5) | | 
+| <img width="240" src="https://complightlab.com/publications/media/holohdr.png"> [HoloHDR: Multi-color Holograms Improve Dynamic Range](https://complightlab.com/publications/holohdr/) | <img width="240" src="https://complightlab.com/publications/media/holobeam.png"> [HoloBeam: Paper-Thin Near-Eye Displays](https://complightlab.com/publications/holobeam/) | <img width="240" src="https://media.githubusercontent.com/media/complight/cameras-displays-perception-course/main/media/representative_image.png"> [Optimizing Vision and Visuals: Lectures on Cameras, Displays and Perception](https://github.com/complight/cameras-displays-perception-course) |
+| <img width="240" src="https://github.com/complight/realistic_defocus/blob/master/teaser.png">  [Realistic Defocus Blur for Multiplane Computer-Generated Holography](https://github.com/complight/realistic_defocus) |<img width="240" src="https://github.com/kunguz/odak/raw/master/media/metameric_varifocal_hologram.gif"> [Metameric Varifocal Computer-Generated Holography](https://github.com/complight/metameric_holography) | <img width="240" src="https://github.com/kunguz/odak/raw/master/media/learned_holographic_light_transport.gif">  [Learned Holographic Light Transport](https://github.com/complight/realistic_holography) | |
 
 
 ## How to cite
