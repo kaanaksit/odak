@@ -80,7 +80,8 @@ class convolution_layer(torch.nn.Module):
                  input_channels = 2,
                  output_channels = 2,
                  kernel_size = 3,
-                 bias = False
+                 bias = False,
+                 activation = None
                 ):
         """
         A convolutional layer class.
@@ -96,8 +97,12 @@ class convolution_layer(torch.nn.Module):
                           Kernel size.
         bias            : bool 
                           Set to True to let convolutional layers have bias term.
+        activation      : torch.nn
+                          Nonlinear activation layer to be used. If None, uses torch.nn.ReLU().
         """
         super().__init__()
+        if isinstance(activation, type(None)):
+            activation = torch.nn.ReLU()
         self.model = torch.nn.Sequential(
                                          torch.nn.Conv2d(
                                                          input_channels,
@@ -107,7 +112,7 @@ class convolution_layer(torch.nn.Module):
                                                          bias = bias
                                                         ),
                                          torch.nn.BatchNorm2d(output_channels),
-                                         torch.nn.Tanh()
+                                         torch.nn.ReLU()
                                         )
 
 
