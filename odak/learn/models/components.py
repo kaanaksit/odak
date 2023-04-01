@@ -10,7 +10,8 @@ class residual_layer(torch.nn.Module):
                  input_channels = 2,
                  mid_channels = 16,
                  kernel_size = 3,
-                 bias = False
+                 bias = False,
+                 activation = None
                 ):
         """
         A convolutional layer class.
@@ -26,25 +27,20 @@ class residual_layer(torch.nn.Module):
                           Kernel size.
         bias            : bool 
                           Set to True to let convolutional layers have bias term.
+        activation      : torch.nn
+                          Nonlinear activation layer to be used. If None, uses torch.nn.ReLU().
         """
         super().__init__()
-        self.convolution0 = convolution_layer(
+        if isinstance(activation, type(None)):
+            activation = torch.nn.ReLU()
+        self.convolution = double_convolution(
                                               input_channels,
-                                              mid_channels,
+                                              mid_channels = mid_channels,
+                                              output_channels = input_channels,
                                               kernel_size = kernel_size,
-                                              bias = bias
+                                              bias = bias,
+                                              activation = activation
                                              )
-        self.convolution1 = torch.nn.Conv2d(
-                                            mid_channels,
-                                            input_channels,
-                                            kernel_size = kernel_size,
-                                            padding = kernel_size // 2,
-                                            bias = bias
-                                           )
-        self.output_layer = torch.nn.Sequential(
-                                                torch.nn.BatchNorm2d(input_channels),
-                                                torch.nn.Tanh()
-                                               )
 
 
     def forward(self, x):
@@ -63,12 +59,7 @@ class residual_layer(torch.nn.Module):
                         Estimated output.      
         """
         x0 = self.convolution0(x)
-        x1 = self.convolution1(x0)
-        x2 = x + x1
-        result = self.output_layer(x2)
-        return result
-
-
+        return x + x0
 
 
 class convolution_layer(torch.nn.Module):
