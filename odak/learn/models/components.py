@@ -58,7 +58,7 @@ class residual_layer(torch.nn.Module):
         result        : torch.tensor
                         Estimated output.      
         """
-        x0 = self.convolution0(x)
+        x0 = self.convolution(x)
         return x + x0
 
 
