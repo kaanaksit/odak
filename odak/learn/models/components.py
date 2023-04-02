@@ -145,6 +145,8 @@ class double_convolution(torch.nn.Module):
         ----------
         input_channels  : int
                           Number of input channels.
+        mid_channels    : int
+                          Number of channels in the hidden layer between two convolutions.
         output_channels : int
                           Number of output channels.
         kernel_size     : int
