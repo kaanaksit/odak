@@ -38,6 +38,7 @@ We prepared a [documentation](https://kaanaksit.github.io/odak) on usage and muc
 
 
 ## Sample Projects that uses Odak
+Here are some sample projects that uses `odak`:
 
 * [HoloHDR: Multi-color Holograms Improve Dynamic Range](https://complightlab.com/publications/holohdr/)
 * [HoloBeam: Paper-Thin Near-Eye Displays](https://complightlab.com/publications/holobeam/)
