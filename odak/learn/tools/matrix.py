@@ -34,7 +34,7 @@ def zero_pad(field, size = None, method = 'center'):
     field             : ndarray
                         Input field MxN array.
     size              : list
-                        Size to be zeropadded.
+                        Size to be zeropadded (e.g., [1, 1, m, n] or [m, n] depending on the input field).
     method            : str
                         Zeropad either by placing the content to center or to the left.
 
@@ -43,24 +43,31 @@ def zero_pad(field, size = None, method = 'center'):
     field_zero_padded : ndarray
                         Zeropadded version of the input field.
     """
+    squeeze = False
+    if len(field.shape) < 3:
+        field = field.unsqueeze(0)
+    if len(field.shape) < 4:
+        field = field.unsqueeze(0)
+        squeeze = True
     if type(size) == type(None):
-        resolution = [
-                      int(field.shape[0] * 2),
-                      int(field.shape[1] * 2)
-                     ]
+        resolution = [1, 1, 2 * field.shape[-2], 2 * field.shape[-1]]
     else:
         resolution = size
-    field_zero_padded = torch.zeros(resolution[0], resolution[1], device = field.device, dtype = field.dtype)
+    field_zero_padded = torch.zeros(resolution, device = field.device, dtype = field.dtype)
     if method == 'center':
        field_zero_padded[
-                         resolution[0] // 4: resolution[0] // 4 + field.shape[0],
-                         resolution[1] // 4: resolution[1] // 4 + field.shape[1]
-                        ] = field
+                         :, :,
+                         resolution[-2] // 4: resolution[-2] // 4 + field.shape[-2],
+                         resolution[-1] // 4: resolution[-1] // 4 + field.shape[-1]
+                         ] = field
     elif method == 'left':
        field_zero_padded[
-                         0: field.shape[0],
-                         0: field.shape[1]
+                         :, :,
+                         0: field.shape[-2],
+                         0: field.shape[-1]
                         ] = field
+    if squeeze == True:
+        field_zero_padded = field_zero_padded.squeeze(0).squeeze(0)
     return field_zero_padded
 
 
