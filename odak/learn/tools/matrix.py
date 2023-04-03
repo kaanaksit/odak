@@ -78,25 +78,34 @@ def crop_center(field, size = None):
     Parameters
     ----------
     field       : ndarray
-                  Input field 2Mx2N array.
+                  Input field 2M x 2N or K x L x 2M x 2N array.
     size        : list
-                  Dimensions to crop with respect to center of the image.
+                  Dimensions to crop with respect to center of the image (e.g., M x N or 1 x 1 x M x N).
 
     Returns
     ----------
     cropped     : ndarray
                   Cropped version of the input field.
     """
+    squeeze = False
+    if len(field.shape) < 3:
+        field = field.unsqueeze(0)
+    if len(field.shape) < 4:
+        field = field.unsqueeze(0)
+        squeeze = True
     if type(size) == type(None):
-        qx = int(field.shape[0] // 4)
-        qy = int(field.shape[1] // 4)
-        cropped = field[qx: qx + field.shape[0] // 2, qy:qy + field.shape[1] // 2]
+        qx = int(field.shape[-2] // 4)
+        qy = int(field.shape[-1] // 4)
+        cropped_padded = field[:, :, qx: qx + field.shape[-2] // 2, qy:qy + field.shape[-1] // 2]
     else:
-        cx = int(field.shape[0] // 2)
-        cy = int(field.shape[1] // 2)
-        hx = int(size[0] // 2)
-        hy = int(size[1] // 2)
-        cropped = field[cx-hx:cx+hx, cy-hy:cy+hy]
+        cx = int(field.shape[-2] // 2)
+        cy = int(field.shape[-1] // 2)
+        hx = int(size[-2] // 2)
+        hy = int(size[-1] // 2)
+        cropped_padded = field[:, :, cx-hx:cx+hx, cy-hy:cy+hy]
+    cropped = cropped_padded
+    if squeeze == True:
+        cropped = cropped_padded.squeeze(0).squeeze(0)
     return cropped
 
 
