@@ -156,16 +156,13 @@ class speckle_contrast(nn.Module):
         return Speckle_C
 
 
-import torch
-import odak
-
 class multiplane_loss():
     """
     Loss function for computing loss in multiplanar images. Unlike, previous methods, this loss function accounts for defocused parts of an image.
     """
 
 
-    def __init__(self, target_image, target_depth, blur_ratio=0.25, target_blur_size=10, number_of_planes=4, weights=[1., 2.1, 0.6, 0.], multiplier=1., scheme='defocus', reduction='mean', device=None):
+    def __init__(self, target_image, target_depth, blur_ratio=0.25, target_blur_size=10, number_of_planes=4, weights=[1., 2.1, 0.6, 0.], multiplier=1., scheme='defocus', reduction='sum', device=None):
         """
         Parameters
         ----------
@@ -266,7 +263,7 @@ class multiplane_loss():
                     if torch.sum(targets_cache[j]) > 0:
                         if i == j:
                             nsigma = [0., 0.]
-                        kernel = odak.learn.tools.generate_2d_gaussian(kernel_length, nsigma).to(self.device)
+                        kernel = generate_2d_gaussian(kernel_length, nsigma).to(self.device)
                         kernel = kernel / torch.sum(kernel)
                         kernel = kernel.unsqueeze(0).unsqueeze(0)
                         target_current = target.detach().clone().unsqueeze(0).unsqueeze(0)
