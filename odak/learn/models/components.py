@@ -11,7 +11,7 @@ class residual_layer(torch.nn.Module):
                  mid_channels = 16,
                  kernel_size = 3,
                  bias = False,
-                 activation = None
+                 activation = torch.nn.ReLU()
                 ):
         """
         A convolutional layer class.
@@ -31,8 +31,7 @@ class residual_layer(torch.nn.Module):
                           Nonlinear activation layer to be used. If None, uses torch.nn.ReLU().
         """
         super().__init__()
-        if isinstance(activation, type(None)):
-            activation = torch.nn.ReLU()
+        self.activation = activation
         self.convolution = double_convolution(
                                               input_channels,
                                               mid_channels = mid_channels,
@@ -72,7 +71,7 @@ class convolution_layer(torch.nn.Module):
                  output_channels = 2,
                  kernel_size = 3,
                  bias = False,
-                 activation = None
+                 activation = torch.nn.ReLU()
                 ):
         """
         A convolutional layer class.
@@ -92,8 +91,7 @@ class convolution_layer(torch.nn.Module):
                           Nonlinear activation layer to be used. If None, uses torch.nn.ReLU().
         """
         super().__init__()
-        if isinstance(activation, type(None)):
-            activation = torch.nn.ReLU()
+        self.activation = activation
         self.model = torch.nn.Sequential(
                                          torch.nn.Conv2d(
                                                          input_channels,
@@ -103,7 +101,7 @@ class convolution_layer(torch.nn.Module):
                                                          bias = bias
                                                         ),
                                          torch.nn.BatchNorm2d(output_channels),
-                                         torch.nn.ReLU()
+                                         self.activation
                                         )
 
 
@@ -137,7 +135,7 @@ class double_convolution(torch.nn.Module):
                  output_channels = 2,
                  kernel_size = 3, 
                  bias = False,
-                 activation = None
+                 activation = torch.nn.ReLU()
                 ):
         """
         Double convolution model.
@@ -147,6 +145,8 @@ class double_convolution(torch.nn.Module):
         ----------
         input_channels  : int
                           Number of input channels.
+        mid_channels    : int
+                          Number of channels in the hidden layer between two convolutions.
         output_channels : int
                           Number of output channels.
         kernel_size     : int
@@ -157,22 +157,21 @@ class double_convolution(torch.nn.Module):
                           Nonlinear activation layer to be used. If None, uses torch.nn.ReLU().
         """
         super().__init__()
-        if isinstance(activation, type(None)):
-            activation = torch.nn.ReLU()
+        self.activation = activation
         self.model = torch.nn.Sequential(
                                          convolution_layer(
                                                            input_channels = input_channels,
                                                            output_channels = mid_channels,
                                                            kernel_size = kernel_size,
                                                            bias = bias,
-                                                           activation = activation
+                                                           activation = self.activation
                                                           ),
                                          convolution_layer(
                                                            input_channels = mid_channels,
                                                            output_channels = output_channels,
                                                            kernel_size = kernel_size,
                                                            bias = bias,
-                                                           activation = activation
+                                                           activation = self.activation
                                                           )
                                         )
 

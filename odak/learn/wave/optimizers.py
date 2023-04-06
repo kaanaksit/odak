@@ -18,11 +18,9 @@ class multiplane_hologram_optimizer():
                  mask_limits = [0.2, 0.8, 0.05, 0.95],
                  number_of_planes = 4,
                  zero_mode_distance = 0.15,
-                 device = None
+                 device = torch.device('cpu')
                 ):
         self.device = device
-        if isinstance(self.device, type(None)):
-            self.device = torch.device("cpu")
         torch.cuda.empty_cache()
         torch.random.seed()
         self.wavelength = wavelength
