@@ -341,7 +341,7 @@ def gradient_descent(field, wavelength, distance, dx, resolution, propagation_ty
         resolution[0], resolution[1], requires_grad=False).to(device)
     k = wavenumber(wavelength)
     loss_function = torch.nn.MSELoss(reduction='none').to(device)
-    t = tqdm(range(n_iteration), leave=False)
+    t = tqdm(range(n_iteration), leave = False, dynamic_ncols = True)
     hologram = generate_complex_field(amplitude, phase)
     for i in t:
         hologram_padded = zero_pad(hologram)
@@ -418,7 +418,7 @@ def stochastic_gradient_descent(field, wavelength, distance, dx, resolution, pro
     optimizer = torch.optim.Adam([{'params': [phase]}], lr=learning_rate)
     if type(loss_function) == type(None):
         loss_function = torch.nn.MSELoss().to(device)
-    t = tqdm(range(n_iteration), leave=False)
+    t = tqdm(range(n_iteration), leave = False, dynamic_ncols = True)
     for i in t:
         optimizer.zero_grad()
         hologram = generate_complex_field(amplitude, phase)

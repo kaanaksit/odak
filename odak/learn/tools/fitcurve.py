@@ -49,7 +49,7 @@ class multi_layer_perceptron(nn.Module):
         return self.forward(x).detach()
 
 
-    def fit(self, x_values, y_values, epochs=100, learning_rate=1e-5):
+    def fit(self, x_values, y_values, epochs = 100, learning_rate = 1e-5):
         """
         Function to train the weights of the multi layer perceptron.
 
@@ -64,14 +64,14 @@ class multi_layer_perceptron(nn.Module):
         learning_rate   : float
                           Learning rate of the optimizer.
         """
-        t = tqdm(range(epochs), leave=False)
+        t = tqdm(range(epochs), leave = False, dynamic_ncols = True)
         self.optimizer = torch.optim.Adam(self.parameters(), lr=learning_rate)
         self.loss_function = torch.nn.MSELoss()
         for i in t:
             self.optimizer.zero_grad()
             estimate = self.forward(x_values)
             loss = self.loss_function(estimate, y_values)
-            loss.backward(retain_graph=True)
+            loss.backward(retain_graph = True)
             self.optimizer.step()
             description = 'Loss:{:.4f}'.format(loss.item())
             t.set_description(description)
