@@ -218,7 +218,7 @@ class multiplane_hologram_optimizer():
         hologram                   : torch.tensor
                                      Optimised hologram.
         """
-        t = tqdm(range(self.number_of_iterations), leave = False)
+        t = tqdm(range(self.number_of_iterations), leave = False, dynamic_ncols = True)
         for step in t:
             for plane_id in range(self.number_of_planes):
                 self.optimizer.zero_grad()
