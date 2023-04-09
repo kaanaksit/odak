@@ -55,7 +55,6 @@ If you have used `odak` in your research project, please consider citing any of 
 
 
 ```bibtex
-
 @inproceedings{akcsit2023flexible,
   title={Flexible modeling of next-generation displays using a differentiable toolkit},
   author={Ak{\c{s}}it, Kaan and Kavakl{\i}, Koray},
@@ -65,7 +64,9 @@ If you have used `odak` in your research project, please consider citing any of 
   year={2023},
   organization={SPIE}
 }
+```
 
+```bibtex
 @inproceedings{kavakli2022introduction,
   title={Introduction to Odak: a Differentiable Toolkit for Optical Sciences, Vision Sciences and Computer Graphics},
   author={Kavakl{\i}, Koray and Ak{\c{s}}it, Kaan},
@@ -74,8 +75,9 @@ If you have used `odak` in your research project, please consider citing any of 
   year={2022},
   organization={Optica Publishing Group}
 }
+```
 
-
+```bibtex
 @incollection{kavakli2022optimizing,
   title={Optimizing vision and visuals: lectures on cameras, displays and perception},
   author={Kavakli, Koray and Walton, David Robert and Antipa, Nick and Mantiuk, Rafa{\l} and Lanman, Douglas and Ak{\c{s}}it, Kaan},
