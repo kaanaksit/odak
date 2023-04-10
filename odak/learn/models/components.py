@@ -236,3 +236,70 @@ class normalization(torch.nn.Module):
         mean = torch.mean(x, dim = 1, keepdim = True)
         result =  (x - mean) * (var + eps).rsqrt() * self.k
         return result 
+ 
+class residual_attention_layer(torch.nn.Module):
+    """
+    An attention layer.
+    """
+    def __init__(
+                 self,
+                 input_channels = 2,
+                 output_channels = 2,
+                 kernel_size = 3,
+                 bias = False,
+                 activation = torch.nn.ReLU()
+                ):
+        """
+        An attention layer class.
+
+
+        Parameters
+        ----------
+        input_channels  : int
+                          Number of input channels.
+        mid_channels    : int
+                          Number of middle channels.
+        kernel_size     : int
+                          Kernel size.
+        bias            : bool 
+                          Set to True to let convolutional layers have bias term.
+        activation      : torch.nn
+                          Nonlinear activation layer to be used. If None, uses torch.nn.ReLU().
+        """
+        super().__init__()
+        self.activation = activation
+        self.convolution = torch.nn.Sequential(
+                                         torch.nn.Conv2d(
+                                                         input_channels,
+                                                         output_channels,
+                                                         kernel_size = kernel_size,
+                                                         padding = kernel_size // 2,
+                                                         bias = bias
+                                                        ),
+                                         torch.nn.BatchNorm2d(output_channels),
+                                        )
+
+
+    def forward(self, x_1, x_2):
+        """
+        Forward model.
+        
+        Parameters
+        ----------
+        x_1            : torch.tensor
+                         First input data.
+                    
+        x_2            : torch.tensor
+                         Seconnd input data.
+      
+ 
+        Returns
+        ----------
+        result        : torch.tensor
+                        Estimated output.      
+        """
+        x_1_out = self.convolution(x_1)
+        x_2_out = self.convolution(x_2)
+        result = self.activation(x_1_out + x_2_out) * x_1
+        return result
+
