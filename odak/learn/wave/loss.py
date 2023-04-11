@@ -16,7 +16,7 @@ class phase_gradient(nn.Module):
     """
     
 
-    def __init__(self, kernel = None, loss = nn.MSELoss(), device=torch.device("cpu")):
+    def __init__(self, kernel = None, loss = nn.MSELoss(), device = torch.device("cpu")):
         """
         Parameters
         ----------
@@ -29,7 +29,7 @@ class phase_gradient(nn.Module):
         self.device = device
         self.loss = loss
         if kernel == None:
-            self.kernel = torch.tensor([[[[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]]]], dtype=torch.float32)/8
+            self.kernel = torch.tensor([[[[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]]]], dtype=torch.float32) / 8
         else:
             if len(kernel.shape) == 4:
                 self.kernel = kernel
@@ -76,7 +76,7 @@ class phase_gradient(nn.Module):
         edge_detect              : torch.tensor
                                     The computed phase gradient.
         """
-        edge_detect = F.conv2d(phase, self.kernel, padding=self.kernel.shape[-1]//2)
+        edge_detect = F.conv2d(phase, self.kernel, padding = self.kernel.shape[-1] // 2)
         return edge_detect
 
 
@@ -108,7 +108,7 @@ class speckle_contrast(nn.Module):
         self.loss = loss
         self.step_size = step_size
         self.kernel_size = kernel_size
-        self.kernel = torch.ones((1, 1, self.kernel_size, self.kernel_size))/(self.kernel_size**2)
+        self.kernel = torch.ones((1, 1, self.kernel_size, self.kernel_size)) / (self.kernel_size ** 2)
         self.kernel = Variable(self.kernel.type(torch.FloatTensor).to(self.device))
 
 
@@ -152,7 +152,7 @@ class speckle_contrast(nn.Module):
         """
         mean = F.conv2d(intensity, self.kernel, stride = self.step_size)
         var = torch.sqrt(F.conv2d(torch.pow(intensity, 2), self.kernel, stride = self.step_size) - torch.pow(mean, 2))
-        Speckle_C = var/mean
+        Speckle_C = var / mean
         return Speckle_C
 
 
@@ -162,7 +162,9 @@ class multiplane_loss():
     """
 
 
-    def __init__(self, target_image, target_depth, blur_ratio=0.25, target_blur_size=10, number_of_planes=4, weights=[1., 2.1, 0.6, 0.], multiplier=1., scheme='defocus', reduction='sum', device=None):
+    def __init__(self, target_image, target_depth, blur_ratio = 0.25, 
+                 target_blur_size = 10, number_of_planes = 4, weights = [1., 2.1, 0.6, 0.], 
+                 multiplier = 1., scheme = 'defocus', reduction = 'sum', device = torch.device('cpu')):
         """
         Parameters
         ----------
@@ -188,8 +190,6 @@ class multiplane_loss():
                             Device to be used (e.g., cuda, cpu, opencl).
         """
         self.device = device
-        if isinstance(device, type(None)):
-            self.device = torch.device("cpu")
         self.target_image     = target_image.float().to(self.device)
         self.target_depth     = target_depth.float().to(self.device)
         self.target_blur_size = target_blur_size
@@ -203,7 +203,7 @@ class multiplane_loss():
         self.set_targets()
         if scheme == 'defocus':
             self.add_defocus_blur()
-        self.loss_function = torch.nn.MSELoss(reduction=self.reduction)
+        self.loss_function = torch.nn.MSELoss(reduction = self.reduction)
 
 
     def get_targets(self):
@@ -224,22 +224,22 @@ class multiplane_loss():
         Internal function for slicing the depth into planes without considering defocus. Users can query the results with get_targets() within the same class.
         """
         self.target_depth = self.target_depth * (self.number_of_planes - 1)
-        self.target_depth = torch.round(self.target_depth, decimals=0)
+        self.target_depth = torch.round(self.target_depth, decimals = 0)
         self.targets      = torch.zeros(
                                         self.number_of_planes,
                                         self.target_image.shape[0],
                                         self.target_image.shape[1],
                                         self.target_image.shape[2],
-                                        requires_grad=False
+                                        requires_grad = False
                                        ).to(self.device)
         self.focus_target = torch.zeros_like(self.target_image,
-                                             requires_grad=False).to(self.device)
+                                             requires_grad = False).to(self.device)
         self.masks        = torch.zeros_like(self.targets).to(self.device)
         for i in range(self.number_of_planes):
             for ch in range(self.target_image.shape[0]):
-                mask_zeros = torch.zeros_like(self.target_image[ch], dtype=torch.int)
-                mask_ones = torch.ones_like(self.target_image[ch], dtype=torch.int)
-                mask = torch.where(self.target_depth==i, mask_ones, mask_zeros)
+                mask_zeros = torch.zeros_like(self.target_image[ch], dtype = torch.int)
+                mask_ones = torch.ones_like(self.target_image[ch], dtype = torch.int)
+                mask = torch.where(self.target_depth == i, mask_ones, mask_zeros)
                 new_target = self.target_image[ch] * mask
                 self.focus_target = self.focus_target + new_target.squeeze(0).squeeze(0).detach().clone()
                 self.targets[i, ch] = new_target.squeeze(0).squeeze(0)
@@ -253,10 +253,10 @@ class multiplane_loss():
         kernel_length = [self.target_blur_size, self.target_blur_size ]
         for ch in range(self.target_image.shape[0]):
             targets_cache = self.targets[:, ch].detach().clone()
-            target = torch.sum(targets_cache, axis=0)
+            target = torch.sum(targets_cache, axis = 0)
             for i in range(self.number_of_planes):
-                sigmas = torch.linspace(start=0, end=self.target_blur_size, steps=self.number_of_planes)
-                sigmas = sigmas-i*self.target_blur_size/(self.number_of_planes-1+1e-10)
+                sigmas = torch.linspace(start = 0, end = self.target_blur_size, steps = self.number_of_planes)
+                sigmas = sigmas - i * self.target_blur_size / (self.number_of_planes - 1 + 1e-10)
                 defocus = torch.zeros_like(targets_cache[i])
                 for j in range(self.number_of_planes):
                     nsigma = [int(abs(i - j) * self.blur_ratio), int(abs(i -j) * self.blur_ratio)]
@@ -267,14 +267,14 @@ class multiplane_loss():
                         kernel = kernel / torch.sum(kernel)
                         kernel = kernel.unsqueeze(0).unsqueeze(0)
                         target_current = target.detach().clone().unsqueeze(0).unsqueeze(0)
-                        defocus_plane = torch.nn.functional.conv2d(target_current, kernel, padding='same')
+                        defocus_plane = torch.nn.functional.conv2d(target_current, kernel, padding = 'same')
                         defocus_plane = defocus_plane.view(defocus_plane.shape[-2], defocus_plane.shape[-1])
                         defocus = defocus + defocus_plane * torch.abs(self.masks[j, ch])
                 self.targets[i, ch] = defocus
         self.targets = self.targets.detach().clone() * self.multiplier
     
 
-    def __call__(self, image, target, plane_id=None):
+    def __call__(self, image, target, plane_id = None):
         """
         Calculates the multiplane loss against a given target.
         

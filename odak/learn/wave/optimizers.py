@@ -8,6 +8,8 @@ class multiplane_hologram_optimizer():
     """
     A highly configurable class for optimizing multiplane holograms.
     """
+
+    
     def __init__(self, wavelength, image_location, 
                  image_spacing, slm_pixel_pitch,
                  slm_resolution, targets,
@@ -18,6 +20,7 @@ class multiplane_hologram_optimizer():
                  mask_limits = [0.2, 0.8, 0.05, 0.95],
                  number_of_planes = 4,
                  zero_mode_distance = 0.15,
+                 optimize_amplitude = False,
                  device = torch.device('cpu')
                 ):
         self.device = device
@@ -42,6 +45,7 @@ class multiplane_hologram_optimizer():
         self.scene_center = self.image_spacing * (self.number_of_planes - 1) / 2.
         self.wavenumber = wavenumber(self.wavelength)
         self.zero_mode_distance = zero_mode_distance
+        self.optimize_amplitude = optimize_amplitude
         self.init_phase(phase_initial)
         self.init_amplitude(amplitude_initial)
         self.init_optimizer()
@@ -54,12 +58,14 @@ class multiplane_hologram_optimizer():
         Internal function to set the amplitude of the illumination source.
         """
         self.amplitude = amplitude_initial
-        if isinstance(self.amplitude,type(None)):
+        if isinstance(self.amplitude, type(None)):
             self.amplitude = torch.ones(
                                         self.slm_resolution[0],
                                         self.slm_resolution[1],
-                                        requires_grad=False
+                                        requires_grad = False
                                        ).to(self.device)
+        if self.optimize_amplitude == True:
+            self.amplitude = self.amplitude.requires_grad_()
         
 
     def init_phase(self, phase_initial):
@@ -79,7 +85,10 @@ class multiplane_hologram_optimizer():
         """
         Internal function to set the optimizer.
         """
-        self.optimizer = torch.optim.Adam([{'params': [self.phase, self.offset]}], lr=self.learning_rate)
+        parameters = [self.phase, self.offset]
+        if self.optimize_amplitude == True:
+            parameters.append(self.amplitude)
+        self.optimizer = torch.optim.AdamW(parameters, lr = self.learning_rate)
 
 
     def init_loss_function(self, loss_function=None, reduction='mean'):
@@ -89,7 +98,7 @@ class multiplane_hologram_optimizer():
         self.loss_function = loss_function
         self.loss_type = 'other'
         if isinstance(self.loss_function, type(None)):
-            self.loss_function = torch.nn.MSELoss(reduction=reduction)
+            self.loss_function = torch.nn.MSELoss(reduction = reduction)
             self.loss_type = 'naive'
 
 
@@ -122,6 +131,7 @@ class multiplane_hologram_optimizer():
     def set_distances(self, plane_id):
         """
         Internal function to set distances.
+        
         Parameters
         ----------
         plane_id                    : int
@@ -143,22 +153,28 @@ class multiplane_hologram_optimizer():
     def optimize(self):
         """
         Function to optimize multiplane phase-only holograms.
+        
         Returns
         -------
         hologram_phase             : torch.tensor
-                                     Phase of the optimized phase-only hologram.
+                                     Phase of the optimized hologram.
+        hologram_amplitude         : torch.tensor
+                                     Amplitude of the optimized hologram. 
         reconstruction_intensities : torch.tensor
                                      Intensities of the images reconstructed at each plane with the optimized phase-only hologram.
         """
         hologram = self.gradient_descent()
         hologram_phase = calculate_phase(hologram)
-        reconstruction_intensities = self.reconstruct(hologram_phase)
-        return hologram_phase.detach().clone(), reconstruction_intensities.detach().clone()
+        hologram_amplitude = calculate_amplitude(hologram)
+        print(hologram_amplitude.max())
+        reconstruction_intensities = self.reconstruct(hologram_amplitude, hologram_phase)
+        return hologram_phase.detach().clone(), hologram_amplitude.detach().clone(), reconstruction_intensities.detach().clone()
 
 
-    def reconstruct(self, hologram_phase):
+    def reconstruct(self, hologram_amplitude, hologram_phase):
         """
         Internal function to reconstruct a given hologram.
+        
         Parameters
         ----------
         hologram_phase             : torch.tensor
@@ -169,13 +185,13 @@ class multiplane_hologram_optimizer():
         reconstruction_intensities : torch.tensor
                                      Reconstructed images.
         """
-        hologram = generate_complex_field(self.amplitude, hologram_phase)
+        hologram = generate_complex_field(hologram_amplitude, hologram_phase)
         torch.no_grad()
         reconstruction_intensities = torch.zeros(
                                                  self.number_of_planes,
                                                  self.phase.shape[0],
                                                  self.phase.shape[1],
-                                                 requires_grad =False
+                                                 requires_grad = False
                                                 ).to(self.device)
         for plane_id in range(self.number_of_planes):
             distances = self.set_distances(plane_id)
@@ -184,9 +200,29 @@ class multiplane_hologram_optimizer():
         return reconstruction_intensities
 
 
+    def amplitude_constrain(self, amplitude):
+        """
+        Function to limit amplitude of hologram between 0 and 1.
+        
+        Parameters 
+        ----------
+        amplitude                  : torch.tensor
+                                     Input amplitude [m x n].
+        
+        Returns
+        -------
+        constrained_amplitude      : torch.tensor
+                                     Constrained amplitude [m x n].
+        """
+        sigmoid = torch.nn.Sigmoid()
+        constrained_amplitude = sigmoid(amplitude)
+        return constrained_amplitude
+
+    
     def double_phase_constrain(self, shifted_phase, phase_offset):
         """
         Function for generating double phase encoding alike phase-only holograms.
+        
         Parameters
         ----------
         shifted_phase              : torch.tensor
@@ -213,6 +249,7 @@ class multiplane_hologram_optimizer():
     def gradient_descent(self):
         """
         Function to optimize multiplane phase-only holograms using gradient descent.
+        
         Returns
         -------
         hologram                   : torch.tensor
@@ -223,7 +260,11 @@ class multiplane_hologram_optimizer():
             for plane_id in range(self.number_of_planes):
                 self.optimizer.zero_grad()
                 phase = self.double_phase_constrain(self.phase, self.offset)
-                hologram = generate_complex_field(self.amplitude, phase)
+                if self.optimize_amplitude == True:
+                    amplitude = self.amplitude_constrain(self.amplitude)
+                else:
+                    amplitude = self.amplitude
+                hologram = generate_complex_field(amplitude, phase)
                 distances = self.set_distances(plane_id)
                 reconstruction = self.model(hologram, distances)
                 reconstruction_intensity = calculate_amplitude(reconstruction) ** 2
