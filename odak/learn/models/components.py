@@ -236,16 +236,17 @@ class normalization(torch.nn.Module):
         mean = torch.mean(x, dim = 1, keepdim = True)
         result =  (x - mean) * (var + eps).rsqrt() * self.k
         return result 
+
  
 class residual_attention_layer(torch.nn.Module):
     """
-    An attention layer.
+    A residual block with an attention layer.
     """
     def __init__(
                  self,
                  input_channels = 2,
                  output_channels = 2,
-                 kernel_size = 3,
+                 kernel_size = 1,
                  bias = False,
                  activation = torch.nn.ReLU()
                 ):
@@ -268,28 +269,48 @@ class residual_attention_layer(torch.nn.Module):
         """
         super().__init__()
         self.activation = activation
-        self.convolution = torch.nn.Sequential(
-                                         torch.nn.Conv2d(
-                                                         input_channels,
-                                                         output_channels,
-                                                         kernel_size = kernel_size,
-                                                         padding = kernel_size // 2,
-                                                         bias = bias
-                                                        ),
-                                         torch.nn.BatchNorm2d(output_channels),
-                                        )
+        self.convolution0 = torch.nn.Sequential(
+                                                torch.nn.Conv2d(
+                                                                input_channels,
+                                                                output_channels,
+                                                                kernel_size = kernel_size,
+                                                                padding = kernel_size // 2,
+                                                                bias = bias
+                                                               ),
+                                                torch.nn.BatchNorm2d(output_channels)
+                                               )
+        self.convolution1 = torch.nn.Sequential(
+                                                torch.nn.Conv2d(
+                                                                input_channels,
+                                                                output_channels,
+                                                                kernel_size = kernel_size,
+                                                                padding = kernel_size // 2,
+                                                                bias = bias
+                                                               ),
+                                                torch.nn.BatchNorm2d(output_channels)
+                                               )
+        self.final_layer = torch.nn.Sequential(
+                                               self.activation,
+                                               torch.nn.Conv2d(
+                                                               output_channels,
+                                                               output_channels,
+                                                               kernel_size = kernel_size,
+                                                               padding = kernel_size // 2,
+                                                               bias = bias
+                                                              )
+                                              )
 
 
-    def forward(self, x_1, x_2):
+    def forward(self, x0, x1):
         """
         Forward model.
         
         Parameters
         ----------
-        x_1            : torch.tensor
+        x0             : torch.tensor
                          First input data.
                     
-        x_2            : torch.tensor
+        x1             : torch.tensor
                          Seconnd input data.
       
  
@@ -298,8 +319,8 @@ class residual_attention_layer(torch.nn.Module):
         result        : torch.tensor
                         Estimated output.      
         """
-        x_1_out = self.convolution(x_1)
-        x_2_out = self.convolution(x_2)
-        result = self.activation(x_1_out + x_2_out) * x_1
+        y0 = self.convolution0(x0)
+        y1 = self.convolution1(x1)
+        y2 = torch.add(y0, y1)
+        result = self.final_layer(y2) * x0
         return result
-
