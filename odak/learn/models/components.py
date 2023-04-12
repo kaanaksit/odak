@@ -361,28 +361,28 @@ class self_attention_layer(torch.nn.Module):
         torch.nn.init.constant_(self.W_z[1].bias, 0)
 
     def forward(self, x):
-            """
-            Forward model [zi = Wzyi + xi]
-            
-            Parameters
-            ----------
-            x             : torch.tensor
-                            First input data.                       
+        """
+        Forward model [zi = Wzyi + xi]
         
+        Parameters
+        ----------
+        x             : torch.tensor
+                        First input data.                       
     
-            Returns
-            ----------
-            z               : torch.tensor
-                             Estimated output.      
-            """
-            
-            batch_size, channels, height, width = x.size()
-            theta = x.view(batch_size, channels, -1).permute(0, 2, 1)
-            phi = x.view(batch_size, channels, -1).permute(0, 2, 1)
-            g = self.g(x).view(batch_size, self.bottleneck_channels, -1).permute(0, 2, 1)
-            attn = torch.bmm(theta, phi.transpose(1, 2)) / (height * width)
-            attn = torch.nn.functional.softmax(attn, dim=-1)
-            y = torch.bmm(attn, g).permute(0, 2, 1).contiguous().view(batch_size, self.bottleneck_channels, height, width)
-            W_y = self.W_z(y)
-            z = W_y + x
-            return z
+
+        Returns
+        ----------
+        z               : torch.tensor
+                            Estimated output.      
+        """
+        
+        batch_size, channels, height, width = x.size()
+        theta = x.view(batch_size, channels, -1).permute(0, 2, 1)
+        phi = x.view(batch_size, channels, -1).permute(0, 2, 1)
+        g = self.g(x).view(batch_size, self.bottleneck_channels, -1).permute(0, 2, 1)
+        attn = torch.bmm(theta, phi.transpose(1, 2)) / (height * width)
+        attn = torch.nn.functional.softmax(attn, dim=-1)
+        y = torch.bmm(attn, g).permute(0, 2, 1).contiguous().view(batch_size, self.bottleneck_channels, height, width)
+        W_y = self.W_z(y)
+        z = W_y + x
+        return z
