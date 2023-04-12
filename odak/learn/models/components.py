@@ -324,3 +324,65 @@ class residual_attention_layer(torch.nn.Module):
         y2 = torch.add(y0, y1)
         result = self.final_layer(y2) * x0
         return result
+    
+class self_attention_layer(torch.nn.Module):
+    """
+    Self-Attention Layer [zi = Wzyi + xi] (non-local block : ref https://arxiv.org/abs/1711.07971)
+    """
+    def __init__(
+                 self,
+                 input_channels = 1024,
+                 bottleneck_channels = 512,
+                ):
+        """
+
+        Parameters
+        ----------
+        input_channels  : int
+                          Number of input channels.
+        mid_channels    : int
+                          Number of middle channels.
+        kernel_size     : int
+                          Kernel size.
+        bias            : bool 
+                          Set to True to let convolutional layers have bias term.
+        activation      : torch.nn
+        """
+        super(self_attention_layer, self).__init__()
+        self.input_channels = input_channels
+        self.bottleneck_channels = bottleneck_channels
+        self.g = torch.nn.Conv2d(self.input_channels, self.bottleneck_channels, kernel_size=1)
+        #zi = [Wz]yi + xi
+        self.W_z = torch.nn.Sequential(
+                    torch.nn.Conv2d(self.bottleneck_channels,self.input_channels, kernel_size=1),
+                    torch.nn.BatchNorm2d(self.input_channels)
+                )
+        torch.nn.init.constant_(self.W_z[1].weight, 0)   
+        torch.nn.init.constant_(self.W_z[1].bias, 0)
+
+    def forward(self, x):
+            """
+            Forward model [zi = Wzyi + xi]
+            
+            Parameters
+            ----------
+            x             : torch.tensor
+                            First input data.                       
+        
+    
+            Returns
+            ----------
+            z               : torch.tensor
+                             Estimated output.      
+            """
+            
+            batch_size, channels, height, width = x.size()
+            theta = x.view(batch_size, channels, -1).permute(0, 2, 1)
+            phi = x.view(batch_size, channels, -1).permute(0, 2, 1)
+            g = self.g(x).view(batch_size, self.bottleneck_channels, -1).permute(0, 2, 1)
+            attn = torch.bmm(theta, phi.transpose(1, 2)) / (height * width)
+            attn = torch.nn.functional.softmax(attn, dim=-1)
+            y = torch.bmm(attn, g).permute(0, 2, 1).contiguous().view(batch_size, self.bottleneck_channels, height, width)
+            W_y = self.W_z(y)
+            z = W_y + x
+            return z
