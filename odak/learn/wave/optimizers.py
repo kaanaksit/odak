@@ -166,7 +166,6 @@ class multiplane_hologram_optimizer():
         hologram = self.gradient_descent()
         hologram_phase = calculate_phase(hologram)
         hologram_amplitude = calculate_amplitude(hologram)
-        print(hologram_amplitude.max())
         reconstruction_intensities = self.reconstruct(hologram_amplitude, hologram_phase)
         return hologram_phase.detach().clone(), hologram_amplitude.detach().clone(), reconstruction_intensities.detach().clone()
 
