@@ -131,7 +131,7 @@ class double_convolution(torch.nn.Module):
     def __init__(
                  self,
                  input_channels = 2,
-                 mid_channels = 8,
+                 mid_channels = None,
                  output_channels = 2,
                  kernel_size = 3, 
                  bias = False,
@@ -157,6 +157,8 @@ class double_convolution(torch.nn.Module):
                           Nonlinear activation layer to be used. If None, uses torch.nn.ReLU().
         """
         super().__init__()
+        if isinstance(mid_channels, type(None)):
+            mid_channels = output_channels
         self.activation = activation
         self.model = torch.nn.Sequential(
                                          convolution_layer(
@@ -324,7 +326,8 @@ class residual_attention_layer(torch.nn.Module):
         y2 = torch.add(y0, y1)
         result = self.final_layer(y2) * x0
         return result
-    
+
+ 
 class self_attention_layer(torch.nn.Module):
     """
     Self-Attention Layer [zi = Wzyi + xi] (non-local block : ref https://arxiv.org/abs/1711.07971)
@@ -333,32 +336,48 @@ class self_attention_layer(torch.nn.Module):
                  self,
                  input_channels = 1024,
                  bottleneck_channels = 512,
+                 kernel_size = 1,
+                 bias = False,
+                 activation = torch.nn.ReLU()
                 ):
         """
 
         Parameters
         ----------
-        input_channels  : int
-                          Number of input channels.
-        mid_channels    : int
-                          Number of middle channels.
-        kernel_size     : int
-                          Kernel size.
-        bias            : bool 
-                          Set to True to let convolutional layers have bias term.
-        activation      : torch.nn
+        input_channels      : int
+                              Number of input channels.
+        bottleneck_channels : int
+                              Number of middle channels.
+        kernel_size         : int
+                              Kernel size.
+        bias                : bool 
+                              Set to True to let convolutional layers have bias term.
+        activation          : torch.nn
+                              Non-linear activation layer (e.g., torch.nn.ReLU(), torch.nn.Sigmoid()).
         """
         super(self_attention_layer, self).__init__()
         self.input_channels = input_channels
         self.bottleneck_channels = bottleneck_channels
-        self.g = torch.nn.Conv2d(self.input_channels, self.bottleneck_channels, kernel_size=1)
-        #zi = [Wz]yi + xi
+        self.g = torch.nn.Conv2d(
+                                 self.input_channels, 
+                                 self.bottleneck_channels,
+                                 kernel_size = kernel_size,
+                                 padding = kernel_size // 2,
+                                 bias = bias
+                                )
         self.W_z = torch.nn.Sequential(
-                    torch.nn.Conv2d(self.bottleneck_channels,self.input_channels, kernel_size=1),
-                    torch.nn.BatchNorm2d(self.input_channels)
-                )
+                                       torch.nn.Conv2d(
+                                                       self.bottleneck_channels,
+                                                       self.input_channels, 
+                                                       kernel_size = kernel_size,
+                                                       bias = bias,
+                                                       padding = kernel_size // 2
+                                                      ),
+                                       torch.nn.BatchNorm2d(self.input_channels)
+                                      )
         torch.nn.init.constant_(self.W_z[1].weight, 0)   
         torch.nn.init.constant_(self.W_z[1].bias, 0)
+
 
     def forward(self, x):
         """
@@ -366,16 +385,15 @@ class self_attention_layer(torch.nn.Module):
         
         Parameters
         ----------
-        x             : torch.tensor
-                        First input data.                       
+        x               : torch.tensor
+                          First input data.                       
     
 
         Returns
         ----------
         z               : torch.tensor
-                            Estimated output.      
+                          Estimated output.
         """
-        
         batch_size, channels, height, width = x.size()
         theta = x.view(batch_size, channels, -1).permute(0, 2, 1)
         phi = x.view(batch_size, channels, -1).permute(0, 2, 1)
@@ -386,3 +404,143 @@ class self_attention_layer(torch.nn.Module):
         W_y = self.W_z(y)
         z = W_y + x
         return z
+
+
+class downsample_layer(torch.nn.Module):
+    """
+    A downscaling component followed by a double convolution.
+    """
+    def __init__(
+                 self,
+                 input_channels,
+                 output_channels,
+                 kernel_size = 3,
+                 bias = False,
+                 activation = torch.nn.ReLU()
+                ):
+        """
+        A downscaling component with a double convolution.
+
+        Parameters
+        ----------
+        input_channels  : int
+                          Number of input channels.
+        output_channels : int
+                          Number of output channels.
+        kernel_size     : int
+                          Kernel size.
+        bias            : bool 
+                          Set to True to let convolutional layers have bias term.
+        activation      : torch.nn
+                          Nonlinear activation layer to be used. If None, uses torch.nn.ReLU().
+        """
+        super().__init__()
+        self.maxpool_conv = torch.nn.Sequential(
+                                                torch.nn.MaxPool2d(2),
+                                                double_convolution(
+                                                                   input_channels = input_channels,
+                                                                   mid_channels = output_channels,
+                                                                   output_channels = output_channels,
+                                                                   kernel_size = kernel_size,
+                                                                   bias = bias,
+                                                                   activation = activation
+                                                                  )
+                                               )
+
+    def forward(self, x):
+        """
+        Forward model.
+        
+        Parameters
+        ----------
+        x              : torch.tensor
+                         First input data.
+                    
+      
+ 
+        Returns
+        ----------
+        result        : torch.tensor
+                        Estimated output.      
+        """
+        result = self.maxpool_conv(x)
+        return result
+
+
+class upsample_layer(torch.nn.Module):
+    """
+    An upsampling convolutional layer.
+    """
+    def __init__(
+                 self,
+                 input_channels,
+                 output_channels,
+                 kernel_size = 3,
+                 bias = False,
+                 activation = torch.nn.ReLU(),
+                 bilinear = True
+                ):
+        """
+        A downscaling component with a double convolution.
+
+        Parameters
+        ----------
+        input_channels  : int
+                          Number of input channels.
+        output_channels : int
+                          Number of output channels.
+        kernel_size     : int
+                          Kernel size.
+        bias            : bool 
+                          Set to True to let convolutional layers have bias term.
+        activation      : torch.nn
+                          Nonlinear activation layer to be used. If None, uses torch.nn.ReLU().
+        bilinear        : bool
+                          If set to True, bilinear sampling is used.
+        """
+        super(upsample_layer, self).__init__()
+        if bilinear:
+            self.up = torch.nn.Upsample(scale_factor = 2, mode = 'bilinear', align_corners = True)
+            self.conv = double_convolution(
+                                           input_channels = input_channels,
+                                           mid_channels = input_channels // 2,
+                                           output_channels = output_channels,
+                                           kernel_size = kernel_size,
+                                           bias = bias,
+                                           activation = activation
+                                          )
+        else:
+            self.up = torch.nn.ConvTranspose2d(input_channels , input_channels // 2, kernel_size = 2, stride = 2)
+            self.conv = double_convolution(
+                                           input_channels = input_channels,
+                                           mid_channels = output_channels,
+                                           output_channels = output_channels,
+                                           kernel_size = kernel_size,
+                                           bias = bias,
+                                           activation = activation
+                                          )
+
+
+    def forward(self, x1, x2):
+        """
+        Forward model.
+        
+        Parameters
+        ----------
+        x              : torch.tensor
+                         First input data.
+                    
+      
+ 
+        Returns
+        ----------
+        result        : torch.tensor
+        """ 
+        x1 = self.up(x1)
+        diffY = x2.size()[2] - x1.size()[2]
+        diffX = x2.size()[3] - x1.size()[3]
+        x1 = torch.nn.functional.pad(x1, [diffX // 2, diffX - diffX // 2,
+                                          diffY // 2, diffY - diffY // 2])
+        x = torch.cat([x2, x1], dim = 1)
+        result = self.conv(x)
+        return result

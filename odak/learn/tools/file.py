@@ -1,7 +1,7 @@
 import odak.tools
 import torch
 import numpy as np_cpu
-
+import os
 
 def resize(image, multiplier = 0.5, mode = 'nearest'):
     """
@@ -34,7 +34,7 @@ def resize(image, multiplier = 0.5, mode = 'nearest'):
 
 def load_image(fn, normalizeby = 0., torch_style = False):
     """
-    Definition to load an image from a given location as a Numpy array.
+    Definition to load an image from a given location as a torch tensor.
 
     Parameters
     ----------
@@ -59,7 +59,7 @@ def load_image(fn, normalizeby = 0., torch_style = False):
 
 def save_image(fn, img, cmin=0, cmax=255, color_depth=8):
     """
-    Definition to save a Numpy array as an image.
+    Definition to save a torch tensor as an image.
 
     Parameters
     ----------
@@ -90,3 +90,18 @@ def save_image(fn, img, cmin=0, cmax=255, color_depth=8):
         img = new_img.detach().clone()
     img = img.cpu().detach().numpy()
     return odak.tools.save_image(fn, img, cmin=cmin, cmax=cmax, color_depth=color_depth)
+
+
+def save_torch_tensor(fn, tensor):
+    """
+    Definition to save a torch tensor.
+
+
+    Parameters
+    ----------
+    fn           : str
+                   Filename.
+    tensor       : torch.tensor
+                   Torch tensor to be saved.
+    """ 
+    torch.save(tensor, os.path.expanduser(fn))
