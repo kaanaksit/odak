@@ -338,7 +338,6 @@ class self_attention_layer(torch.nn.Module):
                  bottleneck_channels = 512,
                  kernel_size = 1,
                  bias = False,
-                 activation = torch.nn.ReLU()
                 ):
         """
 
@@ -352,8 +351,6 @@ class self_attention_layer(torch.nn.Module):
                               Kernel size.
         bias                : bool 
                               Set to True to let convolutional layers have bias term.
-        activation          : torch.nn
-                              Non-linear activation layer (e.g., torch.nn.ReLU(), torch.nn.Sigmoid()).
         """
         super(self_attention_layer, self).__init__()
         self.input_channels = input_channels
