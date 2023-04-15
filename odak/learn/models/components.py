@@ -328,7 +328,7 @@ class residual_attention_layer(torch.nn.Module):
         return result
 
  
-class self_attention_layer(torch.nn.Module):
+class non_local_layer(torch.nn.Module):
     """
     Self-Attention Layer [zi = Wzyi + xi] (non-local block : ref https://arxiv.org/abs/1711.07971)
     """
@@ -352,7 +352,7 @@ class self_attention_layer(torch.nn.Module):
         bias                : bool 
                               Set to True to let convolutional layers have bias term.
         """
-        super(self_attention_layer, self).__init__()
+        super(non_local_layer, self).__init__()
         self.input_channels = input_channels
         self.bottleneck_channels = bottleneck_channels
         self.g = torch.nn.Conv2d(
