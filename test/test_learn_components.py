@@ -25,10 +25,10 @@ def test():
     y = residual_attention_layer_inference(x , x)
     print(y.shape)
     # test self-attention layer
-    self_attention_layer_inference = components.self_attention_layer(input_channels=2,
+    non_local_layer_inference = components.non_local_layer(input_channels=2,
                                                                       bottleneck_channels=1
                                                                       )
-    z = self_attention_layer_inference(x)
+    z = non_local_layer_inference(x)
     print(z.shape)
     assert True == True
 
