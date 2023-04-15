@@ -48,6 +48,7 @@ We prepared a [documentation](https://kaanaksit.github.io/odak) on usage and muc
 Here are some sample projects that uses `odak`:
 
 * [HoloHDR: Multi-color Holograms Improve Dynamic Range](https://complightlab.com/publications/holohdr/)
+* [ChromaCorrect: Prescription Correction in Virtual Reality Headsets through Perceptual Guidance](http://complightlab.com/ChromaCorrect/)
 * [HoloBeam: Paper-Thin Near-Eye Displays](https://complightlab.com/publications/holobeam/)
 * [Optimizing Vision and Visuals: Lectures on Cameras, Displays and Perception](https://github.com/complight/cameras-displays-perception-course)
 * [Realistic Defocus Blur for Multiplane Computer-Generated Holography](https://github.com/complight/realistic_defocus)
