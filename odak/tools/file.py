@@ -30,7 +30,7 @@ def resize_image(img, target_size):
     return img
 
 
-def save_image(fn, img, cmin=0, cmax=255, color_depth=8):
+def save_image(fn, img, cmin = 0, cmax = 255, color_depth = 8):
     """
     Definition to save a Numpy array as an image.
 
@@ -74,7 +74,7 @@ def save_image(fn, img, cmin=0, cmax=255, color_depth=8):
     return True
 
 
-def load_image(fn, normalizeby=0., torch_style=False):
+def load_image(fn, normalizeby = 0., torch_style = False):
     """ 
     Definition to load an image from a given location as a Numpy array.
 
@@ -106,7 +106,7 @@ def load_image(fn, normalizeby=0., torch_style=False):
     return image.astype(float)
 
 
-def shell_command(cmd, cwd='.', timeout=None, check=True):
+def shell_command(cmd, cwd = '.', timeout = None, check = True):
     """
     Definition to initiate shell commands.
 
@@ -198,7 +198,7 @@ def load_dictionary(filename):
     return settings
 
 
-def list_files(path, key='*.*', recursive=True):
+def list_files(path, key = '*.*', recursive = True):
     """
     Definition to list files in a given path with a given key.
 
