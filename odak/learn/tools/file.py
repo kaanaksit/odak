@@ -1,7 +1,7 @@
 import odak.tools
 import torch
-import numpy as np_cpu
 import os
+
 
 def resize(image, multiplier = 0.5, mode = 'nearest'):
     """
@@ -107,7 +107,7 @@ def save_torch_tensor(fn, tensor):
     torch.save(tensor, os.path.expanduser(fn))
 
 
-def load_torch(fn):
+def torch_load(fn):
     """
     Definition to load a torch files (*.pt).
 
