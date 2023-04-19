@@ -105,3 +105,21 @@ def save_torch_tensor(fn, tensor):
                    Torch tensor to be saved.
     """ 
     torch.save(tensor, os.path.expanduser(fn))
+
+
+def load_torch(fn):
+    """
+    Definition to load a torch files (*.pt).
+
+    Parameters
+    ----------
+    fn           : str
+                   Filename.
+    
+    Returns
+    -------
+    data         : any
+                   See torch.load() for more.
+    """  
+    data = torch.load(os.path.expanduser(fn))
+    return data
