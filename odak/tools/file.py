@@ -131,11 +131,13 @@ def shell_command(cmd, cwd = '.', timeout = None, check = True):
                    Errors of the executed command, returns None when check is set to False.
 
     """
+    for item_id in range(len(cmd)):
+        cmd[item_id] = os.path.expanduser(cmd[item_id])
     proc = subprocess.Popen(
-        cmd,
-        cwd=cwd,
-        stdout=subprocess.PIPE
-    )
+                            cmd,
+                            cwd = cwd,
+                            stdout = subprocess.PIPE
+                           )
     if check == False:
         return proc, None, None
     try:
