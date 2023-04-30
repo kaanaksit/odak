@@ -141,7 +141,7 @@ def shell_command(cmd, cwd = '.', timeout = None, check = True):
     if check == False:
         return proc, None, None
     try:
-        outs, errs = proc.communicate(timeout=timeout)
+        outs, errs = proc.communicate(timeout = timeout)
     except subprocess.TimeoutExpired:
         proc.kill()
         outs, errs = proc.communicate()
