@@ -1,6 +1,7 @@
 import torch
 from .components import double_convolution, downsample_layer, upsample_layer
 
+
 class unet(torch.nn.Module):
     """
     A U-Net model, heavily inspired from `https://github.com/milesial/Pytorch-UNet/tree/master/unet` and more can be read from Ronneberger, Olaf, Philipp Fischer, and Thomas Brox. "U-net: Convolutional networks for biomedical image segmentation." Medical Image Computing and Computer-Assisted Intervention–MICCAI 2015: 18th International Conference, Munich, Germany, October 5-9, 2015, Proceedings, Part III 18. Springer International Publishing, 2015.
@@ -55,32 +56,32 @@ class unet(torch.nn.Module):
                 out_channels = dimensions * (2 ** (i + 1))
                 down_layer = downsample_layer(in_channels,
                                               out_channels,
-                                              kernel_size=kernel_size,
-                                              bias=bias,
-                                              activation=activation
-                                              )
+                                              kernel_size = kernel_size,
+                                              bias = bias,
+                                              activation = activation
+                                             )
                 self.downsampling_layers.append(down_layer)
             if i > depth-2:
                 in_channels = dimensions * (2 ** i)
                 out_channels = dimensions * (2 ** (i + 1)) // factor
                 final_down_layer = downsample_layer(out_channels,
                                                     out_channels,
-                                                    kernel_size=kernel_size,
-                                                    bias=bias,
-                                                    activation=activation
-                                                    )
+                                                    kernel_size = kernel_size,
+                                                    bias = bias,
+                                                    activation = activation
+                                                   )
                 self.downsampling_layers.append(final_down_layer)           
        
         for i in range(depth - 1, -1, -1):  # upsampling layers
             if i > 0:
                 up_in_channels = dimensions * (2 ** (i + 1))
                 up_out_channels = dimensions * (2 ** i) // factor
-                up_layer = upsample_layer(up_in_channels, up_out_channels, kernel_size=kernel_size, bias=bias, activation=activation, bilinear=bilinear)
+                up_layer = upsample_layer(up_in_channels, up_out_channels, kernel_size = kernel_size, bias = bias, activation = activation, bilinear = bilinear)
                 self.upsampling_layers.append(up_layer)
             if i == 0:
                 up_in_channels = dimensions * (2 ** (i + 1))
                 up_out_channels = dimensions * (2 ** i) 
-                up_layer = upsample_layer(up_in_channels, up_out_channels, kernel_size=kernel_size, bias=bias, activation=activation, bilinear=bilinear)
+                up_layer = upsample_layer(up_in_channels, up_out_channels, kernel_size = kernel_size, bias = bias, activation = activation, bilinear = bilinear)
                 self.upsampling_layers.append(up_layer)   
         self.outc = torch.nn.Conv2d(
                                     dimensions, 
