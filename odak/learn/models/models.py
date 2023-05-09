@@ -16,7 +16,7 @@ class unet(torch.nn.Module):
                  bilinear = True,
                  kernel_size = 3,
                  bias = True,
-                 activation = torch.nn.ReLU(),
+                 activation = torch.nn.ReLU(inplace=True),
                 ):
         """
         U-Net model.
@@ -51,38 +51,22 @@ class unet(torch.nn.Module):
         self.downsampling_layers = torch.nn.ModuleList()
         self.upsampling_layers = torch.nn.ModuleList()
         for i in range(depth): # downsampling layers
-            if i <= depth-2:
-                in_channels = dimensions * (2 ** i)
-                out_channels = dimensions * (2 ** (i + 1))
-                down_layer = downsample_layer(in_channels,
-                                              out_channels,
-                                              kernel_size = kernel_size,
-                                              bias = bias,
-                                              activation = activation
-                                             )
-                self.downsampling_layers.append(down_layer)
-            if i > depth-2:
-                in_channels = dimensions * (2 ** i)
-                out_channels = dimensions * (2 ** (i + 1)) // factor
-                final_down_layer = downsample_layer(out_channels,
-                                                    out_channels,
-                                                    kernel_size = kernel_size,
-                                                    bias = bias,
-                                                    activation = activation
-                                                   )
-                self.downsampling_layers.append(final_down_layer)           
+            in_channels = dimensions * (2 ** i)
+            out_channels = dimensions * (2 ** (i + 1))
+            down_layer = downsample_layer(in_channels,
+                                            out_channels,
+                                            kernel_size=kernel_size,
+                                            bias=bias,
+                                            activation=activation
+                                            )
+            self.downsampling_layers.append(down_layer)      
        
         for i in range(depth - 1, -1, -1):  # upsampling layers
-            if i > 0:
-                up_in_channels = dimensions * (2 ** (i + 1))
-                up_out_channels = dimensions * (2 ** i) // factor
-                up_layer = upsample_layer(up_in_channels, up_out_channels, kernel_size = kernel_size, bias = bias, activation = activation, bilinear = bilinear)
-                self.upsampling_layers.append(up_layer)
-            if i == 0:
-                up_in_channels = dimensions * (2 ** (i + 1))
-                up_out_channels = dimensions * (2 ** i) 
-                up_layer = upsample_layer(up_in_channels, up_out_channels, kernel_size = kernel_size, bias = bias, activation = activation, bilinear = bilinear)
-                self.upsampling_layers.append(up_layer)   
+            up_in_channels = dimensions * (2 ** (i + 1))  
+            up_out_channels = dimensions * (2 ** i) 
+            up_layer = upsample_layer(up_in_channels, up_out_channels, kernel_size=kernel_size, bias=bias, activation=activation, bilinear=bilinear)
+            self.upsampling_layers.append(up_layer)
+            
         self.outc = torch.nn.Conv2d(
                                     dimensions, 
                                     output_channels,
@@ -114,6 +98,5 @@ class unet(torch.nn.Module):
             x_up = up_layer(x_up, downsampling_outputs[-(i + 2)])       
         result = self.outc(x_up)
         return result
-
 
             

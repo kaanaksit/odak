@@ -499,7 +499,7 @@ class upsample_layer(torch.nn.Module):
         if bilinear:
             self.up = torch.nn.Upsample(scale_factor = 2, mode = 'bilinear', align_corners = True)
             self.conv = double_convolution(
-                                           input_channels = input_channels,
+                                           input_channels = input_channels + output_channels,
                                            mid_channels = input_channels // 2,
                                            output_channels = output_channels,
                                            kernel_size = kernel_size,
