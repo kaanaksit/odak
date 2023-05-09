@@ -13,9 +13,9 @@ class unet(torch.nn.Module):
                  dimensions = 64, 
                  input_channels = 2, 
                  output_channels = 1, 
-                 bilinear = True,
+                 bilinear = False,
                  kernel_size = 3,
-                 bias = True,
+                 bias = False,
                  activation = torch.nn.ReLU(inplace=True),
                 ):
         """
