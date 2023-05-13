@@ -16,7 +16,7 @@ nav:
     - What is Odak?: 'beginning.md'
     - Contributing: 'contributing.md'
   - Computational Light Course:
-    - Introduction: 'course/index.md'
+    - Prerequisites and general information: 'course/index.md'
   - Computer-Generated Holography:
     - Introduction:
        - Getting Started: 'cgh.md'
