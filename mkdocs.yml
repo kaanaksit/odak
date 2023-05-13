@@ -17,6 +17,7 @@ nav:
     - Contributing: 'contributing.md'
   - Computational Light Course:
     - Prerequisites and general information: 'course/index.md'
+    - Introduction to Computational Light: 'course/computational_light.md'
   - Computer-Generated Holography:
     - Introduction:
        - Getting Started: 'cgh.md'
