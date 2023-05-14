@@ -13,7 +13,9 @@ These are the prerequisites of **Computational Light** course:
 Familiarity with these libraries is a big plus.
 - **Required Resources.** Readers need a computer with decent computational resources (e.g., GPU) when working on the provided materials, laboratory work, and projects. 
 Note that at each section of the course, you will be provided with relevant reading materials on the spot.
-- **Expectations.** Readers also need sustainable motivation to learn new things related to the topics of `Computational Light,` and willing to advance the field by developing, innovating and researching.
+- **Expectations.** Readers also need sustainable motivation to learn new things related to the topics of `Computational Light,` and willing to advance the field by developing, innovating and researching. 
+In other terms, you are someone motivated to create a positive impact in the society with light related innovations. 
+You can also be someone eager to understand and learn physics behind light and how you can simulate light related phenomena.
 
 
 ## Questions and Answers
