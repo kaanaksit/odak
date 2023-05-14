@@ -17,7 +17,7 @@ nav:
     - Contributing: 'contributing.md'
   - Computational Light Course:
     - Prerequisites and general information: 'course/index.md'
-    - Introduction to Computational Light: 'course/computational_light.md'
+    - Light, Computation, and Computational Light: 'course/computational_light.md'
   - Computer-Generated Holography:
     - Introduction:
        - Getting Started: 'cgh.md'
@@ -60,10 +60,25 @@ plugins:
    - search
    - mkdocstrings
    - autorefs
+   - glightbox:
+       touchNavigation: true
+       loop: false
+       effect: zoom
+       slide_effect: slide
+       width: 100%
+       height: auto
+       zoomable: true
+       draggable: true
+       skip_classes:
+         - custom-skip-class-name
+       auto_caption: false
+       caption_position: bottom
 markdown_extensions:
    - toc:
        permalink: true
    - admonition
+   - attr_list
+   - md_in_html
    - pymdownx.superfences
    - pymdownx.details
    - pymdownx.arithmatex:

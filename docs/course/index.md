@@ -1,7 +1,7 @@
 # Prerequisites and general information
 This page is the starting point for the **Computational Light** course.
 Readers can follow the course material found on these pages to learn more about the field of **Computational Light**.
-I encourage readers to carefully read this page to decide if they want to continue with our course.
+I encourage readers to carefully read this page to decide if they want to continue with the course.
 
 
 ## Prerequisites
@@ -11,7 +11,8 @@ These are the prerequisites of **Computational Light** course:
 - **Background knowledge.** First and foremost being fluent in programming with [Python programming language](https://www.python.org/) and a graduate-level understanding of `Linear Algebra,` and  `Machine Learning` are highly required.
 - **Skills and abilities.** Throughout the entire course, three libraries will be used, and these libraries include [`odak`](https://github.com/kaanaksit/odak), [`numpy`](https://numpy.org/), and [`torch`](https://pytorch.org/).
 Familiarity with these libraries is a big plus.
-- **Required materials.** Readers need a computer with decent computational resources (e.g., GPU) when working on the provided materials, laboratory work, and projects.
+- **Required Resources.** Readers need a computer with decent computational resources (e.g., GPU) when working on the provided materials, laboratory work, and projects. 
+Note that at each section of the course, you will be provided with relevant reading materials on the spot.
 - **Expectations.** Readers also need sustainable motivation to learn new things related to the topics of `Computational Light,` and willing to advance the field by developing, innovating and researching.
 
 
