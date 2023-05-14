@@ -8,14 +8,15 @@ I encourage readers to carefully read this page to decide if they want to contin
 These are the prerequisites of **Computational Light** course:
 
 
-- First and foremost being fluent in programming with [Python programming language](https://www.python.org/) and a graduate-level understanding of `Linear Algebra,` and  `Machine Learning` are highly required.
-- Throughout the entire course, three libraries will be used, and these libraries include [`odak`](https://github.com/kaanaksit/odak), [`numpy`](https://numpy.org/), and [`torch`](https://pytorch.org/).
+- **Background knowledge.** First and foremost being fluent in programming with [Python programming language](https://www.python.org/) and a graduate-level understanding of `Linear Algebra,` and  `Machine Learning` are highly required.
+- **Skills and abilities.** Throughout the entire course, three libraries will be used, and these libraries include [`odak`](https://github.com/kaanaksit/odak), [`numpy`](https://numpy.org/), and [`torch`](https://pytorch.org/).
 Familiarity with these libraries is a big plus.
-- Readers need a computer with decent computational resources (e.g., GPU) when working on the provided materials, laboratory work, and projects.
-- Readers also need sustainable motivation to learn new things related to the topics of `Computational Light.`
+- **Required materials.** Readers need a computer with decent computational resources (e.g., GPU) when working on the provided materials, laboratory work, and projects.
+- **Expectations.** Readers also need sustainable motivation to learn new things related to the topics of `Computational Light,` and willing to advance the field by developing, innovating and researching.
 
 
-Finally, here are some questions and answers related to the course that readers may ask:
+## Questions and Answers
+Here are some questions and answers related to the course that readers may ask:
 
 ??? question end "How can I learn Python programming, linear Algebra and machine learning?"
     There isn't a point in providing references on how to learn `Python programming,` `Linear Algebra,` and `Machine Learning` as there is a vast amount of resources online or in your previous university courses.
@@ -44,6 +45,19 @@ Finally, here are some questions and answers related to the course that readers 
     If another text editor works better for you, please use that one (e.g., nano, Sublime Text, Atom, Notepad++, Jupyter Notebooks).
 
 
+???+ question end "How to cite this course?"
+    For citing using latex's bibtex bibliography system:
+    ```bibtex
+    @book{aksit2024computationallight,
+      title = {Computational Light},
+      author = {Ak{\c{s}}it, Kaan},
+      booktitle = {Computational Light Course},
+      year = {2024}
+    }
+    ```
+    For plain text citation: `Kaan Akşit, "Computational Light Course", 2024. 
+
+
 ## Team
 
 <div style="float: left; height:120px;" class="boxed">
@@ -64,8 +78,9 @@ Instructor
 ## Outreach
 We host a Slack group with more than 300 members.
 This Slack group focuses on the topics of rendering, perception, displays and cameras.
-The group is open to public and you can become a member by following [this link](../outreach/index.md).
+The group is open to public and you can become a member by following [this link](https://complightlab.com/outreach/).
 Readers can get in-touch with the wider community using this public group.
+
 
 
 ## Acknowledgements
