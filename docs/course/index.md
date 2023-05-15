@@ -58,7 +58,7 @@ Here are some questions and answers related to the course that readers may ask:
       year = {2024}
     }
     ```
-    For plain text citation: `Kaan Akşit, "Computational Light Course", 2024. 
+    For plain text citation: `Kaan Akşit, "Computational Light Course", 2024.` 
 
 
 ## Team
