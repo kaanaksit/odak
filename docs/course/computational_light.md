@@ -13,7 +13,7 @@ How can we use light to trigger more innovations and positively impact our lives
 Light is something that we all experience, but we need to dig deep for clearly describing it.
 
 
-In this introduction, My first intention here is to establish some basic scientific knowledge about light, which will help us understand why it is essential for the future of technology, especially computing.
+In this introduction, my first intention here is to establish some basic scientific knowledge about light, which will help us understand why it is essential for the future of technology, especially computing.
 Note that we will cover more details of light as we make progress through different chapters of this course.
 But let's get this starting with the following statement.
 Light is electromagnetic radiation, often described as a bundle of photons, a term first coined by Gilbert Lewis in 1926.
