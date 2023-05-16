@@ -7,7 +7,7 @@ site_url: 'https://kaanaksit.github.io/odak/'
 repo_name: kaanaksit/odak
 repo_url: 'https://github.com/kaanaksit/odak'
 
-copyright: 'Copyright &copy; 2022'
+copyright: 'Copyright &copy; 2023'
 
 nav:
   - Getting started:
@@ -58,6 +58,15 @@ theme:
             - navigation.instant
             - navigation.tabs
             - navigation.footer
+            - navigation.indexes
+            - navigation.sections
+            - navigation.top
+            - navigation.tracking
+            - navigation.expand
+            - content.code.annotate
+            - content.tabs.link
+            - search.share
+            - search.suggest               
     palette:
         primary: black
     highlightjs: true
@@ -81,6 +90,7 @@ plugins:
          - custom-skip-class-name
        auto_caption: false
        caption_position: bottom
+
 markdown_extensions:
    - toc:
        permalink: true
@@ -103,3 +113,5 @@ extra:
   social:
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/kaanaksit
+    - icon: fontawesome/brands/slack
+      link: https://join.slack.com/t/rpcdrendering-m4b9370/shared_invite/zt-13b5caruu-o7Ra99nEXkntnJqVYJTVdg
