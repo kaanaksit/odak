@@ -56,19 +56,15 @@ theme:
     features:
         - content.code.annotate
         - content.tabs.link
-       # - header.autohide
-        - navigation.sections
         - navigation.tabs.sticky
         - navigation.top
         - navigation.tracking
-        - search.highlight
-        - search.share
-        - search.suggest
-       # - toc.integrate
         - navigation.instant
         - navigation.indexes
-        - navigation.top
         - navigation.footer
+        - search.share
+        - search.suggest
+        - search.highlight
     palette:
         primary: black
     highlightjs: true
