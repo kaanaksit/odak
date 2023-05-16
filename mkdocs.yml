@@ -24,7 +24,7 @@ nav:
     - Computational Displays: 'course/computational_displays.md'
     - Computer Generated Holography: 'course/computer_generated_holography.md'
     - Computational Imaging: 'course/computational_imaging.md'
-    - Photonic Compute: 'course/photonic_computers.md'
+    - Photonic Computers: 'course/photonic_computers.md'
   - Computer-Generated Holography:
     - Introduction:
        - Getting Started: 'cgh.md'
@@ -57,6 +57,7 @@ theme:
         features:
             - navigation.instant
             - navigation.tabs
+            - navigation.footer
     palette:
         primary: black
     highlightjs: true
