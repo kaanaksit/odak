@@ -18,6 +18,13 @@ nav:
   - Computational Light Course:
     - Prerequisites and general information: 'course/index.md'
     - Light, Computation, and Computational Light: 'course/computational_light.md'
+    - Fundamentals in optimizing and learning light: 'course/fundamentals.md'
+    - Geometric Light: 'course/geometric_optics.md'
+    - Visual Perception: 'course/visual_perception.md'
+    - Computational Displays: 'course/computational_displays.md'
+    - Computer Generated Holography: 'course/computer_generated_holography.md'
+    - Computational Imaging: 'course/computational_imaging.md'
+    - Photonic Compute: 'course/photonic_computers.md'
   - Computer-Generated Holography:
     - Introduction:
        - Getting Started: 'cgh.md'

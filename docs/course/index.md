@@ -21,8 +21,17 @@ You can also be someone eager to understand and learn physics behind light and h
 ## Questions and Answers
 Here are some questions and answers related to the course that readers may ask:
 
+
+??? question end "Who is the target audience of Computational Light course?"
+    The Computational Light course is designed for individuals willing to learn how to develop and invent light-based practical systems for next-generation human-computer interfaces.
+    This course targets a graduate-level audience in Computer Science and Electrical and Electronics Engineering students. 
+    However, you do not have to be strictly from one of the highlighted targeted audiences.
+    Simply put, if you think you can learn and are eager to learn, no one will stop you.
+
+
 ??? question end "How can I learn Python programming, linear Algebra and machine learning?"
     There isn't a point in providing references on how to learn `Python programming,` `Linear Algebra,` and `Machine Learning` as there is a vast amount of resources online or in your previous university courses.
+    Your favorite search engine is your friend in this case.
 
 
 ??? question end "How do I install Python, numpy and torch?"
@@ -94,4 +103,4 @@ Readers can get in-touch with the wider community using this public group.
 
 !!! information end "Interested in supporting?"
     Enjoyed our course material and want us to do better in the future?
-    Please consider supporting us monetarily, citing our work in your next scientific work, or leaving us a star for [odak](https://github.com/kaanaksit/odak/). 
+    Please consider supporting us monetarily, citing our work in your next scientific work, or leaving us a star for [odak](https://github.com/kaanaksit/odak/).
