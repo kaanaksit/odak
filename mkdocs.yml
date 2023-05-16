@@ -53,20 +53,22 @@ nav:
 theme:
     name: material
     custom_dir: overrides
-    theme:
-        features:
-            - navigation.instant
-            - navigation.tabs
-            - navigation.footer
-            - navigation.indexes
-            - navigation.sections
-            - navigation.top
-            - navigation.tracking
-            - navigation.expand
-            - content.code.annotate
-            - content.tabs.link
-            - search.share
-            - search.suggest               
+    features:
+        - content.code.annotate
+        - content.tabs.link
+       # - header.autohide
+        - navigation.sections
+        - navigation.tabs.sticky
+        - navigation.top
+        - navigation.tracking
+        - search.highlight
+        - search.share
+        - search.suggest
+       # - toc.integrate
+        - navigation.instant
+        - navigation.indexes
+        - navigation.top
+        - navigation.footer
     palette:
         primary: black
     highlightjs: true
