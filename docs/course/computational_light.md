@@ -208,6 +208,16 @@ For each topic highlighted below, please click on the box to discover more about
 
 ??? success end "Computational Displays"
     Computational Displays topic deals with inventing next-generation display technology for the future of human-computer interaction.
+    Common examples of emerging Computational Displays are near-eye displays such as Virtual Reality headsets and Augmented Reality Glasses.
+    Today, we all use displays as a core component for any visual task, such as working, entertainment, education, and many more.
+
+    * **Noticeable profiles.** Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of Computational Displays.
+    Here are some examples of such people; I would encourage you to explore their websites: [Rafał Mantiuk](https://www.cl.cam.ac.uk/~rkm38/), and [Andrew Maimone](https://www.cs.unc.edu/~maimone/).
+    * **Successful products.** Here are a few examples of successful outcomes from the field of Computational Displays: [Nreal Augmented Reality glasses](https://www.nreal.ai/) and [Meta Quest Virtual Reality headsets](https://www.oculus.com/experiences/quest/).
+    * **Did you know?** The lecturer of the Computational Light Course, [Kaan Akşit](https://kaanaksit.com), is actively researching topics of Computational Displays (e.g., [Near-Eye Varifocal Augmented Reality Display using See-Through Screens](https://kaanaksit.com/assets/pdf/AksitEtAl_SiggraphAsia2017_Near_eye_varifocal_augmented_reality_display_using_see_through_screens.pdf)).
+    Kaan has made noticeable contributions to three-dimensional displays, virtual reality headsets, and augmented reality glasses.
+    * **Want to learn more?** Although we will cover a great deal of Computational Displays in this course, you may want to dig deeper with a dedicated course, which you can follow online:
+    <center> <iframe width="560" height="315" src="https://www.youtube.com/embed/z_AtSgct6_I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center>
 
 
 ??? success end "Computational Photography"
@@ -242,9 +252,11 @@ For each topic highlighted below, please click on the box to discover more about
     Computational Microscopy.
 
 
-
 Indeed, there are more topics related to computational light than the ones highlighted here.
 If you are up to a challenge for the next phase of your life, you could help the field identify new opportunities with light-based sciences.
+In addition, there are indeed more topics, more noticeable profiles, successful product examples, and dedicated courses that focus on every one of these topics.
+Examples are not limited to the ones that I have provided above.
+Your favorite search engine is your friend to find out more in this case.
 
 
 !!! warning end "Reminder"
