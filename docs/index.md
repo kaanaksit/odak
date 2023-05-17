@@ -28,3 +28,10 @@ If you think you need a refresher or are a beginner willing to learn more about 
 - [`Citing Odak in a scientific publication using Zenodo`](https://github.com/kaanaksit/odak#how-to-cite)
 - [`License of Odak`](https://github.com/kaanaksit/odak/blob/master/LICENSE.txt)
 - [`Reporting bugs or requesting a feature`](https://github.com/kaanaksit/odak/issues)
+
+
+!!! warning end "Reminder"
+    We host a Slack group with more than 300 members.
+    This Slack group focuses on the topics of rendering, perception, displays and cameras.
+    The group is open to public and you can become a member by following [this link](https://complightlab.com/outreach/).
+    Readers can get in-touch with the wider community using this public group.

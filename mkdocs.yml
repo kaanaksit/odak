@@ -53,6 +53,9 @@ nav:
 theme:
     name: material
     custom_dir: overrides
+    logo: odak.png
+    icon:
+        logo: logo
     features:
         - content.code.annotate
         - content.tabs.link
@@ -66,7 +69,14 @@ theme:
         - search.suggest
         - search.highlight
     palette:
-        primary: black
+        - scheme: odak
+          toggle:
+              icon: material/brightness-7 
+              name: Switch to dark mode
+        - scheme: slate
+          toggle:
+              icon: material/brightness-4
+              name: Switch to light mode
     highlightjs: true
     hljs_languages:
         - python
@@ -113,3 +123,5 @@ extra:
       link: https://twitter.com/kaanaksit
     - icon: fontawesome/brands/slack
       link: https://join.slack.com/t/rpcdrendering-m4b9370/shared_invite/zt-13b5caruu-o7Ra99nEXkntnJqVYJTVdg
+extra_css:
+  - stylesheets/extra.css
