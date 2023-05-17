@@ -188,6 +188,9 @@ In other words, wherever we can program the qualities of light, this will get us
 Programming light may sound unconventional, but I invite you to consider how we program current computers.
 These conventional computers interpret voltage levels in an electric signal as ones and zeros.
 Color, $\lambda$, propagation direction, $\vec{r}$, amplitude, $A$, phase, $\phi$, polarization, diffraction, and interference are all qualities that could help us program light to achieve tasks for specific applications.
+
+
+## Applications of Computational Light
 There are enormous amounts of applications of light.
 Let us glance at some of the important ones to get a sense of possibilities for people studying the topics of computational light.
 For each topic highlighted below, please click on the box to discover more about that specific subfield of computational light.
@@ -221,14 +224,31 @@ For each topic highlighted below, please click on the box to discover more about
 
 
 ??? success end "Computational Photography"
-    Computational Photography
+    Computational Photography topic deals with digital image capture based on optical hardware such as cameras.
+    Common examples of emerging Computational Photography are smartphone applications such as shooting in the dark or capturing selfies.
+    Today, we all use products of Computational Photography to capture glimpses from our daily lives and store them as memories.
+
+    * **Noticeable profiles.** Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of Computational Displays.
+    Here are some examples of such people; I would encourage you to explore their websites: [Diego Gutierrez](http://giga.cps.unizar.es/~diegog/) and [Jinwei Gu](http://www.gujinwei.org/).
+    * **Successful products.** Here are a few examples of successful outcomes from the field of Computational Displays: [Google's Night Sight](https://support.google.com/googlecamera/answer/9708795?hl=en) and [Samsung Camera modes](https://www.samsung.com/uk/support/mobile-devices/what-is-panorama-mode-and-how-do-i-use-it/).
+    * **Want to learn more?** Although we will cover relevant information for Computational Photography in this course, you may want to dig deeper with a dedicated course, which you can follow online:
+    <center> <iframe width="560" height="315" src="https://www.youtube.com/embed/y7HrM-fk_Rc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center>
 
 
 ??? success end "Computational Imaging and Sensing"
-    Computational Imaging and Sensing
+    Computational Imaging and Sensing topic deal with imaging and sensing certain scene qualities.
+    Common examples of Computational Imaging and Sensing can be found in the two other domains of Computational Light: Computational Astronomy and Computational Microscopy.
+    Today, medical diagnoses of biological samples in hospitals or imaging stars and beyond or sensing vital signals are all products of Computational Imaging and Sensing.
+
+    * **Noticeable profiles.** Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of Computational Imaging and Sensing.
+    Here are some examples of such people; I would encourage you to explore their websites: [Laura Waller](http://www.laurawaller.com/) and [Nick Antipa](http://nickantipa.com/).
+    * **Successful products.** Here are a few examples of successful outcomes from the field of Computational Imaging and Sensing: [Zeiss Microscopes](https://www.zeiss.com/microscopy/en/products/light-microscopes.html) and [Heart rate sensors on Apple's Smartwatch](https://support.apple.com/guide/watch/heart-rate-apda88aefe4c/watchos).
+    * **Did you know?** The lecturer of the Computational Light Course, [Kaan Akşit](https://kaanaksit.com), is actively researching topics of Computational Imaging and Displays (e.g., [Unrolled Primal-Dual Networks for Lensless Cameras](https://kaanaksit.com/assets/pdf/KingshottEtAl_OpticsExpress2022_Unrolled_primal_dual_networks_for_lensless_cameras.pdf)).
+    * **Want to learn more?** Although we will cover a great deal of Computational Imaging and Sensing in this course, you may want to dig deeper with a dedicated course, which you can follow online:
+    <center> <iframe width="560" height="315" src="https://www.youtube.com/embed/5AWx_FLVpmk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center>
 
 
-??? success end "Computational Optics"
+??? success end "Computational Optics and Fabrication"
     Computational Optics
 
 
@@ -236,24 +256,9 @@ For each topic highlighted below, please click on the box to discover more about
     Light-based Telecommunication
 
 
-??? success end "Computational Astronomy"
-    Computational Astronomy.
-
-
-??? success end "Photonic Computers"
-    Photonic Computers.
-
-
 ??? success end "All-optical Machine Learning"
+    Subfield of Photonic Computers
     All-optical Machine Learning
-
-
-??? success end "Computational Microscopy"
-    Computational Microscopy.
-
-
-??? success end "Optical Fabrication"
-    Optical Fabrication.
 
 
 Indeed, there are more topics related to computational light than the ones highlighted here.
