@@ -249,16 +249,37 @@ For each topic highlighted below, please click on the box to discover more about
 
 
 ??? success end "Computational Optics and Fabrication"
-    Computational Optics
+    The Computational Optics and Fabrication topic deals with designing and fabricating optical components such as lenses, mirrors, diffraction gratings, holographic optical elements, and metasurfaces.
+     There is a little bit of Computational Optics and Fabrication in every sector of Computational Light, especially when there is a need for custom optical design.
+
+    * **Noticeable profiles.** Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of Computational Optics and Fabrication.
+    Here are some examples of such people; I would encourage you to explore their websites: [Jannick Rolland](https://www.odalab-spectrum.org/Rochester/Technologies.html) and [Mark Pauly](https://www.epfl.ch/labs/gcm/research-projects/computational-caustics/).
+    * **Did you know?** The lecturer of the Computational Light Course, [Kaan Akşit](https://kaanaksit.com), is actively researching topics of Computational Optics and Fabrication (e.g., [Manufacturing application-driven foveated near-eye displays](https://kaanaksit.com/assets/pdf/AksitEtAl_IEEEVR2019_manufacturing_application_driven_foveated_near_eye_displays.pdf)).
+    * **Want to learn more?** Although we will cover a great deal of Computational Imaging and Sensing in this course, you may want to dig deeper with a dedicated course, which you can follow online:
+    <center> <iframe width="560" height="315" src="https://www.youtube.com/embed/cEzVhisjFn0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center>
 
 
-??? success end "Light-based Telecommunication"
-    Light-based Telecommunication
+??? success end "Optical Communication"
+    Optical Communication deals with using light as a medium for telecommunication applications.
+    Common examples of Optical Communication are the fiber cables and satellites equipped with optical links in space running our Internet.
+    In today's world, Optical Communication runs our entire modern life by making the Internet a reality.
+
+    * **Noticeable profiles.** Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of modern Optical Communication.
+    Here are some people I would encourage you to explore their websites: [Harald Haas](https://www.lifi.eng.ed.ac.uk/) and [Anna Maria Vegni](http://comlab.uniroma3.it).
+    * **Did you know?** The lecturer of the Computational Light Course, [Kaan Akşit](https://kaanaksit.com), was researching topics of Optical Communication (e.g., [From sound to sight: Using audio processing to enable visible light communication](https://kaanaksit.com/assets/pdf/SchmidEtAl_WoOWC2014_From_sound_to_sight_using_audio_processing_to_enable_visible_light_communication.pdf)).
+    * **Want to learn more?** Although we will cover relevant information for Optical Communication in this course, you may want to dig deeper and could start with this online video:
+    <center><iframe width="560" height="315" src="https://www.youtube.com/embed/6-0fhUMaZ5I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></center>
 
 
 ??? success end "All-optical Machine Learning"
-    Subfield of Photonic Computers
-    All-optical Machine Learning
+    All-optical Machine Learning deals with building neural networks and optical computers running solely based on light.
+    As this is an emerging field, there are yet to be products in this field that we use in our daily lives.
+    But this also means there are opportunities for newcomers and investors in this space.
+
+    * **Noticeable profiles.** Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of All-optical Machine Learning.
+    Here are some people I would encourage you to explore their websites: [Aydogan Ozcan](https://research.seas.ucla.edu/ozcan/) and [Ugur Tegin](https://www.ugurtegin.net/).
+    * **Want to learn more?** Although we will cover a great deal of All-optical Machine Learning in this course, you may want to dig deeper with a dedicated course, which you can follow online:
+    <center><iframe width="560" height="315" src="https://www.youtube.com/embed/pjy860nZypU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></center>
 
 
 Indeed, there are more topics related to computational light than the ones highlighted here.
