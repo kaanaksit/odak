@@ -137,7 +137,7 @@ Though we will discuss these features of light in the Geometric Light chapter in
 
 <figure markdown>
   ![Image title](media/reflection.png){ width="600" }
-  <figcaption>A sketch showing (left) light's reflection off a di-electric mirror (right) light's diffusion off a Lambertian's surface.</figcaption>
+  <figcaption>A sketch showing (left) light's reflection off a dielectric mirror (right) light's diffusion off a Lambertian's surface.</figcaption>
 </figure>
 
 We have identified a bunch of different qualities of light so far.
