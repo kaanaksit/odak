@@ -145,12 +145,12 @@ Let us summarize what we have identified in a nutshell.
 
 
 * Light is electromagnetic radiation.
-* Light has electric, $\vec{E}(r,t) = A cos(wt)$, and magnetic fields, $\vec{B}(r,t)$ that are always perpendicular to each other.
+* Light has electric, $\vec{E}(r,t) = A cos(wt)$, and magnetic fields, $\vec{B}(r,t)$, that are always perpendicular to each other.
 * Light has color, also known as wavelength, $\lambda$.
 * When we say light, we typically refer to the color we can see, visible light (390 - 750 nm).
 * The oscillation axis of light's electric field is light's polarization.
 * Light could have various brightness levels, the so-called amplitude of light, $A$.
-* Light's polarization could be at various states with different $A$s and $\phi#s.
+* Light's polarization could be at various states with different $A$s and $\phi$s.
 * Light could interfere by accumulating delays, $\phi$, and this could help change the direction of light.
 * Light could reflect off the surfaces.
 * Light could refract as it changes the medium.
