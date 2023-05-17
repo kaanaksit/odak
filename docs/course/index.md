@@ -1,4 +1,7 @@
 # Prerequisites and general information
+
+**You have reached the website for the Computational Light Course (CLC).**
+
 This page is the starting point for the **Computational Light** course.
 Readers can follow the course material found on these pages to learn more about the field of **Computational Light**.
 I encourage readers to carefully read this page to decide if they want to continue with the course.
