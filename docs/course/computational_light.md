@@ -149,6 +149,11 @@ $$
 
 where $n$ represents refractive index of a medium that light travels.
 
+
+??? question end "Where can I find more basic information about optics and light?"
+    As a graduate student, back in the day, I learned the basics of optics by reading this book without following any course: `Hecht, E. (2012). Optics. Pearson Education India.`
+
+
 We have identified a bunch of different qualities of light so far.
 Let us summarize what we have identified in a nutshell.
 
@@ -172,12 +177,78 @@ The reason is to provide an entry and a crash course at first glance is obvious.
 We will deep dive into focused topics in the following chapters.
 This way, you will be ready with a conceptual understanding of light.
 
+??? tip end "Did you know?"
+    Did you know there is an international light day every 16th of May recognized by the United Nations Educational, Scientific and Cultural Organization (UNESCO)? 
+    For more details, click [here](https://www.unesco.org/en/days/light)
 
-??? question end "Where can I find more basic information about optics and light?"
-    As a graduate student, back in the day, I learned the basics of optics by reading this book without following any course: `Hecht, E. (2012). Optics. Pearson Education India.`
 
 ## What is Computational Light?
 Computational light is a term that brings the concepts in computational methods with the characteristics of light.
 In other words, wherever we can program the qualities of light, this will get us into the topics of computational light.
 Programming light may sound unconventional, but I invite you to consider how we program current computers.
 These conventional computers interpret voltage levels in an electric signal as ones and zeros.
+Color, $\lambda$, propagation direction, $\vec{r}$, amplitude, $A$, phase, $\phi$, polarization, diffraction, and interference are all qualities that could help us program light to achieve tasks for specific applications.
+There are enormous amounts of applications of light.
+Let us glance at some of the important ones to get a sense of possibilities for people studying the topics of computational light.
+For each topic highlighted below, please click on the box to discover more about that specific subfield of computational light.
+
+
+??? success end "Computer Graphics"
+    Computer Graphics deals with generating synthetic images using computers and simulations of light.
+    Common examples of Computer Graphics are the video games we all play and are familiar with.
+    In today's world, you can often find Computer Graphics as a tool to simulate and synthesize scenes for developing a trending topic, artificial intelligence.
+    
+    * **Noticeable profiles.** Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of modern Computer Graphics.
+    Here are some people I would encourage you to explore their websites: [David Luebke](https://luebke.us/), [Peter Shirley](https://www.petershirley.com/), and [Morgan Mcguire](https://casual-effects.com/).
+    * **Successful products.** Here are a few examples of successful outcomes from the field of Computer Graphics: [Roblox](https://www.roblox.com/), [NVIDIA's DLSS](https://www.nvidia.com/en-gb/geforce/technologies/dlss/), [Apple's Metal](https://developer.apple.com/metal/), [OpenGL](https://www.opengl.org/) and [Vulkan](https://www.vulkan.org/).
+    * **Did you know?** The lecturer of the Computational Light Course, [Kaan Akşit](https://kaanaksit.com), is actively researching topics of Computer Graphics (e.g., [Beyond blur: Real-time ventral metamers for foveated rendering](https://kaanaksit.com/assets/pdf/WaltonEtAl_SIGGRAPH2021_Beyond_blur_real_time_ventral_metamers_for_foveated_rendering.pdf)).
+    * **Want to learn more?** Although we will cover a great deal of Computer Graphics in this course, you may want to dig deeper with a dedicated course, which you can follow online:
+    <center><iframe width="560" height="315" src="https://www.youtube.com/embed/-LqUu61oRdk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></center>
+
+
+??? success end "Computational Displays"
+    Computational Displays topic deals with inventing next-generation display technology for the future of human-computer interaction.
+
+
+??? success end "Computational Photography"
+    Computational Photography
+
+
+??? success end "Computational Imaging and Sensing"
+    Computational Imaging and Sensing
+
+
+??? success end "Computational Optics"
+    Computational Optics
+
+
+??? success end "Light-based Telecommunication"
+    Light-based Telecommunication
+
+
+??? success end "Computational Astronomy"
+    Computational Astronomy.
+
+
+??? success end "Photonic Computers"
+    Photonic Computers.
+
+
+??? success end "All-optical Machine Learning"
+    All-optical Machine Learning
+
+
+??? success end "Computational Microscopy"
+    Computational Microscopy.
+
+
+
+Indeed, there are more topics related to computational light than the ones highlighted here.
+If you are up to a challenge for the next phase of your life, you could help the field identify new opportunities with light-based sciences.
+
+
+!!! warning end "Reminder"
+    We host a Slack group with more than 300 members.
+    This Slack group focuses on the topics of rendering, perception, displays and cameras.
+    The group is open to public and you can become a member by following [this link](https://complightlab.com/outreach/).
+    Readers can get in-touch with the wider community using this public group.

@@ -23,8 +23,8 @@ nav:
     - Visual Perception: 'course/visual_perception.md'
     - Computational Displays: 'course/computational_displays.md'
     - Computer Generated Holography: 'course/computer_generated_holography.md'
-    - Computational Imaging: 'course/computational_imaging.md'
-    - Photonic Computers: 'course/photonic_computers.md'
+    - Computational Imaging and Sensing: 'course/computational_imaging.md'
+    - All-optical Machine Learning: 'course/photonic_computers.md'
   - Computer-Generated Holography:
     - Introduction:
        - Getting Started: 'cgh.md'
