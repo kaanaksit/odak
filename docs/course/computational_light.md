@@ -140,6 +140,15 @@ Though we will discuss these features of light in the Geometric Light chapter in
   <figcaption>A sketch showing (left) light's reflection off a dielectric mirror (right) light's diffusion off a Lambertian's surface.</figcaption>
 </figure>
 
+
+Existing knowledge on our understanding of our universe also states that light is the fastest thing in the universe, and no other material, thing or being could exceed lightspeed ($c = 299,792,458$ metres per second).
+
+$$
+c = \lambda n f,
+$$
+
+where $n$ represents refractive index of a medium that light travels.
+
 We have identified a bunch of different qualities of light so far.
 Let us summarize what we have identified in a nutshell.
 
@@ -155,16 +164,20 @@ Let us summarize what we have identified in a nutshell.
 * Light could reflect off the surfaces.
 * Light could refract as it changes the medium.
 * Light could diffract around the corners.
+* Light is the fastest thing in our universe.
 
 
 Remember that the description of light provided in this chapter is simplistic, missing many important details.
-The reason is to provide an entry and a crash course at first impact before we deep dive into focused topics in the following chapters.
-This way, I will familiarize you with a conceptual understanding of light.
+The reason is to provide an entry and a crash course at first glance is obvious.
+We will deep dive into focused topics in the following chapters.
+This way, you will be ready with a conceptual understanding of light.
 
 
 ??? question end "Where can I find more basic information about optics and light?"
     As a graduate student, back in the day, I learned the basics of optics by reading this book without following any course: `Hecht, E. (2012). Optics. Pearson Education India.`
 
 ## What is Computational Light?
-
-
+Computational light is a term that brings the concepts in computational methods with the characteristics of light.
+In other words, wherever we can program the qualities of light, this will get us into the topics of computational light.
+Programming light may sound unconventional, but I invite you to consider how we program current computers.
+These conventional computers interpret voltage levels in an electric signal as ones and zeros.
