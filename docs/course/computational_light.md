@@ -7,7 +7,7 @@ We can establish an understanding of the term `Computational Light` as we explor
 ## What is light?
 
 
-:octicons-info-16: Informative
+:octicons-info-24: Informative
 
 
 Light surrounds us; we see the light and swim in the sea of light.
@@ -190,6 +190,11 @@ This way, you will be ready with a conceptual understanding of light.
 
 
 ## What is Computational Light?
+
+
+:octicons-info-24: Informative
+
+
 Computational light is a term that brings the concepts in computational methods with the characteristics of light.
 In other words, wherever we can program the qualities of light, this will get us into the topics of computational light.
 Programming light may sound unconventional, but I invite you to consider how we program current computers.
@@ -200,8 +205,8 @@ Color, $\lambda$, propagation direction, $\vec{r}$, amplitude, $A$, phase, $\phi
 ## Applications of Computational Light
 
 
-:octicons-info-16: Informative ·
-:octicons-beaker-24: Practical
+:octicons-info-24: Informative ·
+:octicons-eye-24: Media
 
 
 There are enormous amounts of applications of light.

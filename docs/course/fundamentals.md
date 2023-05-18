@@ -8,7 +8,7 @@ In addition, we will also introduce you to a structure where we establish some s
 ## Required Production Environment :material-alert-decagram:{ .mdx-pulse title="Too important!" }
 
 
-:octicons-info-16: Informative ·
+:octicons-info-24: Informative ·
 :octicons-beaker-24: Practical
 
 
