@@ -42,6 +42,7 @@ Your work, meaning your production, should strictly follow certain habits to hel
 :octicons-info-24: Informative ·
 :octicons-beaker-24: Practical
 
+
 As you develop your code for your future homework and projects, you will discover that many things could go wrong.
 For example, the hard drive that contains the only copy of your code could be damaged, or your most trusted friend (so-called) can claim that she compiled most of the work, although that is not the case.
 These are just a few cases that may happen in your case.
@@ -89,6 +90,23 @@ This way, you can assign roles to your collaborators that best suits your scenar
 
 !!! warning end "Secure your account"
     If you are using GitHub for your development, I highly encourage you to consider using [two-factor authentication](https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa).
+
+#### Some Git Basics (Optional)
+:octicons-info-24: Informative ·
+:octicons-beaker-24: Practical
+
+If you want to add new files to your subversion control system, use the following:
+
+```shell
+git add YOURFILE.jpeg
+```
+
+And later, you can update the online copy (remote server or source) using the following:
+
+```shell
+git commit -am "Explain what you add in a short comment."
+git push
+```
 
 
 ## Background Refresher :material-alert-decagram:{ .mdx-pulse title="Too important!" }

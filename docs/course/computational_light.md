@@ -86,7 +86,7 @@ The concept of color originated from how we sense various $\lambda$s in nature.
 
 <figure markdown>
   ![Image title](media/emspectrum.png){ width="600" }
-  <figcaption>A sketch showing electromagnetic spectrum with waves labelled in terms of their frequencies and temperatures..</figcaption>
+  <figcaption>A sketch showing electromagnetic spectrum with waves labelled in terms of their frequencies and temperatures.</figcaption>
 </figure>
 
 
