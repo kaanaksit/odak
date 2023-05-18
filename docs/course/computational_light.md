@@ -1,8 +1,15 @@
 # Light, Computation, and Computational Light
+
+
 We can establish an understanding of the term `Computational Light` as we explore the term `light` and its relation to `computation.`
 
 
 ## What is light?
+
+
+:octicons-info-16: Informative
+
+
 Light surrounds us; we see the light and swim in the sea of light.
 It is indeed a daily matter that we interact by looking out of our window to see what is outside, turning on the lights of a room, looking at our displays, taking pictures of our loved ones, walking in a night lit by moonlight, or downloading media from the internet.
 Light is an eye-catching festival, reflecting, diffracting, interfering, and refracting.
@@ -191,6 +198,12 @@ Color, $\lambda$, propagation direction, $\vec{r}$, amplitude, $A$, phase, $\phi
 
 
 ## Applications of Computational Light
+
+
+:octicons-info-16: Informative ·
+:octicons-beaker-24: Practical
+
+
 There are enormous amounts of applications of light.
 Let us glance at some of the important ones to get a sense of possibilities for people studying the topics of computational light.
 For each topic highlighted below, please click on the box to discover more about that specific subfield of computational light.
@@ -272,7 +285,7 @@ For each topic highlighted below, please click on the box to discover more about
 
 
 ??? success end "All-optical Machine Learning"
-    All-optical Machine Learning deals with building neural networks and optical computers running solely based on light.
+    All-optical Machine Learning deals with building neural networks and computers running solely based on light.
     As this is an emerging field, there are yet to be products in this field that we use in our daily lives.
     But this also means there are opportunities for newcomers and investors in this space.
 

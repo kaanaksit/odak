@@ -46,7 +46,7 @@ Here are some questions and answers related to the course that readers may ask:
       But in a nutshell, all you need is to use the following command in a terminal `pip3 install odak` for the latest version, or if you want to install the latest code from the source, use `pip3 install git+https://github.com/kaanaksit/odak`.
 
 ??? question end "Which Python environment and operating system should I use?"
-    I use the Python distribution shipped with a traditional Linux distribution.
+    I use the Python distribution shipped with a traditional Linux distribution (e.g., Ubuntu).
     Again, there isn't no one correct answer here for everyone.
     You can use any operating system (e.g., Windows, Mac) and Python distribution (e.g., conda).
 
@@ -58,6 +58,12 @@ Here are some questions and answers related to the course that readers may ask:
     I encourage you to make your choice depending on how comfortable you are with sharing your data with companies.
     Please also remember that I am only making suggestions here.
     If another text editor works better for you, please use that one (e.g., nano, Sublime Text, Atom, Notepad++, Jupyter Notebooks).
+
+
+??? question end "Which terminal program to use?"
+    You are highly encouraged to use the terminal that you feel most comfortable with.
+This terminal could be the default terminal in your operating system.
+    I use [terminator](https://gnome-terminator.org/) as it enables my workflow with incredible features and is open source.
 
 
 ???+ question end "How to cite this course?"
