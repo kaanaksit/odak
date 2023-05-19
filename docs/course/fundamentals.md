@@ -323,6 +323,21 @@ Explaining line by line could help you see what is wrong with your code.
 I am sure there are many recipes for solving bugs in codes.
 I tried introducing you to one that works for me.
 
+### Have a `requirements.txt` 
+Please also make sure to have a `requirements.txt` in the root directory of your repository.
+For example, in this course your `requirements.txt` would look like this:
+
+``` 
+odak>=0.2.3 
+torch 
+``` 
+
+This way, a future user of your code could install the required libraries by following a simple command in a terminal:
+
+```shell 
+pip3 install -m requirements.txt 
+``` 
+
 
 ## Background Review :material-alert-decagram:{ .mdx-pulse title="Too important!" }
 
