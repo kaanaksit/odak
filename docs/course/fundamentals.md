@@ -97,7 +97,7 @@ This way, you can assign roles to your collaborators that best suits your scenar
 !!! warning end "Secure your account"
     If you are using GitHub for your development, I highly encourage you to consider using [two-factor authentication](https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa).
 
-#### Some Git Basics
+#### Git Basics
 :octicons-info-24: Informative ·
 :octicons-beaker-24: Practical
 
