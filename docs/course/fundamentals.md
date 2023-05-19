@@ -365,6 +365,10 @@ image = odak.learn.tools.load_image(
     For example, if you have a 8-bit image (0-255) and if you provide `normalizeby = 2.0`, the maximum
     value that you can expect is 255 / 2. = 127.5.
 
+You may want to try the same code with different settings in some code development.
+In those cases, I create a separate `settings` folder in the root directory of my projects and add `JSON` files that I can load for testing different cases.
+To explain the case better, let us assume we will change the number of light sources in some simulations.
+
 
 ## Background Review :material-alert-decagram:{ .mdx-pulse title="Too important!" }
 
