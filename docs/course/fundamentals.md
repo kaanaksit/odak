@@ -382,6 +382,10 @@ To explain the case better, let us assume we will change the number of light sou
 ### Gradient Descent Optimizers
 
 
+??? example end "Would you like to code your Gradient Descent based optimizer ground up?"
+    In case you are interested in coding your Gradient Descent-based optimizer from the ground up, consider watching this tutorial online where I code the optimizer using only `Numpy`:
+    <center> <iframe width="560" height="315" src="https://www.youtube.com/embed/-ilAaJlUvYI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center>
+
 ## Conclusion
 
 

@@ -112,4 +112,4 @@ Readers can get in-touch with the wider community using this public group.
 
 !!! information end "Interested in supporting?"
     Enjoyed our course material and want us to do better in the future?
-    Please consider supporting us monetarily, citing our work in your next scientific work, or leaving us a star for [odak](https://github.com/kaanaksit/odak/).
+    Please consider supporting us [monetarily](https://github.com/sponsors/kaanaksit), citing our work in your next scientific work, or leaving us a star for [odak](https://github.com/kaanaksit/odak/).
