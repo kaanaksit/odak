@@ -27,7 +27,7 @@ Here are some questions and answers related to the course that readers may ask:
 
 ??? question end "Who is the target audience of Computational Light course?"
     The Computational Light course is designed for individuals willing to learn how to develop and invent light-based practical systems for next-generation human-computer interfaces.
-    This course targets a graduate-level audience in Computer Science and Electrical and Electronics Engineering students. 
+    This course targets a graduate-level audience in Computer Science, Physics and Electrical and Electronics Engineering departments. 
     However, you do not have to be strictly from one of the highlighted targeted audiences.
     Simply put, if you think you can learn and are eager to learn, no one will stop you.
 
