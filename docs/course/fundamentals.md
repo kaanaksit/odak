@@ -231,31 +231,80 @@ def multiply(x, y):
 
 
 ### Add documentation
-For your code, please make sure to add necessary documentation, here is a good example of doing that:
+For your code, please make sure to add the necessary documentation.
+Here is a good example of doing that:
 
 
 ```python
 def add(x, y):
-      """
-      A function to add two values together.
+    """
+    A function to add two values together.
 
-      Parameters
-      =========
-      x          : float
-                   First input value.
-      y          : float
-                    Second input value.
+    Parameters
+    ==========
+    x         : float
+                First input value.
+    y         : float
+                Second input value.
 
-      Returns
-      ======
-      result     : float
-                   Result of the addition.
-      """
-      result = x + y
-      return result
+    Returns
+    =======
+    result    : float
+                Result of the addition.
+    """
+    result = x + y
+    return result
 ```
+
+
+### Use code style checker and validator
+There are also code-style checkers and code validators that you can adapt to your workflows when coding.
+One of these code-style checkers and validators I use in my projects is `pyflakes.`
+On an Ubuntu operating system, you can install `pyflakes` easily by typing these commands into your terminal:
+
+
+```shell
+sudo apt install python3-pyflakes
+```
+
+
+It could tell you about missing imports or undefined or unused variables.
+You can use it on any Python script very easily:
+
+```shell
+pyflakes3 sample.py
+```
+
+
+In addition, I use `flake8` and `autopep8` for standard code violations.
+To learn more about these, please read the [code section of the contribution guide](../contributing/#code).
+
+
+### Fixing bugs
+Often, you can encounter bugs in your code.
+To fix your code in such cases, I would like you to consider using a method called `Rubber duck debugging` or `Rubber ducking.`
+The basic idea is to be able to express to a third person or yourself code line by line.
+Explaining line by line could help you see what is wrong with your code.
+I am sure there are many recipes for solving bugs in codes.
+I tried introducing you to one that works for me.
+
 
 ## Background Review :material-alert-decagram:{ .mdx-pulse title="Too important!" }
 
 
 :octicons-info-24: Informative
+
+
+### Convolution Operation
+
+
+### Gradient Descent Optimizers
+
+
+## Conclusion
+
+
+??? tip end "Consider revisiting this chapter"
+    Remember that you can always revisit this chapter as you progress with the course as you need it.
+    This chapter is vital for establishing a means to complete your assignments and could help formulate a suitable base to collaborate and work with [my research group](https://complightlab.com) and other experts in the field.
+
