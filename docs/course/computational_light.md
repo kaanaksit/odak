@@ -61,9 +61,11 @@ _It does not mean that photons are spheres._
 Let us imagine that our photon is traveling in the direction of the Z axes (notice $\vec{r}$, the direction vector).
 Let us also imagine that this photon has an electric field, $\vec{E}(r,t)$ oscillating along the Y axes.
 Typically this electric field is a sinusoidal oscillation following the equation, 
+
 $$
 \vec{E}(r,t) = A cos(wt),
 $$
+
 where $A$ is the amplitude of light, $t$ is the time, $\vec{r}$ is the propagation direction, $w$ is equal to $2\pi f$ and $f$ represents the frequency of light.
 
 
