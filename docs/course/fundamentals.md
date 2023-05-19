@@ -143,10 +143,49 @@ You can do that using the following commands in your terminal:
 
 ```shell
 git add .gitattributes
-git commit - am "Enabling large file support."
+git commit -am "Enabling large file support."
 git push
 ```
 
+
+## Coding Standards :material-alert-decagram:{ .mdx-pulse title="Too important!" }
+
+
+:octicons-info-24: Informative ·
+:octicons-beaker-24: Practical
+
+
+I encourage our readers to follow the methods of coding highlighted here.
+Following the methods that I am going to explain is not only crucial for developing replicable projects, but it is also vital for allowing other people to read your code with the least amount of hassle.
+
+#Avoid using long lines.#
+Please avoid having too many characters in one line.
+Let us start with a bad example:
+
+```python
+def light_transport(wavelength, distances, resolution, propagation_type, polarization, input_field, output_field, angles):
+      pass
+      return results
+```
+
+As you can observe, the above function requires multiple inputs to be provided.
+Try making the inputs more readable by breaking lines and in some cases, you can also provide the requested type for an input and a default value to guide your users:
+
+
+```python
+def light_transport(
+                    wavelength,
+                    distances,
+                    resolution,
+                    propagation_type : str, 
+                    polarization = 'vertical',
+                    input_field = torch.rand(1, 1, 100, 100),
+                    output_field = torch.zeros(1, 1, 100, 100),
+                    angles= [0., 0., 0.]
+                   ):
+    pass
+    return results
+```
 
 ## Background Refresher :material-alert-decagram:{ .mdx-pulse title="Too important!" }
 
