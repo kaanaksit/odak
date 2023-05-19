@@ -365,9 +365,58 @@ image = odak.learn.tools.load_image(
     For example, if you have a 8-bit image (0-255) and if you provide `normalizeby = 2.0`, the maximum
     value that you can expect is 255 / 2. = 127.5.
 
+
+Odak also provides a standard method for saving your torch tensors as image files:
+
+```python
+odak.learn.tools.save_image(
+                            'copy.png',
+                            image,
+                            cmin = 0., # (1)!
+                            cmax = 1., # (2)!
+                            color_depth = 8 # (3)!
+                           )
+```
+
+
+1.  Minimum expected value for torch tensor `image`.
+2.  Maximum expected value for torch tensor `image`.
+3.  Pixel depth of the image to be saved, default is 8-bit.
+
+
 You may want to try the same code with different settings in some code development.
 In those cases, I create a separate `settings` folder in the root directory of my projects and add `JSON` files that I can load for testing different cases.
 To explain the case better, let us assume we will change the number of light sources in some simulations.
+Let's first assume that we create a settings file as `settings/experiment_000.txt` in the root directory and fill it with the following content:
+
+
+```json
+{
+  "light source" : {
+                    "count" : 5,
+                    "type"  : "LED"
+                   }
+}
+```
+
+
+In the rest of my code, I can read, modify and save JSON files using odak functions:
+
+
+```python
+import odak
+settings = odak.tools.load_dictionary('./settings/experiment_000.txt')
+settings['light source']['count'] = 10
+odak.tools.save_dictionary(settings, './settings/experiment_000.txt')
+```
+
+
+This way, you do not have to memorize the variables you used for every experiment you conducted with the same piece of code.
+You can have a dedicated settings file for each experiment.
+
+
+### Create unit tests
+
 
 
 ## Background Review :material-alert-decagram:{ .mdx-pulse title="Too important!" }
@@ -377,6 +426,13 @@ To explain the case better, let us assume we will change the number of light sou
 
 
 ### Convolution Operation
+
+
+??? question end "Assignment: Implement convolution operation using Numpy"
+    There are three possible ways to implement convolution operation on a computer.
+    The first one involves loops visiting each point in a given data.
+    The second involves formulating a convolution operation as matrix multiplication, and the final one involves implementing convolution as a multiplication operation in the Fourier domain.
+    Implement all these three methods using Jupyter Notebooks and visually prove that they are all functioning correctly (e.g., convolving image with a kernel).
 
 
 ### Gradient Descent Optimizers
