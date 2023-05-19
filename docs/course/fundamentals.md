@@ -59,6 +59,12 @@ You can either keep this repository in your locally and constantly back up somew
 I also encourage you to use the online services if you are a beginner.
 
 
+For each operating system, installing Git has its own processes, but for an Ubuntu operating system, it is as easy as typing the following commands in your terminal:
+
+```shell
+sudo apt install git
+```
+
 Let us imagine that you want to start a repository on GitHub.
 Make sure to create a private repository, and please only go public with any repository once you feel it is at a state where it can be shared with others.
 Once you have created your repository on GitHub, you can clone the repository using the following command in a terminal:
@@ -91,7 +97,7 @@ This way, you can assign roles to your collaborators that best suits your scenar
 !!! warning end "Secure your account"
     If you are using GitHub for your development, I highly encourage you to consider using [two-factor authentication](https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa).
 
-#### Some Git Basics (Optional)
+#### Some Git Basics
 :octicons-info-24: Informative ·
 :octicons-beaker-24: Practical
 
@@ -105,6 +111,39 @@ And later, you can update the online copy (remote server or source) using the fo
 
 ```shell
 git commit -am "Explain what you add in a short comment."
+git push
+```
+
+In some cases, you may want to include large binary files in your project, such as a paper, video, or any other media you want to achieve within your project repository.
+For those cases, using just `git` may not be the best opinion, as Git works on creating a history of files and how they are changed at each commit, this history will likely be too bulky and oversized.
+Thus, cloning a repository could be really slow when large binary biles and Git come together.
+Assuming you are on an Ubuntu operating system, you can install the [Large File Support (LFS)](https://git-lfs.com/) for Git by typing these commands in your terminal:
+
+
+```shell
+sudo apt install git-lfs
+```
+
+Once you have the LFS installed in your operating system, you can then go into your repository and enable LFS:
+
+```shell
+cd YOURREPOSITORY
+git lfs install
+```
+
+Now is the time to let your LFS track specific files to avoid overcrowding your Git history.
+For example, you can track `*.pdf` extension, meaning all the PDF files in your repository by typing the following command in your terminal:
+
+```shell
+git lfs track *.pdf
+```
+
+Finally, ensure the tracking information and LFS are copied to your remote/source repository. 
+You can do that using the following commands in your terminal:
+
+```shell
+git add .gitattributes
+git commit - am "Enabling large file support."
 git push
 ```
 
