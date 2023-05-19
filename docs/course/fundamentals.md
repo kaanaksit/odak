@@ -428,7 +428,7 @@ You can have a dedicated settings file for each experiment.
 ### Convolution Operation
 
 
-??? question end "Assignment: Implement convolution operation using Numpy"
+??? example end "Lab work: Implement convolution operation using Numpy"
     There are three possible ways to implement convolution operation on a computer.
     The first one involves loops visiting each point in a given data.
     The second involves formulating a convolution operation as matrix multiplication, and the final one involves implementing convolution as a multiplication operation in the Fourier domain.
