@@ -158,7 +158,7 @@ git push
 I encourage our readers to follow the methods of coding highlighted here.
 Following the methods that I am going to explain is not only crucial for developing replicable projects, but it is also vital for allowing other people to read your code with the least amount of hassle.
 
-#Avoid using long lines.#
+### Avoid using long lines.
 Please avoid having too many characters in one line.
 Let us start with a bad example:
 
@@ -187,7 +187,75 @@ def light_transport(
     return results
 ```
 
-## Background Refresher :material-alert-decagram:{ .mdx-pulse title="Too important!" }
+### Leave spaces between commands, variables and functions
+
+Please avoid writing code like a train of characters.
+Here is a terrible coding example:
+
+```python
+def addition(x,y,z):
+    result=2*y+z+x**2*3
+    return result
+```
+
+Please leave spaces after each comma, `,`, and mathematical operation.
+So now, we can correct the above example as in below:
+
+```python
+def addition(x, y, z):
+    result = 2 * y + z + x ** 2 * 3
+    return result
+```
+
+Please also leave two lines of space between the two functions.
+Here is a bad example again:
+
+```python
+def add(x, y):
+    return x + y
+def multiply(x, y):
+    return x * y
+```
+
+Instead, it should be:
+
+
+```python
+def add(x, y):
+    return x + y
+
+
+def multiply(x, y):
+    return x * y
+```
+
+
+### Add documentation
+For your code, please make sure to add necessary documentation, here is a good example of doing that:
+
+
+```python
+def add(x, y):
+      """
+      A function to add two values together.
+
+      Parameters
+      =========
+      x          : float
+                   First input value.
+      y          : float
+                    Second input value.
+
+      Returns
+      ======
+      result     : float
+                   Result of the addition.
+      """
+      result = x + y
+      return result
+```
+
+## Background Review :material-alert-decagram:{ .mdx-pulse title="Too important!" }
 
 
 :octicons-info-24: Informative
