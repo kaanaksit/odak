@@ -323,6 +323,7 @@ Explaining line by line could help you see what is wrong with your code.
 I am sure there are many recipes for solving bugs in codes.
 I tried introducing you to one that works for me.
 
+
 ### Have a `requirements.txt` 
 Please also make sure to have a `requirements.txt` in the root directory of your repository.
 For example, in this course your `requirements.txt` would look like this:
@@ -337,6 +338,32 @@ This way, a future user of your code could install the required libraries by fol
 ```shell 
 pip3 install -m requirements.txt 
 ``` 
+
+
+### Always use the same function for saving and loading
+Most issues in every software project come from repetition.
+Imagine if you want to save and load images inside a code after some processing.
+If you rely on manually coding a save and load routine in every corner of the same code, it is likely that when you change one of these saving or loading routines, you must modify the others.
+In other words, do not rediscover what you have already known. 
+Instead, turn it into a Lego brick you can use whenever needed.
+For saving and loading images, please rely on functions in odak to avoid any issues.
+For example, if I want to load a sample image called `letter.jpeg`, I can rely on this example:
+
+```python
+import odak
+image = odak.learn.tools.load_image(
+                                    'letter.jpeg',
+                                    torch_style = True, # (1)!
+                                    normalizeby = 255. # (2)!
+                                   )
+```
+
+1.  If you set this flag to True, the image will be loaded
+    as [ch x m x n], where ch represents the number of color channels (e.g., typically three).
+    In case of False, it will be loaded as [m x n x ch].
+2.  If you provide a floating number here, the image to be loaded will be divived with that number.
+    For example, if you have a 8-bit image (0-255) and if you provide `normalizeby = 2.0`, the maximum
+    value that you can expect is 255 / 2. = 127.5.
 
 
 ## Background Review :material-alert-decagram:{ .mdx-pulse title="Too important!" }
