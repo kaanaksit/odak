@@ -422,7 +422,8 @@ You can have a dedicated settings file for each experiment.
 ## Background Review :material-alert-decagram:{ .mdx-pulse title="Too important!" }
 
 
-:octicons-info-24: Informative
+:octicons-info-24: Informative ·
+:octicons-eye-24: Media
 
 
 ### Convolution Operation
