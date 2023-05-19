@@ -128,26 +128,33 @@ Thus, cloning a repository could be slow when large binary files and Git come to
 Assuming you are on an Ubuntu operating system, you can install the [Large File Support (LFS)](https://git-lfs.com/) for Git by typing these commands in your terminal:
 
 
+
 ```shell
 sudo apt install git-lfs
 ```
 
+
 Once you have the LFS installed in your operating system, you can then go into your repository and enable LFS:
+
 
 ```shell
 cd YOURREPOSITORY
 git lfs install
 ```
 
+
 Now is the time to let your LFS track specific files to avoid overcrowding your Git history.
 For example, you can track the `*.pdf` extension, meaning all the PDF files in your repository by typing the following command in your terminal:
+
 
 ```shell
 git lfs track *.pdf
 ```
 
+
 Finally, ensure the tracking information and LFS are copied to your remote/source repository. 
 You can do that using the following commands in your terminal:
+
 
 ```shell
 git add .gitattributes
@@ -166,15 +173,18 @@ git push
 I encourage our readers to follow the methods of coding highlighted here.
 Following the methods that I am going to explain is not only crucial for developing replicable projects, but it is also vital for allowing other people to read your code with the least amount of hassle.
 
+
 ### Avoid using long lines.
 Please avoid having too many characters in one line.
 Let us start with a bad example:
+
 
 ```python
 def light_transport(wavelength, distances, resolution, propagation_type, polarization, input_field, output_field, angles):
       pass
       return results
 ```
+
 
 As you can observe, the above function requires multiple inputs to be provided.
 Try making the inputs more readable by breaking lines and in some cases, you can also provide the requested type for an input and a default value to guide your users:
@@ -195,10 +205,13 @@ def light_transport(
     return results
 ```
 
+
 ### Leave spaces between commands, variables, and functions
+
 
 Please avoid writing code like a train of characters.
 Here is a terrible coding example:
+
 
 ```python
 def addition(x,y,z):
@@ -206,8 +219,10 @@ def addition(x,y,z):
     return result
 ```
 
+
 Please leave spaces after each comma, `,`, and mathematical operation.
 So now, we can correct the above example as in below:
+
 
 ```python
 def addition(x, y, z):
@@ -215,8 +230,10 @@ def addition(x, y, z):
     return result
 ```
 
+
 Please also leave two lines of space between the two functions.
 Here is a bad example again:
+
 
 ```python
 def add(x, y):
@@ -225,7 +242,9 @@ def multiply(x, y):
     return x * y
 ```
 
+
 Instead, it should be:
+
 
 
 ```python
@@ -265,7 +284,7 @@ def add(x, y):
 ```
 
 
-### Use code style checker and validator
+### Use a code-style checker and validator
 There are also code-style checkers and code validators that you can adapt to your workflows when coding.
 One of these code-style checkers and validators I use in my projects is `pyflakes.`
 On an Ubuntu operating system, you can install `pyflakes` easily by typing these commands into your terminal:
@@ -279,6 +298,7 @@ sudo apt install python3-pyflakes
 It could tell you about missing imports or undefined or unused variables.
 You can use it on any Python script very easily:
 
+
 ```shell
 pyflakes3 sample.py
 ```
@@ -288,10 +308,17 @@ In addition, I use `flake8` and `autopep8` for standard code violations.
 To learn more about these, please read the [code section of the contribution guide](../contributing/#code).
 
 
+### Use fewer imports 
+When it comes to importing libraries in your code, please make sure to use a minimal amount of libraries.
+Using a few libraries can help you keep your code robust and working over newer generations of libraries.
+Please stick to the libraries suggested in this course when coding for this course.
+If you need access to some other library, please do [let us know!](https://github.com/kaanaksit/odak/discussions)
+
+
 ### Fixing bugs
 Often, you can encounter bugs in your code.
 To fix your code in such cases, I would like you to consider using a method called `Rubber duck debugging` or `Rubber ducking.`
-The basic idea is to be able to express to a third person or yourself code line by line.
+The basic idea is to be able to express your code to a third person or yourself line by line.
 Explaining line by line could help you see what is wrong with your code.
 I am sure there are many recipes for solving bugs in codes.
 I tried introducing you to one that works for me.
@@ -313,6 +340,6 @@ I tried introducing you to one that works for me.
 
 
 ??? tip end "Consider revisiting this chapter"
-    Remember that you can always revisit this chapter as you progress with the course as you need it.
-    This chapter is vital for establishing a means to complete your assignments and could help formulate a suitable base to collaborate and work with [my research group](https://complightlab.com) and other experts in the field.
+    Remember that you can always revisit this chapter as you progress with the course and as you need it.
+    This chapter is vital for establishing a means to complete your assignments and could help formulate a suitable base to collaborate and work with [my research group](https://complightlab.com) in the future or other experts in the field.
 
