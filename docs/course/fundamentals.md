@@ -512,14 +512,20 @@ When choosing a license for your project, consider tinkering about whether you a
 :octicons-eye-24: Media
 
 
+Here, I will review some basic mathematical concepts using equations, images, or codes.
+Please note that you must understand these concepts to avoid difficulty following this course.
+
+
 ### Convolution Operation
+Convolution is a mathematical operation used as a building block for describing systems.
+It has proven to be highly effective in machine learning and deep learning.
 
 
 ??? example end "Lab work: Implement convolution operation using Numpy"
     There are three possible ways to implement convolution operation on a computer.
     The first one involves loops visiting each point in a given data.
     The second involves formulating a convolution operation as matrix multiplication, and the final one involves implementing convolution as a multiplication operation in the Fourier domain.
-    Implement all these three methods using Jupyter Notebooks and visually prove that they are all functioning correctly (e.g., convolving image with a kernel).
+    Implement all these three methods using Jupyter Notebooks and visually prove that they are all functioning correctly with various kernels (e.g., convolving image with a kernel).
 
 
 ### Gradient Descent Optimizers
