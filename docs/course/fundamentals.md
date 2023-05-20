@@ -417,6 +417,92 @@ You can have a dedicated settings file for each experiment.
 
 ### Create unit tests
 
+Suppose your project is a library containing multiple valuable functions for developing other projects. 
+In that case, I encourage you to create unit tests for your library so that whenever you update it, you can see if your updates break anything in that library.
+For this purpose, consider creating a `test` directory in the root folder of your repository.
+In that directory, you can create separate Python scripts for testing out various functions of your library.
+Say there is a function called `add` in your project `MOSTAWESOMECODEEVER,` so your test script `test/test_add.py` should look like this:
+
+```python
+import MOSTAWESOMECODEEVER
+
+def test():
+    ground_truth = 3 + 5
+    result = MOSTAWESOMECODEEVER.add(3, 5)
+    if ground_trurth == result:
+        assert True == True
+    assert False == True
+
+
+if __name__ == '__main__':
+    sys.exit(test())
+```
+
+You may accumulate various unit tests in your `test` directory.
+To test them all before pushing them to your repository, you can rely on `pytest.`
+You can install `pytest` using the following command in your terminal:
+
+
+```shell
+pip3 install pytest
+```
+
+
+Once installed, you can navigate to your repository's root directory and call `pytest` to test things out:
+
+
+```shell
+cd MOSTAWESOMECODEEVER
+pytest
+```
+
+If anything is wrong with your unit tests, which validate your functions, `pytest` will provide a detailed explanation.Suppose your project is a library containing multiple valuable functions for developing other projects. 
+In that case, I encourage you to create unit tests for your library so that whenever you update it, you can see if your updates break anything in that library.
+For this purpose, consider creating a `test` directory in the root folder of your repository.
+In that directory, you can create separate Python scripts for testing out various functions of your library.
+Say there is a function called `add` in your project `MOSTAWESOMECODEEVER,` so your test script `test/test_add.py` should look like this:
+
+```python
+import MOSTAWESOMECODEEVER
+
+def test():
+    ground_truth = 3 + 5
+    result = MOSTAWESOMECODEEVER.add(3, 5)
+    if ground_trurth == result:
+        assert True == True
+    assert False == True
+
+
+if __name__ == '__main__':
+    sys.exit(test())
+```
+
+You may accumulate various unit tests in your `test` directory.
+To test them all before pushing them to your repository, you can rely on `pytest.`
+You can install `pytest` using the following command in your terminal:
+
+
+```shell
+pip3 install pytest
+```
+
+
+Once installed, you can navigate to your repository's root directory and call `pytest` to test things out:
+
+
+```shell
+cd MOSTAWESOMECODEEVER
+pytest
+```
+
+If anything is wrong with your unit tests, which validate your functions, `pytest` will provide a detailed explanation.
+
+
+## Set a licence
+If you want to distribute your code online, consider adding a license to avoid having difficulties related to sharing with others.
+In other words, you can add `LICENSE.txt` in the root directory of your repository.
+To determine which license works best for you, consider visiting [this guideline](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository).
+When choosing a license for your project, consider tinkering about whether you agree people are building a product out of your work or derivate, etc.
 
 
 ## Background Review :material-alert-decagram:{ .mdx-pulse title="Too important!" }
