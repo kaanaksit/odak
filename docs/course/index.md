@@ -25,6 +25,13 @@ You can also be someone eager to understand and learn physics behind light and h
 Here are some questions and answers related to the course that readers may ask:
 
 
+??? question end "Overarching rationale for the module
+    Historically, physics and electronics departments in various universities study and teach the physics of light.
+    This way, new light-based devices and equipment have been invented, such as displays, cameras, and fiber networks, in the past, and these devices continuously serve our societies.
+    However, emerging topics from mathematics and computer science departments, such as deep learning and advanced optimization methods, unlocked new capabilities for existing light-based devices and started to play a crucial role in designing the next generation of these devices.
+    The Computational Light Course (CLC) aims to bridge this gap between Computer Science and physics by providing a fundamental understanding of light and computational methods that helps to explore new possibilities with light.
+
+
 ??? question end "Who is the target audience of Computational Light course?"
     The Computational Light course is designed for individuals willing to learn how to develop and invent light-based practical systems for next-generation human-computer interfaces.
     This course targets a graduate-level audience in Computer Science, Physics and Electrical and Electronics Engineering departments. 
