@@ -209,7 +209,7 @@ class forward_propagator():
         return H
 
 
-    def propagate(self, field, H, zero_padding = [True, False, True]):
+    def propagate(self, field, H, aperture, zero_padding = [True, False, True]):
         """
         Internal function used in propagation. It is a copy of odak.learn.wave.band_limited_angular_spectrum().
         """
@@ -219,14 +219,17 @@ class forward_propagator():
         if zero_padding[1] == True:
             H = zero_pad(H)
             U1 = zero_pad(U1)
-        U2 = H * U1
+        if not isinstance(aperture, type(None)):
+            U2 = (H * aperture) * U1
+        else:
+            U2 = H * U1
         result = torch.fft.ifftshift(torch.fft.ifft2(torch.fft.ifftshift(U2)))
         if zero_padding[2] == True:
             return crop_center(result)
         return result
 
 
-    def __call__(self, field, distance):
+    def __call__(self, field, distance, aperture = None):
         """
         Model used to generate a complex field in the vicinity of a spatial light modulator.
 
@@ -236,6 +239,8 @@ class forward_propagator():
                           Input field [m x n].
         distance        : float
                           Distance to propagate.
+        aperture        : torch.tensor
+                          Aperture to be used in the Fourier plane.
 
         Returns
         -------
@@ -263,6 +268,7 @@ class forward_propagator():
         final_field = self.propagate(
                                      field,
                                      kernel,
+                                     aperture,
                                      zero_padding = [self.pad, False, self.pad]
                                     )
         return final_field
