@@ -309,6 +309,11 @@ Examples are not limited to the ones that I have provided above.
 Your favorite search engine is your friend to find out more in this case.
 
 
+??? example end "Lab work: Where do we find good resources?"
+    Please explore software projects on GitHub and papers on Google Scholar to find out about works that are relevant to the theme of Computational Light.
+    Please make a list of these projects and report the top three projects that you feel most exciting and interesting.
+
+
 !!! warning end "Reminder"
     We host a Slack group with more than 300 members.
     This Slack group focuses on the topics of rendering, perception, displays and cameras.
