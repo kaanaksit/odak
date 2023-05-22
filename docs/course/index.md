@@ -98,6 +98,13 @@ Here are some questions and answers related to the course that readers may ask:
     * **Project Assignments.** Students will be evaluated on their projects. The lecturer will suggest projects related to the topics of Computational Light. However, the students will also be highly encouraged to propose projects for successfully finishing their course. These projects are expected to address a research question related to the topic discussed. Thus, there are multiple components of a project. These are implementation in coding, manuscript in a modern paper format, a website to promote the work to wider audiences, and presentation of the work to other students and the lecturer.
     * **Office hours.** There will be office hours for students willing to talk to the course lecturer, Kaan Akşit, in a one-on-one setting. Each week, the lecturer will schedule two hours for such cases.
 
+??? question end "What is the aim of this course?"
+    Computational Light Course (CLC) aims to train individuals that could potentially help invent and develop the next generation of light-based devices, systems and software. To achieve this goal, CLC, will aim:
+    
+    - To educate students on physics of light, human visual system and computational methods relevant to physics of light based on optimizations and machine learning techniques,
+    - To enable students the right set of practical skills in coding and design for the next generation of light-based systems,
+    - And to increase literacy on light-based technologies among students and professionals.
+
 
 ???+ question end "How to cite this course?"
     For citing using latex's bibtex bibliography system:
