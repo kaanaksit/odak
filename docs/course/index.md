@@ -13,6 +13,12 @@ Computational Light is a term that brings the concepts in computational methods 
 Computational Light Course (CLC) bridges the gap between Computer Science and physics. In other words, CLC offers students a gateway to get familiar with various aspects of the physics of light, the human visual system, computational methods in designing light-based devices, and applications of light. Precisely, students will familiarize themselves with designing and implementing graphics, display, sensor, and camera systems using state-of-the-art deep learning and optimization methods. A deep understanding of these topics can help students become experts in the computational design of new graphics, displays, sensors, and camera systems.
 
 
+<figure markdown>
+  ![Image title](media/telelife.png){ width="300" }
+  <figcaption>Future is yet to be decided. Will you help me build it?</figcaption>
+</figure>
+
+
 ## Prerequisites
 These are the prerequisites of **Computational Light** course:
 
