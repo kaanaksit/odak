@@ -189,6 +189,7 @@ This way, you will be ready with a conceptual understanding of light.
 
 ??? example end "Lab work: Are there any other light-related phenomena?"
     Please find more light-related phenomena not discussed in this chapter using your favorite search engine.
+    Report back your findings.
 
 
 ??? tip end "Did you know?"
