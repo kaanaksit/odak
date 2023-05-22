@@ -186,6 +186,11 @@ The reason is to provide an entry and a crash course at first glance is obvious.
 We will deep dive into focused topics in the following chapters.
 This way, you will be ready with a conceptual understanding of light.
 
+
+??? example end "Lab work: Are there any other light-related phenomena?"
+    Please find more light-related phenomena not discussed in this chapter using your favorite search engine.
+
+
 ??? tip end "Did you know?"
     Did you know there is an international light day every 16th of May recognized by the United Nations Educational, Scientific and Cultural Organization (UNESCO)? 
     For more details, click [here](https://www.unesco.org/en/days/light)
