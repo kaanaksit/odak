@@ -174,7 +174,32 @@ class forward_propagator():
         self.pad = pad
         self.distances = []
         self.kernels = []
- 
+
+
+    def init_aperture(self, aperture_size, resolution):
+        """
+        Function to initialize aperture.
+
+        Parameters
+        ----------
+        aperture_size       : float
+                              Size of circular aperture.
+        resolution          : list
+                              Resolution of the input fields used in the propagation and also the resolution of the aperture.
+        """
+        if self.pad == True:
+            self.aperture = odak.learn.tools.circular_binary_mask(
+                                                                  resolution[0] * 2,
+                                                                  resolution[1] * 2,
+                                                                  self.aperture_size,
+                                                                 ).to(self.device) * 1.
+        elif self.pad == False:
+             self.aperture = odak.learn.tools.circular_binary_mask(
+                                                                  resolution[0] * 2,
+                                                                  resolution[1] * 2,
+                                                                  self.aperture_size,
+                                                                 ).to(self.device) * 1.
+
 
     def generate_kernel(self, nu, nv, dx = 8e-6, wavelength = 515e-9, distance = 0.):
         """
@@ -219,10 +244,7 @@ class forward_propagator():
         if zero_padding[1] == True:
             H = zero_pad(H)
             U1 = zero_pad(U1)
-        if not isinstance(aperture, type(None)):
-            U2 = (H * aperture) * U1
-        else:
-            U2 = H * U1
+        U2 = (H * aperture) * U1
         result = torch.fft.ifftshift(torch.fft.ifft2(torch.fft.ifftshift(U2)))
         if zero_padding[2] == True:
             return crop_center(result)
@@ -265,6 +287,8 @@ class forward_propagator():
             kernel_id = self.distances.index(distance)
             kernel_forward = self.kernels[kernel_id]
         kernel = kernel_forward
+        if isinstance(aperture, type(None)):
+            aperture = self.aperture
         final_field = self.propagate(
                                      field,
                                      kernel,
