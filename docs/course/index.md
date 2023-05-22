@@ -14,7 +14,7 @@ Computational Light Course (CLC) bridges the gap between Computer Science and ph
 
 
 <figure markdown>
-  ![Image title](media/telelife.png){ width="300" }
+  ![Image title](media/telelife.png){ width="600" }
   <figcaption>Future is yet to be decided. Will you help me build it?</figcaption>
 </figure>
 
@@ -81,8 +81,22 @@ Here are some questions and answers related to the course that readers may ask:
 
 ??? question end "Which terminal program to use?"
     You are highly encouraged to use the terminal that you feel most comfortable with.
-This terminal could be the default terminal in your operating system.
+    This terminal could be the default terminal in your operating system.
     I use [terminator](https://gnome-terminator.org/) as it enables my workflow with incredible features and is open source.
+
+
+??? question end "What is the method of delivery?"
+    The proposed course, Computational Light Course (CLC), comprises multiple elements in delivery. We list these elements as the followings:
+
+    * **Prerequisites and general information.** Students will be provided with a written description of requirements related to the course as in this document.
+    * **Lectures**. The students will attend two hours of classes each week, which will be in-person, virtual, or hybrid, depending on the circumstances (e.g., global pandemic, strikes).
+    * **Supplementary Lectures.** Beyond weekly classes, students will be encouraged to follow several other sources through online video recordings.
+    * **Background review.** Students often need a clear development guideline or a stable production pipeline. Thus, in every class and project, a phase of try-and-error causes the student to lose interest in the topic, and often students need help to pass the stage of getting ready for the course and finding the right recipe to complete their work. Thus, we formulate a special session to review the course's basics and requirements. This way, we hope to overcome the challenges related to the "warming up" stage of the class.
+    * **Lecture content.** We will provide the students with a lecture book composed of chapters. These chapters will be discussed at each weekly lecture. The book chapters will be distributed online using Moodle (requires UCL access), and a free copy of this book will also be reachable without requiring UCL access.
+    * **Laboratory work.** Students will be provided with questions about their weekly class topics. These questions will require them to code for a specific task. After each class, students will have an hour-long laboratory session to address these questions by coding. The teaching assistants of the lecture will support each laboratory session.
+    * **Supporting tools.** We continuously develop new tools for the emerging fields of Computational Light. Our development tools will be used in the delivery. These tools are publicly available in Odak, our research toolkit with Mozilla Public License 2.0. Students will get a chance to use these tools in their laboratory works and projects. In the meantime, they will also get the opportunity to contribute to the next versions of the tool.
+    * **Project Assignments.** Students will be evaluated on their projects. The lecturer will suggest projects related to the topics of Computational Light. However, the students will also be highly encouraged to propose projects for successfully finishing their course. These projects are expected to address a research question related to the topic discussed. Thus, there are multiple components of a project. These are implementation in coding, manuscript in a modern paper format, a website to promote the work to wider audiences, and presentation of the work to other students and the lecturer.
+    * **Office hours.** There will be office hours for students willing to talk to the course lecturer, Kaan Akşit, in a one-on-one setting. Each week, the lecturer will schedule two hours for such cases.
 
 
 ???+ question end "How to cite this course?"
