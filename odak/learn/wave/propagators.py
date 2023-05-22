@@ -191,13 +191,13 @@ class forward_propagator():
             self.aperture = circular_binary_mask(
                                                  resolution[0] * 2,
                                                  resolution[1] * 2,
-                                                 self.aperture_size,
+                                                 aperture_size,
                                                 ).to(self.device) * 1.
         elif self.pad == False:
              self.aperture = circular_binary_mask(
                                                   resolution[0] * 2,
                                                   resolution[1] * 2,
-                                                  self.aperture_size,
+                                                  aperture_size,
                                                  ).to(self.device) * 1.
 
 
