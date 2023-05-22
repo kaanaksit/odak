@@ -188,17 +188,17 @@ class forward_propagator():
                               Resolution of the input fields used in the propagation and also the resolution of the aperture.
         """
         if self.pad == True:
-            self.aperture = odak.learn.tools.circular_binary_mask(
-                                                                  resolution[0] * 2,
-                                                                  resolution[1] * 2,
-                                                                  self.aperture_size,
-                                                                 ).to(self.device) * 1.
+            self.aperture = circular_binary_mask(
+                                                 resolution[0] * 2,
+                                                 resolution[1] * 2,
+                                                 self.aperture_size,
+                                                ).to(self.device) * 1.
         elif self.pad == False:
-             self.aperture = odak.learn.tools.circular_binary_mask(
-                                                                  resolution[0] * 2,
-                                                                  resolution[1] * 2,
-                                                                  self.aperture_size,
-                                                                 ).to(self.device) * 1.
+             self.aperture = circular_binary_mask(
+                                                  resolution[0] * 2,
+                                                  resolution[1] * 2,
+                                                  self.aperture_size,
+                                                 ).to(self.device) * 1.
 
 
     def generate_kernel(self, nu, nv, dx = 8e-6, wavelength = 515e-9, distance = 0.):
