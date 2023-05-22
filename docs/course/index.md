@@ -106,6 +106,21 @@ Here are some questions and answers related to the course that readers may ask:
     - And to increase literacy on light-based technologies among students and professionals.
 
 
+??? question end "What are the intended learning outcomes of this course?"
+    Students who have completed Computational Light Course (CLC) successfully will have literacy and practical skills on the following items:
+    
+    - Physics of Light and applications of Computational Light,
+    - Fundamental knowledge of managing a software project (e.g., version and authoring tools, unit tests, coding style, and grammar),
+    - Fundamental knowledge of optimization methods and state-of-the-art libraries aiming at relevant topics,
+    - Fundamental knowledge of visual perception and the human visual system,
+    - Simulating light as geometric rays, continous waves, and quantum level,
+    - Simulating imaging and displays systems, including Computer-Generated Holography,
+    - Designing and optimizing imaging and display systems,
+    - Designing and optimizing all-optical machine learning systems.
+    
+    Note that the above list is always subject to change in order or topic as society's needs move in various directions.
+
+
 ???+ question end "How to cite this course?"
     For citing using latex's bibtex bibliography system:
     ```bibtex
