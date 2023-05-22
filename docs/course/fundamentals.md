@@ -498,6 +498,8 @@ pytest
 If anything is wrong with your unit tests, which validate your functions, `pytest` will provide a detailed explanation.
 
 
+
+
 ## Set a licence
 If you want to distribute your code online, consider adding a license to avoid having difficulties related to sharing with others.
 In other words, you can add `LICENSE.txt` in the root directory of your repository.
@@ -505,6 +507,10 @@ To determine which license works best for you, consider visiting [this guideline
 When choosing a license for your project, consider tinkering about whether you agree people are building a product out of your work or derivate, etc.
 
 
+??? example end "Lab work: Prepare a project repository"
+    Please prepare a sample repository on GitHub using the information provided in the above sections. 
+
+ 
 ## Background Review :material-alert-decagram:{ .mdx-pulse title="Too important!" }
 
 
@@ -534,6 +540,7 @@ It has proven to be highly effective in machine learning and deep learning.
 ??? example end "Would you like to code your Gradient Descent based optimizer ground up?"
     In case you are interested in coding your Gradient Descent-based optimizer from the ground up, consider watching this tutorial online where I code the optimizer using only `Numpy`:
     <center> <iframe width="560" height="315" src="https://www.youtube.com/embed/-ilAaJlUvYI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center>
+
 
 ## Conclusion
 
