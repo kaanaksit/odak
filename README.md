@@ -20,7 +20,7 @@ pip3 install odak
 or you can follow this, but remember that it will install the latest version in the repository this way:
 
 ```bash
-pip3 install git+https://github.com/kaanaksit/odak
+pip3 install git+https://github.com/kaanaksit/odak --upgrade
 ```
 
 or this:
