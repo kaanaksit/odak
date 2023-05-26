@@ -308,6 +308,12 @@ In addition, I use `flake8` and `autopep8` for standard code violations.
 To learn more about these, please read the [code section of the contribution guide](../contributing/#code).
 
 
+### Naming variables
+When naming variables use lower case letters and make sure that the variables are named in an explanatory manner.
+Please also always use underscore as a replacement of space.
+For example if you are going to create a variable for storing reconstructed image at some image plane, you can name that variable as `reconstructions_image_planes`. 
+
+
 ### Use fewer imports 
 When it comes to importing libraries in your code, please make sure to use a minimal amount of libraries.
 Using a few libraries can help you keep your code robust and working over newer generations of libraries.
