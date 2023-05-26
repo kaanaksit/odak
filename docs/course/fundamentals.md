@@ -527,6 +527,12 @@ Convolution is a mathematical operation used as a building block for describing 
 It has proven to be highly effective in machine learning and deep learning.
 
 
+<figure markdown>
+  ![Image title](media/convolution.png){ width="600" }
+  <figcaption>A sketch showing a matrix and a kernel to be convolved.</figcaption>
+</figure>
+
+
 ??? example end "Lab work: Implement convolution operation using Numpy"
     There are three possible ways to implement convolution operation on a computer.
     The first one involves loops visiting each point in a given data.

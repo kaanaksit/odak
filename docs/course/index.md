@@ -13,7 +13,7 @@ Computational Light is a term that brings the concepts in computational methods 
 
 <figure markdown>
   ![Image title](media/telelife.png){ width="600" }
-  <figcaption>Future is yet to be decided. Will you help me build it? A rendering from <a href="https://kaanaksit.com/assets/pdf/OrloskyEtAl_FrontiersInVirtualReality2021_Telelife_the_future_of_remote_living.pdf">Telelife vision paper</a></figcaption>
+  <figcaption>Future is yet to be decided. Will you help me build it? A rendering from <a href="https://kaanaksit.com/assets/pdf/OrloskyEtAl_FrontiersInVirtualReality2021_Telelife_the_future_of_remote_living.pdf">Telelife vision paper</a>.</figcaption>
 </figure>
 
 
