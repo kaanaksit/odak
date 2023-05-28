@@ -5,7 +5,7 @@ import sys
 
 def main():
     files = sorted(odak.tools.list_files('./', key = '*.md'))
-    files = ['index.md']
+    files = ['fundamentals.md']
     tts = TTS(model_name = "tts_models/en/jenny/jenny", progress_bar = True, gpu = True)
     cache_fn = 'cache.txt'
     wav_file = 'cache.wav'
@@ -22,7 +22,9 @@ def main():
             contents = clear_text(contents)
             tts.tts_to_file(
                             text = contents,
-                            file_path = wav_file
+                            file_path = wav_file,
+                            emotion = 'Happy',
+                            speed = 0.8
                            )
             cmd = ['ffmpeg', '-i', wav_file, mp3_file, '-y']
             odak.tools.shell_command(cmd)
@@ -36,6 +38,15 @@ def main():
 
 def clear_text(text):
     output_text = text.replace('???', '')
+    output_text = output_text.replace('Narrate section', '')
+    output_text = output_text.replace(':material-alert-decagram:{ .mdx-pulse title="Too important!" }', 'Too important!')
+    output_text = output_text.replace(':octicons-beaker-24:', '')
+    output_text = output_text.replace(':octicons-info-24:', '')
+    output_text = output_text.replace('quote end', '')
+    output_text = output_text.replace('question end', '')
+    output_text = output_text.replace('information end', '')
+    output_text = output_text.replace('success end', '')
+    output_text = output_text.replace('Warning end', '')
     output_text = output_text.replace('!!!', '')
     output_text = output_text.replace('#', '')
     output_text = output_text.replace('##', '')

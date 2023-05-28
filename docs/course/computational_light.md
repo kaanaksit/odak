@@ -1,3 +1,9 @@
+??? quote end "Narrate section"
+    <audio controls="controls">
+         <source type="audio/mp3" src="../media/computational_light.mp3"></source>
+    </audio>
+
+
 # Light, Computation, and Computational Light
 
 
@@ -306,6 +312,10 @@ For each topic highlighted below, please click on the box to discover more about
     Here are some people I would encourage you to explore their websites: [Aydogan Ozcan](https://research.seas.ucla.edu/ozcan/) and [Ugur Tegin](https://www.ugurtegin.net/).
     * **Want to learn more?** Although we will cover a great deal of All-optical Machine Learning in this course, you may want to dig deeper with a dedicated course, which you can follow online:
     <center><iframe width="560" height="315" src="https://www.youtube.com/embed/pjy860nZypU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></center>
+
+??? example end "Lab work: What are the other fields and interesting profiles out there?"
+    Please explore other relevant fields to Computational Light, and explore interesting profiles out there.
+    Please make a list of relevant fields and interesting profiles and report your top three.
 
 
 Indeed, there are more topics related to computational light than the ones highlighted here.

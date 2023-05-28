@@ -1,3 +1,9 @@
+??? quote end "Narrate section"
+    <audio controls="controls">
+         <source type="audio/mp3" src="../media/fundamentals.mp3"></source>
+    </audio>
+
+
 # Fundamentals and Standards
 
 
