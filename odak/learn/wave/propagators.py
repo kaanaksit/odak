@@ -156,7 +156,7 @@ class forward_propagator():
         """
         Parameters
         ----------
-        wavelength         : float
+        wavelength         : float or list
                              Wavelength of light in meters.
         pixel_pitch        : float
                              Pixel pitch in meters.
@@ -170,6 +170,8 @@ class forward_propagator():
             self.device = torch.device('cpu')
         self.pixel_pitch = pixel_pitch
         self.wavelength = wavelength
+        if type(wavelength) != 'list':
+            self.wavelength = [wavelength,]
         self.wavenumber = wavenumber(self.wavelength)
         self.pad = pad
         self.distances = []

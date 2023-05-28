@@ -1,6 +1,12 @@
+??? quote end "Narrate section"
+    <audio controls="controls">
+         <source type="audio/mp3" src="media/index.mp3"></source>
+    </audio>
+
+
 # Prerequisites and general information
 
-**You have reached the website for the Computational Light Course (CLC).**
+**You have reached the website for the Computational Light Course.**
 
 This page is the starting point for the **Computational Light** course.
 Readers can follow the course material found on these pages to learn more about the field of **Computational Light**.
@@ -17,7 +23,7 @@ Computational Light is a term that brings the concepts in computational methods 
 </figure>
 
 
-Computational Light Course (CLC) bridges the gap between Computer Science and physics. In other words, CLC offers students a gateway to get familiar with various aspects of the physics of light, the human visual system, computational methods in designing light-based devices, and applications of light. Precisely, students will familiarize themselves with designing and implementing graphics, display, sensor, and camera systems using state-of-the-art deep learning and optimization methods. A deep understanding of these topics can help students become experts in the computational design of new graphics, displays, sensors, and camera systems.
+Computational Light Course bridges the gap between Computer Science and physics. In other words, Computational Light Course offers students a gateway to get familiar with various aspects of the physics of light, the human visual system, computational methods in designing light-based devices, and applications of light. Precisely, students will familiarize themselves with designing and implementing graphics, display, sensor, and camera systems using state-of-the-art deep learning and optimization methods. A deep understanding of these topics can help students become experts in the computational design of new graphics, displays, sensors, and camera systems.
 
 
 ## Prerequisites
@@ -42,7 +48,7 @@ Here are some questions and answers related to the course that readers may ask:
     Historically, physics and electronics departments in various universities study and teach the physics of light.
     This way, new light-based devices and equipment have been invented, such as displays, cameras, and fiber networks, in the past, and these devices continuously serve our societies.
     However, emerging topics from mathematics and computer science departments, such as deep learning and advanced optimization methods, unlocked new capabilities for existing light-based devices and started to play a crucial role in designing the next generation of these devices.
-    The Computational Light Course (CLC) aims to bridge this gap between Computer Science and physics by providing a fundamental understanding of light and computational methods that helps to explore new possibilities with light.
+    The Computational Light Course aims to bridge this gap between Computer Science and physics by providing a fundamental understanding of light and computational methods that helps to explore new possibilities with light.
 
 
 ??? question end "Who is the target audience of Computational Light course?"
@@ -87,7 +93,7 @@ Here are some questions and answers related to the course that readers may ask:
 
 
 ??? question end "What is the method of delivery?"
-    The proposed course, Computational Light Course (CLC), comprises multiple elements in delivery. We list these elements as the followings:
+    The proposed course, Computational Light Course, comprises multiple elements in delivery. We list these elements as the followings:
 
     * **Prerequisites and general information.** Students will be provided with a written description of requirements related to the course as in this document.
     * **Lectures**. The students will attend two hours of classes each week, which will be in-person, virtual, or hybrid, depending on the circumstances (e.g., global pandemic, strikes).
@@ -100,7 +106,7 @@ Here are some questions and answers related to the course that readers may ask:
     * **Office hours.** There will be office hours for students willing to talk to the course lecturer, Kaan Akşit, in a one-on-one setting. Each week, the lecturer will schedule two hours for such cases.
 
 ??? question end "What is the aim of this course?"
-    Computational Light Course (CLC) aims to train individuals that could potentially help invent and develop the next generation of light-based devices, systems and software. To achieve this goal, CLC, will aim:
+    Computational Light Course aims to train individuals that could potentially help invent and develop the next generation of light-based devices, systems and software. To achieve this goal, Computational Light Course, will aim:
     
     - To educate students on physics of light, human visual system and computational methods relevant to physics of light based on optimizations and machine learning techniques,
     - To enable students the right set of practical skills in coding and design for the next generation of light-based systems,
@@ -108,7 +114,7 @@ Here are some questions and answers related to the course that readers may ask:
 
 
 ??? question end "What are the intended learning outcomes of this course?"
-    Students who have completed Computational Light Course (CLC) successfully will have literacy and practical skills on the following items:
+    Students who have completed Computational Light Course successfully will have literacy and practical skills on the following items:
     
     - Physics of Light and applications of Computational Light,
     - Fundamental knowledge of managing a software project (e.g., version and authoring tools, unit tests, coding style, and grammar),
