@@ -667,6 +667,57 @@ Thus, SGD requires less memory for each update.
     <center> <iframe width="560" height="315" src="https://www.youtube.com/embed/-ilAaJlUvYI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center>
 
 
+Torch is a blessing for people that optimizes or trains with their algorithm.
+Torch also comes with a set of state-of-the-art optimizers.
+One of these optimizers is called the ADAM optimizer, `torch.optim.Adam`.
+Let's observe the below example to make sense of how this optimizer can help us to optimize various variables.
+
+```python
+import torch
+import odak  
+import sys   # (1)!
+
+
+def forward(x, m, n): # (2)!
+    y = m * x + n
+    return y
+
+
+def main():
+    m = torch.tensor([100.], requires_grad = True)
+    n = torch.tensor([0.], requires_grad = True) # (3)!
+    x_vals = torch.tensor([1., 2., 3., 100.])
+    y_vals = torch.tensor([5., 6., 7., 101.]) # (4)!
+    optimizer = torch.optim.Adam([m, n], lr = 5e1) # (5)!
+    loss_function = torch.nn.MSELoss() # (6)!
+    for step in range(1000):
+        optimizer.zero_grad() # (7)!
+        y_estimate = forward(x_vals, m, n) # (8)!
+        loss = loss_function(y_estimate, y_vals) # (9)!
+        loss.backward(retain_graph = True)
+        optimizer.step() # (10)!
+        print('Step: {}, Loss: {}'.format(step, loss.item()))
+    print(m, n)
+
+
+if __name__ == '__main__':
+    sys.exit(main())
+```
+
+1.  Required libraries are imported.
+2.  Let's assume that we are aiming to fit a line to some data (y = mx + n).
+3.  As we are aiming to fit a line, we have to find a proper m and n for our line (y = mx + n).
+    Pay attention to the fact that we have to make these variables differentiable by setting `requires_grad = True`.
+4.  Here is a sample dataset of X and Y values.
+5.  We define an Adam optimizer and ask our optimizer to optimize m and n.
+6.  We need some metric to identify if we are optimizer is optimizing correctly.
+    Here, we choose a L2 norm (least mean square) as our metric.
+7.  We clear graph before each iteration.
+8.  We make our estimation for Y values using the most current m and n values suggested by the optimizer.
+9.  We compare our estimation with original Y values to help our optimizer update m and n values.
+10. Loss and optimizer help us move in the right direction for updating m and n values.
+
+
 ## Conclusion
 We covered a lot of grounds in terms of coding standards, how to organize a project repository, and how basic things work in odak and Torch.
 Please ensure you understand the essential information in this section.
