@@ -52,7 +52,12 @@ def zero_pad(field, size = None, method = 'center'):
     if type(size) == type(None):
         resolution = [1, 1, 2 * field.shape[-2], 2 * field.shape[-1]]
     else:
-        resolution = size
+        if len(size) == 2:
+            resolution = [1, 1, size[0], size[1]]
+        if len(size) == 3:
+            resolution = [1, size[0], size[1], size[2]]
+        if len(size) == 4:
+            resolution = size
     field_zero_padded = torch.zeros(resolution, device = field.device, dtype = field.dtype)
     if method == 'center':
        field_zero_padded[

@@ -537,6 +537,8 @@ Please note that you must understand these concepts to avoid difficulty followin
 ### Convolution Operation
 Convolution is a mathematical operation used as a building block for describing systems.
 It has proven to be highly effective in machine learning and deep learning.
+Convolution operation often denoted with a `*` symbol.
+Assume there is a matrix, A, which we want to convolve with some other matrix, also known as the kernel, K.
 
 
 <figure markdown>
@@ -545,11 +547,88 @@ It has proven to be highly effective in machine learning and deep learning.
 </figure>
 
 
+One can define such a matrix and a kernel using Torch in Python:
+
+
+```python
+a = torch.tensor(
+                 [
+                  [1, 5, 9, 2, 3],
+                  [4, 8, 2, 3, 6],
+                  [7, 2, 0, 1, 3],
+                  [9, 6, 4, 2, 5],
+                  [2, 3, 5, 7, 4]
+                 ]
+                )
+k = torch.tensor(
+                 [
+                  [-1, 2, -3], 
+                  [ 3, 5,  7], 
+                  [-4, 9, -2]
+                 ]
+                )
+```
+
+
+To convolve these two matrices without losing information, we first have to go through a mathematical operation called zero padding.
+
+
+<figure markdown>
+  ![Image title](media/zeropad.png){ width="600" }
+  <figcaption>A sketch showing zeropadding operating on a matrix.</figcaption>
+</figure>
+
+
+To zeropad the matrix A, you can rely on Odak:
+
+
+```python
+import odak
+
+a_zeropad = odak.learn.tools.zero_pad(a, size = [7, 7])
+```
+
+Note that we pass here size as `[7, 7]`, the logic of this is very simple.
+Our original matrix was five by five if you add a zero along two axis, you get seven by seven as the new requested size.
+Also note that our kernel is three by three.
+There could be cases where there is a larger kernel size.
+In those cases, you want to zeropad half the size of kernel (e.g., original size plus half the kernel size, `a.shape[0] + k.shape[0] // 2`).
+Now we choose the first element in the original matrix A, multiply it with the kernel, and add it to a matrix R.
+But note that we add the results of our summation by centring it with the original location of the first element.
+
+
+<figure markdown>
+  ![Image title](media/convolve_0.png){ width="600" }
+  <figcaption>A sketch showing the first step of a convolution operation.</figcaption>
+</figure>
+
+
+We have to repeat this operation for each element in our original matrix and accummulate a result.
+
+
+<figure markdown>
+  ![Image title](media/convolve_1.png){ width="600" }
+  <figcaption>A sketch showing the second step of a convolution operation.</figcaption>
+</figure>
+
+
+Note that there are other ways to describe and implement the convolution operation.
+Thus far, this definition formulates a simplistic description for convolution. 
+
+
 ??? example end "Lab work: Implement convolution operation using Numpy"
     There are three possible ways to implement convolution operation on a computer.
     The first one involves loops visiting each point in a given data.
     The second involves formulating a convolution operation as matrix multiplication, and the final one involves implementing convolution as a multiplication operation in the Fourier domain.
     Implement all these three methods using Jupyter Notebooks and visually prove that they are all functioning correctly with various kernels (e.g., convolving image with a kernel).
+
+
+In summary, the convolution operation is heavily used in describing optical systems, computer vision-related algorithms, and state-of-the-art machine learning techniques.
+Thus, understanding this mathematical operation is extremely important not only for this course but also for undergraduate and graduate-level courses.
+
+
+??? example end "Lab work: Convolve an image with a Gaussian kernel"
+    Using Odak and Torch, blur an image using a Gaussian kernel.
 
 
 ### Gradient Descent Optimizers
@@ -561,9 +640,17 @@ It has proven to be highly effective in machine learning and deep learning.
 
 
 ## Conclusion
-
+We covered a lot of grounds in terms of coding standards, how to organize a project repository, and how basic things work in odak and torch.
+Please ensure you understand the essential information in this section.
+Please note that we will use this information in this course's following sections and stages.
 
 ??? tip end "Consider revisiting this chapter"
     Remember that you can always revisit this chapter as you progress with the course and as you need it.
     This chapter is vital for establishing a means to complete your assignments and could help formulate a suitable base to collaborate and work with [my research group](https://complightlab.com) in the future or other experts in the field.
 
+
+!!! warning end "Reminder"
+    We host a Slack group with more than 300 members.
+    This Slack group focuses on the topics of rendering, perception, displays and cameras.
+    The group is open to public and you can become a member by following [this link](https://complightlab.com/outreach/).
+    Readers can get in-touch with the wider community using this public group.
