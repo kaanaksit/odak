@@ -510,9 +510,7 @@ pytest
 If anything is wrong with your unit tests, which validate your functions, `pytest` will provide a detailed explanation.
 
 
-
-
-## Set a licence
+### Set a licence
 If you want to distribute your code online, consider adding a license to avoid having difficulties related to sharing with others.
 In other words, you can add `LICENSE.txt` in the root directory of your repository.
 To determine which license works best for you, consider visiting [this guideline](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository).
