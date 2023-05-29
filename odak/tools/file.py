@@ -4,6 +4,8 @@ import json
 import pathlib
 import numpy as np
 import cv2
+import logging
+import sys
 
 
 def resize_image(img, target_size):
@@ -94,6 +96,9 @@ def load_image(fn, normalizeby = 0., torch_style = False):
 
     """
     image = cv2.imread(os.path.expanduser(fn), cv2.IMREAD_UNCHANGED)
+    if isinstance(image, type(None)):
+         logging.warning('Image not properly loaded. Check filename or image type.')    
+         sys.exit()
     if len(image.shape) > 2:
         new_image = np.copy(image)
         new_image[:, :, 0] = image[:, :, 2]

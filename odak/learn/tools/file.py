@@ -57,7 +57,7 @@ def load_image(fn, normalizeby = 0., torch_style = False):
     return image
 
 
-def save_image(fn, img, cmin=0, cmax=255, color_depth=8):
+def save_image(fn, img, cmin = 0, cmax = 255, color_depth = 8):
     """
     Definition to save a torch tensor as an image.
 
@@ -89,7 +89,7 @@ def save_image(fn, img, cmin=0, cmax=255, color_depth=8):
             new_img[:, :, i] = img[i].detach().clone()
         img = new_img.detach().clone()
     img = img.cpu().detach().numpy()
-    return odak.tools.save_image(fn, img, cmin=cmin, cmax=cmax, color_depth=color_depth)
+    return odak.tools.save_image(fn, img, cmin = cmin, cmax = cmax, color_depth = color_depth)
 
 
 def save_torch_tensor(fn, tensor):

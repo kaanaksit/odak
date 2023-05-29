@@ -625,10 +625,28 @@ Thus far, this definition formulates a simplistic description for convolution.
 
 In summary, the convolution operation is heavily used in describing optical systems, computer vision-related algorithms, and state-of-the-art machine learning techniques.
 Thus, understanding this mathematical operation is extremely important not only for this course but also for undergraduate and graduate-level courses.
+As an example, let's see step by step how a sample image provided below is convolved:
+
+
+
+<figure markdown>
+  ![Image title](media/convolution_animation.gif){ width="600" }
+  <figcaption>An animation showing the convolution operation.</figcaption>
+</figure>
+
+
+and the original image is as below:
+
+
+<figure markdown>
+  ![Image title](media/10591010993_80c7cb37a6_c.jpg){ width="600" }
+  <figcaption>Original image before the convolution operation. Source Flickr/RodrixAP.</figcaption>
+</figure>
 
 
 ??? example end "Lab work: Convolve an image with a Gaussian kernel"
     Using Odak and Torch, blur an image using a Gaussian kernel.
+    Also try compiling an animation like the one shown above using Matplotlib.
 
 
 ### Gradient Descent Optimizers
@@ -640,7 +658,7 @@ Thus, understanding this mathematical operation is extremely important not only 
 
 
 ## Conclusion
-We covered a lot of grounds in terms of coding standards, how to organize a project repository, and how basic things work in odak and torch.
+We covered a lot of grounds in terms of coding standards, how to organize a project repository, and how basic things work in odak and Torch.
 Please ensure you understand the essential information in this section.
 Please note that we will use this information in this course's following sections and stages.
 

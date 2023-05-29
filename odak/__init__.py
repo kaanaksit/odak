@@ -15,7 +15,18 @@ import odak.learn
 import odak.fit
 import torch
 import numpy as np
+import logging
+
 
 version_info = 0, 2, 3
 __version__ = '.'.join(map(str, version_info))
 pi = np.pi
+
+filename_logger = 'odak.log'
+logging.basicConfig(
+                    filename = filename_logger, 
+                    format = '%(asctime)s - %(message)s', 
+                    datefmt = '%d-%b-%y %H:%M:%S',
+                    level = logging.DEBUG
+                   )
+logging.debug('Odak\'s logger initiated. Log is saved to {}.'.format(filename_logger))

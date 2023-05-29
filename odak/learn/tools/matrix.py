@@ -32,9 +32,9 @@ def zero_pad(field, size = None, method = 'center'):
     Parameters
     ----------
     field             : ndarray
-                        Input field MxN array.
+                        Input field MxN or KxJxMxN array.
     size              : list
-                        Size to be zeropadded (e.g., [1, 1, m, n] or [m, n] depending on the input field).
+                        Size to be zeropadded (e.g., [m, n], last two dimensions only).
     method            : str
                         Zeropad either by placing the content to center or to the left.
 
@@ -43,27 +43,25 @@ def zero_pad(field, size = None, method = 'center'):
     field_zero_padded : ndarray
                         Zeropadded version of the input field.
     """
-    squeeze = False
+    orig_resolution = field.shape
     if len(field.shape) < 3:
         field = field.unsqueeze(0)
     if len(field.shape) < 4:
         field = field.unsqueeze(0)
-        squeeze = True
     if type(size) == type(None):
-        resolution = [1, 1, 2 * field.shape[-2], 2 * field.shape[-1]]
+        resolution = [field.shape[0], field.shape[1], 2 * field.shape[-2], 2 * field.shape[-1]]
     else:
-        if len(size) == 2:
-            resolution = [1, 1, size[0], size[1]]
-        if len(size) == 3:
-            resolution = [1, size[0], size[1], size[2]]
-        if len(size) == 4:
-            resolution = size
+        resolution = [field.shape[0], field.shape[1], size[0], size[1]]
     field_zero_padded = torch.zeros(resolution, device = field.device, dtype = field.dtype)
     if method == 'center':
+       start = [
+                resolution[-2] // 2 - field.shape[-2] // 2,
+                resolution[-1] // 2 - field.shape[-1] // 2
+               ]
        field_zero_padded[
                          :, :,
-                         resolution[-2] // 4: resolution[-2] // 4 + field.shape[-2],
-                         resolution[-1] // 4: resolution[-1] // 4 + field.shape[-1]
+                         start[0] : start[0] + field.shape[-2],
+                         start[1] : start[1] + field.shape[-1]
                          ] = field
     elif method == 'left':
        field_zero_padded[
@@ -71,8 +69,10 @@ def zero_pad(field, size = None, method = 'center'):
                          0: field.shape[-2],
                          0: field.shape[-1]
                         ] = field
-    if squeeze == True:
+    if len(orig_resolution) == 2:
         field_zero_padded = field_zero_padded.squeeze(0).squeeze(0)
+    if len(orig_resolution) == 3:
+        field_zero_padded = field_zero_padded.squeeze(0)
     return field_zero_padded
 
 

@@ -3324,5 +3324,33 @@
          style="stroke-width:0.264583"
          x="202.75432"
          y="218.26076">A[1, 0]</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="309.5625"
+       y="236.53741"
+       id="text2507"
+       inkscape:export-filename="/home/kaan/repos/odak/docs/course/media/convolve_1.png"
+       inkscape:export-xdpi="200.061"
+       inkscape:export-ydpi="200.061"><tspan
+         sodipodi:role="line"
+         id="tspan2505"
+         style="stroke-width:0.264583"
+         x="309.5625"
+         y="236.53741">+</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="314.85416"
+       y="92.604172"
+       id="text2507-3"
+       inkscape:export-filename="/home/kaan/repos/odak/docs/course/media/convolve_0.png"
+       inkscape:export-xdpi="200.061"
+       inkscape:export-ydpi="200.061"><tspan
+         sodipodi:role="line"
+         id="tspan2505-6"
+         style="stroke-width:0.264583"
+         x="314.85416"
+         y="92.604172">+</tspan></text>
   </g>
 </svg>
