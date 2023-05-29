@@ -170,8 +170,6 @@ class forward_propagator():
             self.device = torch.device('cpu')
         self.pixel_pitch = pixel_pitch
         self.wavelength = wavelength
-        if type(wavelength) != 'list':
-            self.wavelength = [wavelength,]
         self.wavenumber = wavenumber(self.wavelength)
         self.pad = pad
         self.distances = []

@@ -18,11 +18,13 @@ def main():
                 element = image[:, ch, i, j]
                 add = kernel * element
                 result[:, ch, i : i + kernel.shape[0], j : j + kernel.shape[1]] += add
-            if i % (image.shape[-2] // 10) == 0 and j % (image.shape[-1] // 10) == 0:
+            if (i * image.shape[-1] + j) % 1e4 == 0:
                 filename = 'step_{:04d}.png'.format(step)
                 odak.learn.tools.save_image( filename, result, cmin = 0., cmax = 100.)
                 step += 1
-    cmd = ['convert', '-delay', '10', '-loop', '0', '*.png', '../media/convolution_animation.gif']
+    cmd = ['convert', '-delay', '1', '-loop', '0', '*.png', '../media/convolution_animation.gif']
+    odak.tools.shell_command(cmd)
+    cmd = ['rm', '*.png']
     odak.tools.shell_command(cmd)
 
 
