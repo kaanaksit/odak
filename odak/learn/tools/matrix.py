@@ -92,12 +92,11 @@ def crop_center(field, size = None):
     cropped     : ndarray
                   Cropped version of the input field.
     """
-    squeeze = False
+    orig_resolution = field.shape
     if len(field.shape) < 3:
         field = field.unsqueeze(0)
     if len(field.shape) < 4:
         field = field.unsqueeze(0)
-        squeeze = True
     if type(size) == type(None):
         qx = int(field.shape[-2] // 4)
         qy = int(field.shape[-1] // 4)
@@ -109,8 +108,10 @@ def crop_center(field, size = None):
         hy = int(size[-1] // 2)
         cropped_padded = field[:, :, cx-hx:cx+hx, cy-hy:cy+hy]
     cropped = cropped_padded
-    if squeeze == True:
+    if len(orig_resolution) == 2:
         cropped = cropped_padded.squeeze(0).squeeze(0)
+    if len(orig_resolution) == 3:
+        cropped = cropped_padded.squeeze(0)
     return cropped
 
 
@@ -139,7 +140,7 @@ def convolve2d(field, kernel):
     return new_field
 
 
-def generate_2d_gaussian(kernel_length=[21, 21], nsigma=[3, 3], mu=[0, 0], normalize=False):
+def generate_2d_gaussian(kernel_length = [21, 21], nsigma = [3, 3], mu = [0, 0], normalize = False):
     """
     Generate 2D Gaussian kernel. Inspired from https://stackoverflow.com/questions/29731726/how-to-calculate-a-gaussian-kernel-matrix-efficiently-in-numpy
 
@@ -172,7 +173,7 @@ def generate_2d_gaussian(kernel_length=[21, 21], nsigma=[3, 3], mu=[0, 0], norma
     return kernel_2d
 
 
-def blur_gaussian(field, kernel_length=[21, 21], nsigma=[3, 3], padding='same'):
+def blur_gaussian(field, kernel_length = [21, 21], nsigma = [3, 3], padding = 'same'):
     """
     A definition to blur a field using a Gaussian kernel.
 
