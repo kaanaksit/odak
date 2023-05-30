@@ -5,7 +5,7 @@ import sys
 
 def main():
     files = sorted(odak.tools.list_files('./', key = '*.md'))
-    files = ['index.md']
+    files = ['fundamentals.md']
     tts = TTS(model_name = "tts_models/en/jenny/jenny", progress_bar = True, gpu = True)
     cache_fn = 'cache.txt'
     wav_file = 'cache.wav'

@@ -659,6 +659,28 @@ Thus far, this definition formulates a simplistic description for convolution.
     The first one involves loops visiting each point in a given data.
     The second involves formulating a convolution operation as matrix multiplication, and the final one involves implementing convolution as a multiplication operation in the Fourier domain.
     Implement all these three methods using Jupyter Notebooks and visually prove that they are all functioning correctly with various kernels (e.g., convolving image with a kernel).
+     Listed source files below may inspire your implementation in various means.
+     Note that the below code is based on Torch but not Numpy.
+
+    === ":octicons-file-code-16: `convolve_2d.py`"
+
+        ``` python title="convolved_2d.py" 
+        --8<-- "odak/learn/tools/matrix.py:118:140"
+        ```
+
+
+    === ":octicons-file-code-16: `generate_2d_gaussian.py`"
+
+        ``` python title="generate_2d_gaussian.py" 
+        --8<-- "odak/learn/tools/matrix.py:143:173"
+        ```
+
+
+    === ":octicons-file-code-16: `animation_convolution.py`"
+
+        ``` python title="animation_convolution.py" 
+        --8<-- "docs/course/source/animation_convolution.py"
+        ```
 
 
 In summary, the convolution operation is heavily used in describing optical systems, computer vision-related algorithms, and state-of-the-art machine learning techniques.
