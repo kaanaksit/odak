@@ -1,7 +1,6 @@
 import odak
 import torch
 import sys
-import matplotlib.pyplot as plt
 
 
 def main():

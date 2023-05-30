@@ -97,7 +97,7 @@ For example, in the above case, the command should be updated with the following
 
 
 ```shell
-git clone git@github.com:kaanaksit/odak.git
+git clone https://github.com/kaanaksit/odak.git
 ```
 
 
@@ -519,7 +519,47 @@ When choosing a license for your project, consider tinkering about whether you a
 
 ??? example end "Lab work: Prepare a project repository"
     Please prepare a sample repository on GitHub using the information provided in the above sections. 
+    Here are some sample files that may inspire you and help you structure your project in good order:
+    
+    === ":octicons-file-code-16: `main.py`"
 
+        ```` python
+        import odak
+        import torch
+        import sys
+
+        
+        def main():
+            print('your codebase')
+
+
+        if __name__ == '__main__':
+            sys.exit(main())
+        ````
+
+    === ":octicons-file-code-16: `LICENSE.txt`"
+
+        ``` title="LICENSE.txt" 
+        --8<-- "LICENSE.txt"
+        ```    
+
+    === ":octicons-file-code-16: `requirements.txt`"
+
+        ``` title="requirements.txt" 
+        --8<-- "requirements.txt"
+        ```    
+
+    === ":octicons-file-code-16: `THANKS.txt`"
+
+        ``` title="THANKS.txt" 
+        --8<-- "THANKS.txt"
+        ```  
+
+    === ":octicons-file-code-16: `CODE_OF_CONDUCT.md`"
+
+        ``` markdown title="CODE_OF_CONDUCT.md" 
+        --8<-- "CODE_OF_CONDUCT.md"
+        ```  
  
 ## Background Review :material-alert-decagram:{ .mdx-pulse title="Too important!" }
 
@@ -642,9 +682,23 @@ and the original image is as below:
 </figure>
 
 
+Note that the source image shown above is generated with a generative model.
+As a side note, I strongly suggest you to have familiarity with several models for generating test images, audio or any other type of media.
+This way, you can remove your dependency to others in various means.
+
+
 ??? example end "Lab work: Convolve an image with a Gaussian kernel"
     Using Odak and Torch, blur an image using a Gaussian kernel.
     Also try compiling an animation like the one shown above using Matplotlib.
+    Use the below solution as a last resort, try compiling your code.
+    The code below is tested under Ubuntu operating system.
+
+
+    === ":octicons-file-code-16: `animation_convolution.py`"
+
+        ``` python title="animation_convolution.py" 
+        --8<-- "docs/course/source/animation_convolution.py"
+        ```
 
 
 ### Gradient Descent Optimizers
@@ -657,13 +711,22 @@ Significantly, Stochastic Gradient Descent (SGD) optimizers can help resolve our
 This is because GD updates its weights by visiting every sample in a dataset, whereas SGD can update using only randomly chosen data from that dataset.
 Thus, SGD requires less memory for each update.
 
+
 ??? question end "Where can I read more about the state-of-the-art Stochastic Gradient Descent optimizer?"
     To learn more, please read `Paszke, Adam, Sam Gross, Soumith Chintala, Gregory Chanan, Edward Yang, Zachary DeVito, Zeming Lin, Alban Desmaison, Luca Antiga, and Adam Lerer. "Automatic differentiation in pytorch." (2017).`
+
 
 ??? example end "Would you like to code your Gradient Descent based optimizer ground up?"
     In case you are interested in coding your Gradient Descent-based optimizer from the ground up, consider watching this tutorial online where I code the optimizer using only `Numpy`:
     <center> <iframe width="560" height="315" src="https://www.youtube.com/embed/-ilAaJlUvYI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center>
+     If you want to learn more about odak's built-in functions on the matter, visit the below unit test script:
+     
+     
+    === ":octicons-file-code-16: `test_gradient_descent_1d.py`"
 
+        ``` python title="test_gradient_descent_1d.py" 
+        --8<-- "test/test_gradient_descent_1d.py"
+        ```
 
 Torch is a blessing for people that optimizes or trains with their algorithm.
 Torch also comes with a set of state-of-the-art optimizers.

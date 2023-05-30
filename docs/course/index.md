@@ -34,6 +34,7 @@ These are the prerequisites of **Computational Light** course:
 - **Skills and abilities.** Throughout the entire course, three libraries will be used, and these libraries include [`odak`](https://github.com/kaanaksit/odak), [`numpy`](https://numpy.org/), and [`torch`](https://pytorch.org/).
 Familiarity with these libraries is a big plus.
 - **Required Resources.** Readers need a computer with decent computational resources (e.g., GPU) when working on the provided materials, laboratory work, and projects. 
+In case you do not have the right resources, consider using [Google's Colab](https://colab.research.google.com/) service as it is free to students.
 Note that at each section of the course, you will be provided with relevant reading materials on the spot.
 - **Expectations.** Readers also need sustainable motivation to learn new things related to the topics of `Computational Light,` and willing to advance the field by developing, innovating and researching. 
 In other terms, you are someone motivated to create a positive impact in the society with light related innovations. 
@@ -171,6 +172,8 @@ Readers can get in-touch with the wider community using this public group.
 
 !!! success end "Acknowledgements"
     We thank our readers.
+    We also thank Yicheng Zhan for his feedback.
+
 
 !!! information end "Interested in supporting?"
     Enjoyed our course material and want us to do better in the future?

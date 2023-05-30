@@ -57,6 +57,7 @@ theme:
     icon:
         logo: logo
     features:
+        - content.tooltips
         - content.code.copy
         - content.code.select
         - content.code.annotate
@@ -102,6 +103,7 @@ plugins:
        caption_position: bottom
 
 markdown_extensions:
+   - abbr
    - toc:
        permalink: true
    - admonition
@@ -112,7 +114,12 @@ markdown_extensions:
       line_spans: __span
       pygments_lang_class: true
    - pymdownx.inlinehilite
-   - pymdownx.snippets
+   - pymdownx.superfences
+   - pymdownx.tabbed:
+      alternate_style: true
+   - pymdownx.snippets:
+      auto_append:
+       - includes/abbreviations.md
    - pymdownx.superfences
    - pymdownx.details
    - pymdownx.arithmatex:
