@@ -731,7 +731,7 @@ Thus, SGD requires less memory for each update.
 
 
 ??? question end "Where can I read more about the state-of-the-art Stochastic Gradient Descent optimizer?"
-    To learn more, please read `Paszke, Adam, Sam Gross, Soumith Chintala, Gregory Chanan, Edward Yang, Zachary DeVito, Zeming Lin, Alban Desmaison, Luca Antiga, and Adam Lerer. "Automatic differentiation in pytorch." (2017).`
+    To learn more, please read [`Paszke, Adam, Sam Gross, Soumith Chintala, Gregory Chanan, Edward Yang, Zachary DeVito, Zeming Lin, Alban Desmaison, Luca Antiga, and Adam Lerer. "Automatic differentiation in pytorch." (2017).`](https://openreview.net/forum?id=BJJsrmfCZ)
 
 
 ??? example end "Would you like to code your Gradient Descent based optimizer ground up?"

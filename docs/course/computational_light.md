@@ -35,14 +35,14 @@ Light is electromagnetic radiation, often described as a bundle of photons, a te
 
 ??? question end "Where can I learn more about electric and magnetic fields?"
     Beware that the topic of electric and magnetic fields deserves a stand-alone course and has many details to explore.
-    As an undergraduate student, back in the day, I learned about electric and magnetic fields by following a dedicated class and reading this book: `Cheng, David Keun. "Fundamentals of engineering electromagnetics." (1993).`
+    As an undergraduate student, back in the day, I learned about electric and magnetic fields by following a dedicated class and reading this book: [`Cheng, David Keun. "Fundamentals of engineering electromagnetics." (1993).`](https://www.amazon.com/Fundamentals-Engineering-Electromagnetics-David-Cheng/dp/0201566117/ref=sr_1_2?qid=1685483168&refinements=p_28%3AFundamentals+of+Engineering+Electromagnetics&s=books&sr=1-2)
 
 
 ??? question end "What is a photon?"
     Let me adjust this question a bit: `What model is good for describing a photon?`
     There is literature describing a photon as a single particle, and works show photons as a pack of particles.
      Suppose you want a more profound understanding than stating that it is a particle.
-    In that case, you may want to dive deep into existing models in relation to the relativity concept: `Roychoudhuri, C., Kracklauer, A. F., & Creath, K. (Eds.). (2017). The nature of light: What is a photon?. CRC Press.`
+    In that case, you may want to dive deep into existing models in relation to the relativity concept: [`Roychoudhuri, C., Kracklauer, A. F., & Creath, K. (Eds.). (2017). The nature of light: What is a photon?. CRC Press.`](https://www.amazon.com/Nature-Light-Optical-Science-Engineering/dp/1420044249)
 
 
 ??? question end "Where can I learn more about history of research on light?"
@@ -166,7 +166,7 @@ where $n$ represents refractive index of a medium that light travels.
 
 
 ??? question end "Where can I find more basic information about optics and light?"
-    As a graduate student, back in the day, I learned the basics of optics by reading this book without following any course: `Hecht, E. (2012). Optics. Pearson Education India.`
+    As a graduate student, back in the day, I learned the basics of optics by reading this book without following any course: [`Hecht, E. (2012). Optics. Pearson Education India.`](https://www.amazon.com/Optics-4th-Eugene-Hecht/dp/0805385665/ref=sr_1_1?crid=25E08OXE7Q1AE&keywords=Hecht%2C+E.+Optics.&qid=1685483348&s=books&sprefix=hecht%2C+e.+optics.%2Cstripbooks-intl-ship%2C166&sr=1-1)
 
 
 We have identified a bunch of different qualities of light so far.
