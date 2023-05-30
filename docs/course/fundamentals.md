@@ -662,18 +662,14 @@ Thus far, this definition formulates a simplistic description for convolution.
      Listed source files below may inspire your implementation in various means.
      Note that the below code is based on Torch but not Numpy.
 
-    === ":octicons-file-code-16: `convolve_2d.py`"
-
-        ``` python title="convolved_2d.py" 
-        --8<-- "odak/learn/tools/matrix.py:118:140"
-        ```
+    === ":octicons-file-code-16: `odak.learn.tools.convolve2d`"
+        
+        ::: odak.learn.tools.matrix.convolve2d
 
 
-    === ":octicons-file-code-16: `generate_2d_gaussian.py`"
+    === ":octicons-file-code-16: `odak.learn.tools.generate_2d_gaussian`"
 
-        ``` python title="generate_2d_gaussian.py" 
-        --8<-- "odak/learn/tools/matrix.py:143:173"
-        ```
+        ::: odak.learn.tools.generate_2d_gaussian
 
 
     === ":octicons-file-code-16: `animation_convolution.py`"

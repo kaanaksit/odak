@@ -19,7 +19,7 @@ nav:
     - Prerequisites and general information: 'course/index.md'
     - Light, Computation, and Computational Light: 'course/computational_light.md'
     - Fundamentals in optimizing and learning light: 'course/fundamentals.md'
-    - Geometric Light: 'course/geometric_optics.md'
+    - Modeling light with rays: 'course/geometric_optics.md'
     - Visual Perception: 'course/visual_perception.md'
     - Computational Displays: 'course/computational_displays.md'
     - Computer Generated Holography: 'course/computer_generated_holography.md'
@@ -86,7 +86,15 @@ theme:
 
 plugins:
    - search
-   - mkdocstrings
+   - mkdocstrings:
+       default_handler: python
+       handlers:
+          python:
+            options:
+              ignore_init_summary: false
+              docstring_section_style: list
+              docstring_style: numpy
+              show_source: true
    - autorefs
    - glightbox:
        touchNavigation: true
@@ -106,6 +114,7 @@ markdown_extensions:
    - abbr
    - toc:
        permalink: true
+       toc_depth: 4
    - admonition
    - attr_list
    - md_in_html
@@ -122,6 +131,9 @@ markdown_extensions:
        - includes/abbreviations.md
    - pymdownx.superfences
    - pymdownx.details
+   - pymdownx.tasklist
+   - pymdownx.emoji
+   - pymdownx.emoji
    - pymdownx.arithmatex:
        generic: true
    - pymdownx.emoji:
