@@ -2,9 +2,10 @@ import torch
 from .transformation import rotate_points, rotate_point
 
 
-def grid_sample(no=[10, 10], size=[100., 100.], center=[0., 0., 0.], angles=[0., 0., 0.]):
+def grid_sample(no = [10, 10], size = [100., 100.], center = [0., 0., 0.], angles = [0., 0., 0.]):
     """
     Definition to generate samples over a surface.
+
     Parameters
     ----------
     no          : list
@@ -15,8 +16,9 @@ def grid_sample(no=[10, 10], size=[100., 100.], center=[0., 0., 0.], angles=[0.,
                   Center location of the surface.
     angles      : list
                   Tilt of the surface.
+
     Returns
-    ----------
+    -------
     samples     : torch.tensor
                   Samples generated.
     rotx        : torch.tensor

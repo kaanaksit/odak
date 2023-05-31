@@ -8,7 +8,7 @@ def rotmatx(angle):
 
     Parameters
     ----------
-    angles       : list
+    angle        : list
                    Rotation angles in degrees.
 
     Returns
@@ -31,7 +31,7 @@ def rotmaty(angle):
 
     Parameters
     ----------
-    angles       : list
+    angle        : list
                    Rotation angles in degrees.
 
     Returns
@@ -54,7 +54,7 @@ def rotmatz(angle):
 
     Parameters
     ----------
-    angles       : list
+    angle        : list
                    Rotation angles in degrees.
 
     Returns
@@ -123,7 +123,7 @@ def rotate_point(point, angles=[0, 0, 0], mode='XYZ', origin=[0, 0, 0], offset=[
     return result.to(point.device), rotx, roty, rotz
 
 
-def get_rotation_matrix(tilt_angles=[0., 0., 0.], tilt_order='XYZ'):
+def get_rotation_matrix(tilt_angles = [0., 0., 0.], tilt_order = 'XYZ'):
     """
     Function to generate rotation matrix for given tilt angles and tilt order.
 
@@ -156,7 +156,7 @@ def get_rotation_matrix(tilt_angles=[0., 0., 0.], tilt_order='XYZ'):
     return rotmat
 
 
-def rotate_points(points, angles=[0, 0, 0], mode='XYZ', origin=[0, 0, 0], offset=[0, 0, 0]):
+def rotate_points(points, angles = [0, 0, 0], mode = 'XYZ', origin = [0, 0, 0], offset = [0, 0, 0]):
     """
     Definition to rotate points.
 

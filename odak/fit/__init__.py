@@ -29,39 +29,40 @@ def least_square_1d(x, y):
 
 
 def gradient_descent_1d(
-                     input_data,
-                     ground_truth_data,
-                     parameters,
-                     function,
-                     gradient_function,
-                     loss_function,
-                     learning_rate=1e-1,
-                     iteration_number=10
-                    ):
+                        input_data,
+                        ground_truth_data,
+                        parameters,
+                        function,
+                        gradient_function,
+                        loss_function,
+                        learning_rate = 1e-1,
+                        iteration_number = 10
+                       ):
     """
     Vanilla Gradient Descent algorithm for 1D data.
     
     Parameters
     ----------
-    input_data        : torch.tensor
+    input_data        : numpy.array
                         One-dimensional input data.
-    ground_truth_data : torch.tensor
+    ground_truth_data : numpy.array
                         One-dimensional ground truth data.
-    parameters        : torch.tensor
+    parameters        : numpy.array
                         Parameters to be optimized.
     function          : function
                         Function to estimate an output using the parameters.
     gradient_function : function
                         Function used in estimating gradient to update parameters at each iteration.
-    learning rate     : float
+    learning_rate     : float
                         Learning rate.
     iteration_number  : int
                         Iteration number.
-                        
+
+
     Returns
     -------
-    parameters        : torch.tensor
-                        Optimized/estimated parameters.
+    parameters        : numpy.array
+                        Optimized parameters.
     """
     t = tqdm(range(iteration_number))
     for i in t:
@@ -77,7 +78,7 @@ def gradient_descent_1d(
     return parameters
 
 
-def perceptron(x, y, learning_rate=0.1, iteration_number=100):
+def perceptron(x, y, learning_rate = 0.1, iteration_number = 100):
     """
     A function to train a perceptron model.
 
@@ -112,7 +113,7 @@ def perceptron(x, y, learning_rate=0.1, iteration_number=100):
     return weights
 
 
-def threshold_linear_model(x, w, threshold=0):
+def threshold_linear_model(x, w, threshold = 0):
     """
     A function for thresholding a linear model described with a dot product.
 

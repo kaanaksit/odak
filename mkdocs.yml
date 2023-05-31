@@ -91,7 +91,7 @@ plugins:
        handlers:
           python:
             options:
-              ignore_init_summary: false
+              ignore_init_summary: true
               docstring_section_style: list
               docstring_style: numpy
               show_source: true

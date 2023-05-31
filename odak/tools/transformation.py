@@ -8,13 +8,13 @@ def rotmatx(angle):
 
     Parameters
     ----------
-    angles       : list
+    angle        : list
                    Rotation angles in degrees.
 
     Returns
-    ----------
+    -------
     rotx         : ndarray
-                    Rotation matrix along X axis.
+                   Rotation matrix along X axis.
     """
     angle = np.float64(angle)
     angle = np.radians(angle)
@@ -32,11 +32,11 @@ def rotmaty(angle):
 
     Parameters
     ----------
-    angles       : list
+    angle        : list
                    Rotation angles in degrees.
 
     Returns
-    ----------
+    -------
     roty         : ndarray
                    Rotation matrix along Y axis.
     """
@@ -55,11 +55,11 @@ def rotmatz(angle):
 
     Parameters
     ----------
-    angles       : list
+    angle        : list
                    Rotation angles in degrees.
 
     Returns
-    ----------
+    -------
     rotz         : ndarray
                    Rotation matrix along Z axis.
     """
@@ -73,7 +73,7 @@ def rotmatz(angle):
     return rotz
 
 
-def rotate_point(point, angles=[0, 0, 0], mode='XYZ', origin=[0, 0, 0], offset=[0, 0, 0]):
+def rotate_point(point, angles = [0, 0, 0], mode = 'XYZ', origin = [0, 0, 0], offset = [0, 0, 0]):
     """
     Definition to rotate a given point. Note that rotation is always with respect to 0,0,0.
 
@@ -121,7 +121,7 @@ def rotate_point(point, angles=[0, 0, 0], mode='XYZ', origin=[0, 0, 0], offset=[
     return result, rotx, roty, rotz
 
 
-def rotate_points(points, angles=[0, 0, 0], mode='XYZ', origin=[0, 0, 0], offset=[0, 0, 0]):
+def rotate_points(points, angles = [0, 0, 0], mode = 'XYZ', origin = [0, 0, 0], offset = [0, 0, 0]):
     """
     Definition to rotate points.
 

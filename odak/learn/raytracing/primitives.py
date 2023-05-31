@@ -3,7 +3,7 @@ from odak.learn.tools.vector import same_side
 from odak.learn.tools.transformation import rotate_point
 
 
-def define_plane(point, angles=[0., 0., 0.]):
+def define_plane(point, angles = [0., 0., 0.]):
     """ 
     Definition to generate a rotation matrix along X axis.
 
@@ -13,6 +13,7 @@ def define_plane(point, angles=[0., 0., 0.]):
                    A point that is at the center of a plane.
     angles       : list
                    Rotation angles in degrees.
+
     Returns
     ----------
     plane        : torch.tensor
@@ -37,6 +38,12 @@ def center_of_triangle(triangle):
     ----------
     triangle      : torch.tensor
                     An array that contains three points defining a triangle (Mx3). It can also parallel process many triangles (NxMx3).
+
+
+    Returns
+    -------
+    centers       : torch.tensor
+                    Triangle centers.
     """
     if len(triangle.shape) == 2:
         triangle = triangle.view((1, 3, 3))

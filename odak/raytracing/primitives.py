@@ -226,8 +226,8 @@ def cylinder_function(point, cylinder):
 
     Parameters
     ----------
-    sphere     : ndarray
-                 Sphere parameters, XYZ center and radius.
+    cylinder   : ndarray
+                 Cylinder parameters, XYZ center and radius.
     point      : ndarray
                  Point in XYZ.
 
@@ -245,5 +245,5 @@ def cylinder_function(point, cylinder):
         np.array([cylinder[4], cylinder[5], cylinder[6]], dtype=np.float64)
     )
     r = cylinder[3]
-    result = distance-r**2
+    result = distance - r ** 2
     return result

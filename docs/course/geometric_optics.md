@@ -3,12 +3,13 @@
          <source type="audio/mp3" src="../media/geometric_optics.mp3"></source>
     </audio>
 
+
 # Modeling light with rays
 
 
-Modeling of light plays a crucial role in describing events based on light and designing mechanisms based on light (e.g., Realistic graphics in a video game or camera).
+Modeling light plays a crucial role in describing events based on light and helps designing mechanisms based on light (e.g., Realistic graphics in a video game, display or camera).
 This chapter introduces the most basic description of light using geometric rays, also known as raytracing.
-As we provide algorithmic examples to support our descriptions, readers should be able to simulate light on their computers.
+As we provide algorithmic examples to support our descriptions, readers should be able to simulate light on their computers using the provided descriptions.
 
 
 ??? question end "Are there other good resources on modeling light with rays?"
@@ -30,5 +31,16 @@ As we provide algorithmic examples to support our descriptions, readers should b
 :octicons-beaker-24: Practical
 
 
-Snell's law
-Spatial Light Modulators
+We have to define what "a ray" is.
+A ray has a starting point in Euclidean space ($x, y, z \rightarrow \mathbb{R}$).
+We also have to define direction cosines to provide a direction for rays.
+
+
+=== ":octicons-file-code-16: `odak.learn.raytracing.create_ray`"
+
+    ::: odak.learn.raytracing.create_ray
+
+=== ":octicons-file-code-16: `odak.learn.raytracing.create_ray_from_two_points`"
+
+    ::: odak.learn.raytracing.create_ray_from_two_points
+

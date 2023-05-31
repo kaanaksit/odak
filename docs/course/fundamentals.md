@@ -180,6 +180,10 @@ I encourage our readers to follow the methods of coding highlighted here.
 Following the methods that I am going to explain is not only crucial for developing replicable projects, but it is also vital for allowing other people to read your code with the least amount of hassle.
 
 
+??? question end "Where do I find out more about Python coding standards?"
+    [Python Enhancement Proposals documentation](https://peps.python.org/pep-0008/) provides a great deal of information on modern ways to code in Python.
+
+
 ### Avoid using long lines.
 Please avoid having too many characters in one line.
 Let us start with a bad example:

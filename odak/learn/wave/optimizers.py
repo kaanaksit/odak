@@ -136,6 +136,7 @@ class multiplane_hologram_optimizer():
         ----------
         plane_id                    : int
                                       Plane number.
+
         Returns
         -------
         distances                   : list

@@ -238,14 +238,14 @@ def rgb_to_lms(image):
 
     Parameters
     ----------
-    rgb_image_tensor                      : torch.tensor
-                                            Image RGB data to be transformed to LMS space [k x 3 x m x n] or [3 x m x n]. Image(s) must be normalized between zero and one.
+    image            : torch.tensor
+                       Image RGB data to be transformed to LMS space [k x 3 x m x n] or [3 x m x n]. Image(s) must be normalized between zero and one.
 
 
     Returns
     -------
-    lms_image_tensor                      : float
-                                            Image LMS data transformed from RGB space [k x 3 x m x n] or [1 x 3 x m x n].
+    lms_image_tensor : float
+                       Image LMS data transformed from RGB space [k x 3 x m x n] or [1 x 3 x m x n].
     """
     if len(image.shape) == 3:
         image = image.unsqueeze(0)
@@ -267,6 +267,7 @@ def rgb_to_lms(image):
     image_lms = image_lms.reshape(size[0], size[1], size[2], size[3]) 
     
     return image_lms
+
 
 def lms_to_rgb(image):
     """

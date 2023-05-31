@@ -40,14 +40,13 @@ def load_image(fn, normalizeby = 0., torch_style = False):
     ----------
     fn           : str
                    Filename.
-    normalized   : float
+    normalizeby  : float or optional
                    Value to to normalize images with. Default value of zero will lead to no normalization.
-    torch_style  : bool
+    torch_style  : bool or optional
                    If set True, it will load an image mxnx3 as 3xmxn.
 
-
     Returns
-    ----------
+    -------
     image        :  ndarray
                     Image loaded as a Numpy array.
 

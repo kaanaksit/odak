@@ -258,15 +258,15 @@ class residual_attention_layer(torch.nn.Module):
 
         Parameters
         ----------
-        input_channels  : int
+        input_channels  : int or optioal
                           Number of input channels.
-        mid_channels    : int
+        output_channels : int or optional
                           Number of middle channels.
-        kernel_size     : int
+        kernel_size     : int or optional
                           Kernel size.
-        bias            : bool 
+        bias            : bool or optional
                           Set to True to let convolutional layers have bias term.
-        activation      : torch.nn
+        activation      : torch.nn or optional
                           Nonlinear activation layer to be used. If None, uses torch.nn.ReLU().
         """
         super().__init__()
@@ -524,14 +524,16 @@ class upsample_layer(torch.nn.Module):
         
         Parameters
         ----------
-        x              : torch.tensor
+        x1             : torch.tensor
                          First input data.
-                    
-      
+        x2             : torch.tensor
+                         Second input data.
  
+
         Returns
         ----------
         result        : torch.tensor
+                        Result of the forward operation
         """ 
         x1 = self.up(x1)
         diffY = x2.size()[2] - x1.size()[2]

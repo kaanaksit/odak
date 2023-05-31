@@ -19,15 +19,12 @@ def create_ray(x0y0z0, abg):
     ray          : torch.tensor
                    Array that contains starting points and cosines of a created ray.
     """
-    # Due to Python 2 -> Python 3.
     x0, y0, z0 = x0y0z0
     alpha, beta, gamma = abg
-    # Create a vector with the given points and angles in each direction
     point = torch.tensor([x0, y0, z0], dtype=torch.float64)
     alpha = torch.cos(torch.radians(torch.tensor([alpha])))
     beta = torch.cos(torch.radians(torch.tensor([beta])))
     gamma = torch.cos(torch.radians(torch.tensor([gamma])))
-    # Cosines vector.
     cosines = torch.tensor([alpha, beta, gamma], dtype=torch.float32)
     ray = torch.tensor([point, cosines], dtype=torch.float32)
     return ray

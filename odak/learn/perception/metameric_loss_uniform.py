@@ -22,16 +22,15 @@ class MetamericLossUniform():
 
         Parameters
         ----------
-
-        pooling_size : int
-                       Pooling size, in pixels. For example 32 will pool over 32x32 blocks of the image.
+        pooling_size            : int
+                                  Pooling size, in pixels. For example 32 will pool over 32x32 blocks of the image.
         n_pyramid_levels        : int 
-                                    Number of levels of the steerable pyramid. Note that the image is padded
-                                    so that both height and width are multiples of 2^(n_pyramid_levels), so setting this value
-                                    too high will slow down the calculation a lot.
+                                  Number of levels of the steerable pyramid. Note that the image is padded
+                                  so that both height and width are multiples of 2^(n_pyramid_levels), so setting this value
+                                  too high will slow down the calculation a lot.
         n_orientations          : int 
-                                    Number of orientations in the steerable pyramid. Can be 1, 2, 4 or 6.
-                                    Increasing this will increase runtime.
+                                  Number of orientations in the steerable pyramid. Can be 1, 2, 4 or 6.
+                                  Increasing this will increase runtime.
 
         """
         self.target = None
@@ -158,15 +157,12 @@ class MetamericLossUniform():
         Parameters
         ----------
         image   : torch.tensor
-                Image to compute metamer for. Should be an RGB image in NCHW format (4 dimensions)
-        gaze    : list
-                Gaze location in the image, in normalized image coordinates (range [0, 1]) relative to the top left of the image.
+                  Image to compute metamer for. Should be an RGB image in NCHW format (4 dimensions)
 
         Returns
         -------
-
         metamer : torch.tensor
-                The generated metamer image
+                  The generated metamer image
         """
         image = rgb_2_ycrcb(image)
         image_size = image.size()
