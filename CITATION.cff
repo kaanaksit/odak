@@ -39,8 +39,10 @@ authors:
   - family-names: Güzel
     given-names: Ahmet Hamdi
     orcid:  https://orcid.org/0000-0001-7955-4396
-
+  
+  - family-names: Chen
+    given-names: Ziyang
 
 title: "Odak"
-version: 0.2.1
+version: 0.2.3
 doi: 10.5281/zenodo.5136406
