@@ -88,9 +88,29 @@ Let us also check the function provided below to understand its source code, par
 This function will serve as a utility function to propagate a ray or a batch of rays in our future simulations.
 
 
-=== ":octicons-file-code-16: `odak.learn.raytracing.propagate_a_ray"
+=== ":octicons-file-code-16: `odak.learn.raytracing.propagate_a_ray`"
 
     ::: odak.learn.raytracing.propagate_a_ray
 
 
+It is now time for us to put what we have learned so far into an actual code.
+We can create many rays using the two functions, `odak.learn.raytracing.create_ray_from_two_points` and `odak.learn.raytracing.create_ray`.
+However, to do so, we need to have many points in both cases.
+For that purpose, let's carefully review this utility function provided below.
+This utility function can generate grid samples from a plane with some tilt, and we can also define the center of our samples to position points anywhere in Euclidean space.
 
+
+=== ":octicons-file-code-16: `odak.learn.tools.grid_sample`"
+
+    ::: odak.learn.tools.grid_sample
+
+
+The below script provides a sample use case for the functions provided above.
+I also leave comments near some lines explaining the code in steps.
+
+
+=== ":octicons-file-code-16: `test_learn_ray.py`"
+
+    ```` python 
+    --8<-- "test/test_learn_ray.py"
+    ````

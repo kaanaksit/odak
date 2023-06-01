@@ -32,7 +32,7 @@ def create_ray(xyz, abg):
         angles = abg
     ray = torch.zeros(points.shape[0], 2, 3, device = points.device)
     ray[:, 0] = points
-    ray[:, 1] = torch.cos(torch.radians(abg))
+    ray[:, 1] = torch.cos(torch.deg2rad(abg))
     return ray
 
 
@@ -44,15 +44,15 @@ def create_ray_from_two_points(x0y0z0, x1y1z1):
     ----------
     x0y0z0       : torch.tensor
                    List that contains X,Y and Z start locations of a ray.
-                   Size could be [1 x 3], [3], [m x 3].
+                   Size could be [1 x 3], [3], but not ray batch!
     x1y1z1       : torch.tensor
-                   List that contains X,Y and Z ending locations of a ray.
+                   List that contains X,Y and Z ending locations of a ray or batch of rays.
                    Size could be [1 x 3], [3], [m x 3].
 
     Returns
     ----------
     ray          : torch.tensor
-                   Array that contains starting points and cosines of a created ray.
+                   Array that contains starting points and cosines of a created ray(s).
     """
     if len(x0y0z0.shape) == 1:
         x0y0z0 = x0y0z0.view((1, 3))
