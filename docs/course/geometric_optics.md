@@ -111,6 +111,16 @@ I also leave comments near some lines explaining the code in steps.
 
 === ":octicons-file-code-16: `test_learn_ray.py`"
 
-    ```` python 
+    ```python 
     --8<-- "test/test_learn_ray.py"
-    ````
+    ```
+
+    1. Required libraries are imported.
+    2. Defining a starting point, in order X, Y and Z locations.
+       Size of starting point could be [1] or [1, 1].
+    3. Defining some end points on a plane in grid fashion.
+    4. `odak.learn.raytracing.create_ray_from_two_points` is verified with an example! Let's move on to `odak.learn.raytracing.create_ray`.
+    5. Creating starting points with `odak.learn.tools.grid_sample` and defining some angles as the direction using `torch.randn`.
+       Note that the angles are in degrees.
+    6. `odak.learn.raytracing.create_ray` is verified with an example!
+    7. `odak.learn.raytracing.propagate_a_ray` is verified with an example!

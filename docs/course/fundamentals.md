@@ -412,8 +412,8 @@ For example, if I want to load a sample image called `letter.jpeg`, I can rely o
 import odak
 image = odak.learn.tools.load_image(
                                     'letter.jpeg',
-                                    torch_style = True, # (1)!
-                                    normalizeby = 255. # (2)!
+                                    torch_style = True, # (1)
+                                    normalizeby = 255. # (2)
                                    )
 ```
 
@@ -431,9 +431,9 @@ Odak also provides a standard method for saving your torch tensors as image file
 odak.learn.tools.save_image(
                             'copy.png',
                             image,
-                            cmin = 0., # (1)!
-                            cmax = 1., # (2)!
-                            color_depth = 8 # (3)!
+                            cmin = 0., # (1)
+                            cmax = 1., # (2)
+                            color_depth = 8 # (3)
                            )
 ```
 
@@ -801,27 +801,27 @@ Let's observe the below example to make sense of how this optimizer can help us 
 ```python
 import torch
 import odak  
-import sys   # (1)!
+import sys # (1)
 
 
-def forward(x, m, n): # (2)!
+def forward(x, m, n): # (2)
     y = m * x + n
     return y
 
 
 def main():
     m = torch.tensor([100.], requires_grad = True)
-    n = torch.tensor([0.], requires_grad = True) # (3)!
+    n = torch.tensor([0.], requires_grad = True) # (3)
     x_vals = torch.tensor([1., 2., 3., 100.])
-    y_vals = torch.tensor([5., 6., 7., 101.]) # (4)!
-    optimizer = torch.optim.Adam([m, n], lr = 5e1) # (5)!
-    loss_function = torch.nn.MSELoss() # (6)!
+    y_vals = torch.tensor([5., 6., 7., 101.]) # (4)
+    optimizer = torch.optim.Adam([m, n], lr = 5e1) # (5)
+    loss_function = torch.nn.MSELoss() # (6)
     for step in range(1000):
-        optimizer.zero_grad() # (7)!
-        y_estimate = forward(x_vals, m, n) # (8)!
-        loss = loss_function(y_estimate, y_vals) # (9)!
+        optimizer.zero_grad() # (7)
+        y_estimate = forward(x_vals, m, n) # (8)
+        loss = loss_function(y_estimate, y_vals) # (9)
         loss.backward(retain_graph = True)
-        optimizer.step() # (10)!
+        optimizer.step() # (10)
         print('Step: {}, Loss: {}'.format(step, loss.item()))
     print(m, n)
 

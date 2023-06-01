@@ -8,3 +8,9 @@
   --md-hue: 210;
   --md-primary-fg-color:        #00577D;
 }
+
+.md-grid {
+  max-width: 1440px; 
+
+
+}
