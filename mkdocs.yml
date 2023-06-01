@@ -132,8 +132,6 @@ markdown_extensions:
    - pymdownx.superfences
    - pymdownx.details
    - pymdownx.tasklist
-   - pymdownx.emoji
-   - pymdownx.emoji
    - pymdownx.arithmatex:
        generic: true
    - pymdownx.emoji:
