@@ -171,22 +171,40 @@ git commit -am "Enabling large file support."
 git push
 ```
 
-When projects expand in size, it's quite feasible for hundreds of individuals to collaborate within the same repository. This is particularly prevalent in sizable software development initiatives or open-source projects with a substantial contributor base. The branching system is frequently employed in these circumstances. 
+When projects expand in size, it's quite feasible for hundreds of individuals to collaborate within the same repository. 
+This is particularly prevalent in sizable software development initiatives or open-source projects with a substantial contributor base. 
+The branching system is frequently employed in these circumstances. 
 
-Consider you are in a software development team and you want to introduce new features or changes to a project without affecting the main or "master" branch. You need to firstly create a new branch by using the following command which creates a new branch named BRANCHNAME but does not switch to it. This new branch has the same contents as the current branch (a copy of the current branch). 
+
+Consider you are in a software development team and you want to introduce new features or changes to a project without affecting the main or "master" branch. 
+You need to firstly create a new branch by using the following command which creates a new branch named BRANCHNAME but does not switch to it. 
+This new branch has the same contents as the current branch (a copy of the current branch). 
+
+
 ```shell
 git branch BRANCHNAME
 ```
+
 Then you can switch to the new brach by using the command:
+
+
 ```shell
 git checkout BRANCHNAME
 ```
+
+
 Or use this command to create and switch to a new branch immediately
+
+
 ```shell
 git checkout -b BRANCHNAME
 ```
 
-After editing the new branch, you may want to update the changes to the master or main branch. This command merges the branch named BRANCHNAME into the current branch. You must resolve any conflicts to complete the merge.
+After editing the new branch, you may want to update the changes to the master or main branch. 
+This command merges the branch named BRANCHNAME into the current branch. 
+You must resolve any conflicts to complete the merge.
+
+
 ```shell
 git merge BRANCHNAME
 ```
