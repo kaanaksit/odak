@@ -4,7 +4,7 @@
 import sys
 import odak
 import torch
-import odak.visualize.plotly # (1)
+#import odak.visualize.plotly # (1)
 
 
 def test():
@@ -33,7 +33,7 @@ def test():
                                                                          ) # (2)
 
     # Uncomment the below code block for running visualizations.
-#    """ 
+    """ 
     ray_diagram = odak.visualize.plotly.rayshow(line_width = 3., marker_size = 3.)
     ray_diagram.add_triangle(triangle, color = 'black')
     ray_diagram.add_point(rays[:, 0], color = 'blue')
@@ -48,7 +48,7 @@ def test():
     ray_diagram.show()
     html = ray_diagram.save_offline()
     print(html)
-#    """
+    """
     assert True == True
    
 
