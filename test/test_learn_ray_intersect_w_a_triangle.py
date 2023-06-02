@@ -3,7 +3,7 @@
 import sys
 import odak
 import torch
-import odak.visualize.plotly
+#import odak.visualize.plotly
 
 
 def test():
@@ -32,6 +32,7 @@ def test():
                                                                           rays,
                                                                           triangle
                                                                          )
+    """
     ray_diagram = odak.visualize.plotly.rayshow(line_width = 3., marker_size = 3.)
     ray_diagram.add_triangle(triangle, color = 'black')
     ray_diagram.add_point(rays[:, 0], color = 'blue')
@@ -44,8 +45,9 @@ def test():
             colors.append('red')
     ray_diagram.add_point(normals[:, 0], color = colors)
     ray_diagram.show()
+    """
     assert True == True
-
+   
 
 if __name__ == '__main__':
     sys.exit(test())
