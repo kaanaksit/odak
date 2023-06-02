@@ -140,9 +140,6 @@ def intersect_w_surface(ray, points):
     new_normal = torch.zeros_like(ray)
     new_normal[:, 0] = ray[:, 0] + distance * ray[:, 1]
     new_normal[:, 1] = normal[:, 1]
-    if new_normal.shape[0] == 1:
-        new_normal = new_normal.view((2, 3))
-        distance = distance.view((distance.shape[0]))
     new_normal = torch.nan_to_num(
                                   new_normal,
                                   nan = float('nan'),

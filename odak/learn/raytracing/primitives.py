@@ -20,10 +20,10 @@ def define_plane(point, angles = [0., 0., 0.]):
                    Points defining plane.
     """
     plane = torch.tensor([
-        [10., 10., 0.],
-        [0., 10., 0.],
-        [0.,  0., 0.]
-    ]).to(point.device)
+                          [10., 10., 0.],
+                          [0., 10., 0.],
+                          [0.,  0., 0.]
+                         ], device = point.device)
     for i in range(0, plane.shape[0]):
         plane[i], _, _, _ = rotate_point(plane[i], angles = angles)
         plane[i] = plane[i] + point
@@ -70,25 +70,26 @@ def is_it_on_triangle(point_to_check, triangle):
                       Is it on a triangle? Returns NaN if condition not satisfied.
                       Expected size is [1] or [m] depending on the input.
     """
-    if len(point_to_check) == 1:
+    if len(point_to_check.shape) == 1:
         point_to_check = point_to_check.unsqueeze(0)
-    if len(triangle) == 2:
+    if len(triangle.shape) == 2:
         triangle = triangle.unsqueeze(0)
-    w0 = triangle[:, 0] - triangle[:, 1]
-    w1 = triangle[:, 0] - triangle[:, 2]
-    if len(w0.shape) == 1:
-        w0 = w0.unsqueeze(0)
-        w1 = w1.unsqueeze(0)
-    area = torch.sqrt(torch.sum((w0 * w1) ** 2, dim = 1)) / 2
-    p0 = point_to_check - triangle[:, 0]
-    p1 = point_to_check - triangle[:, 1]
-    p2 = point_to_check - triangle[:, 2]
-    alpha = torch.sqrt(torch.sum(torch.cross(p1, p2, dim = 1) ** 2, dim = 1)) / 2 / area
-    beta = torch.sqrt(torch.sum(torch.cross(p2, p0, dim = 1) ** 2, dim = 1)) / 2 / area
-    gamma = 1. - alpha - beta
-    total_sum = alpha + beta + gamma
-    result = (alpha >= 0.) * (alpha <= 1.)
-    result *= (beta >= 0.) * (beta <= 1.)
-    result *= (gamma >= 0.) * (gamma <= 1.)
-    result *= (total_sum == 1)
+    v0 = triangle[:, 2] - triangle[:, 0]
+    v1 = triangle[:, 1] - triangle[:, 0]
+    v2 = point_to_check - triangle[:, 0]
+    if len(v0.shape) == 1:
+        v0 = v0.unsqueeze(0)
+    if len(v1.shape) == 1:
+        v1 = v1.unsqueeze(0)
+    if len(v2.shape) == 1:
+        v2 = v2.unsqueeze(0)
+    dot00 = torch.mm(v0, v0.T)
+    dot01 = torch.mm(v0, v1.T)
+    dot02 = torch.mm(v0, v2.T) 
+    dot11 = torch.mm(v1, v1.T)
+    dot12 = torch.mm(v1, v2.T)
+    invDenom = 1. / (dot00 * dot11 - dot01 * dot01)
+    u = (dot11 * dot02 - dot01 * dot12) * invDenom
+    v = (dot00 * dot12 - dot01 * dot02) * invDenom
+    result = (u >= 0.) & (v >= 0.) & ((u + v) < 1)
     return result
