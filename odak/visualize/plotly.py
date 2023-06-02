@@ -1,4 +1,5 @@
 import sys
+import torch
 try:
     import plotly.graph_objects as go
     from plotly.subplots import make_subplots
@@ -422,7 +423,16 @@ class rayshow():
     A class for visualizing rays using plotly.
     """
 
-    def __init__(self, rows=1, columns=1, subplot_titles=["Ray visualization"], opacity=0.5, line_width=1., marker_size=1., color_scale='Inferno'):
+    def __init__(
+                 self, 
+                 rows = 1, 
+                 columns = 1, 
+                 subplot_titles = ["Ray visualization"], 
+                 opacity = 0.5,
+                 line_width = 1., 
+                 marker_size = 1., 
+                 color_scale = 'Inferno'
+                ):
         """
         Class for plotting rays.
 
@@ -444,14 +454,14 @@ class rayshow():
                          Color scale to be used. 
         """
         self.settings = {
-            'rows': rows,
-            'color scale': color_scale,
-            'columns': columns,
-            'subplot titles': subplot_titles,
-            'opacity': opacity,
-            'line width': line_width,
-            'marker size': marker_size
-        }
+                         'rows': rows,
+                         'color scale': color_scale,
+                         'columns': columns,
+                         'subplot titles': subplot_titles,
+                         'opacity': opacity,
+                         'line width': line_width,
+                         'marker size': marker_size
+                        }
         specs = []
         for i in range(0, columns):
             new_row = []
@@ -459,23 +469,25 @@ class rayshow():
                 new_row.append({"type": "scene"},)
             specs.append(new_row)
         self.fig = make_subplots(
-            rows=self.settings['rows'],
-            cols=self.settings['columns'],
-            subplot_titles=self.settings['subplot titles'],
-            specs=specs
-        )
+                                 rows = self.settings['rows'],
+                                 cols = self.settings['columns'],
+                                 subplot_titles = self.settings['subplot titles'],
+                                 specs = specs
+                                )
+
 
     def show(self):
         """
         Definition to show the plot.
         """
         self.fig.update_layout(
-            scene=dict(
-                aspectmode='manual',
-                aspectratio=dict(x=1., y=1., z=1.),
-            ),
-        )
+                               scene = dict(
+                                            aspectmode = 'manual',
+                                            aspectratio = dict(x=1., y=1., z=1.),
+                                           ),
+                              )
         self.fig.show()
+
 
     def add_point(self, point, row=1, column=1, color='red'):
         """
@@ -483,7 +495,7 @@ class rayshow():
 
         Parameters
         ----------
-        point          : ndarray
+        point          : numpy.array or torch.tensor
                          Point(s).
         row            : int
                          Row number of the figure.
@@ -491,31 +503,70 @@ class rayshow():
                          Column number of the figure.
 
         """
+        if torch.is_tensor(point) == True:
+            point = point.cpu().numpy()
         self.fig.add_trace(
-            go.Scatter3d(
-                x=point[:, 0].flatten(),
-                y=point[:, 1].flatten(),
-                z=point[:, 2].flatten(),
-                mode='markers',
-                marker=dict(
-                    size=self.settings["marker size"],
-                    color=color,
-                    opacity=self.settings["opacity"]
-                ),
-            ),
-            row=row,
-            col=column
-        )
+                           go.Scatter3d(
+                                        x = point[:, 0].flatten(),
+                                        y = point[:, 1].flatten(),
+                                        z = point[:, 2].flatten(),
+                                        mode='markers',
+                                        marker=dict(
+                                                    size = self.settings["marker size"],
+                                                    color = color,
+                                                    opacity = self.settings["opacity"]
+                                                   ),
+                                       ),
+                                       row = row,
+                                       col = column
+                          )
 
-    def add_line(self, point_start, point_end, row=1, column=1, color='red'):
+
+    def add_triangle(self, triangle, row = 1, column = 1, color = 'red'):
+        """
+        Definition to add a triangle to the figure.
+
+        Parameters
+        ----------
+        triangle       : numpy.array or torch.tensor
+                         Triangle, expected size is [3 x 3] or [m x 3 x 3]
+        row            : int
+                         Row number of the figure.
+        column         : int
+                         Column number of the figure.
+        color          : str
+                         Color of the lune to be drawn.
+        """
+
+        if torch.is_tensor(triangle) == True:
+            triangle = triangle.cpu().numpy()
+        if len(triangle) == 2:
+            triangle = np.expand_dims(triangle, axis=0)
+        for triangle_id in range(triangle.shape[0]):
+            current_triangle = triangle[triangle_id]
+            point_start = np.array([
+                                    current_triangle[0],
+                                    current_triangle[0],
+                                    current_triangle[1]
+                                   ])
+            point_end = np.array([
+                                  current_triangle[1],
+                                  current_triangle[2],
+                                  current_triangle[2]
+                                 ])
+            self.add_line(point_start, point_end, row = row, column = column, color = color)
+
+
+
+    def add_line(self, point_start, point_end, row = 1, column = 1, color = 'red'):
         """
         Definition to add a ray to the figure.
 
         Parameters
         ----------
-        point_start    : ndarray
+        point_start    : numpy.array or torch.tensor
                          Starting point(s).
-        point_end      : ndarray
+        point_end      : numpy.array or torch.tensor
                          Ending point(s).
         row            : int
                          Row number of the figure.
@@ -524,21 +575,25 @@ class rayshow():
         color          : str
                          Color of the lune to be drawn.
         """
-        if len(point_start.shape) == 1:
-            point_start = point_start.reshape((1, 3))
+        if torch.is_tensor(point_start):
+            point_start = point_start.cpu().numpy()
+        if len(point_start) == 1:
+            point_start = np.expand_dims(point_start, axis=0)
+        if torch.is_tensor(point_end):
+            point_end = point_end.cpu().numpy()
         if len(point_end.shape) == 1:
-            point_end = point_end.reshape((1, 3))
+            point_end = np.expand_dims(point_end, axis=0)
         if point_start.shape != point_end.shape:
             print('Size mismatch in line plot. Sizes are {} and {}.'.format(
                 point_start.shape, point_end.shape))
             sys.exit()
         for point_id in range(0, point_start.shape[0]):
             points = np.array(
-                [
-                    point_start[point_id],
-                    point_end[point_id]
-                ]
-            )
+                              [
+                               point_start[point_id],
+                               point_end[point_id]
+                              ]
+                             )
             points = points.reshape((2, 3))
             self.fig.add_trace(
                 go.Scatter3d(

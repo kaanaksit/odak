@@ -1,6 +1,6 @@
 import torch
-from odak.learn.tools.vector import same_side
-from odak.learn.tools.transformation import rotate_point
+from ..tools.vector import same_side
+from ..tools.transformation import rotate_point
 
 
 def define_plane(point, angles = [0., 0., 0.]):
@@ -51,26 +51,44 @@ def center_of_triangle(triangle):
     return center
 
 
-def is_it_on_triangle(pointtocheck, point0, point1, point2):
+def is_it_on_triangle(point_to_check, triangle):
     """
     Definition to check if a given point is inside a triangle. If the given point is inside a defined triangle, this definition returns True.
 
     Parameters
     ----------
-    pointtocheck  : list
-                    Point to check.
-    point0        : list
-                    First point of a triangle.
-    point1        : list
-                    Second point of a triangle.
-    point2        : list
-                    Third point of a triangle.
+    point_to_check  : torch.tensor
+                      Point(s) to check.
+                      Expected size is [3], [1 x 3] or [m x 3].
+    triangle        : torch.tensor
+                      Triangle described with three points.
+                      Expected size is [3 x 3], [1 x 3 x 3] or [m x 3 x3].
+
+    Returns
+    -------
+    result          : torch.tensor
+                      Is it on a triangle? Returns NaN if condition not satisfied.
+                      Expected size is [1] or [m] depending on the input.
     """
-    # point0, point1 and point2 are the corners of the triangle.
-    pointtocheck = pointtocheck.reshape(3)
-    side0 = same_side(pointtocheck, point0, point1, point2)
-    side1 = same_side(pointtocheck, point1, point0, point2)
-    side2 = same_side(pointtocheck, point2, point0, point1)
-    if side0 == True and side1 == True and side2 == True:
-        return True
-    return False
+    if len(point_to_check) == 1:
+        point_to_check = point_to_check.unsqueeze(0)
+    if len(triangle) == 2:
+        triangle = triangle.unsqueeze(0)
+    w0 = triangle[:, 0] - triangle[:, 1]
+    w1 = triangle[:, 0] - triangle[:, 2]
+    if len(w0.shape) == 1:
+        w0 = w0.unsqueeze(0)
+        w1 = w1.unsqueeze(0)
+    area = torch.sqrt(torch.sum((w0 * w1) ** 2, dim = 1)) / 2
+    p0 = point_to_check - triangle[:, 0]
+    p1 = point_to_check - triangle[:, 1]
+    p2 = point_to_check - triangle[:, 2]
+    alpha = torch.sqrt(torch.sum(torch.cross(p1, p2, dim = 1) ** 2, dim = 1)) / 2 / area
+    beta = torch.sqrt(torch.sum(torch.cross(p2, p0, dim = 1) ** 2, dim = 1)) / 2 / area
+    gamma = 1. - alpha - beta
+    total_sum = alpha + beta + gamma
+    result = (alpha >= 0.) * (alpha <= 1.)
+    result *= (beta >= 0.) * (beta <= 1.)
+    result *= (gamma >= 0.) * (gamma <= 1.)
+    result *= (total_sum == 1)
+    return result

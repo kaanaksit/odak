@@ -92,21 +92,22 @@ def intersect_w_triangle(ray, triangle):
     Parameters
     ----------
     ray          : torch.tensor
-                   A vector/ray.
+                   A ray [1 x 2 x 3] or a batch of ray [m x 2 x 3].
     triangle     : torch.tensor
-                   Set of points in X,Y and Z to define a single triangle.
+                   Set of points in X,Y and Z to define a single triangle [1 x 3 x 3].
 
     Returns
     ----------
     normal       : torch.tensor
                    Surface normal at the point of intersection.
+                   Expected size is [1 x 2 x 3] or [m x 2 x 3] depending on the input.
     distance     : float
                    Distance in between a starting point of a ray and the intersection point with a given triangle.
+                   Expected size is [1 x 1] or [m x 1] depending on the input.
     """
     normal, distance = intersect_w_surface(ray, triangle)
-    if is_it_on_triangle(normal[0], triangle[0], triangle[1], triangle[2]) == False:
-        return None, None
-    return normal, distance
+    check = is_it_on_triangle(normal[:, 0], triangle)
+    return normal, distance, check
 
 
 def intersect_w_surface(ray, points):
@@ -129,11 +130,11 @@ def intersect_w_surface(ray, points):
     """
     normal = get_triangle_normal(points)
     if len(ray.shape) == 2:
-        ray = ray.view((1, 2, 3))
+        ray = ray.unsqueeze(0)
     if len(points) == 2:
-        points = points.view((1, 3, 3))
+        points = points.unsqueeze(0)
     if len(normal.shape) == 2:
-        normal = normal.view((1, 2, 3))
+        normal = normal.unsqueeze(0)
     f = normal[:, 0] - ray[:, 0]
     distance = (torch.mm(normal[:, 1], f.T) / torch.mm(normal[:, 1], ray[:, 1].T)).T
     new_normal = torch.zeros_like(ray)
@@ -142,8 +143,18 @@ def intersect_w_surface(ray, points):
     if new_normal.shape[0] == 1:
         new_normal = new_normal.view((2, 3))
         distance = distance.view((distance.shape[0]))
-    if len(distance.shape) > 1:
-        distance = distance.view((distance.shape[0]))
+    new_normal = torch.nan_to_num(
+                                  new_normal,
+                                  nan = float('nan'),
+                                  posinf = float('nan'),
+                                  neginf = float('nan')
+                                 )
+    distance = torch.nan_to_num(
+                                distance,
+                                nan = float('nan'),
+                                posinf = float('nan'),
+                                neginf = float('nan')
+                               )
     return new_normal, distance
 
 

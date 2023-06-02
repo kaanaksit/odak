@@ -2,43 +2,50 @@
 
 import sys
 import odak
-import odak.learn.raytracing
 import torch
+import odak.visualize.plotly
 
 
 def test():
-    # Input points to create a ray.
-    ray_start_point_0 = torch.tensor([5., 5., 0.])
-    ray_end_point_0 = torch.tensor([10., 10., 1000.])
-    # Create from two points.
-    ray_0 = odak.learn.raytracing.create_ray_from_two_points(
-        ray_start_point_0,
-        ray_end_point_0
-    )
-    # Input points to create a ray.
-    ray_start_point_1 = torch.tensor([5., 5., 0.])
-    ray_end_point_1 = torch.tensor([0., 100., 1000.])
-    # Create from two points.
-    ray_1 = odak.learn.raytracing.create_ray_from_two_points(
-        ray_start_point_1,
-        ray_end_point_1
-    )
-    # Intersection with a triangle.
-    triangle = torch.tensor([
-        [50.,  50., 1000.],
-        [-5.,  -5., 1000.],
-        [0.,  50., 1000.],
-    ])
-    normal_0, distance_0 = odak.learn.raytracing.intersect_w_triangle(
-        ray_0,
-        triangle
-    )
-    normal_1, distance_1 = odak.learn.raytracing.intersect_w_triangle(
-        ray_1,
-        triangle
-    )
-    print(normal_0)
-    print(normal_1)
+    starting_points, _, _, _ = odak.learn.tools.grid_sample(
+                                                            no = [5, 5],
+                                                            size = [10., 10.],
+                                                            center = [0., 0., 0.]
+                                                           )
+    end_points, _, _, _ = odak.learn.tools.grid_sample(
+                                                       no = [5, 5],
+                                                       size = [5., 5.],
+                                                       center = [0., 0., 10.]
+                                                      )
+    rays = odak.learn.raytracing.create_ray_from_two_points(
+                                                            starting_points,
+                                                            end_points
+                                                           )
+    triangle = torch.tensor(
+                            [[
+                              [-5., -5., 10.],
+                              [ 5., -5., 10.],
+                              [ 0.,  5., 10.]
+                            ]]
+                           )
+    normals, distance, check = odak.learn.raytracing.intersect_w_triangle(
+                                                                          rays,
+                                                                          triangle
+                                                                         )
+    """
+    ray_diagram = odak.visualize.plotly.rayshow(line_width = 3., marker_size = 3.)
+    ray_diagram.add_triangle(triangle, color = 'black')
+    ray_diagram.add_point(rays[:, 0], color = 'blue')
+    ray_diagram.add_line(rays[:, 0], normals[:, 0], color = 'blue')
+    colors = []
+    for color_id in range(check.shape[0]):
+        if check[color_id] == True:
+            colors.append('green')
+        elif check[color_id] == False:
+            colors.append('red')
+    ray_diagram.add_point(normals[:, 0], color = colors)
+    ray_diagram.show()
+    """
     assert True == True
 
 
