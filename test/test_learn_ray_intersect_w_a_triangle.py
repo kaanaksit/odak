@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
+
 import sys
 import odak
 import torch
-#import odak.visualize.plotly
+import odak.visualize.plotly # (1)
 
 
 def test():
@@ -21,18 +22,18 @@ def test():
                                                             starting_points,
                                                             end_points
                                                            )
-    triangle = torch.tensor(
-                            [[
+    triangle = torch.tensor([[
                               [-5., -5., 10.],
                               [ 5., -5., 10.],
                               [ 0.,  5., 10.]
-                            ]]
-                           )
+                            ]])
     normals, distance, check = odak.learn.raytracing.intersect_w_triangle(
                                                                           rays,
                                                                           triangle
-                                                                         )
-    """
+                                                                         ) # (2)
+
+    # Uncomment the below code block for running visualizations.
+#    """ 
     ray_diagram = odak.visualize.plotly.rayshow(line_width = 3., marker_size = 3.)
     ray_diagram.add_triangle(triangle, color = 'black')
     ray_diagram.add_point(rays[:, 0], color = 'blue')
@@ -45,7 +46,9 @@ def test():
             colors.append('red')
     ray_diagram.add_point(normals[:, 0], color = colors)
     ray_diagram.show()
-    """
+    html = ray_diagram.save_offline()
+    print(html)
+#    """
     assert True == True
    
 

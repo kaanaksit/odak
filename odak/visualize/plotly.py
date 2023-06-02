@@ -1,6 +1,7 @@
 import sys
 import torch
 try:
+    import plotly
     import plotly.graph_objects as go
     from plotly.subplots import make_subplots
 except:
@@ -487,6 +488,25 @@ class rayshow():
                                            ),
                               )
         self.fig.show()
+
+
+    def save_offline(self, filename = 'plot.html'):
+        """
+        Definition to save the plot as HTML to a file.
+
+        Parameters
+        ----------
+        filename        : str
+                          Filename (*.html).
+
+        Returns
+        -------
+        result          : str
+                          Results as HTML div.
+        """
+        plotly.offline.plot(self.fig, filename = filename)
+        result = plotly.offline.plot(self.fig, include_plotlyjs = 'cdn', output_type = 'div')
+        return result
 
 
     def add_point(self, point, row=1, column=1, color='red'):
