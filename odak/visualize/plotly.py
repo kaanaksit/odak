@@ -509,7 +509,7 @@ class rayshow():
         return result
 
 
-    def add_point(self, point, row=1, column=1, color='red'):
+    def add_point(self, point, row=1, column=1, color='red', show_legend = False):
         """
         Definition to add a point to the figure.
 
@@ -521,7 +521,8 @@ class rayshow():
                          Row number of the figure.
         column         : int
                          Column number of the figure.
-
+        show_legend    : bool
+                         Set True to enable legend for the line.
         """
         if torch.is_tensor(point) == True:
             point = point.cpu().numpy()
@@ -532,19 +533,20 @@ class rayshow():
                                         x = point[:, 0].flatten(),
                                         y = point[:, 1].flatten(),
                                         z = point[:, 2].flatten(),
-                                        mode='markers',
-                                        marker=dict(
-                                                    size = self.settings["marker size"],
-                                                    color = color,
-                                                    opacity = self.settings["opacity"]
-                                                   ),
-                                       ),
-                                       row = row,
-                                       col = column
+                                        mode = 'markers',
+                                        marker = dict(
+                                                      size = self.settings["marker size"],
+                                                      color = color,
+                                                      opacity = self.settings["opacity"]
+                                                     ),
+                                       showlegend = show_legend  
+                                      ),
+                                      row = row,
+                                      col = column
                           )
 
 
-    def add_triangle(self, triangle, row = 1, column = 1, color = 'red'):
+    def add_triangle(self, triangle, row = 1, column = 1, color = 'red', show_legend = False):
         """
         Definition to add a triangle to the figure.
 
@@ -558,6 +560,8 @@ class rayshow():
                          Column number of the figure.
         color          : str
                          Color of the lune to be drawn.
+        show_legend    : bool
+                         Set True to enable legend for the line.
         """
 
         if torch.is_tensor(triangle) == True:
@@ -576,11 +580,11 @@ class rayshow():
                                   current_triangle[2],
                                   current_triangle[2]
                                  ])
-            self.add_line(point_start, point_end, row = row, column = column, color = color)
+            self.add_line(point_start, point_end, row = row, column = column, color = color, show_legend = show_legend)
 
 
 
-    def add_line(self, point_start, point_end, row = 1, column = 1, color = 'red'):
+    def add_line(self, point_start, point_end, row = 1, column = 1, color = 'red', show_legend = False):
         """
         Definition to add a ray to the figure.
 
@@ -596,6 +600,8 @@ class rayshow():
                          Column number of the figure.
         color          : str
                          Color of the lune to be drawn.
+        show_legend    : bool
+                         Set True to enable legend for the line.
         """
         if torch.is_tensor(point_start):
             point_start = point_start.cpu().numpy()
@@ -618,22 +624,24 @@ class rayshow():
                              )
             points = points.reshape((2, 3))
             self.fig.add_trace(
-                go.Scatter3d(
-                    x=points[:, 0],
-                    y=points[:, 1],
-                    z=points[:, 2],
-                    mode='lines',
-                    line=dict(
-                        width=self.settings["line width"],
-                        color=color,
-                    ),
-                    opacity=self.settings["opacity"]
-                ),
-                row=row,
-                col=column
-            )
+                               go.Scatter3d(
+                                            x = points[:, 0],
+                                            y = points[:, 1],
+                                            z = points[:, 2],
+                                            mode = 'lines',
+                                            line = dict(
+                                                        width=self.settings["line width"],
+                                                        color=color,
+                                                       ),
+                                            opacity = self.settings["opacity"],
+                                            showlegend = show_legend
+                                           ),
+                               row = row,
+                               col = column,
+                              )
 
-    def add_surface(self, data_x, data_y, data_z, surface_color, row=1, column=1, label='', mode='lines+markers', opacity=1., contour=False):
+
+    def add_surface(self, data_x, data_y, data_z, surface_color, row = 1, column = 1, label = '', mode = 'lines+markers', opacity = 1., contour = False):
         """
         Definition to add data to the plot.
 
@@ -655,19 +663,19 @@ class rayshow():
                         Opacity of the plot. The value must be between one to zero. Zero is fully trasnparent, while one is opaque.
         """
         self.fig.add_trace(
-            go.Surface(
-                x=data_x,
-                y=data_y,
-                z=data_z,
-                surfacecolor=surface_color,
-                colorscale=self.settings['color scale'],
-                opacity=opacity,
-                contours={
-                    'z': {
-                        'show': contour,
-                    },
-                }
-            ),
-            row=row,
-            col=column,
-        )
+                           go.Surface(
+                                      x = data_x,
+                                      y = data_y,
+                                      z = data_z,
+                                      surfacecolor = surface_color,
+                                      colorscale = self.settings['color scale'],
+                                      opacity = opacity,
+                                      contours={
+                                                'z': {
+                                                      'show': contour,
+                                                     },
+                                               }
+                                     ),
+                           row = row,
+                           col = column,
+                          )

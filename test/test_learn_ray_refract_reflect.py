@@ -15,7 +15,7 @@ def test():
                                                            )
     end_points, _, _, _ = odak.learn.tools.grid_sample(
                                                        no = [5, 5],
-                                                       size = [6., 6.],
+                                                       size = [3., 3.],
                                                        center = [0., 0., 10.]
                                                       )
     rays = odak.learn.raytracing.create_ray_from_two_points(
