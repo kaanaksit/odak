@@ -36,7 +36,7 @@ def test():
                                                           refracted_rays, 
                                                           torch.ones(refracted_rays.shape[0]) * 10.
                                                          )
-    visualize = True
+    visualize = False
     if visualize:
         ray_diagram = odak.visualize.plotly.rayshow(line_width = 3., marker_size = 3.) # (1)
         ray_diagram.add_triangle(triangle, color = 'black')
