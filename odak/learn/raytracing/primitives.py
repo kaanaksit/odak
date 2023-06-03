@@ -54,6 +54,7 @@ def center_of_triangle(triangle):
 def is_it_on_triangle(point_to_check, triangle):
     """
     Definition to check if a given point is inside a triangle. If the given point is inside a defined triangle, this definition returns True.
+    For more details, visit: [https://blackpawn.com/texts/pointinpoly/](https://blackpawn.com/texts/pointinpoly/).
 
     Parameters
     ----------

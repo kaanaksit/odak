@@ -5,7 +5,7 @@ try:
     import plotly.graph_objects as go
     from plotly.subplots import make_subplots
 except:
-    print('odak.visualize.plotly requires plotly and kaleido to be installed: pip install plotly and kaleido')
+    print('odak.visualize.plotly requires certain packages: pip install plotly kaleido')
 import numpy as np
 from ..wave import calculate_phase, calculate_amplitude, calculate_intensity
 
@@ -525,6 +525,8 @@ class rayshow():
         """
         if torch.is_tensor(point) == True:
             point = point.cpu().numpy()
+        if len(point.shape) == 1:
+            point = np.expand_dims(point, axis=0)
         self.fig.add_trace(
                            go.Scatter3d(
                                         x = point[:, 0].flatten(),
@@ -597,7 +599,7 @@ class rayshow():
         """
         if torch.is_tensor(point_start):
             point_start = point_start.cpu().numpy()
-        if len(point_start) == 1:
+        if len(point_start.shape) == 1:
             point_start = np.expand_dims(point_start, axis=0)
         if torch.is_tensor(point_end):
             point_end = point_end.cpu().numpy()
