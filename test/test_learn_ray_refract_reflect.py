@@ -9,7 +9,7 @@ import torch
 def test():
     starting_points, _, _, _ = odak.learn.tools.grid_sample(
                                                             no = [5, 5],
-                                                            size = [20., 20.],
+                                                            size = [15., 15.],
                                                             center = [0., 0., 0.]
                                                            )
     end_points, _, _, _ = odak.learn.tools.grid_sample(
