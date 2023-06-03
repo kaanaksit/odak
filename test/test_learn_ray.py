@@ -31,10 +31,10 @@ def test():
 
 
     distances = torch.ones(rays_from_points.shape[0]) * 12.5
-    propagated_rays = odak.learn.raytracing.propagate_a_ray(
-                                                            rays_from_points,
-                                                            distances
-                                                           ) # (7)
+    propagated_rays = odak.learn.raytracing.propagate_ray(
+                                                          rays_from_points,
+                                                          distances
+                                                         ) # (7)
 
     visualize = False # (8)
     if visualize:
