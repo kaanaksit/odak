@@ -1,8 +1,9 @@
 import torch
+from .ray import propagate_ray
 from .primitives import is_it_on_triangle, center_of_triangle
 
 
-def refract(vector, normvector, n1, n2, error=0.01):
+def refract(vector, normvector, n1, n2, error = 0.01):
     """
     Definition to refract an incoming ray.
 
@@ -21,33 +22,37 @@ def refract(vector, normvector, n1, n2, error=0.01):
 
     Returns
     -------
-    VectorOutput   : torch.tensor
+    output         : torch.tensor
                      Refracted ray.
     """
+    if len(vector.shape) == 2:
+        vector = vector.unsqueeze(0)
+    if len(normvector.shape) == 2:
+        normvector = normvector.unsqueeze(0)
     mu    = n1 / n2
-    div   = normvector[1,0]**2  + normvector[1,1]**2 + normvector[1,2]**2
-    a     = mu * (vector[1,0] * normvector[1,0] + vector[1,1] * normvector[1,1] + vector[1,2] * normvector[1,2]) / div
-    b     = (mu**2 - 1) / div
-    to    = -b * 0.5 / a
+    div   = normvector[:, 1, 0] ** 2  + normvector[:, 1, 1] ** 2 + normvector[:, 1, 2] ** 2
+    a     = mu * (vector[:, 1, 0] * normvector[:, 1, 0] + vector[:, 1, 1] * normvector[:, 1, 1] + vector[:, 1, 2] * normvector[:, 1, 2]) / div
+    b     = (mu ** 2 - 1) / div
+    to    = - b * 0.5 / a
     num   = 0
-    eps   = error * 2
-    while eps > error:
+    eps   = torch.ones(vector.shape[0], device = vector.device) * error * 2
+    while len(eps[eps > error]) > 0:
        num   += 1
        oldto  = to
-       v      = to**2 + 2 * a * to + b
+       v      = to ** 2 + 2 * a * to + b
        deltav = 2 * (to + a)
        to     = to - v / deltav
        eps    = abs(oldto - to)
     if num > 5000:
        return False
-    VectorOutput = torch.zeros_like(vector)
-    VectorOutput[0,0] = normvector[0,0]
-    VectorOutput[0,1] = normvector[0,1]
-    VectorOutput[0,2] = normvector[0,2]
-    VectorOutput[1,0] = mu * vector[1,0] + to * normvector[1,0]
-    VectorOutput[1,1] = mu * vector[1,1] + to * normvector[1,1]
-    VectorOutput[1,2] = mu * vector[1,2] + to * normvector[1,2]
-    return VectorOutput
+    output = torch.zeros_like(vector)
+    output[:, 0, 0] = normvector[:, 0, 0]
+    output[:, 0, 1] = normvector[:, 0, 1]
+    output[:, 0, 2] = normvector[:, 0, 2]
+    output[:, 1, 0] = mu * vector[:, 1, 0] + to * normvector[:, 1, 0]
+    output[:, 1, 1] = mu * vector[:, 1, 1] + to * normvector[:, 1, 1]
+    output[:, 1, 2] = mu * vector[:, 1, 2] + to * normvector[:, 1, 2]
+    return output
 
 
 def reflect(input_ray, normal):
@@ -105,9 +110,19 @@ def intersect_w_triangle(ray, triangle):
                    Distance in between a starting point of a ray and the intersection point with a given triangle.
                    Expected size is [1 x 1] or [m x 1] depending on the input.
     """
+    if len(triangle.shape) == 2:
+       triangle = triangle.unsqueeze(0)
+    if len(ray.shape) == 2:
+       ray = ray.unsqueeze(0)
     normal, distance = intersect_w_surface(ray, triangle)
     check = is_it_on_triangle(normal[:, 0], triangle)
-    return normal, distance, check
+    intersecting_ray = ray.clone().unsqueeze(0)
+    intersecting_ray = intersecting_ray.repeat(triangle.shape[0], 1, 1, 1)
+    intersecting_ray = intersecting_ray[check == True]
+    intersecting_normal = normal.clone().unsqueeze(0)
+    intersecting_normal = intersecting_normal.repeat(triangle.shape[0], 1, 1, 1)
+    intersecting_normal = intersecting_normal[check ==  True]
+    return normal, distance, intersecting_ray, intersecting_normal, check
 
 
 def intersect_w_surface(ray, points):

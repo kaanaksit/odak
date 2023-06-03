@@ -71,22 +71,26 @@ def create_ray_from_two_points(x0y0z0, x1y1z1):
     return ray
 
 
-def propagate_a_ray(ray, distance):
+def propagate_ray(ray, distance):
     """
     Definition to propagate a ray at a certain given distance.
 
     Parameters
     ----------
     ray        : torch.tensor
-                 A ray with a size of [1 x 2 x 3] or a batch of rays with [m x 2 x 3].
+                 A ray with a size of [2 x 3], [1 x 2 x 3] or a batch of rays with [m x 2 x 3].
     distance   : torch.tensor
-                 Distance with a size of [1] or distances with a size of [m].
+                 Distance with a size of [1], [1, m] or distances with a size of [m], [1, m].
 
     Returns
     ----------
     new_ray    : torch.tensor
                  Propagated ray with a size of [1 x 2 x 3] or batch of rays with [m x 2 x 3].
     """
+    if len(ray.shape) == 2:
+        ray = ray.unsqueeze(0)
+    if len(distance.shape) == 2:
+        distance = distance.squeeze(-1)
     new_ray = torch.zeros_like(ray)
     new_ray[:, 0, 0] = distance * ray[:, 1, 0] + ray[:, 0, 0]
     new_ray[:, 0, 1] = distance * ray[:, 1, 1] + ray[:, 0, 1]

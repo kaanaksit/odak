@@ -546,7 +546,7 @@ class rayshow():
                           )
 
 
-    def add_triangle(self, triangle, row = 1, column = 1, color = 'red', show_legend = False):
+    def add_triangle(self, triangle, row = 1, column = 1, dash = None, color = 'red', show_legend = False):
         """
         Definition to add a triangle to the figure.
 
@@ -558,6 +558,8 @@ class rayshow():
                          Row number of the figure.
         column         : int
                          Column number of the figure.
+        dash           : str
+                         Dash style of the line (e.g., dot, dash). Default is None.
         color          : str
                          Color of the lune to be drawn.
         show_legend    : bool
@@ -580,11 +582,11 @@ class rayshow():
                                   current_triangle[2],
                                   current_triangle[2]
                                  ])
-            self.add_line(point_start, point_end, row = row, column = column, color = color, show_legend = show_legend)
+            self.add_line(point_start, point_end, row = row, column = column, dash = dash, color = color, show_legend = show_legend)
 
 
 
-    def add_line(self, point_start, point_end, row = 1, column = 1, color = 'red', show_legend = False):
+    def add_line(self, point_start, point_end, row = 1, column = 1, dash = None, color = 'red', show_legend = False):
         """
         Definition to add a ray to the figure.
 
@@ -598,6 +600,8 @@ class rayshow():
                          Row number of the figure.
         column         : int
                          Column number of the figure.
+        dash           : str
+                         Dash style of the line (e.g., dot, dash). Default is None.
         color          : str
                          Color of the lune to be drawn.
         show_legend    : bool
@@ -630,8 +634,9 @@ class rayshow():
                                             z = points[:, 2],
                                             mode = 'lines',
                                             line = dict(
-                                                        width=self.settings["line width"],
-                                                        color=color,
+                                                        width = self.settings["line width"],
+                                                        color  = color,
+                                                        dash = dash
                                                        ),
                                             opacity = self.settings["opacity"],
                                             showlegend = show_legend

@@ -3,7 +3,7 @@
 import sys
 import odak
 import torch # (1)
-#import odak.visualize.plotly # (8)
+
 
 def test():
     starting_point = torch.tensor([[5., 5., 0.]]) # (2)
@@ -36,24 +36,26 @@ def test():
                                                             distances
                                                            ) # (7)
 
-    #ray_diagram = odak.visualize.plotly.rayshow(line_width = 3., marker_size = 3.) # (9)
-    #ray_diagram.add_point(starting_point, color = 'red')
-    #ray_diagram.add_point(end_points[0], color = 'blue')
-    #ray_diagram.add_line(starting_point, end_points[0], color = 'green')
-    #x_axis = starting_point.clone()
-    #x_axis[0, 0] = end_points[0, 0]
-    #ray_diagram.add_point(x_axis, color = 'black')
-    #ray_diagram.add_line(starting_point, x_axis, color = 'black')
-    #y_axis = starting_point.clone()
-    #y_axis[0, 1] = end_points[0, 1]
-    #ray_diagram.add_point(y_axis, color = 'black')
-    #ray_diagram.add_line(starting_point, y_axis, color = 'black')
-    #z_axis = starting_point.clone()
-    #z_axis[0, 2] = end_points[0, 2]
-    #ray_diagram.add_point(z_axis, color = 'black')
-    #ray_diagram.add_line(starting_point, z_axis, color = 'black')
-    #html = ray_diagram.save_offline()
-    #print(html)
+    visualize = False # (8)
+    if visualize:
+        ray_diagram = odak.visualize.plotly.rayshow(line_width = 3., marker_size = 3.)
+        ray_diagram.add_point(starting_point, color = 'red')
+        ray_diagram.add_point(end_points[0], color = 'blue')
+        ray_diagram.add_line(starting_point, end_points[0], color = 'green')
+        x_axis = starting_point.clone()
+        x_axis[0, 0] = end_points[0, 0]
+        ray_diagram.add_point(x_axis, color = 'black')
+        ray_diagram.add_line(starting_point, x_axis, color = 'black', dash = 'dash')
+        y_axis = starting_point.clone()
+        y_axis[0, 1] = end_points[0, 1]
+        ray_diagram.add_point(y_axis, color = 'black')
+        ray_diagram.add_line(starting_point, y_axis, color = 'black', dash = 'dash')
+        z_axis = starting_point.clone()
+        z_axis[0, 2] = end_points[0, 2]
+        ray_diagram.add_point(z_axis, color = 'black')
+        ray_diagram.add_line(starting_point, z_axis, color = 'black', dash = 'dash')
+        html = ray_diagram.save_offline()
+        print(html)
     assert True == True
 
 
