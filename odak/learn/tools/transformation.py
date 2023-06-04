@@ -8,20 +8,20 @@ def rotmatx(angle):
 
     Parameters
     ----------
-    angle        : list
+    angle        : torch.tensor
                    Rotation angles in degrees.
 
     Returns
     ----------
-    rotx         : ndarray
+    rotx         : torch.tensor
                    Rotation matrix along X axis.
     """
-    angle = torch.deg2rad(torch.tensor(angle))
+    angle = torch.deg2rad(angle)
     rotx = torch.tensor([
-        [1.,               0.,               0.],
-        [0.,  math.cos(angle), -math.sin(angle)],
-        [0.,  math.sin(angle),  math.cos(angle)]
-    ])
+                         [1.,               0.,               0.],
+                         [0.,  math.cos(angle), -math.sin(angle)],
+                         [0.,  math.sin(angle),  math.cos(angle)]
+                        ], device = angle.device)
     return rotx
 
 
@@ -31,20 +31,20 @@ def rotmaty(angle):
 
     Parameters
     ----------
-    angle        : list
+    angle        : torch.tensor
                    Rotation angles in degrees.
 
     Returns
     ----------
-    roty         : ndarray
+    roty         : torch.tensor
                    Rotation matrix along Y axis.
     """
-    angle = torch.deg2rad(torch.tensor(angle))
+    angle = torch.deg2rad(angle)
     roty = torch.tensor([
-        [math.cos(angle),  0., math.sin(angle)],
-        [0.,               1.,              0.],
-        [-math.sin(angle), 0., math.cos(angle)]
-    ])
+                         [math.cos(angle),  0., math.sin(angle)],
+                         [0.,               1.,              0.],
+                         [-math.sin(angle), 0., math.cos(angle)]
+                        ], device = angle.device)
     return roty
 
 
@@ -54,73 +54,21 @@ def rotmatz(angle):
 
     Parameters
     ----------
-    angle        : list
+    angle        : torch.tensor
                    Rotation angles in degrees.
 
     Returns
     ----------
-    rotz         : ndarray
+    rotz         : torch.tensor
                    Rotation matrix along Z axis.
     """
-    angle = torch.deg2rad(torch.tensor(angle))
+    angle = torch.deg2rad(angle)
     rotz = torch.tensor([
-        [math.cos(angle), -math.sin(angle), 0.],
-        [math.sin(angle),  math.cos(angle), 0.],
-        [0.,               0., 1.]
-    ])
+                         [math.cos(angle), -math.sin(angle), 0.],
+                         [math.sin(angle),  math.cos(angle), 0.],
+                         [             0.,               0., 1.]
+                        ], device = angle.device)
     return rotz
-
-
-def rotate_point(point, angles=[0, 0, 0], mode='XYZ', origin=[0, 0, 0], offset=[0, 0, 0]):
-    """
-    Definition to rotate a given point. Note that rotation is always with respect to 0,0,0.
-
-    Parameters
-    ----------
-    point        : ndarray
-                   A point.
-    angles       : list
-                   Rotation angles in degrees. 
-    mode         : str
-                   Rotation mode determines ordering of the rotations at each axis. There are XYZ,YXZ,ZXY and ZYX modes.
-    origin       : list
-                   Reference point for a rotation.
-    offset       : list
-                   Shift with the given offset.
-
-    Returns
-    ----------
-    result       : ndarray
-                   Result of the rotation
-    rotx         : ndarray
-                   Rotation matrix along X axis.
-    roty         : ndarray
-                   Rotation matrix along Y axis.
-    rotz         : ndarray
-                   Rotation matrix along Z axis.
-    """
-    rotx = rotmatx(angles[0])
-    roty = rotmaty(angles[1])
-    rotz = rotmatz(angles[2])
-    if angles[0] == 0 and angles[1] == 0 and angles[2] == 0:
-        result = torch.tensor(offset).to(point.device) + point
-        return result, rotx, roty, rotz
-    point -= torch.tensor(origin)
-    point = point.view(1, 3)
-    if mode == 'XYZ':
-        result = torch.mm(rotz, torch.mm(roty, torch.mm(rotx, point.T))).T
-    elif mode == 'XZY':
-        result = torch.mm(roty, torch.mm(rotz, torch.mm(rotx, point.T))).T
-    elif mode == 'YXZ':
-        result = torch.mm(rotz, torch.mm(rotx, torch.mm(roty, point.T))).T
-    elif mode == 'ZXY':
-        result = torch.mm(roty, torch.mm(rotx, torch.mm(rotz, point.T))).T
-    elif mode == 'ZYX':
-        result = torch.mm(rotx, torch.mm(roty, torch.mm(rotz, point.T))).T
-    point = point.view(3)
-    result += torch.tensor(origin)
-    result += torch.tensor(offset)
-    return result.to(point.device), rotx, roty, rotz
 
 
 def get_rotation_matrix(tilt_angles = [0., 0., 0.], tilt_order = 'XYZ'):
@@ -156,54 +104,63 @@ def get_rotation_matrix(tilt_angles = [0., 0., 0.], tilt_order = 'XYZ'):
     return rotmat
 
 
-def rotate_points(points, angles = [0, 0, 0], mode = 'XYZ', origin = [0, 0, 0], offset = [0, 0, 0]):
+def rotate_points(
+                 point,
+                 angles = torch.tensor([[0, 0, 0]]), 
+                 mode='XYZ', 
+                 origin = torch.tensor([[0, 0, 0]]), 
+                 offset = torch.tensor([[0, 0, 0]])
+                ):
     """
-    Definition to rotate points.
+    Definition to rotate a given point. Note that rotation is always with respect to 0,0,0.
 
     Parameters
     ----------
-    points       : ndarray
-                   Points.
-    angles       : list
+    point        : torch.tensor
+                   A point with size of [3] or [1, 3] or [m, 3].
+    angles       : torch.tensor
                    Rotation angles in degrees. 
     mode         : str
                    Rotation mode determines ordering of the rotations at each axis. There are XYZ,YXZ,ZXY and ZYX modes.
-    origin       : list
+    origin       : torch.tensor
                    Reference point for a rotation.
-    offset       : list
+                   Expected size is [3] or [1, 3].
+    offset       : torch.tensor
                    Shift with the given offset.
+                   Expected size is [3] or [1, 3] or [m, 3].
 
     Returns
     ----------
-    result       : ndarray
-                   Result of the rotation   
+    result       : torch.tensor
+                   Result of the rotation [1 x 3] or [m x 3].
     rotx         : torch.tensor
-                   Rotation matrix at X axis.
+                   Rotation matrix along X axis [3 x 3].
     roty         : torch.tensor
-                   Rotation matrix at Y axis.
+                   Rotation matrix along Y axis [3 x 3].
     rotz         : torch.tensor
-                   Rotation matrix at Z axis.
+                   Rotation matrix along Z axis [3 x 3].
     """
-    rotx = rotmatx(angles[0])
-    roty = rotmaty(angles[1])
-    rotz = rotmatz(angles[2])
-    if angles[0] == 0 and angles[1] == 0 and angles[2] == 0:
-        result = torch.tensor(offset) + points
-        return result, rotx, roty, rotz
-    points -= torch.tensor(origin)
+    if len(point.shape) == 1:
+        point = point.unsqueeze(0)
+    if len(angles.shape) == 1:
+        angles = angles.unsqueeze(0)
+    rotx = rotmatx(angles[:, 0])
+    roty = rotmaty(angles[:, 1])
+    rotz = rotmatz(angles[:, 2])
+    point -= origin
     if mode == 'XYZ':
-        result = torch.mm(rotz, torch.mm(roty, torch.mm(rotx, points.T))).T
+        result = torch.mm(rotz, torch.mm(roty, torch.mm(rotx, point.T))).T
     elif mode == 'XZY':
-        result = torch.mm(roty, torch.mm(rotz, torch.mm(rotx, points.T))).T
+        result = torch.mm(roty, torch.mm(rotz, torch.mm(rotx, point.T))).T
     elif mode == 'YXZ':
-        result = torch.mm(rotz, torch.mm(rotx, torch.mm(roty, points.T))).T
+        result = torch.mm(rotz, torch.mm(rotx, torch.mm(roty, point.T))).T
     elif mode == 'ZXY':
-        result = torch.mm(roty, torch.mm(rotx, torch.mm(rotz, points.T))).T
+        result = torch.mm(roty, torch.mm(rotx, torch.mm(rotz, point.T))).T
     elif mode == 'ZYX':
-        result = torch.mm(rotx, torch.mm(roty, torch.mm(rotz, points.T))).T
-    result += torch.tensor(origin)
-    result += torch.tensor(offset)
-    return result, rotx, roty, rotz
+        result = torch.mm(rotx, torch.mm(roty, torch.mm(rotz, point.T))).T
+    result += origin
+    result += offset
+    return result.to(point.device), rotx, roty, rotz
 
 
 def tilt_towards(location, lookat):

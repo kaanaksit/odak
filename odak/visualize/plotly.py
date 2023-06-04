@@ -464,9 +464,9 @@ class rayshow():
                          'marker size': marker_size
                         }
         specs = []
-        for i in range(0, columns):
+        for i in range(0, rows):
             new_row = []
-            for j in range(0, rows):
+            for j in range(0, columns):
                 new_row.append({"type": "scene"},)
             specs.append(new_row)
         self.fig = make_subplots(
@@ -509,7 +509,7 @@ class rayshow():
         return result
 
 
-    def add_point(self, point, row=1, column=1, color='red', show_legend = False):
+    def add_point(self, point, row = 1, column = 1, color = 'red', show_legend = False):
         """
         Definition to add a point to the figure.
 

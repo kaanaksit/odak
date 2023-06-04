@@ -1,8 +1,12 @@
 import torch
-from .transformation import rotate_points, rotate_point
+from .transformation import rotate_points
 
 
-def grid_sample(no = [10, 10], size = [100., 100.], center = [0., 0., 0.], angles = [0., 0., 0.]):
+def grid_sample(
+                no = [10, 10],
+                size = [100., 100.], 
+                center = [0., 0., 0.], 
+                angles = [0., 0., 0.]):
     """
     Definition to generate samples over a surface.
 
@@ -28,6 +32,9 @@ def grid_sample(no = [10, 10], size = [100., 100.], center = [0., 0., 0.], angle
     rotz        : torch.tensor
                   Rotation matrix at Z axis.
     """
+    center = torch.tensor(center)
+    angles = torch.tensor(angles)
+    size = torch.tensor(size)
     samples = torch.zeros((no[0], no[1], 3))
     step = [size[0] / (no[0] - 1), size[1] / (no[1] - 1)]
     x = torch.linspace(-size[0] / 2., size[0] / 2., no[0])

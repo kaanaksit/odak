@@ -85,8 +85,6 @@ def reflect(input_ray, normal):
     output_ray = torch.zeros((n, 2, 3)).to(input_ray.device)
     output_ray[:, 0] = normal[:, 0]
     output_ray[:, 1] = input_ray[:, 1] - 2 * a * normal[:, 1]
-    if output_ray.shape[0] == 1:
-        output_ray = output_ray.view((2, 3))
     return output_ray
 
 

@@ -230,11 +230,11 @@ class multiplane_loss():
                                         self.target_image.shape[0],
                                         self.target_image.shape[1],
                                         self.target_image.shape[2],
-                                        requires_grad = False
-                                       ).to(self.device)
-        self.focus_target = torch.zeros_like(self.target_image,
-                                             requires_grad = False).to(self.device)
-        self.masks        = torch.zeros_like(self.targets).to(self.device)
+                                        requires_grad = False,
+                                        device = self.device
+                                       )
+        self.focus_target = torch.zeros_like(self.target_image, requires_grad = False)
+        self.masks        = torch.zeros_like(self.targets)
         for i in range(self.number_of_planes):
             for ch in range(self.target_image.shape[0]):
                 mask_zeros = torch.zeros_like(self.target_image[ch], dtype = torch.int)
