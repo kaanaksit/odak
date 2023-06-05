@@ -47,7 +47,7 @@ def test():
 
 
 
-    visualize = True
+    visualize = False
     if visualize:
         ray_diagram = odak.visualize.plotly.rayshow(
                                                     columns = 2,
