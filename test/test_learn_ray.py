@@ -36,6 +36,9 @@ def test():
                                                           distances
                                                          ) # (7)
 
+
+
+
     visualize = False # (8)
     if visualize:
         ray_diagram = odak.visualize.plotly.rayshow(line_width = 3., marker_size = 3.)

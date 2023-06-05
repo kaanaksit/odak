@@ -30,6 +30,9 @@ def test():
                                                                                 rays,
                                                                                 triangle
                                                                                ) # (2)
+
+
+
     visualize = False # (1)
     if visualize:
         ray_diagram = odak.visualize.plotly.rayshow(line_width = 3., marker_size = 3.) # (1)

@@ -44,9 +44,17 @@ def test():
                                                                     reflected_rays,
                                                                     torch.ones(reflected_rays.shape[0]) * reflect_distance
                                                                    )
-    visualize = False
+
+
+
+    visualize = True
     if visualize:
-        ray_diagram = odak.visualize.plotly.rayshow(columns = 2, line_width = 3., marker_size = 3., subplot_titles = ['Refraction example', 'Reflection example']) # (1)
+        ray_diagram = odak.visualize.plotly.rayshow(
+                                                    columns = 2,
+                                                    line_width = 3.,
+                                                    marker_size = 3.,
+                                                    subplot_titles = ['Refraction example', 'Reflection example']
+                                                   ) # (1)
         ray_diagram.add_triangle(triangle, column = 1, color = 'black')
         ray_diagram.add_triangle(triangle, column = 2, color = 'black')
         ray_diagram.add_point(rays[:, 0], column = 1, color = 'blue')

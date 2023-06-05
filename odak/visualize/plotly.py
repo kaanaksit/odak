@@ -525,7 +525,7 @@ class rayshow():
                          Set True to enable legend for the line.
         """
         if torch.is_tensor(point) == True:
-            point = point.cpu().numpy()
+            point = point.detach().numpy()
         if len(point.shape) == 1:
             point = np.expand_dims(point, axis=0)
         self.fig.add_trace(
@@ -567,8 +567,8 @@ class rayshow():
         """
 
         if torch.is_tensor(triangle) == True:
-            triangle = triangle.cpu().numpy()
-        if len(triangle) == 2:
+            triangle = triangle.detach().numpy()
+        if len(triangle.shape) == 2:
             triangle = np.expand_dims(triangle, axis=0)
         for triangle_id in range(triangle.shape[0]):
             current_triangle = triangle[triangle_id]
@@ -608,11 +608,11 @@ class rayshow():
                          Set True to enable legend for the line.
         """
         if torch.is_tensor(point_start):
-            point_start = point_start.cpu().numpy()
+            point_start = point_start.detach().numpy()
         if len(point_start.shape) == 1:
             point_start = np.expand_dims(point_start, axis=0)
         if torch.is_tensor(point_end):
-            point_end = point_end.cpu().numpy()
+            point_end = point_end.detach().numpy()
         if len(point_end.shape) == 1:
             point_end = np.expand_dims(point_end, axis=0)
         if point_start.shape != point_end.shape:

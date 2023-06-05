@@ -17,11 +17,13 @@ def rotmatx(angle):
                    Rotation matrix along X axis.
     """
     angle = torch.deg2rad(angle)
-    rotx = torch.tensor([
-                         [1.,               0.,               0.],
-                         [0.,  math.cos(angle), -math.sin(angle)],
-                         [0.,  math.sin(angle),  math.cos(angle)]
-                        ], device = angle.device)
+    one = torch.ones(1, device = angle.device)
+    zero = torch.zeros(1, device = angle.device)
+    rotx = torch.stack([
+                        torch.stack([ one,              zero,              zero]),
+                        torch.stack([zero,  torch.cos(angle), -torch.sin(angle)]),
+                        torch.stack([zero,  torch.sin(angle),  torch.cos(angle)])
+                       ]).reshape(3, 3)
     return rotx
 
 
@@ -40,11 +42,13 @@ def rotmaty(angle):
                    Rotation matrix along Y axis.
     """
     angle = torch.deg2rad(angle)
-    roty = torch.tensor([
-                         [math.cos(angle),  0., math.sin(angle)],
-                         [0.,               1.,              0.],
-                         [-math.sin(angle), 0., math.cos(angle)]
-                        ], device = angle.device)
+    one = torch.ones(1, device = angle.device)
+    zero = torch.zeros(1, device = angle.device)
+    roty = torch.stack([
+                        torch.stack([ torch.cos(angle), zero, torch.sin(angle)]),
+                        torch.stack([             zero,  one,             zero]),
+                        torch.stack([-torch.sin(angle), zero, torch.cos(angle)])
+                       ]).reshape(3, 3)
     return roty
 
 
@@ -63,11 +67,13 @@ def rotmatz(angle):
                    Rotation matrix along Z axis.
     """
     angle = torch.deg2rad(angle)
-    rotz = torch.tensor([
-                         [math.cos(angle), -math.sin(angle), 0.],
-                         [math.sin(angle),  math.cos(angle), 0.],
-                         [             0.,               0., 1.]
-                        ], device = angle.device)
+    one = torch.ones(1, device = angle.device)
+    zero = torch.zeros(1, device = angle.device)
+    rotz = torch.stack([
+                        torch.stack([torch.cos(angle), -torch.sin(angle), zero]),
+                        torch.stack([torch.sin(angle),  torch.cos(angle), zero]),
+                        torch.stack([            zero,              zero,  one])
+                       ]).reshape(3,3)
     return rotz
 
 
@@ -147,20 +153,20 @@ def rotate_points(
     rotx = rotmatx(angles[:, 0])
     roty = rotmaty(angles[:, 1])
     rotz = rotmatz(angles[:, 2])
-    point -= origin
+    new_point = (point - origin).T
     if mode == 'XYZ':
-        result = torch.mm(rotz, torch.mm(roty, torch.mm(rotx, point.T))).T
+        result = torch.mm(rotz, torch.mm(roty, torch.mm(rotx, new_point))).T
     elif mode == 'XZY':
-        result = torch.mm(roty, torch.mm(rotz, torch.mm(rotx, point.T))).T
+        result = torch.mm(roty, torch.mm(rotz, torch.mm(rotx, new_point))).T
     elif mode == 'YXZ':
-        result = torch.mm(rotz, torch.mm(rotx, torch.mm(roty, point.T))).T
+        result = torch.mm(rotz, torch.mm(rotx, torch.mm(roty, new_point))).T
     elif mode == 'ZXY':
-        result = torch.mm(roty, torch.mm(rotx, torch.mm(rotz, point.T))).T
+        result = torch.mm(roty, torch.mm(rotx, torch.mm(rotz, new_point))).T
     elif mode == 'ZYX':
-        result = torch.mm(rotx, torch.mm(roty, torch.mm(rotz, point.T))).T
+        result = torch.mm(rotx, torch.mm(roty, torch.mm(rotz, new_point))).T
     result += origin
     result += offset
-    return result.to(point.device), rotx, roty, rotz
+    return result, rotx, roty, rotz
 
 
 def tilt_towards(location, lookat):
@@ -179,15 +185,11 @@ def tilt_towards(location, lookat):
     angles       : list
                    Rotation angles in degrees.
     """
-    dx = location[0]-lookat[0]
-    dy = location[1]-lookat[1]
-    dz = location[2]-lookat[2]
-    dist = torch.sqrt(torch.tensor(dx**2+dy**2+dz**2))
+    dx = location[0] - lookat[0]
+    dy = location[1] - lookat[1]
+    dz = location[2] - lookat[2]
+    dist = torch.sqrt(torch.tensor(dx ** 2 + dy ** 2 + dz ** 2))
     phi = torch.atan2(torch.tensor(dy), torch.tensor(dx))
-    theta = torch.arccos(dz/dist)
-    angles = [
-        0,
-        float(torch.rad2deg(theta)),
-        float(torch.rad2deg(phi))
-    ]
+    theta = torch.arccos(dz / dist)
+    angles = [0, float(torch.rad2deg(theta)), float(torch.rad2deg(phi))]
     return angles
