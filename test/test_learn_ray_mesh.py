@@ -10,7 +10,7 @@ from tqdm import tqdm
 def test():
     triangles = odak.learn.raytracing.define_plane_mesh()
 
-    visualize = True
+    visualize = False
     if visualize:
         ray_diagram = odak.visualize.plotly.rayshow(
                                                     columns = 2,
