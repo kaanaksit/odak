@@ -3,7 +3,7 @@ from ..tools.vector import same_side
 from ..tools.transformation import rotate_points
 
 
-def define_plane(point, angles = [0., 0., 0.]):
+def define_plane(point, angles = torch.tensor([0., 0., 0.])):
     """ 
     Definition to generate a rotation matrix along X axis.
 
@@ -11,7 +11,7 @@ def define_plane(point, angles = [0., 0., 0.]):
     ----------
     point        : torch.tensor
                    A point that is at the center of a plane.
-    angles       : list
+    angles       : torch.tensor
                    Rotation angles in degrees.
 
     Returns
@@ -28,6 +28,55 @@ def define_plane(point, angles = [0., 0., 0.]):
         plane[i], _, _, _ = rotate_points(plane[i], angles = angles)
         plane[i] = plane[i] + point
     return plane
+
+
+def define_plane_mesh(
+                      number_of_meshes = [10, 10], 
+                      size = [1., 1.], 
+                      angles = torch.tensor([0., 0., 0.]), 
+                      offset = torch.tensor([[0., 0., 0.]])
+                     ):
+    """
+    Definition to generate a plane with meshes.
+
+
+    Parameters
+    -----------
+    number_of_meshes  : torch.tensor
+                        Number of squares over plane.
+                        There are two triangles at each square.
+    size              : list
+                        Size of the plane.
+    angles            : torch.tensor
+                        Rotation angles in degrees.
+    offset            : torch.tensor
+                        Offset along XYZ axes.
+                        Expected dimension is [1 x 3] or offset for each triangle [m x 3].
+                        m here refers to `2 * number_of_meshes[0]` times  `number_of_meshes[1]`. 
+    
+    Returns
+    -------
+    triangles         : torch.tensor
+                        Triangles [m x 3 x 3], where m is `2 * number_of_meshes[0]` times  `number_of_meshes[1]`.
+    """
+    triangles = torch.zeros(2, number_of_meshes[0], number_of_meshes[1], 3, 3)
+    step = [size[0] / number_of_meshes[0], size[1] / number_of_meshes[1]]
+    for i in range(0, number_of_meshes[0] - 1):
+        for j in range(0, number_of_meshes[1] - 1):
+            first_triangle = torch.tensor([
+                                           [       -size[0] / 2. + step[0] * i,       -size[1] / 2. + step[0] * j, 0.],
+                                           [ -size[0] / 2. + step[0] * (i + 1),       -size[1] / 2. + step[0] * j, 0.],
+                                           [       -size[0] / 2. + step[0] * i, -size[1] / 2. + step[0] * (j + 1), 0.]
+                                          ])
+            second_triangle = torch.tensor([
+                                            [ -size[0] / 2. + step[0] * (i + 1), -size[1] / 2. + step[0] * (j + 1), 0.],
+                                            [ -size[0] / 2. + step[0] * (i + 1),       -size[1] / 2. + step[0] * j, 0.],
+                                            [       -size[0] / 2. + step[0] * i, -size[1] / 2. + step[0] * (j + 1), 0.]
+                                           ])
+            triangles[0, i, j], _, _, _ = rotate_points(first_triangle, angles = angles)
+            triangles[1, i, j], _, _, _ = rotate_points(second_triangle, angles = angles)
+    triangles = triangles.view(-1, 3, 3) + offset
+    return triangles
 
 
 def center_of_triangle(triangle):

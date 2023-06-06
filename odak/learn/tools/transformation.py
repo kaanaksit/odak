@@ -127,7 +127,8 @@ def rotate_points(
     angles       : torch.tensor
                    Rotation angles in degrees. 
     mode         : str
-                   Rotation mode determines ordering of the rotations at each axis. There are XYZ,YXZ,ZXY and ZYX modes.
+                   Rotation mode determines ordering of the rotations at each axis.
+                   There are XYZ,YXZ,ZXY and ZYX modes.
     origin       : torch.tensor
                    Reference point for a rotation.
                    Expected size is [3] or [1, 3].
