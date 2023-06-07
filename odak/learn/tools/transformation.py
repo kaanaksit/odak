@@ -147,6 +147,8 @@ def rotate_points(
     rotz         : torch.tensor
                    Rotation matrix along Z axis [3 x 3].
     """
+    origin = origin.to(point.device)
+    offset = offset.to(point.device)
     if len(point.shape) == 1:
         point = point.unsqueeze(0)
     if len(angles.shape) == 1:

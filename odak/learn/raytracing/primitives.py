@@ -25,7 +25,7 @@ def define_plane(point, angles = torch.tensor([0., 0., 0.])):
                           [0.,  0., 0.]
                          ], device = point.device)
     for i in range(0, plane.shape[0]):
-        plane[i], _, _, _ = rotate_points(plane[i], angles = angles)
+        plane[i], _, _, _ = rotate_points(plane[i], angles = angles.to(point.device))
         plane[i] = plane[i] + point
     return plane
 
@@ -86,8 +86,8 @@ def center_of_triangle(triangle):
     Parameters
     ----------
     triangle      : torch.tensor
-                    An array that contains three points defining a triangle (Mx3). It can also parallel process many triangles (NxMx3).
-
+                    An array that contains three points defining a triangle (Mx3). 
+                    It can also parallel process many triangles (NxMx3).
 
     Returns
     -------
@@ -102,7 +102,8 @@ def center_of_triangle(triangle):
 
 def is_it_on_triangle(point_to_check, triangle):
     """
-    Definition to check if a given point is inside a triangle. If the given point is inside a defined triangle, this definition returns True.
+    Definition to check if a given point is inside a triangle. 
+    If the given point is inside a defined triangle, this definition returns True.
     For more details, visit: [https://blackpawn.com/texts/pointinpoly/](https://blackpawn.com/texts/pointinpoly/).
 
     Parameters

@@ -69,7 +69,16 @@ def test():
                                                     columns = 2,
                                                     line_width = 3.,
                                                     marker_size = 3.,
-                                                    subplot_titles = ['Before optimization', 'After optimization']
+                                                    subplot_titles = [
+                                                                      [
+                                                                       'Surace before optimization', 
+                                                                       'Surface after optimization',
+                                                                      ],
+                                                                      [
+                                                                       'Hits at the target plane before optimization',
+                                                                       'Hits at the target plane after optimization',
+                                                                      ]
+                                                                     ]
                                                    ) 
         ray_diagram.add_triangle(start_rotated_triangle, column = 1, color = 'black')
         ray_diagram.add_triangle(rotated_triangle, column = 2, color = 'black')
