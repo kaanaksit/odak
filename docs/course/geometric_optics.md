@@ -267,6 +267,19 @@ So far we haven't talked about wavelength.
 :octicons-info-24: Informative ·
 :octicons-beaker-24: Practical 
 
+=== ":octicons-file-code-16: `test_learn_ray_render.py`"
+
+
+    ```python 
+    --8<-- "test/test_learn_ray_render.py"
+    ```
+
+
+<figure markdown>
+  ![Image title](media/raytracing.png){ width="600" }
+  <figcaption>Rendered result for the renderer script of "/test/test_learn_ray_render.py".</figcaption>
+</figure>
+
 
 
 ## Conclusion
