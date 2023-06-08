@@ -104,6 +104,7 @@ git clone https://github.com/kaanaksit/odak.git
 If you want to share your private repository with someone you can go into the settings of your repository in its webpage and navigate to the collaborators section.
 This way, you can assign roles to your collaborators that best suit your scenario.
 
+
 !!! warning end "Secure your account"
     If you are using GitHub for your development, I highly encourage you to consider using [two-factor authentication](https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa).
 
@@ -135,7 +136,6 @@ In some cases, you may want to include large binary files in your project, such 
 For those cases, using just `git` may not be the best opinion, as Git works on creating a history of files and how they are changed at each commit, this history will likely be too bulky and oversized.
 Thus, cloning a repository could be slow when large binary files and Git come together.
 Assuming you are on an Ubuntu operating system, you can install the [Large File Support (LFS)](https://git-lfs.com/) for Git by typing these commands in your terminal:
-
 
 
 ```shell
@@ -210,8 +210,9 @@ git merge BRANCHNAME
 ```
 
 We recommend an interactive, visual method for learning Git commands and branching online: [learngitbranching](https://learngitbranching.js.org/?locale=en_US).
-
 More information can be found in the offical Git documentation: [Git docs](https://git-scm.com/docs).
+
+
 ## Coding Standards :material-alert-decagram:{ .mdx-pulse title="Too important!" }
 
 
@@ -482,6 +483,7 @@ For this purpose, consider creating a `test` directory in the root folder of you
 In that directory, you can create separate Python scripts for testing out various functions of your library.
 Say there is a function called `add` in your project `MOSTAWESOMECODEEVER,` so your test script `test/test_add.py` should look like this:
 
+
 ```python
 import MOSTAWESOMECODEEVER
 
@@ -496,6 +498,7 @@ def test():
 if __name__ == '__main__':
     sys.exit(test())
 ```
+
 
 You may accumulate various unit tests in your `test` directory.
 To test them all before pushing them to your repository, you can rely on `pytest.`
@@ -514,6 +517,7 @@ Once installed, you can navigate to your repository's root directory and call `p
 cd MOSTAWESOMECODEEVER
 pytest
 ```
+
 
 If anything is wrong with your unit tests, which validate your functions, `pytest` will provide a detailed explanation.Suppose your project is a library containing multiple valuable functions for developing other projects. 
 In that case, I encourage you to create unit tests for your library so that whenever you update it, you can see if your updates break anything in that library.
@@ -521,6 +525,7 @@ For this purpose, consider creating a `test` directory in the root folder of you
 In that directory, you can create separate Python scripts for testing out various functions of your library.
 Say there is a function called `add` in your project `MOSTAWESOMECODEEVER,` so your test script `test/test_add.py` should look like this:
 
+
 ```python
 import MOSTAWESOMECODEEVER
 
@@ -535,6 +540,7 @@ def test():
 if __name__ == '__main__':
     sys.exit(test())
 ```
+
 
 You may accumulate various unit tests in your `test` directory.
 To test them all before pushing them to your repository, you can rely on `pytest.`
@@ -553,6 +559,7 @@ Once installed, you can navigate to your repository's root directory and call `p
 cd MOSTAWESOMECODEEVER
 pytest
 ```
+
 
 If anything is wrong with your unit tests, which validate your functions, `pytest` will provide a detailed explanation.
 
@@ -607,6 +614,7 @@ When choosing a license for your project, consider tinkering about whether you a
         ``` markdown title="CODE_OF_CONDUCT.md" 
         --8<-- "CODE_OF_CONDUCT.md"
         ```  
+
  
 ## Background Review :material-alert-decagram:{ .mdx-pulse title="Too important!" }
 
@@ -673,6 +681,7 @@ import odak
 a_zeropad = odak.learn.tools.zero_pad(a, size = [7, 7])
 ```
 
+
 Note that we pass here size as `[7, 7]`, the logic of this is very simple.
 Our original matrix was five by five if you add a zero along two axis, you get seven by seven as the new requested size.
 Also note that our kernel is three by three.
@@ -731,7 +740,6 @@ Thus, understanding this mathematical operation is extremely important not only 
 As an example, let's see step by step how a sample image provided below is convolved:
 
 
-
 <figure markdown>
   ![Image title](media/convolution_animation.gif){ width="600" }
   <figcaption>An animation showing the steps of convolution operation.</figcaption>
@@ -778,7 +786,7 @@ Thus, SGD requires less memory for each update.
 
 
 ??? question end "Where can I read more about the state-of-the-art Stochastic Gradient Descent optimizer?"
-    To learn more, please read [`Paszke, Adam, Sam Gross, Soumith Chintala, Gregory Chanan, Edward Yang, Zachary DeVito, Zeming Lin, Alban Desmaison, Luca Antiga, and Adam Lerer. "Automatic differentiation in pytorch." (2017).`](https://openreview.net/forum?id=BJJsrmfCZ)
+    To learn more, please read [`Paszke, Adam, Sam Gross, Soumith Chintala, Gregory Chanan, Edward Yang, Zachary DeVito, Zeming Lin, Alban Desmaison, Luca Antiga, and Adam Lerer. "Automatic differentiation in pytorch." (2017).`](https://openreview.net/forum?id=BJJsrmfCZ) [@paszke2017automatic]
 
 
 ??? example end "Would you like to code your Gradient Descent based optimizer ground up?"

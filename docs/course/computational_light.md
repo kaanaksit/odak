@@ -35,14 +35,14 @@ Light is electromagnetic radiation, often described as a bundle of photons, a te
 
 ??? question end "Where can I learn more about electric and magnetic fields?"
     Beware that the topic of electric and magnetic fields deserves a stand-alone course and has many details to explore.
-    As an undergraduate student, back in the day, I learned about electric and magnetic fields by following a dedicated class and reading this book: [`Cheng, David Keun. "Fundamentals of engineering electromagnetics." (1993).`](https://www.amazon.com/Fundamentals-Engineering-Electromagnetics-David-Cheng/dp/0201566117/ref=sr_1_2?qid=1685483168&refinements=p_28%3AFundamentals+of+Engineering+Electromagnetics&s=books&sr=1-2)
+    As an undergraduate student, back in the day, I learned about electric and magnetic fields by following a dedicated class and reading this book: [`Cheng, David Keun. "Fundamentals of engineering electromagnetics." (1993).`](https://www.amazon.com/Fundamentals-Engineering-Electromagnetics-David-Cheng/dp/0201566117/ref=sr_1_2?qid=1685483168&refinements=p_28%3AFundamentals+of+Engineering+Electromagnetics&s=books&sr=1-2) [@cheng1993fundamentals]
 
 
 ??? question end "What is a photon?"
     Let me adjust this question a bit: `What model is good for describing a photon?`
     There is literature describing a photon as a single particle, and works show photons as a pack of particles.
      Suppose you want a more profound understanding than stating that it is a particle.
-    In that case, you may want to dive deep into existing models in relation to the relativity concept: [`Roychoudhuri, C., Kracklauer, A. F., & Creath, K. (Eds.). (2017). The nature of light: What is a photon?. CRC Press.`](https://www.amazon.com/Nature-Light-Optical-Science-Engineering/dp/1420044249)
+    In that case, you may want to dive deep into existing models in relation to the relativity concept: [`Roychoudhuri, C., Kracklauer, A. F., & Creath, K. (Eds.). (2017). The nature of light: What is a photon?. CRC Press.`](https://www.amazon.com/Nature-Light-Optical-Science-Engineering/dp/1420044249) [@roychoudhuri2017nature]
 
 
 ??? question end "Where can I learn more about history of research on light?"
@@ -166,7 +166,7 @@ where $n$ represents refractive index of a medium that light travels.
 
 
 ??? question end "Where can I find more basic information about optics and light?"
-    As a graduate student, back in the day, I learned the basics of optics by reading this book without following any course: [`Hecht, E. (2012). Optics. Pearson Education India.`](https://www.amazon.com/Optics-4th-Eugene-Hecht/dp/0805385665/ref=sr_1_1?crid=25E08OXE7Q1AE&keywords=Hecht%2C+E.+Optics.&qid=1685483348&s=books&sprefix=hecht%2C+e.+optics.%2Cstripbooks-intl-ship%2C166&sr=1-1)
+    As a graduate student, back in the day, I learned the basics of optics by reading this book without following any course: [`Hecht, E. (2012). Optics. Pearson Education India.`](https://www.amazon.com/Optics-4th-Eugene-Hecht/dp/0805385665/ref=sr_1_1?crid=25E08OXE7Q1AE&keywords=Hecht%2C+E.+Optics.&qid=1685483348&s=books&sprefix=hecht%2C+e.+optics.%2Cstripbooks-intl-ship%2C166&sr=1-1) [@hecht2012optics]
 
 
 We have identified a bunch of different qualities of light so far.
@@ -236,7 +236,7 @@ For each topic highlighted below, please click on the box to discover more about
     * **Noticeable profiles.** Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of modern Computer Graphics.
     Here are some people I would encourage you to explore their websites: [Peter Shirley](https://www.petershirley.com/), and [Morgan Mcguire](https://casual-effects.com/).
     * **Successful products.** Here are a few examples of successful outcomes from the field of Computer Graphics: [Roblox](https://www.roblox.com/), [NVIDIA's DLSS](https://www.nvidia.com/en-gb/geforce/technologies/dlss/), [Apple's Metal](https://developer.apple.com/metal/), [OpenGL](https://www.opengl.org/) and [Vulkan](https://www.vulkan.org/).
-    * **Did you know?** The lecturer of the Computational Light Course, [Kaan Akşit](https://kaanaksit.com), is actively researching topics of Computer Graphics (e.g., [Beyond blur: Real-time ventral metamers for foveated rendering](https://kaanaksit.com/assets/pdf/WaltonEtAl_SIGGRAPH2021_Beyond_blur_real_time_ventral_metamers_for_foveated_rendering.pdf)).
+    * **Did you know?** The lecturer of the Computational Light Course, [Kaan Akşit](https://kaanaksit.com), is actively researching topics of Computer Graphics (e.g., [Beyond blur: Real-time ventral metamers for foveated rendering](https://kaanaksit.com/assets/pdf/WaltonEtAl_SIGGRAPH2021_Beyond_blur_real_time_ventral_metamers_for_foveated_rendering.pdf)[@walton2021beyond]).
     * **Want to learn more?** Although we will cover a great deal of Computer Graphics in this course, you may want to dig deeper with a dedicated course, which you can follow online:
     <center><iframe width="560" height="315" src="https://www.youtube.com/embed/-LqUu61oRdk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></center>
 
@@ -249,9 +249,9 @@ For each topic highlighted below, please click on the box to discover more about
     * **Noticeable profiles.** Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of Computational Displays.
     Here are some examples of such people; I would encourage you to explore their websites: [Rafał Mantiuk](https://www.cl.cam.ac.uk/~rkm38/), and [Andrew Maimone](https://www.cs.unc.edu/~maimone/).
     * **Successful products.** Here are a few examples of successful outcomes from the field of Computational Displays: [Nreal Augmented Reality glasses](https://www.nreal.ai/) and [Meta Quest Virtual Reality headsets](https://www.oculus.com/experiences/quest/).
-    * **Did you know?** The lecturer of the Computational Light Course, [Kaan Akşit](https://kaanaksit.com), is actively researching topics of Computational Displays (e.g., [Near-Eye Varifocal Augmented Reality Display using See-Through Screens](https://kaanaksit.com/assets/pdf/AksitEtAl_SiggraphAsia2017_Near_eye_varifocal_augmented_reality_display_using_see_through_screens.pdf)).
+    * **Did you know?** The lecturer of the Computational Light Course, [Kaan Akşit](https://kaanaksit.com), is actively researching topics of Computational Displays (e.g., [Near-Eye Varifocal Augmented Reality Display using See-Through Screens](https://kaanaksit.com/assets/pdf/AksitEtAl_SiggraphAsia2017_Near_eye_varifocal_augmented_reality_display_using_see_through_screens.pdf) [@akcsit2017near]).
     Kaan has made noticeable contributions to three-dimensional displays, virtual reality headsets, and augmented reality glasses.
-    * **Want to learn more?** Although we will cover a great deal of Computational Displays in this course, you may want to dig deeper with a dedicated course, which you can follow online:
+    * **Want to learn more?** Although we will cover a great deal of Computational Displays in this course, you may want to dig deeper with a dedicated course, which you can follow online [@kavakli2022optimizing]:
     <center> <iframe width="560" height="315" src="https://www.youtube.com/embed/z_AtSgct6_I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center>
 
 
@@ -275,7 +275,7 @@ For each topic highlighted below, please click on the box to discover more about
     * **Noticeable profiles.** Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of Computational Imaging and Sensing.
     Here are some examples of such people; I would encourage you to explore their websites: [Laura Waller](http://www.laurawaller.com/) and [Nick Antipa](http://nickantipa.com/).
     * **Successful products.** Here are a few examples of successful outcomes from the field of Computational Imaging and Sensing: [Zeiss Microscopes](https://www.zeiss.com/microscopy/en/products/light-microscopes.html) and [Heart rate sensors on Apple's Smartwatch](https://support.apple.com/guide/watch/heart-rate-apda88aefe4c/watchos).
-    * **Did you know?** The lecturer of the Computational Light Course, [Kaan Akşit](https://kaanaksit.com), is actively researching topics of Computational Imaging and Displays (e.g., [Unrolled Primal-Dual Networks for Lensless Cameras](https://kaanaksit.com/assets/pdf/KingshottEtAl_OpticsExpress2022_Unrolled_primal_dual_networks_for_lensless_cameras.pdf)).
+    * **Did you know?** The lecturer of the Computational Light Course, [Kaan Akşit](https://kaanaksit.com), is actively researching topics of Computational Imaging and Displays (e.g., [Unrolled Primal-Dual Networks for Lensless Cameras](https://kaanaksit.com/assets/pdf/KingshottEtAl_OpticsExpress2022_Unrolled_primal_dual_networks_for_lensless_cameras.pdf) [@kingshott2022unrolled]).
     * **Want to learn more?** Although we will cover a great deal of Computational Imaging and Sensing in this course, you may want to dig deeper with a dedicated course, which you can follow online:
     <center> <iframe width="560" height="315" src="https://www.youtube.com/embed/5AWx_FLVpmk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center>
 
@@ -286,7 +286,7 @@ For each topic highlighted below, please click on the box to discover more about
 
     * **Noticeable profiles.** Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of Computational Optics and Fabrication.
     Here are some examples of such people; I would encourage you to explore their websites: [Jannick Rolland](https://www.odalab-spectrum.org/Rochester/Technologies.html) and [Mark Pauly](https://www.epfl.ch/labs/gcm/research-projects/computational-caustics/).
-    * **Did you know?** The lecturer of the Computational Light Course, [Kaan Akşit](https://kaanaksit.com), is actively researching topics of Computational Optics and Fabrication (e.g., [Manufacturing application-driven foveated near-eye displays](https://kaanaksit.com/assets/pdf/AksitEtAl_IEEEVR2019_manufacturing_application_driven_foveated_near_eye_displays.pdf)).
+    * **Did you know?** The lecturer of the Computational Light Course, [Kaan Akşit](https://kaanaksit.com), is actively researching topics of Computational Optics and Fabrication (e.g., [Manufacturing application-driven foveated near-eye displays](https://kaanaksit.com/assets/pdf/AksitEtAl_IEEEVR2019_manufacturing_application_driven_foveated_near_eye_displays.pdf) [@akcsit2019manufacturing]).
     * **Want to learn more?** Although we will cover a great deal of Computational Imaging and Sensing in this course, you may want to dig deeper with a dedicated course, which you can follow online:
     <center> <iframe width="560" height="315" src="https://www.youtube.com/embed/cEzVhisjFn0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center>
 
@@ -298,7 +298,7 @@ For each topic highlighted below, please click on the box to discover more about
 
     * **Noticeable profiles.** Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of modern Optical Communication.
     Here are some people I would encourage you to explore their websites: [Harald Haas](https://www.lifi.eng.ed.ac.uk/) and [Anna Maria Vegni](http://comlab.uniroma3.it).
-    * **Did you know?** The lecturer of the Computational Light Course, [Kaan Akşit](https://kaanaksit.com), was researching topics of Optical Communication (e.g., [From sound to sight: Using audio processing to enable visible light communication](https://kaanaksit.com/assets/pdf/SchmidEtAl_WoOWC2014_From_sound_to_sight_using_audio_processing_to_enable_visible_light_communication.pdf)).
+    * **Did you know?** The lecturer of the Computational Light Course, [Kaan Akşit](https://kaanaksit.com), was researching topics of Optical Communication (e.g., [From sound to sight: Using audio processing to enable visible light communication](https://kaanaksit.com/assets/pdf/SchmidEtAl_WoOWC2014_From_sound_to_sight_using_audio_processing_to_enable_visible_light_communication.pdf) [@schmid2014sound]).
     * **Want to learn more?** Although we will cover relevant information for Optical Communication in this course, you may want to dig deeper and could start with this online video:
     <center><iframe width="560" height="315" src="https://www.youtube.com/embed/6-0fhUMaZ5I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></center>
 
