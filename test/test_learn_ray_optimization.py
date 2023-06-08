@@ -70,18 +70,14 @@ def test():
                                                     line_width = 3.,
                                                     marker_size = 3.,
                                                     subplot_titles = [
-                                                                      [
                                                                        'Surace before optimization', 
                                                                        'Surface after optimization',
-                                                                      ],
-                                                                      [
                                                                        'Hits at the target plane before optimization',
                                                                        'Hits at the target plane after optimization',
-                                                                      ]
                                                                      ]
                                                    ) 
-        ray_diagram.add_triangle(start_rotated_triangle, column = 1, color = 'black')
-        ray_diagram.add_triangle(rotated_triangle, column = 2, color = 'black')
+        ray_diagram.add_triangle(start_rotated_triangle, column = 1, color = 'orange')
+        ray_diagram.add_triangle(rotated_triangle, column = 2, color = 'orange')
         ray_diagram.add_point(start_rays[:, 0], column = 1, color = 'blue')
         ray_diagram.add_point(rays[:, 0], column = 2, color = 'blue')
         ray_diagram.add_line(start_intersecting_rays[:, 0], start_intersecting_normals[:, 0], column = 1, color = 'blue')
@@ -91,7 +87,9 @@ def test():
         ray_diagram.add_point(final_target, column = 1, color = 'red')
         ray_diagram.add_point(final_target, column = 2, color = 'green')
         html = ray_diagram.save_offline()
-        print(html)
+        markdown_file = open('ray.txt', 'w')
+        markdown_file.write(html)
+        markdown_file.close()
     assert True == True
       
 

@@ -505,7 +505,7 @@ class rayshow():
                           Results as HTML div.
         """
         plotly.offline.plot(self.fig, filename = filename)
-        result = plotly.offline.plot(self.fig, include_plotlyjs = 'cdn', output_type = 'div')
+        result = plotly.offline.plot(self.fig, include_plotlyjs = False, output_type = 'div')
         return result
 
 
@@ -570,20 +570,19 @@ class rayshow():
             triangle = triangle.detach().numpy()
         if len(triangle.shape) == 2:
             triangle = np.expand_dims(triangle, axis=0)
-        for triangle_id in range(triangle.shape[0]):
-            current_triangle = triangle[triangle_id]
-            point_start = np.array([
-                                    current_triangle[0],
-                                    current_triangle[0],
-                                    current_triangle[1]
-                                   ])
-            point_end = np.array([
-                                  current_triangle[1],
-                                  current_triangle[2],
-                                  current_triangle[2]
-                                 ])
-            self.add_line(point_start, point_end, row = row, column = column, dash = dash, color = color, show_legend = show_legend)
-
+        current_triangle = triangle.reshape(-1, 3)
+        self.fig.add_trace(
+                           go.Mesh3d(
+                                     x = current_triangle[:, 0],
+                                     y = current_triangle[:, 1],
+                                     z = current_triangle[:, 2],
+                                     color = color,
+                                     opacity = self.settings["opacity"],
+                                     showlegend = show_legend
+                                    ),
+                           row = row,
+                           col = column,
+                          )            
 
 
     def add_line(self, point_start, point_end, row = 1, column = 1, dash = None, color = 'red', show_legend = False):

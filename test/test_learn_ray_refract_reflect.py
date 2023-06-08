@@ -55,8 +55,8 @@ def test():
                                                     marker_size = 3.,
                                                     subplot_titles = ['Refraction example', 'Reflection example']
                                                    ) # (1)
-        ray_diagram.add_triangle(triangle, column = 1, color = 'black')
-        ray_diagram.add_triangle(triangle, column = 2, color = 'black')
+        ray_diagram.add_triangle(triangle, column = 1, color = 'orange')
+        ray_diagram.add_triangle(triangle, column = 2, color = 'orange')
         ray_diagram.add_point(rays[:, 0], column = 1, color = 'blue')
         ray_diagram.add_point(rays[:, 0], column = 2, color = 'blue')
         ray_diagram.add_line(rays[:, 0], normals[:, 0], column = 1, color = 'blue')
@@ -72,7 +72,9 @@ def test():
         ray_diagram.add_point(normals[:, 0], column = 1, color = colors)
         ray_diagram.add_point(normals[:, 0], column = 2, color = colors)
         html = ray_diagram.save_offline()
-        print(html)
+        markdown_file = open('ray.txt', 'w')
+        markdown_file.write(html)
+        markdown_file.close()
     assert True == True
    
 

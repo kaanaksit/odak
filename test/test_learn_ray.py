@@ -58,7 +58,9 @@ def test():
         ray_diagram.add_point(z_axis, color = 'black')
         ray_diagram.add_line(starting_point, z_axis, color = 'black', dash = 'dash')
         html = ray_diagram.save_offline()
-        print(html)
+        markdown_file = open('ray.txt', 'w')
+        markdown_file.write(html)
+        markdown_file.close()
     assert True == True
 
 

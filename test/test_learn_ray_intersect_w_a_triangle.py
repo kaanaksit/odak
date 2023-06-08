@@ -36,7 +36,7 @@ def test():
     visualize = False # (1)
     if visualize:
         ray_diagram = odak.visualize.plotly.rayshow(line_width = 3., marker_size = 3.) # (1)
-        ray_diagram.add_triangle(triangle, color = 'black')
+        ray_diagram.add_triangle(triangle, color = 'orange')
         ray_diagram.add_point(rays[:, 0], color = 'blue')
         ray_diagram.add_line(rays[:, 0], normals[:, 0], color = 'blue')
         colors = []
@@ -47,7 +47,9 @@ def test():
                 colors.append('red')
         ray_diagram.add_point(normals[:, 0], color = colors)
         html = ray_diagram.save_offline()
-        print(html)
+        markdown_file = open('ray.txt', 'w')
+        markdown_file.write(html)
+        markdown_file.close()
     assert True == True
    
 

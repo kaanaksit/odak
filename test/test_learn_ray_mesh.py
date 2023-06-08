@@ -11,20 +11,24 @@ def test():
     device = torch.device('cpu')
     final_target = torch.tensor([-2., -2., 10.], device = device)
     final_surface = odak.learn.raytracing.define_plane(point = final_target)
-    mesh = odak.learn.raytracing.planar_mesh(size = [1.2, 1.2], number_of_meshes = [5, 5], device = device)
+    mesh = odak.learn.raytracing.planar_mesh(
+                                             size = [1.1, 1.1], 
+                                             number_of_meshes = [9, 9], 
+                                             device = device
+                                            )
     start_points, _, _, _ = odak.learn.tools.grid_sample(
-                                                         no = [20, 20],
+                                                         no = [11, 11],
                                                          size = [1., 1.],
                                                          center = [2., 2., 10.]
                                                         )
     end_points, _, _, _ = odak.learn.tools.grid_sample(
-                                                       no = [20, 20],
+                                                       no = [11, 11],
                                                        size = [1., 1.],
                                                        center = [0., 0., 0.]
                                                       )
     start_points = start_points.to(device)
     end_points = end_points.to(device)
-    loss_function = torch.nn.MSELoss()
+    loss_function = torch.nn.MSELoss(reduction = 'sum')
     learning_rate = 2e-3
     optimizer = torch.optim.AdamW([mesh.heights], lr = learning_rate)
     rays = odak.learn.raytracing.create_ray_from_two_points(start_points, end_points)
@@ -52,23 +56,24 @@ def test():
     visualize = False
     if visualize:
         ray_diagram = odak.visualize.plotly.rayshow(
-                                                    rows = 2,
+                                                    rows = 1,
                                                     columns = 2,
                                                     line_width = 3.,
                                                     marker_size = 1.,
                                                     subplot_titles = ['Before optimization', 'After optimization']
                                                    ) 
         for triangle_id in range(triangles.shape[0]):
-            ray_diagram.add_triangle(start_triangles[triangle_id], row = 1, column = 1, color = 'black')
-            ray_diagram.add_triangle(triangles[triangle_id], row = 1, column = 2, color = 'black')
-            ray_diagram.add_point(start_reflected_rays[:, 0], row = 1, column = 1, color = 'red')
-            ray_diagram.add_point(reflected_rays[:, 0], row = 1, column = 2, color = 'red')
-            ray_diagram.add_point(start_final_normals[:, 0], row = 2, column = 1, color = 'blue')
-            ray_diagram.add_point(final_target, row = 2, column = 1, color = 'green')
-            ray_diagram.add_point(final_normals[:, 0], row = 2, column = 2, color = 'blue')
-            ray_diagram.add_point(final_target, row = 2, column = 2, color = 'green')
+            ray_diagram.add_triangle(
+                                     start_triangles[triangle_id], 
+                                     row = 1, 
+                                     column = 1, 
+                                     color = 'orange'
+                                    )
+            ray_diagram.add_triangle(triangles[triangle_id], row = 1, column = 2, color = 'orange')
         html = ray_diagram.save_offline()
-        print(html)
+        markdown_file = open('ray.txt', 'w')
+        markdown_file.write(html)
+        markdown_file.close()
     assert True == True
       
 
