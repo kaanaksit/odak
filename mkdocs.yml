@@ -109,9 +109,12 @@ plugins:
          - custom-skip-class-name
        auto_caption: false
        caption_position: bottom
+   - bibtex:
+      bib_file: "docs/bibliography.bib"
 
 markdown_extensions:
    - abbr
+   - footnotes
    - toc:
        permalink: true
        toc_depth: 4

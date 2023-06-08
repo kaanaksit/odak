@@ -135,7 +135,7 @@ Here are some questions and answers related to the course that readers may ask:
     @book{aksit2024computationallight,
       title = {Computational Light},
       author = {Ak{\c{s}}it, Kaan},
-      booktitle = {Computational Light Course},
+      booktitle = {Computational Light Course Notes},
       year = {2024}
     }
     ```

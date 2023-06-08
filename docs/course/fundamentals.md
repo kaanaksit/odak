@@ -854,6 +854,14 @@ Please note that we will use this information in this course's following section
     This chapter is vital for establishing a means to complete your assignments and could help formulate a suitable base to collaborate and work with [my research group](https://complightlab.com) in the future or other experts in the field.
 
 
+??? tip end "Did you know that Computer Science misses basic tool education?"
+    The classes that Computer Science programs offer around the globe are commonly missing basic tool education.
+    Students often spend a large amount of time to learn tools while they are also learning an advanced topic.
+    This section of our course gave you a quick overview.
+    But you may want to go beyond and learn more about many more basic aspects of Computer Science such as using shell tools, editors, metaprogramming or security.
+    [The missing semester of your CS education](https://missing.csail.mit.edu/) offers an online resource for you to follow up and learn more.
+    The content of the mentioned course is mostly developed by instructors from [Massachusetts Institute of Technology].
+
 !!! warning end "Reminder"
     We host a Slack group with more than 300 members.
     This Slack group focuses on the topics of rendering, perception, displays and cameras.

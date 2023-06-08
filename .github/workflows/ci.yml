@@ -22,6 +22,7 @@ jobs:
       - run: pip install mkdocs-glightbox
       - run: pip install mkdocstrings
       - run: pip install mkdocs-material
+      - run: pip install mkdocs-bibtex
       - run: pip install pytkdocs[numpy-style]
       - run: pip install mkdocstrings-python
       - run: mkdocs gh-deploy --force
