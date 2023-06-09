@@ -1,5 +1,6 @@
 import torch
-from .ray import propagate_ray
+from tqdm import tqdm
+from .ray import propagate_ray, create_ray_from_two_points
 from .primitives import is_it_on_triangle, center_of_triangle
 
 
@@ -88,25 +89,93 @@ def reflect(input_ray, normal):
     return output_ray
 
 
-def intersect_w_triangle(ray, triangle):
+def intersect_w_sphere(ray, sphere, learning_rate = 2e-1, number_of_steps = 5000, error_threshold = 1e-2):
     """
-    Definition to find intersection point of a ray with a triangle. Returns False for each variable if the ray doesn't intersect with a given triangle.
+    Definition to find the intersection between ray(s) and sphere(s).
 
     Parameters
     ----------
-    ray          : torch.tensor
-                   A ray [1 x 2 x 3] or a batch of ray [m x 2 x 3].
-    triangle     : torch.tensor
-                   Set of points in X,Y and Z to define a single triangle [1 x 3 x 3].
+    ray                 : torch.tensor
+                          Input ray(s).
+                          Expected size is [1 x 2 x 3] or [m x 2 x 3].
+    sphere              : torch.tensor
+                          Input sphere.
+                          Expected size is [1 x 4].
+    learning_rate       : float
+                          Learning rate used in the optimizer for finding the propagation distances of the rays.
+    number_of_steps     : int
+                          Number of steps used in the optimizer.
+    error_threshold     : float
+                          The error threshold that will help deciding intersection or no intersection.
+
+    Returns
+    -------
+    intersecting_ray    : torch.tensor
+                          Ray(s) that intersecting with the given sphere.
+                          Expected size is [n x 2 x 3], where n could be any real number.
+    intersecting_normal : torch.tensor
+                          Normal(s) for the ray(s) intersecting with the given sphere
+                          Expected size is [n x 2 x 3], where n could be any real number.
+
+    """
+    if len(ray.shape) == 2:
+        ray = ray.unsqueeze(0)
+    if len(sphere.shape) == 1:
+        sphere = sphere.unsqueeze(0)
+    distance = torch.zeros(ray.shape[0], device = ray.device, requires_grad = True)
+    loss_l2 = torch.nn.MSELoss(reduction = 'sum')
+    optimizer = torch.optim.AdamW([distance], lr = learning_rate)    
+    t = tqdm(range(number_of_steps), leave = False, dynamic_ncols = True)
+    for step in t:
+        optimizer.zero_grad()
+        propagated_ray = propagate_ray(ray, distance)
+        test = torch.abs((propagated_ray[:, 0, 0] - sphere[:, 0]) ** 2 + (propagated_ray[:, 0, 1] - sphere[:, 1]) ** 2 + (propagated_ray[:, 0, 2] - sphere[:, 2]) ** 2 - sphere[:, 3] ** 2)
+        loss = loss_l2(
+                       test,
+                       torch.zeros_like(test)
+                      )
+        loss.backward(retain_graph = True)
+        optimizer.step()
+        t.set_description('Sphere intersection loss: {}'.format(loss.item()))
+    check = test < error_threshold
+    intersecting_ray = propagate_ray(ray[check == True], distance[check == True])
+    intersecting_normal = create_ray_from_two_points(
+                                                     sphere[:, 0:3],
+                                                     intersecting_ray[:, 0]
+                                                    )
+    return intersecting_ray, intersecting_normal, distance, check
+
+
+def intersect_w_triangle(ray, triangle):
+    """
+    Definition to find intersection point of a ray with a triangle. 
+
+    Parameters
+    ----------
+    ray                 : torch.tensor
+                          A ray [1 x 2 x 3] or a batch of ray [m x 2 x 3].
+    triangle            : torch.tensor
+                          Set of points in X,Y and Z to define a single triangle [1 x 3 x 3].
 
     Returns
     ----------
-    normal       : torch.tensor
-                   Surface normal at the point of intersection.
-                   Expected size is [1 x 2 x 3] or [m x 2 x 3] depending on the input.
-    distance     : float
-                   Distance in between a starting point of a ray and the intersection point with a given triangle.
-                   Expected size is [1 x 1] or [m x 1] depending on the input.
+    normal              : torch.tensor
+                          Surface normal at the point of intersection with the surface of triangle.
+                          This could also involve surface normals that are not on the triangle.
+                          Expected size is [1 x 2 x 3] or [m x 2 x 3] depending on the input.
+    distance            : float
+                          Distance in between a starting point of a ray and the intersection point with a given triangle.
+                          Expected size is [1 x 1] or [m x 1] depending on the input.
+    intersecting_ray    : torch.tensor
+                          Rays that intersect with the triangle plane and on the triangle.
+                          Expected size is [1 x 2 x 3] or [m x 2 x 3] depending on the input.
+    intersecting_normal : torch.tensor
+                          Normals that intersect with the triangle plane and on the triangle.
+                          Expected size is [1 x 2 x 3] or [m x 2 x 3] depending on the input.
+    check               : torch.tensor
+                          A list that provides a bool as True or False for each ray used as input.
+                          A test to see is a ray could be on the given triangle.
+                          Expected size is [1] or [m].
     """
     if len(triangle.shape) == 2:
        triangle = triangle.unsqueeze(0)

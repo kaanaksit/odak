@@ -144,3 +144,31 @@ def is_it_on_triangle(point_to_check, triangle):
     v = (dot00 * dot12 - dot01 * dot02) * invDenom
     result = (u >= 0.) & (v >= 0.) & ((u + v) < 1)
     return result
+
+
+def define_sphere(center = torch.tensor([[0., 0., 0.]]), radius = torch.tensor([1.])):
+    """
+    Definition to define a sphere.
+
+    Parameters
+    ----------
+    center      : torch.tensor
+                  Center of the sphere(s) along XYZ axes.
+                  Expected size is [3], [1, 3] or [m, 3].
+    radius      : torch.tensor
+                  Radius of that sphere(s).
+                  Expected size is [1], [1, 1], [m] or [m, 1].
+
+    Returns
+    -------
+    parameters  : torch.tensor
+                  Parameters of defined sphere(s).
+                  Expected size is [1, 3] or [m x 3].
+    """
+    if len(radius.shape) == 1:
+        radius = radius.unsqueeze(0)
+    if len(center.shape) == 1:
+        center = center.unsqueeze(1)
+    parameters = torch.cat((center, radius), dim = 1)
+    return parameters
+                  

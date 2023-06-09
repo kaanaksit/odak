@@ -546,6 +546,51 @@ class rayshow():
                           )
 
 
+    def add_sphere(self, sphere, row = 1, column = 1, dash = None, color = 'red', show_legend = False):
+        """
+        Definition to add a triangle to the figure.
+
+        Parameters
+        ----------
+        sphere         : numpy.array or torch.tensor
+                         Sphere, expected size is [1 x 4].
+        row            : int
+                         Row number of the figure.
+        column         : int
+                         Column number of the figure.
+        dash           : str
+                         Dash style of the line (e.g., dot, dash). Default is None.
+        color          : str
+                         Color of the lune to be drawn.
+        show_legend    : bool
+                         Set True to enable legend for the line.
+        """
+        if torch.is_tensor(sphere) == True:
+            sphere = sphere.detach().numpy()
+        if len(sphere.shape) == 1:
+            sphere = np.expand_dims(sphere, axis=0)
+        theta = np.linspace(0, 2 * np.pi, 100)
+        phi = np.linspace(0, np.pi, 100)
+        x = np.outer(np.cos(theta), np.sin(phi)) * sphere[:, 3] + sphere[:, 0]
+        y = np.outer(np.sin(theta), np.sin(phi)) * sphere[:, 3] + sphere[:, 1]
+        z = np.outer(np.ones(100), np.cos(phi)) * sphere[:, 3] + sphere[:, 2]
+        self.fig.add_trace(
+                           go.Surface(
+                                      x = x,
+                                      y = y,
+                                      z = z,
+                                    #  color = color,
+                                      opacity = self.settings["opacity"],
+                                      showlegend = show_legend
+                                     ),
+                           row = row,
+                           col = column,
+                          )            
+
+       
+
+
+
     def add_triangle(self, triangle, row = 1, column = 1, dash = None, color = 'red', show_legend = False):
         """
         Definition to add a triangle to the figure.
@@ -553,7 +598,7 @@ class rayshow():
         Parameters
         ----------
         triangle       : numpy.array or torch.tensor
-                         Triangle, expected size is [3 x 3] or [m x 3 x 3]
+                         Triangle, expected size is [3 x 3] or [m x 3 x 3].
         row            : int
                          Row number of the figure.
         column         : int
