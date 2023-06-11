@@ -216,7 +216,10 @@ class multiplane_loss():
                             Returns a copy of the normalized quantized depth map.
 
         """
-        return self.targets.detach().clone(), self.focus_target.detach().clone(), self.target_depth.detach().clone() / (self.number_of_planes - 1)
+        divider = self.number_of_planes - 1
+        if divider == 0:
+            divider = 1
+        return self.targets.detach().clone(), self.focus_target.detach().clone(), self.target_depth.detach().clone() / divider
 
 
     def set_targets(self):
