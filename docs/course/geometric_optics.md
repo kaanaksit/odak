@@ -9,9 +9,9 @@
 
 Modeling light plays a crucial role in describing events based on light and helps designing mechanisms based on light (e.g., Realistic graphics in a video game, display or camera).
 This chapter introduces the most basic description of light using geometric rays, also known as raytracing.
-Raytracing has a long history, from ancient Greece or Islamic scholars to Physicists in the last couple of centuries or current Computer Graphics scientists.
-We will not cover the history of raytracing.
-Instead, we will focus on how we implement things to build "things" with raytracing in the future.
+Raytracing has a long history, from ancient times to current Computer Graphics.
+Here, we will not cover the history of raytracing.
+Instead, we will focus on how we implement simulations to build "things" with raytracing in the future.
 As we provide algorithmic examples to support our descriptions, readers should be able to simulate light on their computers using the provided descriptions.
 
 
@@ -36,7 +36,7 @@ As we provide algorithmic examples to support our descriptions, readers should b
 
 We have to define what "a ray" is.
 A ray has a starting point in Euclidean space ($x_0, y_0, z_0 \in \mathbb{R}$).
-We also have to define direction cosines to provide a direction for rays.
+We also have to define direction cosines to provide the directions for rays.
 Direction cosines are three angles of a ray between the XYZ axis and that ray ($\theta_x, \theta_y, \theta_z \in \mathbb{R}$).
 To calculate direction cosines, we must choose a point on that ray as $x_1, y_1,$ and $z_1$ and we calculate its distance to the starting point of $x_0, y_0$ and $z_0$:
 
@@ -62,7 +62,7 @@ cos(\theta_z) = \frac{z_{distance}}{s}.
 $$
 
 
-Now that we know how to define a ray with a starting point, $x_0, y_0, z_0$ and a direction cosine, $cos(\theta_x), cos(\theta_y), cos(\theta_z)$, let us carefully analyze the parameters, returns, and source code of the provided two following functions in `odak` dedicated to creating a ray or rays.
+Now that we know how to define a ray with a starting point, $x_0, y_0, z_0$ and a direction cosine, $cos(\theta_x), cos(\theta_y), cos(\theta_z)$, let us carefully analyze the parameters, returns, and source code of the provided two following functions in `odak` dedicated to creating a ray or multiple rays.
 
 
 === ":octicons-file-code-16: `odak.learn.raytracing.create_ray`"
@@ -117,7 +117,7 @@ I also leave comments near some lines explaining the code in steps.
 
     1. Required libraries are imported.
     2. Defining a starting point, in order X, Y and Z locations.
-       Size of starting point could be [1] or [1, 1].
+       Size of starting point could be s1] or [1, 1].
     3. Defining some end points on a plane in grid fashion.
     4. `odak.learn.raytracing.create_ray_from_two_points` is verified with an example! Let's move on to `odak.learn.raytracing.create_ray`.
     5. Creating starting points with `odak.learn.tools.grid_sample` and defining some angles as the direction using `torch.randn`.
@@ -155,6 +155,7 @@ The proper way to draw many rays lies in modern path-tracing renderers such as [
 
     If you know any other, please share it with the class so that they also learn more about other renderers.
 
+
 ## Intersecting rays with surfaces :material-alert-decagram:{ .mdx-pulse title="Too important!" }
 
 
@@ -175,17 +176,32 @@ $$
 
 
 Where $r$ represents the diameter of that sphere, $x_0, y_0, z_0$ defines the center location of that sphere, and $x, y, z$ are points on the surface of a sphere.
-When testing if a point is on a sphere, we use the above equation but insert the point to be tested in the location of $x, y, z$.
+When testing if a point is on a sphere, we use the above equation by inserting the point to be tested as $x, y, z$ into that equation.
 In other words, to find a ray and sphere intersection, we must identify a distance that propagates our rays a certain amount and lends on a point on that sphere, and we can use the above sphere equation for identifying the intersection point of that rays.
+As long the surface equation is well degined, the same strategy can be used for any surfaces.
 In addition, if needed for future purposes (e.g., reflecting or refracting light off the surface of that sphere), we can also calculate the surface normal of that sphere by drawing a line by defining a ray starting from the center of that sphere and propagating towards the intersection point.
+Let us examine, how we can identify intersection points for a set of given rays and a sphere by examining the below function.
 
 
-=== ":octicons-file-code-16: `odak.learn.raytracing.intersect_w_triangle`"
+=== ":octicons-file-code-16: `odak.learn.raytracing.intersect_w_sphere`"
 
-    ::: odak.learn.raytracing.intersect_w_triangle
+    ::: odak.learn.raytracing.intersect_w_sphere
 
 
-Text goes here.
+The `odak.learn.raytracing.intersect_w_sphere` function uses an optimizer to identify intersection points for each ray.
+Instead, a function could have accomplished the task with a closed-form solution without iterating over the intersection test, which could have been much faster than the current function.
+If you are curious about how to fix the highlighted issue, you may want to see the challenge provided below.
+
+
+??? abstract end "Challenge: Arbitrary surfaces"
+    In light of the given information, we challenge readers to create a new function inside `odak.learn.raytracing` that replaces the current `intersect_w_sphere` function.
+    In addition, the current unit test `test/test_learn_ray_intersect_w_a_sphere.py` has to adopt this new function.
+    `odak.learn.raytracing` submodule also misses functions for supporting arbitrary surfaces.
+    A function and a new unit test are needed to improve the submodule.
+    To add these to `odak,` you can rely on the `pull request` feature on GitHub.
+
+
+Let us examine how we can use the provided sphere intersection function with an example provided below.
 
 
 === ":octicons-file-code-16: `test_learn_ray_intersect_w_a_sphere.py`"
