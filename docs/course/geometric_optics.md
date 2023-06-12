@@ -156,6 +156,16 @@ The proper way to draw many rays lies in modern path-tracing renderers such as [
     If you know any other, please share it with the class so that they also learn more about other renderers.
 
 
+??? abstract end "[Challenge: Blender meets Odak](https://github.com/kaanaksit/odak/discussions/71)"
+    In light of the given information, we challenge readers to create a new submodule for Odak.
+    Note that Odak has `odak.visualize.blender` submodule.
+    However, at the time of this writing, this submodule works as a server that sends commands to a program that has to be manually triggered inside Blender.
+    Odak seeks an upgrade to this submodule, where users can draw rays, meshes, or parametric surfaces easily in Blender with commands from Odak.
+    This newly upgraded submodule should require no manual processes.
+    To add these to `odak,` you can rely on the `pull request` feature on GitHub.
+    You can also create a new `engineering note` for your new submodule in `docs/notes/odak_meets_blender.md`.
+
+
 ## Intersecting rays with surfaces :material-alert-decagram:{ .mdx-pulse title="Too important!" }
 
 
@@ -193,12 +203,13 @@ Instead, a function could have accomplished the task with a closed-form solution
 If you are curious about how to fix the highlighted issue, you may want to see the challenge provided below.
 
 
-??? abstract end "Challenge: Arbitrary surfaces"
-    In light of the given information, we challenge readers to create a new function inside `odak.learn.raytracing` that replaces the current `intersect_w_sphere` function.
+??? abstract end "[Challenge: Raytracing arbitrary surfaces](https://github.com/kaanaksit/odak/discussions/72)"
+    In light of the given information, we challenge readers to create a new function inside `odak.learn.raytracing` submodule that replaces the current `intersect_w_sphere` function.
     In addition, the current unit test `test/test_learn_ray_intersect_w_a_sphere.py` has to adopt this new function.
-    `odak.learn.raytracing` submodule also misses functions for supporting arbitrary surfaces.
-    A function and a new unit test are needed to improve the submodule.
+    `odak.learn.raytracing` submodule also needs new functions for supporting arbitrary surfaces (parametric).
+    New unit tests are needed to improve the submodule accordingly.
     To add these to `odak,` you can rely on the `pull request` feature on GitHub.
+    You can also create a new `engineering note` for arbitrary surfaces in `docs/notes/raytracing_arbitrary_surfaces.md`.
 
 
 Let us examine how we can use the provided sphere intersection function with an example provided below.
@@ -210,8 +221,8 @@ Let us examine how we can use the provided sphere intersection function with an 
     --8<-- "test/test_learn_ray_intersect_w_a_sphere.py"
     ```
 
-    1. Uncomment for running visualization.
-    2. Returning intersection normals as new rays, distances from starting point of input rays and a check which returns True if intersection points are inside the triangle.
+    1. Here we provide an example use case for `odak.learn.raytracing.intersect_w_sphere` by providing a sphere and a batch of sample rays.
+    2. Uncomment for running visualization.
 
 
 <figure markdown>
@@ -220,9 +231,28 @@ Let us examine how we can use the provided sphere intersection function with an 
 </figure>
 
 
-=== ":octicons-file-code-16: `odak.learn.raytracing.intersect_w_triangle`"
+This section shows us how to operate with known geometric shapes, precisely spheres.
+However, not every shape could be defined using parametric modeling (e.g., nonlinearities such as discontinuities on a surface).
+We will look into another method in the next section, an approach used by folks working in Computer Graphics.
 
-    ::: odak.learn.raytracing.intersect_w_triangle
+
+## Intersecting rays with meshes :material-alert-decagram:{ .mdx-pulse title="Too important!" }
+
+
+:octicons-info-24: Informative ·
+:octicons-beaker-24: Practical
+
+
+Parametric surfaces provide ease in defining shapes and geometries in various fields, including Optics and Computer Graphics.
+However, not every object in a given scene could easily be described using parametric surfaces.
+In many cases, including modern Computer Graphics, triangles formulate the smallest particle of an object or a shape.
+These triangles altogether form meshes that define objects and shapes.
+For this purpose, we will review source codes, parameters, and returns of three utility functions here.
+We will first review `odak.learn.raytracing.intersect_w_surface` to understand how one can calculate the intersection of a ray with a given plane.
+Later, we review `odak.learn.raytracing.is_it_on_triangle` function, which checks if an intersection point on a given surface is inside a triangle on that surface.
+Finally, we will review `odak.learn.raytracing.intersect_w_triangle` function.
+This last function combines both reviewed functions into a single function to identify the intersection between rays and a triangle.
+
 
 === ":octicons-file-code-16: `odak.learn.raytracing.intersect_w_surface`"
 
@@ -231,6 +261,10 @@ Let us examine how we can use the provided sphere intersection function with an 
 === ":octicons-file-code-16: `odak.learn.raytracing.is_it_on_triangle`"
 
     ::: odak.learn.raytracing.is_it_on_triangle
+
+=== ":octicons-file-code-16: `odak.learn.raytracing.intersect_w_triangle`"
+
+    ::: odak.learn.raytracing.intersect_w_triangle
 
 
 Text will go here.

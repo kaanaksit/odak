@@ -30,9 +30,9 @@ def test():
     intersecting_rays, intersecting_normals, _, check = odak.learn.raytracing.intersect_w_sphere(rays, sphere)
 
 
-    visualize = False # (3)
+    visualize = False # (2)
     if visualize:
-        ray_diagram = odak.visualize.plotly.rayshow(line_width = 3., marker_size = 3.) # (1)
+        ray_diagram = odak.visualize.plotly.rayshow(line_width = 3., marker_size = 3.)
         ray_diagram.add_point(rays[:, 0], color = 'blue')
         ray_diagram.add_line(rays[:, 0][check == True], intersecting_rays[:, 0], color = 'blue')
         ray_diagram.add_sphere(sphere, color = 'orange')
