@@ -7,13 +7,17 @@ from .primitives import is_it_on_triangle, center_of_triangle
 def refract(vector, normvector, n1, n2, error = 0.01):
     """
     Definition to refract an incoming ray.
+    Used method described in G.H. Spencer and M.V.R.K. Murty, "General Ray-Tracing Procedure", 1961.
+
 
     Parameters
     ----------
     vector         : torch.tensor
                      Incoming ray.
+                     Expected size is [2, 3], [1, 2, 3] or [m, 2, 3].
     normvector     : torch.tensor
                      Normal vector.
+                     Expected size is [2, 3], [1, 2, 3] or [m, 2, 3]].
     n1             : float
                      Refractive index of the incoming medium.
     n2             : float
@@ -25,6 +29,7 @@ def refract(vector, normvector, n1, n2, error = 0.01):
     -------
     output         : torch.tensor
                      Refracted ray.
+                     Expected size is [1, 2, 3]
     """
     if len(vector.shape) == 2:
         vector = vector.unsqueeze(0)
@@ -44,8 +49,6 @@ def refract(vector, normvector, n1, n2, error = 0.01):
        deltav = 2 * (to + a)
        to     = to - v / deltav
        eps    = abs(oldto - to)
-    if num > 5000:
-       return False
     output = torch.zeros_like(vector)
     output[:, 0, 0] = normvector[:, 0, 0]
     output[:, 0, 1] = normvector[:, 0, 1]
@@ -58,29 +61,32 @@ def refract(vector, normvector, n1, n2, error = 0.01):
 
 def reflect(input_ray, normal):
     """ 
-    Definition to reflect an incoming ray from a surface defined by a surface normal. Used method described in G.H. Spencer and M.V.R.K. Murty, "General Ray-Tracing Procedure", 1961.
+    Definition to reflect an incoming ray from a surface defined by a surface normal. 
+    Used method described in G.H. Spencer and M.V.R.K. Murty, "General Ray-Tracing Procedure", 1961.
+
 
     Parameters
     ----------
     input_ray    : torch.tensor
-                   A vector/ray (2x3). It can also be a list of rays (nx2x3).
+                   A ray or rays.
+                   Expected size is [2 x 3], [1 x 2 x 3] or [m x 2 x 3].
     normal       : torch.tensor
-                   A surface normal (2x3). It also be a list of normals (nx2x3).
+                   A surface normal(s).
+                   Expected size is [2 x 3], [1 x 2 x 3] or [m x 2 x 3].
 
     Returns
     ----------
     output_ray   : torch.tensor
                    Array that contains starting points and cosines of a reflected ray.
+                   Expected size is [1 x 2 x 3] or [m x 2 x 3].
     """
     if len(input_ray.shape) == 2:
-        input_ray = input_ray.view((1, 2, 3))
+        input_ray = input_ray.unsqueeze(0)
     if len(normal.shape) == 2:
-        normal = normal.view((1, 2, 3))
+        normal = normal.unsqueeze(0)
     mu = 1
     div = normal[:, 1, 0]**2 + normal[:, 1, 1]**2 + normal[:, 1, 2]**2 + 1e-8
-    a = mu * (input_ray[:, 1, 0] * normal[:, 1, 0]
-              + input_ray[:, 1, 1] * normal[:, 1, 1]
-              + input_ray[:, 1, 2] * normal[:, 1, 2]) / div
+    a = mu * (input_ray[:, 1, 0] * normal[:, 1, 0] + input_ray[:, 1, 1] * normal[:, 1, 1] + input_ray[:, 1, 2] * normal[:, 1, 2]) / div
     a = a.unsqueeze(1)
     n = int(torch.amax(torch.tensor([normal.shape[0], input_ray.shape[0]])))
     output_ray = torch.zeros((n, 2, 3)).to(input_ray.device)
