@@ -13,7 +13,7 @@ def create_ray(xyz, abg):
                    List that contains X,Y and Z start locations of a ray.
                    Size could be [1 x 3], [3], [m x 3].
     abg          : torch.tensor
-                   List that contaings angles in degrees with respect to the X,Y and Z axes.
+                   List that contains angles in degrees with respect to the X,Y and Z axes.
                    Size could be [1 x 3], [3], [m x 3].
 
     Returns
