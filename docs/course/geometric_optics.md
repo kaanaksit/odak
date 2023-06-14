@@ -469,8 +469,14 @@ Instead, we suggest our readers follow the resources provided in other classes, 
 
 :octicons-info-24: Informative
 
+We can simulate light on a computer using various methods.
+We explain "raytracing" as one of these methods.
+Often, raytracing deals with light intensities, omitting many other aspects of light, like the phase or polarization of light.
+In addition, sending the right amount of rays from a light source into a scene in raytracing is always a struggle as an outstanding sampling problem.
+Raytracing creates many success stories in gaming (e.g., [NVIDIA RTX](https://www.nvidia.com/en-gb/geforce/rtx/) or [AMD Radeon Rays](https://gpuopen.com/radeon-rays/)) and optical component design (e.g., [Zemax](https://www.zemax.com/) or [Ansys Speos](https://www.ansys.com/products/optics-vr/ansys-speos)).
 
-We cover a basic introduction to how to model light as rays and how to use rays to optimize against a given target.
+
+Overall, we cover a basic introduction to how to model light as rays and how to use rays to optimize against a given target.
 Note that our examples resemble simple cases.
 This section aims to provide the readers with a suitable basis to get started with the raytracing of light in simulations.
 A dedicated and motivated reader could scale up from this knowledge to advance concepts in displays, cameras, visual perception, optical computing, and many other light-based applications.
