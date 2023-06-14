@@ -31,7 +31,7 @@ So in CGH, light travels from plane to plane, as depicted below.
 
 
 <figure markdown>
-  ![Image title](../../notes/holographic_light_transport_files/hologram_generation.png){ width="600" }
+  ![Image title](media/hologram_generation.png){ width="600" }
   <figcaption>A rendering showing how a slice (a.k.a. lightfield, optical field, hologram) propagates from one plane to another plane.</figcaption>
 </figure>
 
@@ -61,7 +61,7 @@ For example, blue color of a butterfly wing is a result of interference, and som
 
 
 <figure markdown>
-  ![Image title](media/intereference_example.png){ width="600" }
+  ![Image title](media/interference_examples.png){ width="600" }
   <figcaption>Two photographs showin some examples of light interference: (left) thin oil film creates rainbow interference patterns (CC BY-SA 2.5 by Wikipedia user John) and a soup bubble interference with light and creates vivid reflections (CC BY-SA 3.0 by Wikipedia user Brocken Inaglory).</figcaption>
 </figure>
 
