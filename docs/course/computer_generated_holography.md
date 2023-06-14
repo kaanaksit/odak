@@ -52,3 +52,30 @@ If you recall our description of light, we explain that light is an electromagne
 Note that if we stick to $A cos(wt + \phi)$, each time to fields intersect, we have to deal with trigonometric conversion complexities like sampled in $A_0 cos(wt + \phi_0) + A_1 cos(wt + \phi_1)$, where the indices zero and one indicate the first and second fields.
 Instead of trigonometry, what people do in CGH is use complex numbers as a proxy.
 In its proxy form, a pixel value in a field is $A e^{-j \phi}$, where $j$ represents a complex number ($\sqrt{-1}$).
+Thus, the same intersection problem we dealt with using sophisticated trigonometry before could be turned into something as simple as $A_0 A_1 e^{-j(\phi_0 +\phi_1)}$.
+Please also note that the field gets modified as two fields collide here.
+In raytracing, when a ray intersects with another ray, it will be left unchanged.
+However, in the case of lightfields, they form a new field.
+This feature is called interference of light, which is not introduced in raytracing, and often raytracing omits this feature.
+For example, blue color of a butterfly wing is a result of interference, and some more examples of light interference from daily lives are provided in the figure below.
+
+
+<figure markdown>
+  ![Image title](media/intereference_example.png){ width="600" }
+  <figcaption>Two photographs showin some examples of light interference: (left) thin oil film creates rainbow interference patterns (CC BY-SA 2.5 by Wikipedia user John) and a soup bubble interference with light and creates vivid reflections (CC BY-SA 3.0 by Wikipedia user Brocken Inaglory).</figcaption>
+</figure>
+
+
+
+
+Now that we have established an easy way to describe a field let us look into how we use that in an actual simulation.
+Firstly, we can define two separate matrices to represent a field using real numbers:
+
+```python
+import torch
+
+amplitude = torch.tensor(100, 100, dtype = torch.float64)
+phase = torch.tensor(100, 100, dtype = torch.float64)
+```
+
+In the above example, 
