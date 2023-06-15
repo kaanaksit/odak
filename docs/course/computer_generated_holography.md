@@ -235,12 +235,25 @@ h(x,y)=\frac{e^{jkz}}{j\lambda z} e^{\frac{jk}{2z} (x^2+y^2)},
 $$
 
 where z represents the distance between a hologram plane and a target image plane.
-
-
 Note that beam propagation can also be learned for physical setups to avoid imperfections in a setup and to improve the image quality at an image plane:
+
 
 * [`Peng, Yifan, et al. "Neural holography with camera-in-the-loop training." ACM Transactions on Graphics (TOG) 39.6 (2020): 1-14.`](https://doi.org/10.1145/3414685.3417802) [@peng2020neural],
 * [`Chakravarthula, Praneeth, et al. "Learned hardware-in-the-loop phase retrieval for holographic near-eye displays." ACM Transactions on Graphics (TOG) 39.6 (2020): 1-18.`](https://doi.org/10.1145/3414685.3417846) [@chakravarthula2020learned],
 * [`Kavaklı, Koray, Hakan Urey, and Kaan Akşit. "Learned holographic light transport." Applied Optics (2021).`](https://doi.org/10.1364/AO.439401) [@kavakli2022learned].
+
+
+The above descriptions establish a mathematical understanding of beam propagation.
+Let us examine the implementation of a beam propagation method called `Bandlimited Angular Spectrum` by reviewing these two utility functions from `odak`:
+
+
+=== ":octicons-file-code-16: `odak.learn.wave.band_limited_angular_spectrum`"
+
+    ::: odak.learn.wave.band_limited_angular_spectrum
+
+=== ":octicons-file-code-16: `odak.learn.wave.propagate_beam`"
+
+    ::: odak.learn.wave.propagate_beam
+
 
 

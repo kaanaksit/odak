@@ -8,14 +8,23 @@ from ..tools import zero_pad, crop_center, generate_2d_gaussian
 from tqdm import tqdm
 
 
-def propagate_beam(field, k, distance, dx, wavelength, propagation_type='TR Fresnel', kernel=None, zero_padding=[False, False, False]):
+def propagate_beam(
+                   field, 
+                   k, 
+                   distance, 
+                   dx, 
+                   wavelength, 
+                   propagation_type='TR Fresnel', 
+                   kernel = None, 
+                   zero_padding = [False, False, False]
+                  ):
     """
     Definitions for various beam propagation methods mostly in accordence with "Computational Fourier Optics" by David Vuelz.
 
     Parameters
     ----------
     field            : torch.complex
-                       Complex field (MxN).
+                       Complex field [m x n].
     k                : odak.wave.wavenumber
                        Wave number of a wave, see odak.wave.wavenumber for more.
     distance         : float
@@ -25,16 +34,20 @@ def propagate_beam(field, k, distance, dx, wavelength, propagation_type='TR Fres
     wavelength       : float
                        Wavelength of the electric field.
     propagation_type : str
-                       Type of the propagation (TR Fresnel, Angular Spectrum, Bandlimited Angular Spectrum, Fraunhofer).
+                       Type of the propagation.
+                       The options are TR Fresnel, Angular Spectrum, Bandlimited Angular Spectrum, Fraunhofer.
     kernel           : torch.complex
                        Custom complex kernel.
     zero_padding     : list
-                       Zero padding the input field if the first item in the list set true. Zero padding in the Fourier domain if the second item in the list set to true. Cropping the result with half resolution if the third item in the list is set to true. Note that in Fraunhofer propagation, setting the second item True or False will have no effect.
+                       Zero padding the input field if the first item in the list set True.
+                       Zero padding in the Fourier domain if the second item in the list set to True.
+                       Cropping the result with half resolution if the third item in the list is set to true. 
+                       Note that in Fraunhofer propagation, setting the second item True or False will have no effect.
 
     Returns
     -------
-    result           : torch.complex128
-                       Final complex field (MxN).
+    result           : torch.complex
+                       Final complex field [m x n].
     """
     if zero_padding[0]:
         field = zero_pad(field)
@@ -210,7 +223,7 @@ def angular_spectrum(field, k, distance, dx, wavelength, zero_padding = False):
     return result
 
 
-def band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_padding=False):
+def band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_padding = False):
     """
     A definition to calculate bandlimited angular spectrum based beam propagation. For more 
     `Matsushima, Kyoji, and Tomoyoshi Shimobaba. "Band-limited angular spectrum method for numerical simulation of free-space propagation in far and near fields." Optics express 17.22 (2009): 19662-19673`.
@@ -218,7 +231,8 @@ def band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_paddi
     Parameters
     ----------
     field            : torch.complex
-                       Complex field (MxN).
+                       A complex field.
+                       The expected size is [m x n].
     k                : odak.wave.wavenumber
                        Wave number of a wave, see odak.wave.wavenumber for more.
     distance         : float
@@ -234,7 +248,7 @@ def band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_paddi
     Returns
     -------
     result           : torch.complex
-                       Final complex field (MxN).
+                       Final complex field [m x n].
     """
     distance = torch.tensor([distance]).to(field.device)
     nv, nu = field.shape[-1], field.shape[-2]
