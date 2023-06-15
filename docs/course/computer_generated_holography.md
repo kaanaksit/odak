@@ -38,6 +38,7 @@ In other terms, while raytracing traces rays, holography deals with surface-to-s
 
 Hologram is either a surface or a volume that modifies the light distribution of incoming light in terms of phase and amplitude.
 Diffraction gratings, Holographic Optical Elements, or Metasurfaces are good examples of holograms.
+Within this section, we also use the term hologram as a means to describe a lightfield or a slice of a lightfield.
 
 
 ### What is Computer-Generated Holography?
