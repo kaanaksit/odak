@@ -293,3 +293,17 @@ Let us also take a look at the saved images as a result of the above sample code
   ![Image title](media/intensities_before_and_after_propagation.png){ width="600" }
   <figcaption>Saved intensities before and after beam propagation (hologram and image plane intensities). This result is generated using "test/test_learn_beam_propagation.py".</figcaption>
 </figure>
+
+
+??? abstract end "[Challenge: Light transport on Arbitrary Surfaces](https://github.com/kaanaksit/odak/discussions/76)"
+    We know that we can propagate a hologram to any image plane at any distance.
+    This propagation is a plane-to-plane interaction.
+    However, there may be cases where a simulation involves finding light distribution over an arbitrary surface.
+    Conventionally, this could be achieved by propagating the hologram to multiple different planes and picking the results from each plane on the surface of that arbitrary surface.
+    We challenge our readers to code the mentioned baseline (multiple planes for arbitrary surfaces) and ask them to develop a beam propagation that is less computationally expensive and works for arbitrary surfaces (e.g., tilted planes or arbitrary shapes).
+    This development could either rely on classical approaches or involve learning-based methods.
+    The resultant method could be part of `odak.learn.wave` submodule as a new class `odak.learn.wave.propagate_arbitrary`.
+    In addition, a unit test `test/test_learn_propagate_arbitrary.py` has to adopt this new class.
+    To add these to `odak,` you can rely on the `pull request` feature on GitHub.
+    You can also create a new `engineering note` for arbitrary surfaces in `docs/notes/beam_propagation_arbitrary_surfaces.md`.
+
