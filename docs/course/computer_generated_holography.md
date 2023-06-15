@@ -1,12 +1,23 @@
+??? quote end "Narrate section"
+    <audio controls="controls">
+         <source type="audio/mp3" src="../media/computer_generated_holography.mp3"></source>
+    </audio>
+
+
 # Computer-Generated Holography
 
 
-In this section, we introduce Computer-Generated Holography (CGI) [@born2013principles, @goodman2005introduction] as another emerging method to simulate light.
-CGI offers an upgraded but more computationally expensive way to simulating light concerning the raytracing method described in the previous section.
-This section dives deep into CGI and will explain how CGI differs from raytracing as we go.
+In this section, we introduce Computer-Generated Holography (CGH) [@born2013principles, @goodman2005introduction] as another emerging method to simulate light.
+CGH offers an upgraded but more computationally expensive way to simulating light concerning the raytracing method described in the previous section.
+This section dives deep into CGH and will explain how CGH differs from raytracing as we go.
 
 
 ## What is holography?
+
+
+:octicons-info-24: Informative 
+
+
 Holography is a method in Optical sciences to represent light distribution using amplitude and phase of light.
 In much simpler terms, holography describes light distribution emitted from an object, scene, or illumination source over a surface.
 The primary difference of holography concerning raytracing is that it accounts not only amplitude or intensity of light but also the phase of light.
@@ -15,25 +26,35 @@ In other terms, while raytracing traces rays, holography deals with surface-to-s
 
 
 ??? tip end "Did you know this source?"
-    There is an active repository on GitHub, where latest CGI papers relevant to display technologies are listed.
+    There is an active repository on GitHub, where latest CGH papers relevant to display technologies are listed.
     Visit [GitHub:bchao1/awesome-holography](https://github.com/bchao1/awesome-holography) for more.
 
 
 
 ### What is a hologram?
+
+
+:octicons-info-24: Informative 
+
+
 Hologram is either a surface or a volume that modifies the light distribution of incoming light in terms of phase and amplitude.
 Diffraction gratings, Holographic Optical Elements, or Metasurfaces are good examples of holograms.
 
 
 ### What is Computer-Generated Holography?
+
+
+:octicons-info-24: Informative 
+
+
 It is the computerized version (discrete sampling) of holography.
 In other terms, whenever you can program the phase or amplitude of light, this will get us to Computer-Generated Holography.
 
 
-??? question end "Where can I find an extensive summary on CGI?"
-    You may be wondering about the greater physical details of CGI.
+??? question end "Where can I find an extensive summary on CGH?"
+    You may be wondering about the greater physical details of CGH.
     In this case, we suggest our readers watch the video below.
-    Please watch this video for an extensive summary on CGI [@kavakli2022optimizing].
+    Please watch this video for an extensive summary on CGH [@kavakli2022optimizing].
     <center> <iframe width="560" height="315" src="https://www.youtube.com/embed/z_AtSgct6_I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center>
 
 
@@ -136,10 +157,34 @@ Let us use this utility function to expand our previous code snippet and show ho
 
 ```python
 import torch
-import odak
+import odak # (1)
 
 amplitude = torch.tensor(100, 100, dtype = torch.float64)
 phase = torch.tensor(100, 100, dtype = torch.float64)
-field = odak.learn.wave.generate_complex_field(amplitude, phase)
+field = odak.learn.wave.generate_complex_field(amplitude, phase) # (2)
 ```
+
+1. Adding `odak` to our imports.
+2. Generating a field using `odak.learn.wave.generate_complex_field`.
+
+## Propagating a field in free space :material-alert-decagram:{ .mdx-pulse title="Too important!" }
+
+
+:octicons-info-24: Informative ·
+:octicons-beaker-24: Practical
+
+
+The next question we have to ask is related to the field we generated in our previous example.
+In raytracing, we propagate rays in space, whereas in CGH, we propagate a field described over a surface onto another target surface.
+So we need a transfer function that projects our field on another target surface.
+That is the point where free space beam propagation comes into play.
+As the name implies, free space beam propagation deals with propagating light in free space from one surface to another.
+This entire process of propagation is also referred to as light transport in the domains of Computer Graphics.
+In the rest of this section, we will explore means to simulate beam propagation on a computer.
+
+
+??? tip end "A good news for Matlab fans!"
+    We will indeed use `odak` to explore beam propagation.
+    However, there is also a book in the literature, `(Numerical simulation of optical wave propagation: With examples in MATLAB by Jason D. Schmidt](https://www.spiedigitallibrary.org/ebooks/PM/Numerical-Simulation-of-Optical-Wave-Propagation-with-Examples-in-MATLAB/eISBN-9780819483270/10.1117/3.866274?SSO=1)`[@schmidt2010numerical], that provides a crash course on beam propagation using MATLAB.
+
 
