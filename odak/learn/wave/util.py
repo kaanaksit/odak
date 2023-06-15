@@ -90,13 +90,16 @@ def generate_complex_field(amplitude, phase):
     ----------
     amplitude         : torch.tensor
                         Amplitude of the field.
+                        The expected size is [m x n] or [1 x m x n].
     phase             : torch.tensor
                         Phase of the field.
+                        The expected size is [m x n] or [1 x m x n].
 
     Returns
     -------
     field             : ndarray
                         Complex field.
+                        Depending on the input, the expected size is [m x n] or [1 x m x n].
     """
     field = amplitude * torch.cos(phase) + 1j * amplitude * torch.sin(phase)
     return field

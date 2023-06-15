@@ -185,6 +185,63 @@ In the rest of this section, we will explore means to simulate beam propagation 
 
 ??? tip end "A good news for Matlab fans!"
     We will indeed use `odak` to explore beam propagation.
-    However, there is also a book in the literature, `(Numerical simulation of optical wave propagation: With examples in MATLAB by Jason D. Schmidt](https://www.spiedigitallibrary.org/ebooks/PM/Numerical-Simulation-of-Optical-Wave-Propagation-with-Examples-in-MATLAB/eISBN-9780819483270/10.1117/3.866274?SSO=1)`[@schmidt2010numerical], that provides a crash course on beam propagation using MATLAB.
+    However, there is also a book in the literature, `[Numerical simulation of optical wave propagation: With examples in MATLAB by Jason D. Schmidt](https://www.spiedigitallibrary.org/ebooks/PM/Numerical-Simulation-of-Optical-Wave-Propagation-with-Examples-in-MATLAB/eISBN-9780819483270/10.1117/3.866274?SSO=1)`[@schmidt2010numerical], that provides a crash course on beam propagation using MATLAB.
+
+
+As we revisit the field we generated in the previous subsection, we remember that our field is a pixelated 2D surface.
+Each pixel in our fields, either a hologram or image plane, typically has a small size of a few micrometers (e.g., $8 \mu m$).
+How light travels from each one of these pixels on one surface to pixels on another is conceptually depicted as a figure at the beginning of this section (green wolf image with two planes).
+We will name that figure's first plane on the left as the hologram plane and the second as the image plane.
+In a nutshell, the contribution of a pixel on a hologram plane could be calculated by drawing rays to every pixel on the image plane.
+We draw rays from a point to a plane because in wave theory --what CGH follows--, light can diffract (a small aperture creating spherical waves as Huygens suggested).
+Each ray will have a certain distance, thus causing various delays in phase $\phi$.
+As long as the distance between planes is large enough, each ray will maintain an electric field that is in the same direction as the others (same polarization), thus able to interfere with other rays emerging from other pixels in a hologram plane.
+This simplified description oversimplifies solving the [Maxwell equations in electromagnetics](http://hyperphysics.phy-astr.gsu.edu/hbase/electric/maxeq.html).
+
+A simplified result of solving Maxwell's equation is commonly described using Rayleigh-Sommerfeld diffraction integrals. 
+For more on Rayleigh-Sommerfeld, consult [`Heurtley, J. C. (1973). Scalar Rayleigh–Sommerfeld and Kirchhoff diffraction integrals: a comparison of exact evaluations for axial points. JOSA, 63(8), 1003-1008.`](https://doi.org/10.1364/JOSA.63.001003) [@heurtley1973scalar].
+The first solution of the Rayleigh-Sommerfeld integral, also known as the Huygens-Fresnel principle, is expressed as follows:
+
+$$
+u(x,y)=\frac{1}{j\lambda} \int\!\!\!\!\int u_0(x,y)\frac{e^{jkr}}{r}cos(\theta)dxdy,
+$$
+
+where the field at a target image plane, $u(x,y)$, is calculated by integrating over every point of the hologram's area, $u_0(x,y)$.
+Note that, for the above equation, $r$ represents the optical path between a selected point over a hologram and a selected point in the image plane, theta represents the angle between these two points, k represents the wavenumber ($\frac{2\pi}{\lambda}$) and $\lambda$ represents the wavelength of light.
+In this described light transport model, optical fields, $u_0(x,y)$ and $u(x,y)$, are represented with a complex value,
+
+$$
+u_0(x,y)=A(x,y)e^{j\phi(x,y)},
+$$
+
+where $A$ represents the spatial distribution of amplitude and $\phi$ represents the spatial distribution of phase across a hologram plane.
+The described holographic light transport model is often simplified into a single convolution with a fixed spatially invariant complex kernel, $h(x,y)$ [@sypek1995light].
+
+$$
+u(x,y)=u_0(x,y) * h(x,y) =\mathcal{F}^{-1}(\mathcal{F}(u_0(x,y)) \mathcal{F}(h(x,y))).
+$$
+
+
+There are multiple variants of this simplified approach:
+
+* [`Matsushima, Kyoji, and Tomoyoshi Shimobaba. "Band-limited angular spectrum method for numerical simulation of free-space propagation in far and near fields." Optics express 17.22 (2009): 19662-19673.`](https://doi.org/10.1364/OE.17.019662) [@matsushima2009band],
+* [`Zhang, Wenhui, Hao Zhang, and Guofan Jin. "Band-extended angular spectrum method for accurate diffraction calculation in a wide propagation range." Optics letters 45.6 (2020): 1543-1546.`](https://doi.org/10.1364/OL.385553) [@zhang2020band],
+* [`Zhang, Wenhui, Hao Zhang, and Guofan Jin. "Adaptive-sampling angular spectrum method with full utilization of space-bandwidth product." Optics Letters 45.16 (2020): 4416-4419.`](https://doi.org/10.1364/OL.393111) [@zhang2020adaptive].
+
+
+In many cases, people choose to use the most common form of $h(x, y)$ described as
+
+$$
+h(x,y)=\frac{e^{jkz}}{j\lambda z} e^{\frac{jk}{2z} (x^2+y^2)},
+$$
+
+where z represents the distance between a hologram plane and a target image plane.
+
+
+Note that beam propagation can also be learned for physical setups to avoid imperfections in a setup and to improve the image quality at an image plane:
+
+* [`Peng, Yifan, et al. "Neural holography with camera-in-the-loop training." ACM Transactions on Graphics (TOG) 39.6 (2020): 1-14.`](https://doi.org/10.1145/3414685.3417802) [@peng2020neural],
+* [`Chakravarthula, Praneeth, et al. "Learned hardware-in-the-loop phase retrieval for holographic near-eye displays." ACM Transactions on Graphics (TOG) 39.6 (2020): 1-18.`](https://doi.org/10.1145/3414685.3417846) [@chakravarthula2020learned],
+* [`Kavaklı, Koray, Hakan Urey, and Kaan Akşit. "Learned holographic light transport." Applied Optics (2021).`](https://doi.org/10.1364/AO.439401) [@kavakli2022learned].
 
 
