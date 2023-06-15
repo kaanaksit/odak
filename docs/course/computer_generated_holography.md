@@ -6,24 +6,18 @@ CGI offers an upgraded but more computationally expensive way to simulating ligh
 This section dives deep into CGI and will explain how CGI differs from raytracing as we go.
 
 
-??? question end "Where can I find an extensive summary on CGI?"
-    You may be wondering about the greater physical details of CGI.
-    In this case, we suggest our readers watch the video below.
-    Please watch this video for an extensive summary on CGI [@kavakli2022optimizing].
-    <center> <iframe width="560" height="315" src="https://www.youtube.com/embed/z_AtSgct6_I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center>
-
-
-??? tip end "Did you know?"
-    There is an active repository on GitHub, where latest CGI papers relevant to display technologies are listed.
-    Visit [GitHub:bchao1/awesome-holography](https://github.com/bchao1/awesome-holography) for more.
-
-
 ## What is holography?
 Holography is a method in Optical sciences to represent light distribution using amplitude and phase of light.
 In much simpler terms, holography describes light distribution emitted from an object, scene, or illumination source over a surface.
 The primary difference of holography concerning raytracing is that it accounts not only amplitude or intensity of light but also the phase of light.
 In raytracing, the smallest building block that defines light is a ray, whereas, in holography, the building block is a light distribution over surfaces.
 In other terms, while raytracing traces rays, holography deals with surface-to-surface light transfer.
+
+
+??? tip end "Did you know this source?"
+    There is an active repository on GitHub, where latest CGI papers relevant to display technologies are listed.
+    Visit [GitHub:bchao1/awesome-holography](https://github.com/bchao1/awesome-holography) for more.
+
 
 
 ### What is a hologram?
@@ -34,6 +28,13 @@ Diffraction gratings, Holographic Optical Elements, or Metasurfaces are good exa
 ### What is Computer-Generated Holography?
 It is the computerized version (discrete sampling) of holography.
 In other terms, whenever you can program the phase or amplitude of light, this will get us to Computer-Generated Holography.
+
+
+??? question end "Where can I find an extensive summary on CGI?"
+    You may be wondering about the greater physical details of CGI.
+    In this case, we suggest our readers watch the video below.
+    Please watch this video for an extensive summary on CGI [@kavakli2022optimizing].
+    <center> <iframe width="560" height="315" src="https://www.youtube.com/embed/z_AtSgct6_I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center>
 
 
 ## Defining a slice of a lightfield :material-alert-decagram:{ .mdx-pulse title="Too important!" }
