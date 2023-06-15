@@ -308,3 +308,37 @@ Let us also take a look at the saved images as a result of the above sample code
     To add these to `odak,` you can rely on the `pull request` feature on GitHub.
     You can also create a new `engineering note` for arbitrary surfaces in `docs/notes/beam_propagation_arbitrary_surfaces.md`.
 
+
+## Optimizing holograms
+
+
+:octicons-info-24: Informative ·
+:octicons-beaker-24: Practical
+
+
+In the previous subsection, we propagate an input field (a.k.a. lightfield, hologram) to another plane, which we name an image plane.
+We can store any scene or object as a field.
+
+
+<figure markdown>
+  ![Image title](media/analog_hologram_example.gif){ width="600" }
+  <figcaption>A video showing analog hologram example from <a href="https://www.youtube.com/watch?v=nhgzWFos6m8">Zebra Imaging -- ZScape</a>.</figcaption>
+</figure>
+
+
+
+
+<figure markdown>
+  ![Image title](media/holographic_display.png){ width="600" }
+  <figcaption>A rendering showing a standard holographic display hardware.</figcaption>
+</figure>
+
+
+The below figure shows an example of photograph we capture from our holographic displays.
+
+<figure markdown>
+  ![Image title](media/computer_generated_hologram_example.png){ width="600" }
+  <figcaption>A series of photographs at various focuses capturing images from <a href="https://complightlab.com/publications/realistic_defocus_cgh/">our computer-generated holograms</a>.</figcaption>
+</figure>
+
+
