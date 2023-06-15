@@ -17,10 +17,10 @@ This section dives deep into CGH and will explain how CGH differs from raytracin
 
 :octicons-info-24: Informative 
 
-
 Holography is a method in Optical sciences to represent light distribution using amplitude and phase of light.
-In much simpler terms, holography describes light distribution emitted from an object, scene, or illumination source over a surface.
+In much simpler terms, holography describes light distribution emitted from an object, scene, or illumination source over a surface by treating the light as a wave.
 The primary difference of holography concerning raytracing is that it accounts not only amplitude or intensity of light but also the phase of light.
+Unlike classical raytracing, holography also includes diffraction and interference phenomena.
 In raytracing, the smallest building block that defines light is a ray, whereas, in holography, the building block is a light distribution over surfaces.
 In other terms, while raytracing traces rays, holography deals with surface-to-surface light transfer.
 
@@ -28,7 +28,6 @@ In other terms, while raytracing traces rays, holography deals with surface-to-s
 ??? tip end "Did you know this source?"
     There is an active repository on GitHub, where latest CGH papers relevant to display technologies are listed.
     Visit [GitHub:bchao1/awesome-holography](https://github.com/bchao1/awesome-holography) for more.
-
 
 
 ### What is a hologram?
