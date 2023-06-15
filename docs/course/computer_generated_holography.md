@@ -292,7 +292,7 @@ Let us also take a look at the saved images as a result of the above sample code
 
 <figure markdown>
   ![Image title](media/intensities_before_and_after_propagation.png){ width="600" }
-  <figcaption>Saved intensities before and after beam propagation (hologram and image plane intensities). This result is generated using "test/test_learn_beam_propagation.py".</figcaption>
+  <figcaption>Saved intensities before (left_ and after (right) beam propagation (hologram and image plane intensities). This result is generated using "test/test_learn_beam_propagation.py".</figcaption>
 </figure>
 
 
