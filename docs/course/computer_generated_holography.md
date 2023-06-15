@@ -166,6 +166,7 @@ field = odak.learn.wave.generate_complex_field(amplitude, phase) # (2)
 1. Adding `odak` to our imports.
 2. Generating a field using `odak.learn.wave.generate_complex_field`.
 
+
 ## Propagating a field in free space :material-alert-decagram:{ .mdx-pulse title="Too important!" }
 
 
@@ -255,5 +256,40 @@ Let us examine the implementation of a beam propagation method called `Bandlimit
 
     ::: odak.learn.wave.propagate_beam
 
+=== ":octicons-file-code-16: `odak.learn.wave.wavenumber`"
+
+    ::: odak.learn.wave.wavenumber
 
 
+Let us see how we can use the given beam propagation function with an example:
+
+
+=== ":octicons-file-code-16: `test_learn_beam_propagation.py`"
+
+
+    ```python 
+    --8<-- "test/test_learn_beam_propagation.py"
+    ```
+
+
+    1. Setting the wavelength of light in meters. We use 532 nm (green light) in this example.
+    2. Setting the physical size of a single pixel in our simulation. We use $6 \mu m$ pixel size (width and height are both $6 \mu m$.) 
+    3. Setting the distance between two planes, hologram and image plane. We set it as half a centimeterhere.
+    4. We set the propagation type to `Bandlimited Angular Spectrum`.
+    5. Here, we calculate a value named wavenumber, which we introduced while we were talking about the beam propagation functions.
+    6. Here, we assume that there is a rectangular light at the center of our hologram.
+    7. Here, we generate the field by combining amplitude and phase. 
+    8. Here, we zeropad and crop our field before and after the beam propagation to make sure that there is no aliasing in our results (see Nyquist criterion).
+    9. We propagate the beam using the values and field provided.
+    10. We calculate the final intensity on our image plane. Remember that human eyes can see intensity but not amplitude or phase of light. Intensity of light is a square of its amplitude.
+    11. We save image plane intensity to an image file.
+    12. For comparison, we also save the hologram intensity to an image file so that we can observe how our light transformed from one plane to another.
+
+
+Let us also take a look at the saved images as a result of the above sample code:
+
+
+<figure markdown>
+  ![Image title](media/intensities_before_and_after_propagation.png){ width="600" }
+  <figcaption>Saved intensities before and after beam propagation (hologram and image plane intensities). This result is generated using "test/test_learn_beam_propagation.py".</figcaption>
+</figure>

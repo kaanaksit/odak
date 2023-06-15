@@ -2,52 +2,55 @@ import sys
 import os
 import odak
 import numpy as np
-from odak.wave import wavenumber, propagate_beam
-from odak.learn.wave import propagate_beam as propagate_beam_torch
-from odak.tools import zero_pad
 import torch
 
 
 def test():
-    wavelength = 0.5*pow(10, -6)
-    pixeltom = 6*pow(10, -6)
-    distance = 0.2
-    propagation_types = ['TR Fresnel', 'Angular Spectrum', 'Bandlimited Angular Spectrum']
-    k = wavenumber(wavelength)
-    sample_field = np.zeros((500, 500), dtype=np.complex64)
-    sample_field[
-        240:260,
-        240:260
-    ] = 1000
-    random_phase = np.pi*np.random.random(sample_field.shape)
-    sample_field = sample_field * \
-        np.cos(random_phase)+1j*sample_field*np.sin(random_phase)
-    sample_field = zero_pad(sample_field)
+    wavelength = 532e-9 # (1)
+    pixel_pitch = 8e-6 # (2)
+    distance = 0.5e-2 # (3)
+    propagation_type = 'Bandlimited Angular Spectrum' # (4)
+    k = odak.learn.wave.wavenumber(wavelength) # (5)
 
-    sample_field_torch = torch.from_numpy(sample_field)
 
-    for i in range(len(propagation_types)):
-        propagation_type = propagation_types[i]
-        # Propagate and reconstruct using torch.
-        hologram_torch = propagate_beam_torch(
-            sample_field_torch,
-            k,
-            distance,
-            pixeltom,
-            wavelength,
-            propagation_type
-        )
-        reconstruction_torch = propagate_beam_torch(
-            hologram_torch,
-            k,
-            -distance,
-            pixeltom,
-            wavelength,
-            propagation_type
-        )
+    amplitude = torch.zeros(500, 500)
+    amplitude[200:300, 200:300 ] = 1. # (5)
+    phase = torch.randn_like(amplitude) * 2 * odak.pi # (6)
+    hologram = odak.learn.wave.generate_complex_field(amplitude, phase) # (7)
 
+
+    image_plane = odak.learn.wave.propagate_beam(
+                                                 hologram,
+                                                 k,
+                                                 distance,
+                                                 pixel_pitch,
+                                                 wavelength,
+                                                 propagation_type,
+                                                 zero_padding = [True, False, True] # (8)
+                                                ) # (9)
+
+    image_intensity = odak.learn.wave.calculate_amplitude(image_plane) ** 2 # (10)
+    hologram_intensity = amplitude ** 2
+
+    odak.learn.tools.save_image('image_intensity.png', image_intensity, cmin = 0., cmax = 1.) # (11)
+    odak.learn.tools.save_image('hologram_intensity.png', hologram_intensity, cmin = 0., cmax = 1.) # (12)
     assert True == True
 
 
 if __name__ == '__main__':
-    sys.exit(test())
+    sys.exit(test()) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
