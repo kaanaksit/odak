@@ -340,6 +340,7 @@ Digital holograms are the ones that are dynamic and generated using programmable
 Typically, the tiniest fraction of digital holograms is a pixel that either manipulates the phase or amplitude of light.
 In [our laboratory](https://complightlab.com), we build holographic displays [@kavakli2023realistic, @kavakli2022learned], a programmable device to display holograms.
 The components used in such a display are illustrated in the following rendering and contain a Spatial Light Modulator (SLM) that could display programmable holograms.
+Note that the SLM in this specific hardware can only manipulate phase of an incoming light.
 
 
 <figure markdown>
