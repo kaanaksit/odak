@@ -5,7 +5,7 @@ import sys
 
 def main():
     files = sorted(odak.tools.list_files('./', key = '*.md'))
-    files = ['geometric_optics.md']
+    files = ['computer_generated_holography.md']
     tts = TTS(model_name = "tts_models/en/jenny/jenny", progress_bar = True, gpu = True)
     cache_fn = 'cache.txt'
     wav_file = 'cache.wav'
@@ -16,28 +16,39 @@ def main():
         f = open(cache_fn, 'r+')
         contents_list = f.readlines()
         f.close()
-        contents = ''.join(contents_list)
-        if contents != '':
-            mp3_file = str(file.replace('.md', '.mp3'))
-            contents = clear_text(contents)
-            tts.tts_to_file(
-                            text = contents,
-                            file_path = wav_file,
-                            emotion = 'Happy',
-                            speed = 0.8
-                           )
-            cmd = ['ffmpeg', '-i', wav_file, mp3_file, '-y']
-            odak.tools.shell_command(cmd)
-            cmd = ['mv', mp3_file, './media/']
-            odak.tools.shell_command(cmd) 
-            cmd = ['rm', cache_fn]
-            odak.tools.shell_command(cmd)
-            cmd = ['rm', wav_file]
-            odak.tools.shell_command(cmd)
+        if contents_list == []:
+            sys.exit()
+        mp3_file = str(file.replace('.md', '.mp3'))
+        contents = clear_text(contents_list)
+        tts.tts_to_file(
+                        text = contents,
+                        file_path = wav_file,
+                        emotion = 'Happy',
+                        speed = 0.8
+                       )
+        cmd = ['ffmpeg', '-i', wav_file, mp3_file, '-y']
+        odak.tools.shell_command(cmd)
+        cmd = ['mv', mp3_file, './media/']
+        odak.tools.shell_command(cmd) 
+        cmd = ['rm', cache_fn]
+        odak.tools.shell_command(cmd)
+        cmd = ['rm', wav_file]
+        odak.tools.shell_command(cmd)
             
 
 def clear_text(text):
-    output_text = text.replace('???', '')
+    found_ids = []
+    for item_id, item in enumerate(text):
+        for word in ['<script>', '<div>', '</div>', '</script>', 'mesh3d', 'showlegend']:
+            if item.find(word) != -1:
+                found_ids.append(item_id)
+    new_list = []
+    for item_id, item in enumerate(text):
+        if not item_id in found_ids:
+            new_list.append(item)
+    text = new_list
+    output_text = ''.join(text)
+    output_text = output_text.replace('???', '')
     output_text = output_text.replace('Narrate section', '')
     output_text = output_text.replace(':material-alert-decagram:{ .mdx-pulse title="Too important!" }', 'Too important!')
     output_text = output_text.replace(':octicons-beaker-24:', '')

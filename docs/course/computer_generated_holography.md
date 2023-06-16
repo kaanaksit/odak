@@ -265,11 +265,11 @@ Let us examine the implementation of a beam propagation method called `Bandlimit
 Let us see how we can use the given beam propagation function with an example:
 
 
-=== ":octicons-file-code-16: `test_learn_beam_propagation.py`"
+=== ":octicons-file-code-16: `test_learn_wave_beam_propagation.py`"
 
 
     ```python 
-    --8<-- "test/test_learn_beam_propagation.py"
+    --8<-- "test/test_learn_wave_beam_propagation.py"
     ```
 
 
@@ -316,8 +316,18 @@ Let us also take a look at the saved images as a result of the above sample code
 :octicons-beaker-24: Practical
 
 
-In the previous subsection, we propagate an input field (a.k.a. lightfield, hologram) to another plane, which we name an image plane.
-We can store any scene or object as a field.
+In the previous subsection, we propagate an input field (a.k.a. lightfield, hologram) to another plane called the image plane.
+We can store any scene or object as a field on such planes.
+Thus, we have learned that we can have a plane (hologram) to capture or display a slice of a lightfield for any given scene or object.
+After all this introduction, it is also safe to say, regardless of hardware, **holograms are the natural way to represent three-dimensional scenes, objects, and data!**
+
+
+Holograms come in many forms.
+We can broadly classify holograms as analog and digital.
+Analog holograms are physically tailored structures.
+They are typically a result of manufacturing engineered surfaces (micron or nanoscale structures).
+Some examples of analog holograms include diffractive optical elements [@swanson1989binary], holographic optical elements [@kogelnik1969coupled], and metasurfaces [@huang2018metasurface].
+Here, we show an example of an analog hologram that gives us a slice of a lightfield, and we can observe the scene this way from various perspectives:
 
 
 <figure markdown>
@@ -326,6 +336,10 @@ We can store any scene or object as a field.
 </figure>
 
 
+Digital holograms are the ones that are dynamic and generated using programmable versions of analog holograms.
+Typically, the tiniest fraction of digital holograms is a pixel that either manipulates the phase or amplitude of light.
+In [our laboratory](https://complightlab.com), we build holographic displays [@kavakli2023realistic, @kavakli2022learned], a programmable device to display holograms.
+The components used in such a display are illustrated in the following rendering and contain a Spatial Light Modulator (SLM) that could display programmable holograms.
 
 
 <figure markdown>
@@ -334,7 +348,10 @@ We can store any scene or object as a field.
 </figure>
 
 
-The below figure shows an example of photograph we capture from our holographic displays.
+We can display holograms that generate images to fill a three-dimensional volume using the above hardware.
+We know that they are three-dimensional from the fact that we can focus on different parts of the images by changing the focus of our camera (closely observing the camera's location in the above figure).
+Let us look into a sample result to see what these three-dimensional images look like as we focus on different scene parts.
+
 
 <figure markdown>
   ![Image title](media/computer_generated_hologram_example.png){ width="600" }
@@ -342,3 +359,70 @@ The below figure shows an example of photograph we capture from our holographic 
 </figure>
 
 
+Let us look into how we can optimize a hologram for our holographic display by visiting the below example:
+
+
+
+=== ":octicons-file-code-16: `test_learn_wave_stochastic_gradient_descent.py`"
+
+
+    ```python 
+    --8<-- "test/test_learn_wave_stochastic_gradient_descent.py"
+    ```
+    
+    1. Replace `cpu` with `cuda` if you have a NVIDIA GPU with enough memory or AMD GPU with enough memory and ROCm support.
+    2. We will provide the details of this optimization function in the next part.
+    3. Saving the phase-only hologram. Note that a phase-only hologram is between zero and two pi.
+    4. Loading an image from a file with 1920 by 1080 resolution and using green channel.
+
+
+The above sample optimization script uses a function called `odak.learn.wave.stochastic_gradient_descent`.
+This function sits at the center of this optimization, and we have to understand what it entails by closely observing its inputs, outputs, and source code.
+Let us review the function.
+
+
+=== ":octicons-file-code-16: `odak.learn.wave.stochastic_gradient_descent`"
+
+    ::: odak.learn.wave.stochastic_gradient_descent
+
+Let us also examine the optimized hologram and the image that the hologram reconstructed at the image plane.
+
+
+<figure markdown>
+  ![Image title](media/phase_only_hologram_example.png){ width="600" }
+  <figcaption>Optimized phase-only hologram. Generated using "test/test_learn_wave_stochastic_gradient_descent.py".</figcaption>
+</figure>
+
+<figure markdown>
+  ![Image title](media/phase_only_hologram_reconstruction_example.png){ width="600" }
+  <figcaption>Optimized phase-only hologram reconstructed at the image plane. "test/test_learn_wave_stochastic_gradient_descent.py".</figcaption>
+</figure>
+
+
+??? abstract end "[Challenge: Non-iterative Learned Hologram Calculation](https://github.com/kaanaksit/odak/discussions/77)"
+    We provided an overview of optimizing holograms using iterative methods.
+    Iterative methods are computationally expensive and unsuitable for real-time hologram generation.
+    We challenge our readers to derive a learned hologram generation method for multiplane images (not single-plane like in our example).
+    This development could either rely on classical convolutional neural networks or blend with physical priors explained in this section.
+    The resultant method could be part of `odak.learn.wave` submodule as a new class `odak.learn.wave.learned_hologram`.
+    In addition, a unit test `test/test_learn_hologram.py` has to adopt this new class.
+    To add these to `odak,` you can rely on the `pull request` feature on GitHub.
+    You can also create a new `engineering note` for arbitrary surfaces in `docs/notes/learned_hologram_generation.md`.
+
+
+## Conclusion
+
+
+:octicons-info-24: Informative
+
+
+Holography offers new frontiers as an emerging method in simulating light for various applications, including displays and cameras.
+We provide a basic introduction to Computer-Generated Holography and a simple understanding of holographic methods.
+A motivated reader could scale up from this knowledge to advance concepts in displays, cameras, visual perception, optical computing, and many other light-based applications.
+
+
+!!! warning end "Reminder"
+    We host a Slack group with more than 300 members.
+    This Slack group focuses on the topics of rendering, perception, displays and cameras.
+    The group is open to public and you can become a member by following [this link](https://complightlab.com/outreach/).
+    Readers can get in-touch with the wider community using this public group.
