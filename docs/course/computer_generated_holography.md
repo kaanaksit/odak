@@ -411,6 +411,36 @@ Let us also examine the optimized hologram and the image that the hologram recon
     You can also create a new `engineering note` for arbitrary surfaces in `docs/notes/learned_hologram_generation.md`.
 
 
+## Simulating a standard holographic display
+
+
+:octicons-info-24: Informative ·
+:octicons-beaker-24: Practical
+
+
+Test goes here.
+
+
+=== ":octicons-file-code-16: `odak.learn.wave.holographic_display.reconstruct`"
+
+    ::: odak.learn.wave.holographic_display.reconstruct
+
+
+=== ":octicons-file-code-16: `odak.learn.wave.holographic_display.forward`"
+
+    ::: odak.learn.wave.holographic_display.forward
+
+
+Text goes here.
+
+
+=== ":octicons-file-code-16: `test_learn_wave_holographic_display.py`"
+
+    ```python 
+    --8<-- "test/test_learn_wave_holographic_display.py"
+    ```
+ 
+
 ## Conclusion
 
 
