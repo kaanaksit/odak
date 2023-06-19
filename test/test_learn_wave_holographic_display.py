@@ -15,7 +15,11 @@ def test():
                                                   pinhole_size = 1500,
                                                   device = device
                                                  )
-    hologram_phases = odak.learn.tools.load_image('sample_hologram.png', normalizeby = 255., torch_style = True) * odak.pi * 2.
+    hologram_phases = odak.learn.tools.load_image(
+                                                  './test/sample_hologram.png', 
+                                                  normalizeby = 255., 
+                                                  torch_style = True
+                                                 ) * odak.pi * 2.
     laser_powers = torch.tensor([
                                  [1., 0., 0.],
                                  [0., 1., 0.],
