@@ -396,7 +396,7 @@ Let us also examine the optimized hologram and the image that the hologram recon
 
 <figure markdown>
   ![Image title](media/phase_only_hologram_reconstruction_example.png){ width="600" }
-  <figcaption>Optimized phase-only hologram reconstructed at the image plane. "test/test_learn_wave_stochastic_gradient_descent.py".</figcaption>
+  <figcaption>Optimized phase-only hologram reconstructed at the image plane, generated using "test/test_learn_wave_stochastic_gradient_descent.py".</figcaption>
 </figure>
 
 
@@ -411,14 +411,27 @@ Let us also examine the optimized hologram and the image that the hologram recon
     You can also create a new `engineering note` for arbitrary surfaces in `docs/notes/learned_hologram_generation.md`.
 
 
-## Simulating a standard holographic display
+## Simulating a standard holographic display :material-alert-decagram:{ .mdx-pulse title="Too important!" }
 
 
 :octicons-info-24: Informative ·
 :octicons-beaker-24: Practical
 
 
-Test goes here.
+We optimized holograms for a holographic display in the previous section.
+However, the beam propagation distance we used in our optimization example was large.
+If we were to run the same optimization for a shorter propagation distance, say not cms but mms, we would not get a decent solution.
+Because in an actual holographic display, there is an aperture that helps to filter out some of the light.
+The previous section contained an optical layout rendering of a holographic display, where this aperture is also depicted.
+As depicted in the rendering located in the previous section, this aperture is located between a two lens system, which is also known as 4F imaging system.
+
+
+??? tip end "Did you know?"
+    4F imaging system can take a Fourier transform of an input field by using physics but not computers.
+    For more details, please review [these course notes from MIT](https://ocw.mit.edu/courses/2-71-optics-spring-2009/1f37d811580bb5d181f7d51877e4e5ea_MIT2_71S09_lec19.pdf).
+
+
+Let us review the class dedicated to accurately simulating a holographic display and its functions:
 
 
 === ":octicons-file-code-16: `odak.learn.wave.holographic_display.reconstruct`"
@@ -431,7 +444,7 @@ Test goes here.
     ::: odak.learn.wave.holographic_display.forward
 
 
-Text goes here.
+This sample unit test provides an example use case of the holographic display class.
 
 
 === ":octicons-file-code-16: `test_learn_wave_holographic_display.py`"
@@ -439,7 +452,15 @@ Text goes here.
     ```python 
     --8<-- "test/test_learn_wave_holographic_display.py"
     ```
- 
+
+Let us also examine how the reconstructed images look like at the image plane.
+
+
+<figure markdown>
+  ![Image title](media/holographic_display_simulation.png){ width="800" }
+  <figcaption>Reconstructed phase-only hologram at two image plane, generated using "test/test_learn_wave_holographic_display.py".</figcaption>
+</figure>
+
 
 ## Conclusion
 

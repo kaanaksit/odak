@@ -9,9 +9,9 @@ def test():
                                                   wavelengths = [639e-9, 515e-9, 473e-9],
                                                   pixel_pitch = 3.74e-6,
                                                   resolution = [2400, 4094],
-                                                  volume_depth = 0.0024,
-                                                  number_of_depth_layers = 3,
-                                                  image_location_offset = 0.0,
+                                                  volume_depth = 0.01,
+                                                  number_of_depth_layers = 2,
+                                                  image_location_offset = 5e-3,
                                                   pinhole_size = 1500,
                                                   device = device
                                                  )
