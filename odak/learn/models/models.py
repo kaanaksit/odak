@@ -16,7 +16,7 @@ class unet(torch.nn.Module):
                  bilinear = False,
                  kernel_size = 3,
                  bias = False,
-                 activation = torch.nn.ReLU(inplace=True),
+                 activation = torch.nn.ReLU(inplace = True),
                 ):
         """
         U-Net model.
