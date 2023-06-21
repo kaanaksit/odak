@@ -462,6 +462,22 @@ Let us also examine how the reconstructed images look like at the image plane.
 </figure>
 
 
+You may also be curious about how these holograms would look like in an actual holographic display, here we provide a sample gallery filled with photographs captured from our holographic display:
+
+
+<figure markdown>
+  ![](media/image_0000.jpeg){ width="400", align=left }
+  ![](media/image_0001.jpeg){ width="400", align=left }
+  ![](media/image_0002.jpeg){ width="400", align=left }
+  ![](media/image_0003.jpeg){ width="400", align=left }
+  ![](media/image_0004.jpeg){ width="400", align=left }
+  ![](media/image_0005.jpeg){ width="400", align=left }
+  ![](media/image_0006.jpeg){ width="400", align=left }
+  ![](media/image_0007.jpeg){ width="400", align=left }
+  <figcaption>Photographs of holograms captured using the holographic display in <a href="https://complightlab.com">Computational Light Laboratory</a></figcaption>
+</figure>
+
+
 ## Conclusion
 
 
