@@ -99,7 +99,7 @@ class holographic_display():
                                             device = self.device
                                            ) + self.image_location_offset
         else:
-            self.distances = self.image_location_offset
+            self.distances = torch.tensor([self.image_location_offset], device = self.device)
        
 
     def forward(self, input_field, wavelength_id, depth_id):
