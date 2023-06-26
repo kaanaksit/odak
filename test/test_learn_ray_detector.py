@@ -43,19 +43,19 @@ def test():
     loss_function = torch.nn.MSELoss()
     t = tqdm(range(number_of_steps), leave = False, dynamic_ncols = True)
     assert True == True
-    for step in t:
-        optimizer.zero_grad()
-        triangles = mesh.get_triangles()
-        reflected_rays, _ = mesh.mirror(rays)
-        image = detector.intersect(reflected_rays)
-        import sys;sys.exit()
-        loss = loss_function(image, target)
-        loss.backward(retain_graph = True)
-        optimizer.step()
-        description = 'Loss: {}'.format(loss.item())
-        t.set_description(description)
-    print(description)
-    assert True == True
+    #for step in t:
+    #    optimizer.zero_grad()
+    #    triangles = mesh.get_triangles()
+    #    reflected_rays, _ = mesh.mirror(rays)
+    #    image = detector.intersect(reflected_rays)
+    #    import sys;sys.exit()
+    #    loss = loss_function(image, target)
+    #    loss.backward(retain_graph = True)
+    #    optimizer.step()
+    #    description = 'Loss: {}'.format(loss.item())
+    #    t.set_description(description)
+    #print(description)
+    #assert True == True
       
 
 if __name__ == '__main__':
