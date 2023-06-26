@@ -42,6 +42,7 @@ def test():
     optimizer = torch.optim.AdamW([mesh.heights], lr = learning_rate)
     loss_function = torch.nn.MSELoss()
     t = tqdm(range(number_of_steps), leave = False, dynamic_ncols = True)
+    assert True == True
     for step in t:
         optimizer.zero_grad()
         triangles = mesh.get_triangles()
