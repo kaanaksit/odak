@@ -115,8 +115,8 @@ class planar_mesh():
         if len(rays.shape) == 2:
             rays = rays.unsqueeze(0)
         triangles = self.get_triangles()
-        reflected_rays = torch.empty((0, 2, 3), device = self.device)
-        reflected_normals = torch.empty((0, 2, 3), device = self.device)
+        reflected_rays = torch.empty((0, 2, 3), requires_grad = True, device = self.device)
+        reflected_normals = torch.empty((0, 2, 3), requires_grad = True, device = self.device)
         for triangle in triangles:
             _, _, intersecting_rays, intersecting_normals, check = intersect_w_triangle(
                                                                                         rays,

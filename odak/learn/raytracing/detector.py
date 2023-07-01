@@ -36,6 +36,7 @@ class detector():
                          Device for computation (e.g., cuda, cpu).
         """
         self.device = device
+        self.colors = colors
         self.resolution = resolution.to(self.device)
         self.surface_center = center.to(self.device)
         self.surface_tilt = tilt.to(self.device)
@@ -44,6 +45,9 @@ class detector():
                                         self.size[0] / self.resolution[0],
                                         self.size[1] / self.resolution[1]
                                        ], device  = self.device)
+        self.pixel_diagonal_size = torch.sqrt(self.pixel_size[0] ** 2 + self.pixel_size[1] ** 2)
+        self.pixel_diagonal_half_size = self.pixel_diagonal_size / 2.
+        self.threshold = torch.nn.Threshold(self.pixel_diagonal_size, 1)
         self.plane = define_plane(
                                   point = self.surface_center,
                                   angles = self.surface_tilt
@@ -55,15 +59,12 @@ class detector():
                                                     angles = self.surface_tilt.tolist()
                                                    )
         self.pixel_locations = self.pixel_locations.to(self.device)
-        self.image = torch.zeros(
-                                 colors,
-                                 self.resolution[0],
-                                 self.resolution[1],
-                                 device = self.device,
-                                )
+        self.clear()
+        self.sigmoid = torch.nn.Sigmoid()
+        self.threshold = torch.nn.Threshold(0.8, 0)
 
 
-    def intersect(self, rays):
+    def intersect(self, rays, color = 0):
         """
         Function to intersect rays with the detector
 
@@ -73,6 +74,8 @@ class detector():
         rays            : torch.tensor
                           Rays to be intersected with a detector.
                           Expected size is [1 x 2 x 3] or [m x 2 x 3].
+        color           : int
+                          Color channel to register.
 
         Returns
         -------
@@ -81,7 +84,31 @@ class detector():
         """
         normals, _ = intersect_w_surface(rays, self.plane)
         points = normals[:, 0]
-        print(self.pixel_locations.shape, points.shape)
-        return self.image
+        #print(self.pixel_locations.shape);import sys;sys.exit()
+        distances = torch.sqrt(torch.sum((points.unsqueeze(1) - self.pixel_locations.unsqueeze(0)) ** 2, dim = 2))
+        #hit = distances * (distances < self.pixel_diagonal_half_size)        
+        #hit = torch.nan_to_num(hit / hit, nan = 0.)
+        hit = torch.abs(1. - 1. / (1. + torch.exp(- 50. * distances + 5)))
+        image = torch.sum(hit, dim = 0)
+        self.image[color] += image.reshape(self.image.shape[-2], self.image.shape[-1])
+        return self.image, points
 
+
+    def convert_image_to_points(self, image):
+        image = image.reshape(image.shape[0], -1)
+        print(image.shape, self.pixel_locations.shape)
+        image_points = self.pixel_locations[image[0] > 0., :]
+        return image_points
+
+
+    def clear(self):
+        """
+        Internal function to clear a detector.
+        """
+        self.image = torch.zeros(
+                                 self.colors,
+                                 self.resolution[0],
+                                 self.resolution[1],
+                                 device = self.device,
+                                )
 

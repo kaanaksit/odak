@@ -19,44 +19,55 @@ def test():
                                              )
     mesh = odak.learn.raytracing.planar_mesh(
                                              size = [10., 10.],
-                                             number_of_meshes = [5, 5],
+                                             number_of_meshes = [10, 10],
                                              offset = torch.tensor([0., 0., 10.]),
                                              device = device
                                             )
     start_points, _, _, _ = odak.learn.tools.grid_sample(
-                                                         no = [5, 5],
+                                                         no = [10, 10],
                                                          size = [9., 9.],
-                                                         center = [0., 5., 0.]
+                                                         center = [0., 0., 0.]
                                                         )
     end_points, _, _, _ = odak.learn.tools.grid_sample(
-                                                       no = [5, 5],
+                                                       no = [10, 10],
                                                        size = [9., 9.],
                                                        center = [0., 0., 10.]
                                                       )
     start_points = start_points.to(device)
     end_points = end_points.to(device)
     rays = odak.learn.raytracing.create_ray_from_two_points(start_points, end_points)
-    target = torch.rand(1, 9, 9)
-    learning_rate = 2e-3
-    number_of_steps = 100
+    target = torch.zeros(1, 100, 100, device = device)
+    target[0, 50, 20] = 1.
+    target[0, 50, 80] = 1.
+    target[0, 50, 50] = 1.
+    target[0, 80, 50] = 1.
+    target[0, 20, 50] = 1.
+    learning_rate = 2e-2
+    number_of_steps = 1
     optimizer = torch.optim.AdamW([mesh.heights], lr = learning_rate)
-    loss_function = torch.nn.MSELoss()
+    loss_function = torch.nn.MSELoss(reduction = 'sum')
     t = tqdm(range(number_of_steps), leave = False, dynamic_ncols = True)
+    odak.learn.tools.save_image('target.png', target, cmin = 0., cmax = 1.)
+    target_points = detector.convert_image_to_points(target)
+    for step in t:
+        optimizer.zero_grad()
+        detector.clear()
+        reflected_rays, _ = mesh.mirror(rays)
+        image, points = detector.intersect(reflected_rays)
+        loss = torch.sqrt(torch.sum((points.unsqueeze(1) - target_points.unsqueeze(0)) ** 2, dim = 2))
+        loss = torch.min(loss, dim = 1).values
+#        print(loss.shape);import sys;sys.exit()
+        loss = torch.sum(loss)
+#        loss = loss_function(points, torch.zeros(1, 3, device = device))
+        loss.backward(retain_graph = True)
+        optimizer.step()
+        description = 'Loss: {}'.format(loss.item())
+        t.set_description(description)
+        if step % 10 == 0:
+            odak.learn.tools.save_image('image.png', image, cmin = 0., cmax = image.max())
+    print(description)
     assert True == True
-    #for step in t:
-    #    optimizer.zero_grad()
-    #    triangles = mesh.get_triangles()
-    #    reflected_rays, _ = mesh.mirror(rays)
-    #    image = detector.intersect(reflected_rays)
-    #    import sys;sys.exit()
-    #    loss = loss_function(image, target)
-    #    loss.backward(retain_graph = True)
-    #    optimizer.step()
-    #    description = 'Loss: {}'.format(loss.item())
-    #    t.set_description(description)
-    #print(description)
-    #assert True == True
-      
+
 
 if __name__ == '__main__':
     sys.exit(test())
