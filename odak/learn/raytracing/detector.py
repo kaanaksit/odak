@@ -1,4 +1,5 @@
 import torch
+import logging
 from .primitives import define_plane
 from .boundary import intersect_w_surface
 from ..tools import grid_sample
@@ -60,7 +61,6 @@ class detector():
                                                    )
         self.pixel_locations = self.pixel_locations.to(self.device)
         self.clear()
-        self.threshold = torch.nn.Threshold(- self.pixel_diagonal_half_size, -1e10)
 
 
     def intersect(self, rays, color = 0):
@@ -84,8 +84,8 @@ class detector():
         normals, _ = intersect_w_surface(rays, self.plane)
         points = normals[:, 0]
         distances = torch.sqrt(torch.sum((points.unsqueeze(1) - self.pixel_locations.unsqueeze(0)) ** 2, dim = 2))
-        close = - self.threshold(- distances)
-        hit = self.sigmoid(close)
+        hit = torch.zeros_like(distances)
+        hit[distances < self.pixel_diagonal_half_size] = 1.
         image = torch.sum(hit, dim = 0)
         self.image[color] += image.reshape(
                                            self.image.shape[-2], 
@@ -108,25 +108,12 @@ class detector():
         return image
 
 
-    def sigmoid(self, value):
-        """
-        A slightly modified sigmoid function.
-
-        Parameters
-        ----------
-        value           : torch.tensor
-                          Value.
-
-        Returns
-        -------
-        result          : torch.tensor
-                          Result.
-        """
-        result = 1. - 1. / (1. + torch.exp(5. - value))
-        return result
-
-
-    def convert_image_to_points(self, image, color = 0):
+    def convert_image_to_points(
+                                self, 
+                                image: torch.Tensor,
+                                color = 0, 
+                                ray_count = 100
+                               ):
         """
         Extracting the locations of non-zero pixels.
 
@@ -134,8 +121,11 @@ class detector():
         ----------
         image           : torch.tensor
                           Image on a detector [k x m x n].
+                          Pixel values should be normalized between one and zero.
         color           : int
                           Color channel for identifying non-zero pixels.
+        ray_count       : int
+                          Number of rays to represent the image.
 
         Returns
         -------
@@ -145,6 +135,12 @@ class detector():
         image = image[color].reshape(-1)
         image_points = self.pixel_locations[image > 0., :]
         image_values = image[image > 0.]
+        pixel_ray_count = ray_count / torch.sum(image_values)
+        image_values *= pixel_ray_count
+        image_values = image_values.int()
+        if image_values.max() < 1.:
+            logging.warning('[odak.learn.raytracing.convert_image_to_points] Number of rays are too small: {}.'.format(ray_count))
+        image_points = torch.repeat_interleave(image_points, repeats = image_values, dim = 0)
         return image_points, image_values
 
 

@@ -29,4 +29,4 @@ logging.basicConfig(
                     datefmt = '%d-%b-%y %H:%M:%S',
                     level = logging.DEBUG
                    )
-logging.debug('Odak\'s logger initiated. Log is saved to {}.'.format(filename_logger))
+logging.debug('[odak] Odak\'s logger initiated. Log is saved to {}.'.format(filename_logger))

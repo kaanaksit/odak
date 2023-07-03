@@ -21,7 +21,7 @@ class planar_mesh():
         number_of_meshes  : torch.tensor
                             Number of squares over plane.
                             There are two triangles at each square.
-        size              : list
+        size              : torch.tensor
                             Size of the plane.
         angles            : torch.tensor
                             Rotation angles in degrees.
@@ -35,8 +35,8 @@ class planar_mesh():
         self.device = device
         self.angles = angles.to(self.device)
         self.offset = offset.to(self.device)
-        self.size = torch.tensor(size, device = self.device)
-        self.number_of_meshes = torch.tensor(number_of_meshes, device = self.device)
+        self.size = size.to(self.device)
+        self.number_of_meshes = number_of_meshes.to(self.device)
         self.init_heights()
 
 
