@@ -12,8 +12,8 @@ def test():
     final_target = torch.tensor([-2., -2., 10.], device = device)
     final_surface = odak.learn.raytracing.define_plane(point = final_target)
     mesh = odak.learn.raytracing.planar_mesh(
-                                             size = [1.1, 1.1], 
-                                             number_of_meshes = [9, 9], 
+                                             size = torch.tensor([1.1, 1.1]), 
+                                             number_of_meshes = torch.tensor([9, 9]), 
                                              device = device
                                             )
     start_points, _, _, _ = odak.learn.tools.grid_sample(

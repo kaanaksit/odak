@@ -17,8 +17,8 @@ def test():
     end_point = torch.tensor([0., 0., 0.])
     rays = odak.learn.raytracing.create_ray_from_two_points(start_points, end_point)
     mesh = odak.learn.raytracing.planar_mesh(
-                                             size = [10., 10.],
-                                             number_of_meshes = [40, 40],
+                                             size = torch.tensor([10., 10.]),
+                                             number_of_meshes = torch.tensor([40, 40]),
                                              angles = torch.tensor([  0., -70., 0.]),
                                              offset = torch.tensor([ -2.,   0., 5.]),
                                             )
