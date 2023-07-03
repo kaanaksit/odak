@@ -1,5 +1,6 @@
 import torch
 from ..tools.transformation import rotate_points
+from ..tools.file import save_torch_tensor
 from .boundary import reflect, intersect_w_triangle
 
 
@@ -10,7 +11,8 @@ class planar_mesh():
                  number_of_meshes = [10, 10],
                  angles = torch.tensor([0., 0., 0.]),
                  offset = torch.tensor([0., 0., 0.]),
-                 device = torch.device('cpu')
+                 device = torch.device('cpu'),
+                 heights = None
                 ):
         """
         Definition to generate a plane with meshes.
@@ -31,29 +33,50 @@ class planar_mesh():
                             m here refers to `2 * number_of_meshes[0]` times  `number_of_meshes[1]`.
         device            : torch.device
                             Computational resource to be used (e.g., cpu, cuda).
+        heights           : torch.tensor
+                            Load surface heights from a tensor.
         """
         self.device = device
         self.angles = angles.to(self.device)
         self.offset = offset.to(self.device)
         self.size = size.to(self.device)
         self.number_of_meshes = number_of_meshes.to(self.device)
-        self.init_heights()
+        self.init_heights(heights)
 
 
-    def init_heights(self):
+    def init_heights(self, heights = None):
         """
         Internal function to initialize a height map.
+        Note that self.heights is a differentiable variable, and can be optimized or learned.
+        See unit test `test/test_learn_ray_detector.py` or `test/test_learn_ray_mesh.py` as examples.
         """
-        self.heights = torch.zeros(
-                                   (self.number_of_meshes[0], self.number_of_meshes[1], 1),
-                                   requires_grad = True,
-                                   device = self.device
-                                  )
+        if not isinstance(heights, type(None)):
+            self.heights = heights.to(self.device)
+            self.heights.requires_grad = True
+        else:
+            self.heights = torch.zeros(
+                                       (self.number_of_meshes[0], self.number_of_meshes[1], 1),
+                                        requires_grad = True,
+                                        device = self.device
+                                      )
         x = torch.linspace(-self.size[0] / 2., self.size[0] / 2., self.number_of_meshes[0], device = self.device) 
         y = torch.linspace(-self.size[1] / 2., self.size[1] / 2., self.number_of_meshes[1], device = self.device)
         X, Y = torch.meshgrid(x, y, indexing = 'ij')
         self.X = X.unsqueeze(-1)
         self.Y = Y.unsqueeze(-1)
+
+
+
+    def save_heights(self, filename = 'heights.pt'):
+        """
+        Function to save heights to a file.
+
+        Parameters
+        ----------
+        filename          : str
+                            Filename.
+        """
+        save_torch_tensor(filename, self.heights.detach().clone())
 
 
     def get_squares(self):

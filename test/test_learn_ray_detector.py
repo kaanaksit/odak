@@ -21,9 +21,10 @@ def test():
     mesh_size = torch.tensor([10., 10.], device = device)
     mesh_no = torch.tensor([30, 30], device = device)
     mesh_center = torch.tensor([0., 0., 10.], device = device)
-    learning_rate = 2e-2
-    number_of_steps = 200
-
+    learning_rate = 2e-4
+    number_of_steps = 1
+    save_at_every = 10
+    heights = odak.learn.tools.torch.load('test/heights.pt')
 
     detector = odak.learn.raytracing.detector(
                                               colors = detector_colors,
@@ -37,7 +38,8 @@ def test():
                                              size = mesh_size,
                                              number_of_meshes = mesh_no,
                                              offset = mesh_center,
-                                             device = device
+                                             device = device,
+                                             heights = heights
                                             )
     start_points, _, _, _ = odak.learn.tools.grid_sample(
                                                          no = ray_no,
@@ -55,24 +57,25 @@ def test():
     target = odak.learn.tools.load_image('test/kaan.png', normalizeby = 255., torch_style = True)[1].unsqueeze(0).to(device)
     optimizer = torch.optim.AdamW([mesh.heights], lr = learning_rate)
     t = tqdm(range(number_of_steps), leave = False, dynamic_ncols = True)
-    #target_points, target_values = detector.convert_image_to_points(target, color = 0, ray_count = ray_no[0] * ray_no[1])
-    #odak.learn.tools.save_image('target.png', target, cmin = 0., cmax = 1.)
+    target_points, target_values = detector.convert_image_to_points(target, color = 0, ray_count = ray_no[0] * ray_no[1])
+    odak.learn.tools.save_image('target.png', target, cmin = 0., cmax = 1.)
     #from chamfer_distance import ChamferDistance as chamfer_dist
     #chd = chamfer_dist()
-    #for step in t:
+    for step in t:
     #    optimizer.zero_grad()
-    #    detector.clear()
-    #    reflected_rays, _ = mesh.mirror(rays)
-    #    points = detector.intersect(reflected_rays)
-    #    image = detector.get_image()
+        detector.clear()
+        reflected_rays, _ = mesh.mirror(rays)
+        points = detector.intersect(reflected_rays)
+        image = detector.get_image()
     #    dist1, dist2, idx1, idx2 = chd(points.unsqueeze(0), target_points.unsqueeze(0))
     #    loss = (torch.sum(dist1)) + (torch.sum(dist2))
     #    loss.backward(retain_graph = True)
     #    optimizer.step()
     #    description = 'Loss: {}'.format(loss.item())
     #    t.set_description(description)
-    #    if step % 10 == 0:
-    #        odak.learn.tools.save_image('image.png', image, cmin = 0., cmax = image.max())
+        if step % save_at_every == 0:
+            odak.learn.tools.save_image('image.png', image, cmin = 0., cmax = image.max())
+            mesh.save_heights(filename = 'test/heights.pt')
     #print(description)
 
     visualize = False
