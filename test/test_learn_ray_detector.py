@@ -9,22 +9,24 @@ from tqdm import tqdm
 
 def test():
     device = torch.device('cpu')
-    ray_no = torch.tensor([150, 150], device = device)
-    ray_size = [9., 9.]
-    ray_start = [0., 0., 0.]
-    ray_end = [0., 0., 10.]
-    detector_size = torch.tensor([10., 10.], device = device)
+    detector_size = torch.tensor([0.1, 0.1], device = device)
     detector_resolution = torch.tensor([100, 100], device = device)
     detector_center = torch.tensor([0., 0., 0.], device = device)
     detector_tilt = torch.tensor([0., 0., 0.], device = device)
     detector_colors = 1
-    mesh_size = torch.tensor([10., 10.], device = device)
-    mesh_no = torch.tensor([30, 30], device = device)
-    mesh_center = torch.tensor([0., 0., 10.], device = device)
-    learning_rate = 2e-4
+    mesh_size = torch.tensor([0.1, 0.1], device = device)
+    mesh_no = torch.tensor([20, 20], device = device)
+    mesh_center = torch.tensor([0., 0., 0.1], device = device)
+    ray_no = torch.tensor([30, 30], device = device)
+    ray_size = [0.095, 0.095]
+    ray_start = [0., 0., 0.]
+    ray_end = [0., 0., 0.1]
+    learning_rate = 1e-4
     number_of_steps = 1
-    save_at_every = 10
-    heights = odak.learn.tools.torch.load('test/heights.pt')
+    save_at_every = 1
+#    heights = odak.learn.tools.torch.load('test/heights.pt')
+    heights = None
+  
 
     detector = odak.learn.raytracing.detector(
                                               colors = detector_colors,
@@ -55,28 +57,37 @@ def test():
     end_points = end_points.to(device)
     rays = odak.learn.raytracing.create_ray_from_two_points(start_points, end_points)
     target = odak.learn.tools.load_image('test/kaan.png', normalizeby = 255., torch_style = True)[1].unsqueeze(0).to(device)
+#    target = torch.zeros(1, 100, 100, device = device)
+#    target[0, 40:60, 40:60] = 1.
     optimizer = torch.optim.AdamW([mesh.heights], lr = learning_rate)
     t = tqdm(range(number_of_steps), leave = False, dynamic_ncols = True)
-    target_points, target_values = detector.convert_image_to_points(target, color = 0, ray_count = ray_no[0] * ray_no[1])
+#    target_points, target_values = detector.convert_image_to_points(target, color = 0, ray_count = 10000)
+#    target_points, target_values = detector.convert_image_to_points(target, color = 0, ray_count = ray_no[0] * ray_no[1])
+#    target_points = torch.zeros(2, 3, device = device)
     odak.learn.tools.save_image('target.png', target, cmin = 0., cmax = 1.)
-    #from chamfer_distance import ChamferDistance as chamfer_dist
-    #chd = chamfer_dist()
+    loss_function = torch.nn.MSELoss(reduction = 'sum')
     for step in t:
-    #    optimizer.zero_grad()
+        optimizer.zero_grad()
         detector.clear()
         reflected_rays, _ = mesh.mirror(rays)
         points = detector.intersect(reflected_rays)
+        loss_hit = torch.abs(ray_no[0] * ray_no[1] - points.shape[0])
         image = detector.get_image()
-    #    dist1, dist2, idx1, idx2 = chd(points.unsqueeze(0), target_points.unsqueeze(0))
-    #    loss = (torch.sum(dist1)) + (torch.sum(dist2))
-    #    loss.backward(retain_graph = True)
-    #    optimizer.step()
-    #    description = 'Loss: {}'.format(loss.item())
-    #    t.set_description(description)
+#        distances = torch.sum((points.unsqueeze(1) - target_points.unsqueeze(0)) ** 2, dim = 2)
+#        loss_distance = torch.sum(torch.min(distances, dim = 1).values)
+#        distances = torch.sum((target_points.unsqueeze(1) - points.unsqueeze(0)) ** 2, dim = 2)
+#        loss_rev_distance = torch.sum(torch.min(distances, dim = 1).values)
+#        loss =  loss_distance + loss_hit + loss_rev_distance
+        loss = loss_function(image, target)
+        loss.backward(retain_graph = True)
+        optimizer.step()
+        description = 'Loss: {}'.format(loss.item())
+        t.set_description(description)
         if step % save_at_every == 0:
             odak.learn.tools.save_image('image.png', image, cmin = 0., cmax = image.max())
             mesh.save_heights(filename = 'test/heights.pt')
-    #print(description)
+            mesh.save_heights_as_PLY(filename = 'heights.ply')
+    print(description)
 
     visualize = False
     if visualize:

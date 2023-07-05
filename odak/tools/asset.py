@@ -77,7 +77,7 @@ def read_PLY_point_cloud(filename):
     return point_cloud
 
 
-def write_PLY(triangles, savefn='output.ply'):
+def write_PLY(triangles, savefn = 'output.ply'):
     """
     Definition to generate a PLY file from given points.
 

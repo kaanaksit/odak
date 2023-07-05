@@ -1,10 +1,13 @@
 import torch
 from ..tools.transformation import rotate_points
 from ..tools.file import save_torch_tensor
+from ...tools.asset import write_PLY
 from .boundary import reflect, intersect_w_triangle
 
 
 class planar_mesh():
+
+
     def __init__(
                  self,
                  size = [1., 1.],
@@ -56,15 +59,14 @@ class planar_mesh():
         else:
             self.heights = torch.zeros(
                                        (self.number_of_meshes[0], self.number_of_meshes[1], 1),
-                                        requires_grad = True,
-                                        device = self.device
+                                       requires_grad = True,
+                                       device = self.device,
                                       )
         x = torch.linspace(-self.size[0] / 2., self.size[0] / 2., self.number_of_meshes[0], device = self.device) 
         y = torch.linspace(-self.size[1] / 2., self.size[1] / 2., self.number_of_meshes[1], device = self.device)
         X, Y = torch.meshgrid(x, y, indexing = 'ij')
         self.X = X.unsqueeze(-1)
         self.Y = Y.unsqueeze(-1)
-
 
 
     def save_heights(self, filename = 'heights.pt'):
@@ -77,6 +79,19 @@ class planar_mesh():
                             Filename.
         """
         save_torch_tensor(filename, self.heights.detach().clone())
+
+
+    def save_heights_as_PLY(self, filename = 'mesh.ply'):
+        """
+        Function to save mesh to a PLY file.
+
+        Parameters
+        ----------
+        filename          : str
+                            Filename.
+        """
+        triangles = self.get_triangles()
+        write_PLY(triangles, filename)
 
 
     def get_squares(self):
@@ -107,13 +122,13 @@ class planar_mesh():
             for j in range(0, self.number_of_meshes[1] - 1):
                 first_triangle = torch.cat((
                                             squares[i + 1, j].unsqueeze(0),
+                                            squares[i + 1, j + 1].unsqueeze(0),
                                             squares[i, j + 1].unsqueeze(0),
-                                            squares[i + 1, j + 1].unsqueeze(0)
                                            ), dim = 0)
                 second_triangle = torch.cat((
-                                             squares[i, j].unsqueeze(0),
                                              squares[i + 1, j].unsqueeze(0),
-                                             squares[i, j + 1].unsqueeze(0)
+                                             squares[i, j + 1].unsqueeze(0),
+                                             squares[i, j].unsqueeze(0),
                                             ), dim = 0)
                 triangles[0, i, j], _, _, _ = rotate_points(first_triangle, angles = self.angles)
                 triangles[1, i, j], _, _, _ = rotate_points(second_triangle, angles = self.angles)

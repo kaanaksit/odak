@@ -298,6 +298,7 @@ Using the provided utility functions above, let us build an example below that h
 ??? abstract end "[Challenge: Many triangles!](https://github.com/kaanaksit/odak/discussions/73)"
     The example provided above deals with a ray and a batch of rays.
     However, objects represented with triangles are typically described with many triangles but not one.
+    Note that `odak.learn.raytracing.intersect_w_triangle` deal with each triangle one by one, and may lead to slow execution times as the function has to visit each triangle one by one.
     Given the information, we challenge readers to create a new function inside `odak.learn.raytracing` submodule named `intersect_w_mesh`.
     This new function has to be able to work with multiple triangles (meshes) and has to be aware of "occlusions" (e.g., a triangle blocking another triangle).
     In addition, a new unit test, `test/test_learn_ray_intersect_w_mesh.py`, has to adopt this new function.
@@ -319,7 +320,7 @@ To our knowledge, light refracts, reflects, or diffracts when light interfaces w
 In that case, our next step should be identifying a methodology to help us model these events using rays.
 We compiled two utility functions that could help us to model a refraction or a reflection.
 These functions are named `odak.learn.raytracing.refract` [@spencer1962general] and `odak.learn.raytracing.reflect` [@spencer1962general].
-This first one, `odak.learn.raytracing.refract` follows [Snell's law of refraction]https://en.wikipedia.org/wiki/Snell's_law), while `odak.learn.raytracing.reflect` follows a perfect reflection case.
+This first one, `odak.learn.raytracing.refract` follows [Snell's law of refraction](https://en.wikipedia.org/wiki/Snell's_law), while `odak.learn.raytracing.reflect` follows a perfect reflection case.
 We will not go into details of this theory as its simplest form in the way we discuss it could now be considered common knowledge.
 However, for curious readers, the work by [Bell et al.](https://doi.org/10.1364/JOSA.59.000187) [@bell1969generalized] provides a generalized solution for the laws of refraction and reflection.
 Let us carefully examine these two utility functions to understand their internal workings.
