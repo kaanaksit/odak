@@ -148,7 +148,7 @@ The proper way to draw many rays lies in modern path-tracing renderers such as [
 ??? question end "How can I learn more about more sophisticated renderers like Blender?"
     Blender is a widely used open-source renderer that comes with sophisticated features.
     It is user interface could be challenging for newcomers.
-    A blog post published by SIGGRAPH Research Career Development Committee offers a neat entry-level post titled [`Rendering a paper figure with Blender`](https://research.siggraph.org/blog/guides/rendering-a-paper-figure-with-blender/) written by [Silvia Sellán](https://www.silviasellan.com/).
+    A blog post published by SIGGRAPH Research Career Development Committee offers a neat entry-level post titled [`Rendering a paper figure with Blender`](https://www.silviasellan.com/blender_course.html) written by [Silvia Sellán](https://www.silviasellan.com/).
 
     In addition to Blender, there are various renderers you may be happy to know about if you are curious about Computer Graphics.
     [Mitsuba 3](https://www.mitsuba-renderer.org/) is another sophisticated rendering system based on a SIGGRAPH paper titled [`Dr.Jit: A Just-In-Time Compiler for Differentiable Rendering`](https://rgl.epfl.ch/publications/Jakob2022DrJit) [@jakob2022dr] from [Wenzel Jakob](https://rgl.epfl.ch/people/wjakob).

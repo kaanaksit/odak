@@ -85,8 +85,10 @@ class detector():
         normals, _ = intersect_w_surface(rays, self.plane)
         points = normals[:, 0]
         distances_xyz = torch.abs(points.unsqueeze(1) - self.pixel_locations.unsqueeze(0))
-        distances_x = 1e6 * self.relu(- (distances_xyz[:, :, 0] - self.pixel_size[0]))
-        distances_y = 1e6 * self.relu(- (distances_xyz[:, :, 1] - self.pixel_size[1]))
+        print(distances_xyz.shape)
+        import sys;sys.exit()
+        distances_x = 1e6 * self.relu(distances_xyz[:, :, 0] - self.pixel_size[0])
+        distances_y = 1e6 * self.relu(distances_xyz[:, :, 1] - self.pixel_size[1])
         hit_x = torch.clamp(distances_x, min = 0., max = 1.)
         hit_y = torch.clamp(distances_y, min = 0., max = 1.)
 #        hit_x = (1. / (1. + torch.exp(1e6 * distances_x)) - 0.5) * 2.
