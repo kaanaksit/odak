@@ -21,11 +21,11 @@ def test():
     ray_size = [0.095, 0.095]
     ray_start = [0., 0., 0.]
     ray_end = [0., 0., 0.1]
-    learning_rate = 1e-4
+    learning_rate = 3e-5
     number_of_steps = 1
     save_at_every = 1
-#    heights = odak.learn.tools.torch.load('test/heights.pt')
     heights = None
+#    heights = odak.learn.tools.torch.load('test/heights.pt')
   
 
     detector = odak.learn.raytracing.detector(
@@ -57,34 +57,33 @@ def test():
     end_points = end_points.to(device)
     rays = odak.learn.raytracing.create_ray_from_two_points(start_points, end_points)
     target = odak.learn.tools.load_image('test/kaan.png', normalizeby = 255., torch_style = True)[1].unsqueeze(0).to(device)
-#    target = torch.zeros(1, 100, 100, device = device)
-#    target[0, 40:60, 40:60] = 1.
-    optimizer = torch.optim.AdamW([mesh.heights], lr = learning_rate)
+    target_binary = torch.ones_like(target) * (target > 0.) * 1.
+    target_binary = target_binary.reshape(1, -1)
+    target_binary_inverted = torch.abs(1. - target_binary) * 1e6
+    optimizer = torch.optim.AdamW([mesh.heights,], lr = learning_rate)
     t = tqdm(range(number_of_steps), leave = False, dynamic_ncols = True)
-#    target_points, target_values = detector.convert_image_to_points(target, color = 0, ray_count = 10000)
-#    target_points, target_values = detector.convert_image_to_points(target, color = 0, ray_count = ray_no[0] * ray_no[1])
-#    target_points = torch.zeros(2, 3, device = device)
     odak.learn.tools.save_image('target.png', target, cmin = 0., cmax = 1.)
-    loss_function = torch.nn.MSELoss(reduction = 'sum')
+    loss_function = torch.nn.MSELoss(reduction = 'mean')
+    mu = 1e-6
     for step in t:
         optimizer.zero_grad()
         detector.clear()
         reflected_rays, _ = mesh.mirror(rays)
-        points = detector.intersect(reflected_rays)
-        loss_hit = torch.abs(ray_no[0] * ray_no[1] - points.shape[0])
+        points, values, distance_image = detector.intersect(reflected_rays)
+        distance_target = distance_image * target_binary + target_binary_inverted
+        distance_min  = torch.min(distance_target, dim = 1).values.unsqueeze(-1)
+        target_locations = torch.sum(1. / mu / torch.sqrt(torch.tensor(2 * odak.pi)) * torch.exp(- (distance_target - distance_min - mu) ** 2 / 2. / mu ** 2), dim = 0)
+        target_locations = target_locations.reshape(1, 100, 100) / target_locations.max()
+        loss = torch.sum(distance_min)
+        loss += 1e-2 * loss_function(target_locations, target)
         image = detector.get_image()
-#        distances = torch.sum((points.unsqueeze(1) - target_points.unsqueeze(0)) ** 2, dim = 2)
-#        loss_distance = torch.sum(torch.min(distances, dim = 1).values)
-#        distances = torch.sum((target_points.unsqueeze(1) - points.unsqueeze(0)) ** 2, dim = 2)
-#        loss_rev_distance = torch.sum(torch.min(distances, dim = 1).values)
-#        loss =  loss_distance + loss_hit + loss_rev_distance
-        loss = loss_function(image, target)
         loss.backward(retain_graph = True)
         optimizer.step()
         description = 'Loss: {}'.format(loss.item())
         t.set_description(description)
         if step % save_at_every == 0:
             odak.learn.tools.save_image('image.png', image, cmin = 0., cmax = image.max())
+            odak.learn.tools.save_image('targets.png', target_locations, cmin = 0., cmax = image.max())
             mesh.save_heights(filename = 'test/heights.pt')
             mesh.save_heights_as_PLY(filename = 'heights.ply')
     print(description)
