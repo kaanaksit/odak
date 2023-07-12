@@ -15,13 +15,13 @@ def test():
     detector_tilt = torch.tensor([0., 0., 0.], device = device)
     detector_colors = 1
     mesh_size = torch.tensor([0.1, 0.1], device = device)
-    mesh_no = torch.tensor([30, 30], device = device)
+    mesh_no = torch.tensor([20, 20], device = device)
     mesh_center = torch.tensor([0., 0., 0.1], device = device)
-    ray_no = torch.tensor([30, 30], device = device)
+    ray_no = torch.tensor([40, 40], device = device)
     ray_size = [0.095, 0.095]
     ray_start = [0., 0., 0.]
     ray_end = [0., 0., 0.1]
-    learning_rate = 1e-5
+    learning_rate = 4e-5
     number_of_steps = 1
     save_at_every = 1
     heights = None
@@ -71,7 +71,7 @@ def test():
         reflected_rays, _ = mesh.mirror(rays)
         points, values, distance_image = detector.intersect(reflected_rays)
         distance_min  = torch.min(distance_image, dim = 1).values.unsqueeze(-1)
-        target_locations = torch.sum(1. / mu / torch.sqrt(torch.tensor(2 * odak.pi)) * torch.exp(- (distance_image - distance_min - mu) ** 2 / 2. / mu ** 2), dim = 0)
+        target_locations = torch.sum(1. / mu / torch.sqrt(torch.tensor(2 * odak.pi)) * torch.exp(- (distance_image - distance_min) ** 2 / 2. / mu ** 2), dim = 0)
         target_locations = target_locations.reshape(1, 100, 100) / target_locations.max()
         loss = loss_function(target_locations, target)
         image = detector.get_image()
