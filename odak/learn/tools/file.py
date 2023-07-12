@@ -1,6 +1,6 @@
-import odak.tools
 import torch
 import os
+import odak.tools
 
 
 def resize(image, multiplier = 0.5, mode = 'nearest'):
@@ -51,7 +51,7 @@ def load_image(fn, normalizeby = 0., torch_style = False):
                     Image loaded as a Numpy array.
 
     """
-    image = odak.tools.load_image(fn, normalizeby=normalizeby, torch_style=torch_style)
+    image = load_image(fn, normalizeby=normalizeby, torch_style=torch_style)
     image = torch.from_numpy(image).float()
     return image
 
@@ -103,7 +103,7 @@ def save_torch_tensor(fn, tensor):
     tensor       : torch.tensor
                    Torch tensor to be saved.
     """ 
-    torch.save(tensor, os.path.expanduser(fn))
+    torch.save(tensor, odak.tools.expanduser(fn))
 
 
 def torch_load(fn):
@@ -120,5 +120,5 @@ def torch_load(fn):
     data         : any
                    See torch.load() for more.
     """  
-    data = torch.load(os.path.expanduser(fn))
+    data = torch.load(odak.tools.expanduser(fn))
     return data

@@ -6,6 +6,7 @@ import numpy as np
 import cv2
 import logging
 import sys
+import shutils
 
 
 def resize_image(img, target_size):
@@ -72,7 +73,7 @@ def save_image(fn, img, cmin = 0, cmax = 255, color_depth = 8):
             cache_img[:, :, 0] = input_img[:, :, 2]
             cache_img[:, :, 2] = input_img[:, :, 0]
             input_img = cache_img
-    cv2.imwrite(os.path.expanduser(fn), input_img)
+    cv2.imwrite(expanduser(fn), input_img)
     return True
 
 
@@ -95,7 +96,7 @@ def load_image(fn, normalizeby = 0., torch_style = False):
                     Image loaded as a Numpy array.
 
     """
-    image = cv2.imread(os.path.expanduser(fn), cv2.IMREAD_UNCHANGED)
+    image = cv2.imread(expanduser(fn), cv2.IMREAD_UNCHANGED)
     if isinstance(image, type(None)):
          logging.warning('Image not properly loaded. Check filename or image type.')    
          sys.exit()
@@ -137,7 +138,7 @@ def shell_command(cmd, cwd = '.', timeout = None, check = True):
 
     """
     for item_id in range(len(cmd)):
-        cmd[item_id] = os.path.expanduser(cmd[item_id])
+        cmd[item_id] = expanduser(cmd[item_id])
     proc = subprocess.Popen(
                             cmd,
                             cwd = cwd,
@@ -162,8 +163,8 @@ def check_directory(directory):
     directory     : str
                     Full directory path.
     """
-    if not os.path.exists(os.path.expanduser(directory)):
-        os.makedirs(os.path.expanduser(directory))
+    if not os.path.exists(expanduser(directory)):
+        os.makedirs(expanduser(directory))
         return False
     return True
 
@@ -180,7 +181,7 @@ def save_dictionary(settings, filename):
     filename      : str
                     Filename.
     """
-    with open(os.path.expanduser(filename), 'w', encoding='utf-8') as f:
+    with open(expanduser(filename), 'w', encoding='utf-8') as f:
         json.dump(settings, f, ensure_ascii=False, indent=4)
     return settings
 
@@ -224,9 +225,9 @@ def list_files(path, key = '*.*', recursive = True):
                   list of files found in a given path.
     """
     if recursive == True:
-        search_result = pathlib.Path(os.path.expanduser(path)).rglob(key)
+        search_result = pathlib.Path(expanduser(path)).rglob(key)
     elif recursive == False:
-        search_result = pathlib.Path(os.path.expanduser(path)).glob(key)
+        search_result = pathlib.Path(expanduser(path)).glob(key)
     files_list = []
     for item in search_result:
         files_list.append(str(item))
@@ -278,3 +279,41 @@ def size_of_a_file(file_path):
         a, b = convert_bytes(file_info.st_size)
         return a, b
     return None, None
+
+
+def expanduser(filename):
+    """
+    Definition to decode filename using namespaces and shortcuts.
+
+    Parameters
+    ----------
+    filename      : str
+                    Filename.
+
+    Returns
+    -------
+    new_filename  : str
+                    Filename.
+    """
+    new_filename = os.path.expanduser(filename)
+    return new_filename
+
+
+def copy_file(source, destination, follow_symlinks = True):
+    """
+    Definition to copy a file from one location to another.
+
+    Parameters
+    ----------
+    source          : str
+                      Source filename.
+    destination     : str
+                      Destination filename.
+    follow_symlinks : bool
+                      Set to True to follow the source of symbolic links.
+    """
+    return shutil.copyfile(
+                           expanduser(source),
+                           expanduser(source),
+                           follow_symlinks = follow_symlinks
+                          )
