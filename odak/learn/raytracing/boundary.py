@@ -189,10 +189,10 @@ def intersect_w_triangle(ray, triangle):
        ray = ray.unsqueeze(0)
     normal, distance = intersect_w_surface(ray, triangle)
     check = is_it_on_triangle(normal[:, 0], triangle)
-    intersecting_ray = ray.clone().unsqueeze(0)
+    intersecting_ray = ray.unsqueeze(0)
     intersecting_ray = intersecting_ray.repeat(triangle.shape[0], 1, 1, 1)
     intersecting_ray = intersecting_ray[check == True]
-    intersecting_normal = normal.clone().unsqueeze(0)
+    intersecting_normal = normal.unsqueeze(0)
     intersecting_normal = intersecting_normal.repeat(triangle.shape[0], 1, 1, 1)
     intersecting_normal = intersecting_normal[check ==  True]
     return normal, distance, intersecting_ray, intersecting_normal, check
