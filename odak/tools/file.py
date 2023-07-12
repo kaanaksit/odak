@@ -6,7 +6,7 @@ import numpy as np
 import cv2
 import logging
 import sys
-import shutils
+import shutil
 
 
 def resize_image(img, target_size):
@@ -202,7 +202,7 @@ def load_dictionary(filename):
                     Dictionary read from the file.
 
     """
-    settings = json.load(open(filename))
+    settings = json.load(open(expanduser(filename)))
     return settings
 
 

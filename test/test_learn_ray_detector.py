@@ -15,14 +15,14 @@ def test():
     detector_tilt = torch.tensor([0., 0., 0.], device = device)
     detector_colors = 1
     mesh_size = torch.tensor([0.1, 0.1], device = device)
-    mesh_no = torch.tensor([20, 20], device = device)
+    mesh_no = torch.tensor([50, 50], device = device)
     mesh_center = torch.tensor([0., 0., 0.1], device = device)
-    ray_no = torch.tensor([30, 30], device = device)
+    ray_no = torch.tensor([10, 10], device = device)
     ray_size = [0.095, 0.095]
     ray_start = [0., 0., 0.]
     ray_end = [0., 0., 0.1]
     learning_rate = 3e-5
-    number_of_steps = 1
+    number_of_steps = 500
     save_at_every = 1
     heights = None
 #    heights = odak.learn.tools.torch.load('test/heights.pt')
@@ -82,8 +82,8 @@ def test():
         description = 'Loss: {}'.format(loss.item())
         t.set_description(description)
         if step % save_at_every == 0:
-            odak.learn.tools.save_image('image.png', image, cmin = 0., cmax = image.max())
-            odak.learn.tools.save_image('targets.png', target_locations, cmin = 0., cmax = image.max())
+            odak.learn.tools.save_image('image_{:04d}.png'.format(step), image, cmin = 0., cmax = image.max())
+            odak.learn.tools.save_image('targets_{:04d}.png'.format(step), target_locations, cmin = 0., cmax = image.max())
             mesh.save_heights(filename = 'test/heights.pt')
             mesh.save_heights_as_PLY(filename = 'heights.ply')
     print(description)
