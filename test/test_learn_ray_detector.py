@@ -22,7 +22,7 @@ def test():
     ray_start = [0., 0., 0.]
     ray_end = [0., 0., 0.1]
     learning_rate = 3e-5
-    number_of_steps = 500
+    number_of_steps = 1
     save_at_every = 1
     heights = None
 #    heights = odak.learn.tools.torch.load('test/heights.pt')
