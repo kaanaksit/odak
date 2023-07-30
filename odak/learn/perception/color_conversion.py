@@ -326,3 +326,112 @@ def lms_to_hvs_second_stage(image):
     hvs_second_stage[:, 1, :, :] = (image[:, 0, :, :] +  image[:, 2, :, :]) - image[:, 1, :, :]
     hvs_second_stage[:, 2, :, :] = torch.sum(image, dim=1) / 3.
     return hvs_second_stage
+
+def srgb_to_lab(image):    
+    """
+    Definition to convert SRGB space to LAB color space. 
+
+    Parameters
+    ----------
+    image           : torch.tensor
+                      Input image in SRGB color space[3 x m x n]
+    Returns
+    -------
+    image_lab       : torch.tensor
+                      Output image in LAB color space [3 x m x n].
+    """
+    if image.shape[-1] == 3:
+        input_color = image.permute(2, 0, 1)  # C(H*W)
+    else:
+        input_color = image
+    # rgb ---> linear rgb
+    limit = 0.04045        
+    # linear rgb ---> xyz
+    linrgb_color = torch.where(input_color > limit, torch.pow((input_color + 0.055) / 1.055, 2.4), input_color / 12.92)
+
+    a11 = 10135552 / 24577794
+    a12 = 8788810  / 24577794
+    a13 = 4435075  / 24577794
+    a21 = 2613072  / 12288897
+    a22 = 8788810  / 12288897
+    a23 = 887015   / 12288897
+    a31 = 1425312  / 73733382
+    a32 = 8788810  / 73733382
+    a33 = 70074185 / 73733382
+
+    A = torch.tensor([[a11, a12, a13],
+                    [a21, a22, a23],
+                    [a31, a32, a33]], dtype=torch.float32)
+
+    linrgb_color = linrgb_color.permute(2, 0, 1) # C(H*W)
+    xyz_color = torch.matmul(A, linrgb_color)
+    xyz_color = xyz_color.permute(1, 2, 0)
+    # xyz ---> lab
+    inv_reference_illuminant = torch.tensor([[[1.052156925]], [[1.000000000]], [[0.918357670]]], dtype=torch.float32)
+    input_color = xyz_color * inv_reference_illuminant
+    delta = 6 / 29
+    delta_square = delta * delta
+    delta_cube = delta * delta_square
+    factor = 1 / (3 * delta_square)
+
+    input_color = torch.where(input_color > delta_cube, torch.pow(input_color, 1 / 3), (factor * input_color + 4 / 29))
+
+    l = 116 * input_color[1:2, :, :] - 16
+    a = 500 * (input_color[0:1,:, :] - input_color[1:2, :, :])
+    b = 200 * (input_color[1:2, :, :] - input_color[2:3, :, :])
+
+    image_lab = torch.cat((l, a, b), 0)
+    return image_lab    
+
+def lab_to_srgb(image):
+    """
+    Definition to convert LAB space to SRGB color space. 
+
+    Parameters
+    ----------
+    image           : torch.tensor
+                      Input image in LAB color space[3 x m x n]
+    Returns
+    -------
+    image_srgb     : torch.tensor
+                      Output image in SRGB color space [3 x m x n].
+    """
+    
+    if image.shape[-1] == 3:
+        input_color = image.permute(2, 0, 1)  # C(H*W)
+    else:
+        input_color = image
+    # lab ---> xyz
+    reference_illuminant = torch.tensor([[[0.950428545]], [[1.000000000]], [[1.088900371]]], dtype=torch.float32)
+    y = (input_color[0:1, :, :] + 16) / 116
+    a =  input_color[1:2, :, :] / 500
+    b =  input_color[2:3, :, :] / 200
+    x = y + a
+    z = y - b
+    xyz = torch.cat((x, y, z), 0)
+    delta = 6 / 29
+    factor = 3 * delta * delta
+    xyz = torch.where(xyz > delta,  xyz ** 3, factor * (xyz - 4 / 29))
+    xyz_color = xyz * reference_illuminant
+    # xyz ---> linear rgb
+    a11 = 3.241003275
+    a12 = -1.537398934
+    a13 = -0.498615861
+    a21 = -0.969224334
+    a22 = 1.875930071
+    a23 = 0.041554224
+    a31 = 0.055639423
+    a32 = -0.204011202
+    a33 = 1.057148933
+    A = torch.tensor([[a11, a12, a13],
+                  [a21, a22, a23],
+                  [a31, a32, a33]], dtype=torch.float32)
+
+    xyz_color = xyz_color.permute(2, 0, 1) # C(H*W)
+    linear_rgb_color = torch.matmul(A, xyz_color)
+    linear_rgb_color = linear_rgb_color.permute(1, 2, 0)
+    # linear rgb ---> srgb
+    limit = 0.0031308
+    image_srgb = torch.where(linear_rgb_color > limit, 1.055 * (linear_rgb_color ** (1.0 / 2.4)) - 0.055, 12.92 * linear_rgb_color)
+    return image_srgb
+
