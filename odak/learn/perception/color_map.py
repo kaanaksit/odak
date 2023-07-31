@@ -18,7 +18,7 @@ def color_map(input_image, target_image, model = 'Lab Stats'):
                              Input image with the color the distribution of the target image [3 x m x n].
     """
     if model == 'Lab Stats':
-        lab_input = color_conversion.torchsrgb_to_lab(input_image)
+        lab_input = color_conversion.srgb_to_lab(input_image)
         lab_target = color_conversion.srgb_to_lab(target_image)
         input_mean_L = torch.mean(lab_input[0, :, :])
         input_mean_a = torch.mean(lab_input[1, :, :])

@@ -24,8 +24,8 @@ def test():
     hvs_second_stage_image = odak.learn.perception.color_conversion.lms_to_hvs_second_stage(lms_image)
     
     input_srgb_image = torch.randn((3, 256, 256)).to(device)
-    srgb_image = odak.learn.perception.color_conversion.srgb_to_srgb(input_srgb_image)
-    lab_image = odak.learn.perception.color_conversion.srgb_to_lab(srgb_image)
+    srgb_image = odak.learn.perception.color_conversion.srgb_to_lab(input_srgb_image)
+    lab_image = odak.learn.perception.color_conversion.lab_to_srgb(srgb_image)
 
     assert True == True
 
