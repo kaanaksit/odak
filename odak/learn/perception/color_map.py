@@ -1,6 +1,7 @@
 import torch
 import odak.learn.perception.color_conversion as color_conversion
 
+
 def color_map(input_image, target_image, model = 'Lab Stats'):
     """
     Internal function to map the color of an image to another image.
