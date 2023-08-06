@@ -163,12 +163,10 @@ def transfer_function_fresnel(field, k, distance, dx, wavelength, zero_padding =
     """
     distance = torch.tensor([distance]).to(field.device)
     nv, nu = field.shape[-1], field.shape[-2]
-    fx = torch.linspace(-1./2./dx, 1./2./dx, nu,
-                        dtype=torch.float32).to(field.device)
-    fy = torch.linspace(-1./2./dx, 1./2./dx, nv,
-                        dtype=torch.float32).to(field.device)
+    fx = torch.linspace(-1./2./dx, 1./2./dx, nu, dtype = torch.float32, device = field.device)
+    fy = torch.linspace(-1./2./dx, 1./2./dx, nv, dtype = torch.float32, device = field.device)
     FY, FX = torch.meshgrid(fx, fy, indexing='ij')
-    H = torch.exp(1j*k*distance*(1-(FX*wavelength)**2-(FY*wavelength)**2)**0.5)
+    H = torch.exp(1j* k * distance * (1 - (FX * wavelength) ** 2 - (FY * wavelength) ** 2) ** 0.5)
     H = H.to(field.device)
     U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field)))
     if zero_padding == False:
@@ -207,10 +205,8 @@ def angular_spectrum(field, k, distance, dx, wavelength, zero_padding = False):
     """
     distance = torch.tensor([distance]).to(field.device)
     nv, nu = field.shape[-1], field.shape[-2]
-    fx = torch.linspace(-1./2./dx, 1./2./dx, nu,
-                        dtype=torch.float32).to(field.device)
-    fy = torch.linspace(-1./2./dx, 1./2./dx, nv,
-                        dtype=torch.float32).to(field.device)
+    fx = torch.linspace(-1./2./dx, 1./2./dx, nu, dtype = torch.float32, device = field.device)
+    fy = torch.linspace(-1./2./dx, 1./2./dx, nv, dtype = torch.float32, device = field.device)
     FY, FX = torch.meshgrid(fx, fy, indexing='ij')
     H = torch.exp(1j  * distance * (2 * (np.pi * (1 / wavelength) * torch.sqrt(1. - (wavelength * FX) ** 2 - (wavelength * FY) ** 2))))
     H = H.to(field.device)
@@ -250,11 +246,11 @@ def band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_paddi
     result           : torch.complex
                        Final complex field [m x n].
     """
-    distance = torch.tensor([distance]).to(field.device)
+    distance = torch.tensor([distance], device = field.device)
     nv, nu = field.shape[-1], field.shape[-2]
     y, x = (dx * float(nv), dx * float(nu))
-    fy = torch.linspace(-1 / (2 * dx) + 0.5 / (2 * y), 1 / (2 * dx) - 0.5 / (2 * y), nv, dtype=torch.float32).to(field.device)
-    fx = torch.linspace(-1 / (2 * dx) + 0.5 / (2 * x), 1 / (2 * dx) - 0.5 / (2 * x), nu, dtype=torch.float32).to(field.device)
+    fy = torch.linspace(-1 / (2 * dx) + 0.5 / (2 * y), 1 / (2 * dx) - 0.5 / (2 * y), nv, dtype = torch.float32, device = field.device)
+    fx = torch.linspace(-1 / (2 * dx) + 0.5 / (2 * x), 1 / (2 * dx) - 0.5 / (2 * x), nu, dtype = torch.float32, device = field.device)
     FY, FX = torch.meshgrid(fx, fy, indexing='ij')
     HH = 2 * np.pi * torch.sqrt(1 / wavelength ** 2 - (FX ** 2 + FY ** 2))
     H_exp = HH.to(field.device)
