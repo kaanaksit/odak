@@ -5,7 +5,7 @@ from odak.learn.perception.display_color_hvs import DisplayColorHVS
 
 def test():
     device_ = torch.device('cpu')
-    display_color = DisplayColorHVS(read_spectrum ='backlight',
+    display_color = DisplayColorHVS(read_spectrum ='precomputed',
                                     spectrum_data_root = './backlight/',
                                     device=device_)
     input_rgb_image = torch.rand(1, 1024, 1024, 3)
