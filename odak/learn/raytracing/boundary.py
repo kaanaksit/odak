@@ -276,3 +276,23 @@ def get_triangle_normal(triangle, triangle_center=None):
     return normal
 
 
+def get_sphere_normal_torch(point, sphere):
+    """
+    Definition to get a normal of a point on a given sphere.
+
+    Parameters
+    ----------
+    point         : torch.tensor
+                    Point on sphere in X,Y,Z.
+    sphere        : torch.tensor
+                    Center defined in X,Y,Z and radius.
+
+    Returns
+    ----------
+    normal_vector : torch.tensor
+                    Normal vector.
+    """
+    if len(point.shape) == 1:
+        point = point.reshape((1, 3))
+    normal_vector = create_ray_from_two_points(point, sphere[0:3])
+    return normal_vector
