@@ -1,9 +1,7 @@
 """
 ``odak.learn.perception``
-===================
-Defines a number of different perceptual loss functions, which can be used to optimise images where gaze location
-is known.
-
+=========================
+Defines a number of different perceptual loss functions, which can be used to optimise images where gaze location is known.
 """
 
 from .color_conversion import *
