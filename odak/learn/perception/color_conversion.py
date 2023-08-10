@@ -3,6 +3,7 @@ import torch
 import numpy as np_cpu
 import odak
 from torch.functional import F
+import os
 
 
 class display_color_hvs():
@@ -11,7 +12,7 @@ class display_color_hvs():
                  distance_from_screen = 800,
                  pixel_pitch = 0.311,
                  read_spectrum = 'backlight',
-                 spectrum_data_root = './backlight',
+                 spectrum_data_root = './backlight/',
                  device = None):
         '''
         Parameters
@@ -37,7 +38,7 @@ class display_color_hvs():
         self.resolution = resolution
         self.distance_from_screen = distance_from_screen
         self.pixel_pitch = pixel_pitch
-        self.spectrum_data_root = spectrum_data_root
+        self.spectrum_data_root = os.path.join(spectrum_data_root, '')
         self.l_normalised, self.m_normalised, self.s_normalised = self.initialise_cones_normalised()
         self.lms_tensor = self.construct_matrix_lms(
                                                     self.l_normalised,
@@ -179,7 +180,6 @@ class display_color_hvs():
         blue_spectrum_fit                        : torch.tensor
                                                    Fitted blue light spectrum function
         '''
-        import os
         root = self.spectrum_data_root
         print("Reading the display spectrum data from {}".format(root))
         red_data = np_cpu.swapaxes(np_cpu.genfromtxt(
