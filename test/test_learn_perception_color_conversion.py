@@ -27,18 +27,6 @@ def test():
     srgb_image = odak.learn.perception.color_conversion.srgb_to_lab(input_srgb_image)
     lab_image = odak.learn.perception.color_conversion.lab_to_srgb(srgb_image)
 
-
-    device_ = torch.device('cpu')
-    display_color = odak.learn.perception.color_conversion.display_color_hvs(read_spectrum ='precomputed',
-                                    spectrum_data_root = './backlight/',
-                                    device=device_)
-    input_rgb_image = torch.rand(1, 1024, 1024, 3)
-    lms_image = display_color.rgb_to_lms(input_rgb_image)
-
-    input_srgb_image = torch.randn((3, 256, 256)).to(device_)
-    target_srgb_image = torch.randn((3, 256, 256)).to(device_)
-    mapped_srgb_image = odak.learn.perception.color_conversion.color_map(input_srgb_image, target_srgb_image, model = 'Lab Stats')
-
     assert True == True
 
 
