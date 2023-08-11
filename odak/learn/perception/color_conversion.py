@@ -270,16 +270,13 @@ class display_color_hvs():
         lms_image_tensor                      : float
                                               : Image LMS data transformed from RGB space [3xHxW]
         """
-        #convert Bx3xHxW to BxHxWx3
-        rgb_image_tensor = rgb_image_tensor.permute(0,2,3,1)
-        image_flatten = torch.flatten(rgb_image_tensor, start_dim=0, end_dim=1)
-        unflatten = torch.nn.Unflatten(
-            0, (rgb_image_tensor.size(0), rgb_image_tensor.size(1)))
-        converted_unflatten = torch.matmul(
-            image_flatten.double(), self.lms_tensor.double())
+        rgb_image_tensor = rgb_image_tensor.permute(0, 2, 3, 1)
+        image_flatten = torch.flatten(rgb_image_tensor, start_dim = 0, end_dim = 1)
+        unflatten = torch.nn.Unflatten(0, (rgb_image_tensor.size(0), rgb_image_tensor.size(1)))
+        converted_unflatten = torch.matmul(image_flatten.double(), self.lms_tensor.double())
         converted_image = unflatten(converted_unflatten)        
-        converted_image = converted_image.permute(0,3,1,2)
-        return converted_image.to(self.device)
+        converted_image = converted_image.permute(0, 3, 1, 2)
+        return converted_image
 
     
     def lms_to_rgb(self, lms_image_tensor):
