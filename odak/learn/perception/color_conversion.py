@@ -15,8 +15,8 @@ class display_color_hvs():
                  pixel_pitch = 0.311,
                  read_spectrum = 'tensor',
                  spectrum_data_root = './backlight/',
-                 primeries_spectrum = torch.rand(3, 301),
-                 device = None):
+                 primaries_spectrum = torch.rand(3, 301),
+                 device = torch.device('cpu')):
         '''
         Parameters
         ----------
@@ -35,15 +35,13 @@ class display_color_hvs():
 
         '''
         self.device = device
-        if isinstance(self.device, type(None)):
-            self.device = torch.device("cpu")
         self.read_spectrum = read_spectrum
-        self.primeries_spectrum = primeries_spectrum.to(self.device)
+        self.primaries_spectrum = primaries_spectrum.to(self.device)
         self.resolution = resolution
         self.distance_from_screen = distance_from_screen
         self.pixel_pitch = pixel_pitch
         self.spectrum_data_root = os.path.join(spectrum_data_root, '')
-        self.l_normalised, self.m_normalised, self.s_normalised = self.initialise_cones_normalised()
+        self.l_normalised, self.m_normalised, self.s_normalised = self.initialize_cones_normalised()
         self.lms_tensor = self.construct_matrix_lms(
                                                     self.l_normalised,
                                                     self.m_normalised,
@@ -67,9 +65,9 @@ class display_color_hvs():
         return loss_metamer_color
     
     
-    def initialise_cones_normalised(self):
+    def initialize_cones_normalised(self):
         """
-        Internal function to nitialise normalised L,M,S cones as normal distribution with given sigma, and mu values. 
+        Internal function to initialize normalised L,M,S cones as normal distribution with given sigma, and mu values. 
 
         Returns
         -------
@@ -94,9 +92,9 @@ class display_color_hvs():
         return l_cone_n.to(self.device), m_cone_n.to(self.device), s_cone_n.to(self.device)
 
     
-    def initialise_rgb_backlight_spectrum(self):
+    def initialize_rgb_backlight_spectrum(self):
         """
-        Internal function to initialise baclight spectrum for color primaries. 
+        Internal function to initialize baclight spectrum for color primaries. 
 
         Returns
         -------
@@ -125,9 +123,9 @@ class display_color_hvs():
         return red_spectrum.to(self.device), green_spectrum.to(self.device), blue_spectrum.to(self.device)
 
     
-    def initialise_random_spectrum_normalised(self, dataset):
+    def initialize_random_spectrum_normalised(self, dataset):
         """
-        Initialise normalised light spectrum via combination of 3 gaussian distribution curve fitting [L-BFGS]. 
+        initialize normalised light spectrum via combination of 3 gaussian distribution curve fitting [L-BFGS]. 
         Parameters
         ----------
         dataset                                : torch.tensor 
@@ -150,15 +148,15 @@ class display_color_hvs():
         max_spectrum = torch.max(y_spectrum)
         y_spectrum /= max_spectrum
 
-        def gaussian(x, A=1, sigma=1, centre=0): return A * \
-            torch.exp(-(x - centre)**2 / (2*sigma**2))
+        def gaussian(x, A = 1, sigma = 1, centre = 0): return A * \
+            torch.exp(-(x - centre) ** 2 / (2 * sigma ** 2))
 
         def function(x, weights): return gaussian(
             x, *weights[:3]) + gaussian(x, *weights[3:6]) + gaussian(x, *weights[6:9])
         weights = torch.tensor(
             [1.0, 1.0, -0.2, 1.0, 1.0, 0.0, 1.0, 1.0, 0.2], requires_grad=True)
         optimizer = torch.optim.LBFGS(
-            [weights], max_iter=1000, lr=0.1, line_search_fn=None)
+            [weights], max_iter = 1000, lr = 0.1, line_search_fn=None)
 
         def closure():
             optimizer.zero_grad()
@@ -236,12 +234,12 @@ class display_color_hvs():
         '''
         if self.read_spectrum == 'tensor':
             logging.warning('Tensor primary spectrum is used')
-            red_spectrum = self.primeries_spectrum[0, :]
-            green_spectrum  = self.primeries_spectrum[1, :]
-            blue_spectrum = self.primeries_spectrum[2, :]
+            red_spectrum = self.primaries_spectrum[0, :]
+            green_spectrum  = self.primaries_spectrum[1, :]
+            blue_spectrum = self.primaries_spectrum[2, :]
         else:
             logging.warning('Backlight data is not provided, estimated gaussian backlight is used')
-            red_spectrum, green_spectrum, blue_spectrum = self.initialise_rgb_backlight_spectrum()
+            red_spectrum, green_spectrum, blue_spectrum = self.initialize_rgb_backlight_spectrum()
 
         l_r = self.cone_response_to_spectrum(l_response, red_spectrum)
         l_g = self.cone_response_to_spectrum(l_response, green_spectrum)
@@ -330,7 +328,7 @@ class display_color_hvs():
         m = self.cone_response_to_spectrum(self.m_normalised, spectrum)
         s = self.cone_response_to_spectrum(self.s_normalised, spectrum)
         lms_tensor_wavelength = torch.tensor([l, m, s]).to(self.device)
-        image_flatten = torch.flatten(image_channel, start_dim=0, end_dim=1)
+        image_flatten = torch.flatten(image_channel, start_dim = 0, end_dim = 1)
         image_flatten = image_flatten.unsqueeze(0).swapaxes(0, 1)
         lms_tensor_wavelength = lms_tensor_wavelength.unsqueeze(0)
         lms_converted_flatten = torch.matmul(
