@@ -2,6 +2,7 @@ import torch
 from tqdm import tqdm
 from .ray import propagate_ray, create_ray_from_two_points
 from .primitives import is_it_on_triangle, center_of_triangle
+from ..tools.vector import distance_between_two_points
 
 
 def refract(vector, normvector, n1, n2, error = 0.01):
@@ -296,3 +297,36 @@ def get_sphere_normal_torch(point, sphere):
         point = point.reshape((1, 3))
     normal_vector = create_ray_from_two_points(point, sphere[0:3])
     return normal_vector
+
+def intersect_w_circle(ray, circle):
+    """
+    Definition to find intersection point of a ray with a circle. 
+    Returns distance as zero if there isn't an intersection.
+
+    Parameters
+    ----------
+    ray          : torch.Tensor
+                   A vector/ray.
+    circle       : list
+                   A list that contains (0) Set of points in X,Y and Z to define plane of a circle, (1) circle center, and (2) circle radius.
+
+    Returns
+    ----------
+    normal       : torch.Tensor
+                   Surface normal at the point of intersection.
+    distance     : torch.Tensor
+                   Distance in between a starting point of a ray and the intersection point with a given triangle.
+    """
+    normal, distance = intersect_w_surface(ray, circle[0])
+
+    if len(normal.shape) == 2:
+        normal = normal.unsqueeze(0)
+
+    distance_to_center = distance_between_two_points(normal[:, 0], circle[1])
+    mask = distance_to_center > circle[2]
+    distance[mask] = 0
+    
+    if len(ray.shape) == 2:
+        normal = normal.squeeze(0)
+
+    return normal, distance

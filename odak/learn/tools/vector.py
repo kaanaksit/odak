@@ -49,3 +49,33 @@ def same_side(p1, p2, a, b):
     if test >= 0:
         return True
     return False
+
+
+def distance_between_two_points(point1, point2):
+    """
+    Definition to calculate distance between two given points.
+
+    Parameters
+    ----------
+    point1      : torch.Tensor
+                  First point in X,Y,Z.
+    point2      : torch.Tensor
+                  Second point in X,Y,Z.
+
+    Returns
+    ----------
+    distance    : torch.Tensor
+                  Distance in between given two points.
+    """
+    point1 = torch.tensor(point1) if not isinstance(point1, torch.Tensor) else point1
+    point2 = torch.tensor(point2) if not isinstance(point2, torch.Tensor) else point2
+    
+    if len(point1.shape) == 1 and len(point2.shape) == 1:
+        distance = torch.sqrt(torch.sum((point1 - point2) ** 2))
+    elif len(point1.shape) == 2 or len(point2.shape) == 2:
+        distance = torch.sqrt(torch.sum((point1 - point2) ** 2, dim=-1))
+    
+    return distance
+
+
+

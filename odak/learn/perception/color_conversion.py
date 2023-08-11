@@ -4,6 +4,8 @@ import numpy as np_cpu
 import odak
 from torch.functional import F
 import os
+import logging
+
 
 
 class display_color_hvs():
@@ -11,8 +13,9 @@ class display_color_hvs():
     def __init__(self, resolution = [1920, 1080],
                  distance_from_screen = 800,
                  pixel_pitch = 0.311,
-                 read_spectrum = 'backlight',
+                 read_spectrum = 'tensor',
                  spectrum_data_root = './backlight/',
+                 primeries_spectrum = torch.rand(3, 301),
                  device = None):
         '''
         Parameters
@@ -35,6 +38,7 @@ class display_color_hvs():
         if isinstance(self.device, type(None)):
             self.device = torch.device("cpu")
         self.read_spectrum = read_spectrum
+        self.primeries_spectrum = primeries_spectrum.to(self.device)
         self.resolution = resolution
         self.distance_from_screen = distance_from_screen
         self.pixel_pitch = pixel_pitch
@@ -167,68 +171,7 @@ class display_color_hvs():
         return spectrum.detach().to(self.device)
 
     
-    def initialise_normalised_spectrum_primaries(self):
-        '''
-        Initialise normalised light spectrum via csv data and multilayer perceptron curve fitting. 
-
-        Returns
-        -------
-        red_spectrum_fit                         : torch.tensor
-                                                   Fitted red light spectrum function 
-        green_spectrum_fit                       : torch.tensor
-                                                   Fitted green light spectrum function  
-        blue_spectrum_fit                        : torch.tensor
-                                                   Fitted blue light spectrum function
-        '''
-        root = self.spectrum_data_root
-        print("Reading the display spectrum data from {}".format(root))
-        red_data = np_cpu.swapaxes(np_cpu.genfromtxt(
-            root + 'red_spectrum.csv', delimiter=','), 0, 1)
-        green_data = np_cpu.swapaxes(np_cpu.genfromtxt(
-             root + 'green_spectrum.csv', delimiter=','), 0, 1)
-        blue_data = np_cpu.swapaxes(np_cpu.genfromtxt(
-             root + 'blue_spectrum.csv', delimiter=','), 0, 1)
-        wavelength = np_cpu.linspace(400, 700, num=301)
-        red_spectrum = torch.from_numpy(np_cpu.interp(
-            wavelength, red_data[0], red_data[1])).unsqueeze(1)
-        green_spectrum = torch.from_numpy(np_cpu.interp(
-            wavelength, green_data[0], green_data[1])).unsqueeze(1)
-        blue_spectrum = torch.from_numpy(np_cpu.interp(
-            wavelength, blue_data[0], blue_data[1])).unsqueeze(1)
-        wavelength = torch.from_numpy(wavelength).unsqueeze(1) / 550.
-        curve = odak.learn.tools.multi_layer_perceptron(
-            n_hidden=64).to(torch.device('cpu'))  # device
-        curve.fit(wavelength.float(), red_spectrum.float(),
-                  epochs=1000, learning_rate=5e-4)
-        red_estimate = torch.zeros_like(red_spectrum)
-        for i in range(red_estimate.shape[0]):
-            red_estimate[i] = curve.forward(wavelength[i].float().view(1, 1))
-        curve.fit(wavelength.float(), green_spectrum.float(),
-                  epochs=1000, learning_rate=5e-4)
-        green_estimate = torch.zeros_like(green_spectrum)
-        for i in range(green_estimate.shape[0]):
-            green_estimate[i] = curve.forward(wavelength[i].float().view(1, 1))
-        curve.fit(wavelength.float(), blue_spectrum.float(),
-                  epochs=1000, learning_rate=5e-4)
-        blue_estimate = torch.zeros_like(blue_spectrum)
-        for i in range(blue_estimate.shape[0]):
-            blue_estimate[i] = curve.forward(wavelength[i].float().view(1, 1))
-        primary_wavelength = torch.linspace(400, 700, 301)
-        red_spectrum_fit = torch.cat(
-            (primary_wavelength.unsqueeze(1), red_estimate), 1)
-        green_spectrum_fit = torch.cat(
-            (primary_wavelength.unsqueeze(1), green_estimate), 1)
-        blue_spectrum_fit = torch.cat(
-            (primary_wavelength.unsqueeze(1), blue_estimate), 1)
-        red_spectrum_fit[:, 1] *= (red_spectrum_fit[:, 1] > 0)
-        green_spectrum_fit[:, 1] *= (green_spectrum_fit[:, 1] > 0)
-        blue_spectrum_fit[:, 1] *= (blue_spectrum_fit[:, 1] > 0)
-        red_spectrum_fit=red_spectrum_fit.detach()
-        green_spectrum_fit=green_spectrum_fit.detach()
-        blue_spectrum_fit=blue_spectrum_fit.detach()
-        return red_spectrum_fit[:, 1].to(self.device), green_spectrum_fit[:, 1].to(self.device), blue_spectrum_fit[:, 1].to(self.device)
-
-    
+   
     def display_spectrum_response(wavelength, function):
         """
         Internal function to provide light spectrum response at particular wavelength
@@ -291,11 +234,13 @@ class display_color_hvs():
                                                 3x3 LMSrgb tensor
 
         '''
-        if self.read_spectrum == 'backlight':
-            print('*.csv backlight data is used ')
-            red_spectrum, green_spectrum, blue_spectrum = self.initialise_normalised_spectrum_primaries()
+        if self.read_spectrum == 'tensor':
+            logging.warning('Tensor primary spectrum is used')
+            red_spectrum = self.primeries_spectrum[0, :]
+            green_spectrum  = self.primeries_spectrum[1, :]
+            blue_spectrum = self.primeries_spectrum[2, :]
         else:
-            print('Backlight data is not provided, estimated gaussian backlight is used')
+            logging.warning('Backlight data is not provided, estimated gaussian backlight is used')
             red_spectrum, green_spectrum, blue_spectrum = self.initialise_rgb_backlight_spectrum()
 
         l_r = self.cone_response_to_spectrum(l_response, red_spectrum)
@@ -413,7 +358,7 @@ class display_color_hvs():
 
         '''
         third_stage = torch.zeros(
-            lms_image.shape[0], lms_image.shape[1], 3).to(self.device)
+            lms_image.f[0], lms_image.shape[1], 3).to(self.device)
         third_stage[:, :, 0] = (lms_image[:, :, 1] +
                                 lms_image[:, :, 2]) - lms_image[:, :, 0]
         third_stage[:, :, 1] = (lms_image[:, :, 0] +

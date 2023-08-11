@@ -172,3 +172,29 @@ def define_sphere(center = torch.tensor([[0., 0., 0.]]), radius = torch.tensor([
     parameters = torch.cat((center, radius), dim = 1)
     return parameters
                   
+
+def define_circle(center, radius, angles):
+    """
+    Definition to describe a circle in a single variable packed form.
+
+    Parameters
+    ----------
+    center  : torch.Tensor
+              Center of a circle to be defined in 3D space.
+    radius  : float
+              Radius of a circle to be defined.
+    angles  : torch.Tensor
+              Angular tilt of a circle represented by rotations about x, y, and z axes.
+
+    Returns
+    ----------
+    circle  : list
+              Single variable packed form.
+    """
+    points = define_plane(center, angles=angles)
+    circle = [
+        points,
+        center,
+        torch.tensor([radius])
+    ]
+    return circle
