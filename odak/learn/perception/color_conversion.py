@@ -302,41 +302,6 @@ class display_color_hvs():
         converted_rgb_image = unflatten(converted_unflatten)        
         return converted_rgb_image.to(self.device)
 
-    def convert_to_lms(self, image_channel, wavelength, intensity):
-        """
-        Internal function to convert color primary to LMS space
-
-        Parameters
-        ----------
-        image_channel                         : torch.tensor
-                                                Image color primary channel data to be transformed to LMS space.
-        wavelength                            : float 
-                                                Particular wavelength to be used in LMS conversion.
-        intensity                             : float
-                                                Particular intensity of color primary spectrum with respect to wavelength to be used in LMS conversion.
-
-
-        Returns
-        -------
-        lms_image                             : torch.tensor 
-                                                Image channel LMS data transformed from color primary to LMS space [HxWx3].
-        """
-        spectrum = torch.zeros(301)
-        spectrum[wavelength-400] = intensity 
-        l = self.cone_response_to_spectrum(self.l_normalised, spectrum)
-        m = self.cone_response_to_spectrum(self.m_normalised, spectrum)
-        s = self.cone_response_to_spectrum(self.s_normalised, spectrum)
-        lms_tensor_wavelength = torch.tensor([l, m, s]).to(self.device)
-        image_flatten = torch.flatten(image_channel, start_dim = 0, end_dim = 1)
-        image_flatten = image_flatten.unsqueeze(0).swapaxes(0, 1)
-        lms_tensor_wavelength = lms_tensor_wavelength.unsqueeze(0)
-        lms_converted_flatten = torch.matmul(
-            image_flatten.double(), lms_tensor_wavelength.double())
-        unflatten = torch.nn.Unflatten(
-            0, (image_channel.size(0), image_channel.size(1)))
-        lms_image = unflatten(lms_converted_flatten)
-        return lms_image.to(self.device)
-
  
     def second_to_third_stage(self, lms_image):
         '''
