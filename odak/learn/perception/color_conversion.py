@@ -253,28 +253,33 @@ class display_color_hvs():
         self.lms_tensor = torch.tensor(
             [[l_r, m_r, s_r], [l_g, m_g, s_g], [l_b, m_b, s_b]]).to(self.device)
         return self.lms_tensor      
+    
 
-
-
-    def rgb_to_lms(self, rgb_image):
+    def rgb_to_lms(self, rgb_image_tensor):
         """
-        Internal function to convert batch of RGB images to LMS space 
+        Internal function to convert RGB image to LMS space 
 
         Parameters
         ----------
-        rgb_image                             : torch.tensor
-                                                Batched RGB image data to be transformed to LMS space in shape [b x 3 x m x n]
+        rgb_image_tensor                      : torch.tensor
+                                                Image RGB data to be transformed to LMS space [Bx3xHxW]
+
 
         Returns
         -------
-        lms_image_batch                       : float
-                                                Batched image LMS data transformed from RGB space [b x 3 x m x n]
+        lms_image_tensor                      : float
+                                              : Image LMS data transformed from RGB space [3xHxW]
         """
-        B, C, H, W = rgb_image.shape
-        transposed_image = rgb_image.permute(0, 2, 3, 1).reshape(-1, 3)
-        converted_image = torch.matmul(transposed_image.double(), self.lms_tensor.double().T)
-        lms_image_batch = converted_image.reshape(B, H, W, C).permute(0, 3, 1, 2)
-        return lms_image_batch.to(self.device)
+        #convert Bx3xHxW to BxHxWx3
+        rgb_image_tensor = rgb_image_tensor.permute(0,2,3,1)
+        image_flatten = torch.flatten(rgb_image_tensor, start_dim=0, end_dim=1)
+        unflatten = torch.nn.Unflatten(
+            0, (rgb_image_tensor.size(0), rgb_image_tensor.size(1)))
+        converted_unflatten = torch.matmul(
+            image_flatten.double(), self.lms_tensor.double())
+        converted_image = unflatten(converted_unflatten)        
+        converted_image = converted_image.permute(0,3,1,2)
+        return converted_image.to(self.device)
 
     
     def lms_to_rgb(self, lms_image_tensor):
