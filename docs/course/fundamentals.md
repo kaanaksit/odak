@@ -389,7 +389,7 @@ Please also make sure to have a `requirements.txt` in the root directory of your
 For example, in this course your `requirements.txt` would look like this:
 
 ``` 
-odak>=0.2.3 
+odak>=0.2.4
 torch 
 ``` 
 
