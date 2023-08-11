@@ -13,7 +13,7 @@ def test():
                                       primaries_spectrum=rgb_spectrum,
                                       device = device_)
     lms_image = display_color.rgb_to_lms(target_image)
-
+    third_stage = display_color.second_to_third_stage(display_color.rgb_to_lms(target_image))
     assert True == True
 
 if __name__ == "__main__":

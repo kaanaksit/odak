@@ -279,7 +279,7 @@ class display_color_hvs():
             image_flatten.double(), self.lms_tensor.double())
         converted_image = unflatten(converted_unflatten)        
         converted_image = converted_image.permute(0,3,1,2)
-        return converted_image.to(self.device)
+        return converted_image
 
     
     def lms_to_rgb(self, lms_image_tensor):
@@ -304,7 +304,6 @@ class display_color_hvs():
             image_flatten.double(), self.lms_tensor.inverse().double())
         converted_rgb_image = unflatten(converted_unflatten)        
         return converted_rgb_image.to(self.device)
-
 
     def convert_to_lms(self, image_channel, wavelength, intensity):
         """
@@ -358,13 +357,15 @@ class display_color_hvs():
                                                  Image data at LMS space (third stage)
 
         '''
-        third_stage = torch.zeros(
-            lms_image.f[0], lms_image.shape[1], 3).to(self.device)
-        third_stage[:, :, 0] = (lms_image[:, :, 1] +
-                                lms_image[:, :, 2]) - lms_image[:, :, 0]
-        third_stage[:, :, 1] = (lms_image[:, :, 0] +
-                                lms_image[:, :, 2]) - lms_image[:, :, 1]
-        third_stage[:, :, 2] = torch.sum(lms_image, dim=2) / 3.
+        lms_image = lms_image.permute(0,2,3,1)
+        third_stage = torch.zeros(lms_image.shape[0],
+            lms_image.shape[1], lms_image.shape[2], 3).to(self.device)
+        third_stage[:, :, :, 0] = (lms_image[:, :, :, 1] +
+                                lms_image[:, :, :, 2]) - lms_image[:, :, :, 0]
+        third_stage[:, :, :, 1] = (lms_image[:, :, :, 0] +
+                                lms_image[:, :, :, 2]) - lms_image[:, :, :, 1]
+        third_stage[:, :, :, 2] = torch.sum(lms_image, dim=3) / 3.
+        third_stage = third_stage.permute(0, 3, 1, 2)
         return third_stage
 
 
