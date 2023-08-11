@@ -18,7 +18,7 @@ import numpy as np
 import logging
 
 
-version_info = 0, 2, 3
+version_info = 0, 2, 4
 __version__ = '.'.join(map(str, version_info))
 pi = np.pi
 
