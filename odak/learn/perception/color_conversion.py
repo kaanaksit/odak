@@ -234,73 +234,72 @@ class display_color_hvs():
         '''
         if self.read_spectrum == 'tensor':
             logging.warning('Tensor primary spectrum is used')
-            red_spectrum = self.primaries_spectrum[0, :]
-            green_spectrum  = self.primaries_spectrum[1, :]
-            blue_spectrum = self.primaries_spectrum[2, :]
+            logging.warning('The number of primaries used is {}'.format(self.primaries_spectrum.shape[0]))
         else:
-            logging.warning('Backlight data is not provided, estimated gaussian backlight is used')
-            red_spectrum, green_spectrum, blue_spectrum = self.initialize_rgb_backlight_spectrum()
-
-        l_r = self.cone_response_to_spectrum(l_response, red_spectrum)
-        l_g = self.cone_response_to_spectrum(l_response, green_spectrum)
-        l_b = self.cone_response_to_spectrum(l_response, blue_spectrum)
-        m_r = self.cone_response_to_spectrum(m_response, red_spectrum)
-        m_g = self.cone_response_to_spectrum(m_response, green_spectrum)
-        m_b = self.cone_response_to_spectrum(m_response, blue_spectrum)
-        s_r = self.cone_response_to_spectrum(s_response, red_spectrum)
-        s_g = self.cone_response_to_spectrum(s_response, green_spectrum)
-        s_b = self.cone_response_to_spectrum(s_response, blue_spectrum)
-        self.lms_tensor = torch.tensor(
-            [[l_r, m_r, s_r], [l_g, m_g, s_g], [l_b, m_b, s_b]]).to(self.device)
-        return self.lms_tensor      
+            logging.warning("No Spectrum data is provided")
+        
+        self.lms_tensor = torch.zeros(self.primaries_spectrum.shape[0], 3).to(self.device)
+        for i in range(self.primaries_spectrum.shape[0]):
+            self.lms_tensor[i, 0] = self.cone_response_to_spectrum(l_response,
+                                                                   self.primaries_spectrum[i]
+                                                                   )
+            self.lms_tensor[i, 1] = self.cone_response_to_spectrum(m_response,
+                                                                   self.primaries_spectrum[i]
+                                                                   )
+            self.lms_tensor[i, 2] = self.cone_response_to_spectrum(s_response,
+                                                                   self.primaries_spectrum[i]
+                                                                   ) 
+        return self.lms_tensor    
     
 
-    def rgb_to_lms(self, rgb_image_tensor):
+    def primaries_to_lms(self, primaries):
         """
-        Internal function to convert RGB image to LMS space 
+        Internal function to convert primaries space to LMS space 
 
         Parameters
         ----------
-        rgb_image_tensor                      : torch.tensor
-                                                Image RGB data to be transformed to LMS space [Bx3xHxW]
+        primaries                              : torch.tensor
+                                                 Primaries data to be transformed to LMS space [BxPHxW]
 
 
         Returns
         -------
-        lms_image_tensor                      : float
-                                              : Image LMS data transformed from RGB space [3xHxW]
+        lms_color                              : torch.tensor
+                                                 LMS data transformed from Primaries space [BxPxHxW]
         """
-        rgb_image_tensor = rgb_image_tensor.permute(0, 2, 3, 1)
-        image_flatten = torch.flatten(rgb_image_tensor, start_dim = 0, end_dim = 1)
-        unflatten = torch.nn.Unflatten(0, (rgb_image_tensor.size(0), rgb_image_tensor.size(1)))
-        converted_unflatten = torch.matmul(image_flatten.double(), self.lms_tensor.double())
-        converted_image = unflatten(converted_unflatten)        
-        converted_image = converted_image.permute(0, 3, 1, 2)
-        return converted_image
+        primaries = primaries.permute(0, 2, 3, 1).to(self.device)
+        primaries_flatten = torch.flatten(primaries, start_dim = 0, end_dim = 1)
+        unflatten = torch.nn.Unflatten(0, (primaries.size(0), primaries.size(1)))
+        converted_unflatten = torch.matmul(primaries_flatten.double(), self.lms_tensor.double())
+        lms_color = unflatten(converted_unflatten)        
+        lms_color = lms_color.permute(0, 3, 1, 2)
+        return lms_color
 
     
-    def lms_to_rgb(self, lms_image_tensor):
+    def lms_to_primaries(self, lms_color_tensor):
         """
-        Internal function to convert LMS image to RGB space
+        Internal function to convert LMS image to primaries space
 
         Parameters
         ----------
-        lms_image_tensor                      : torch.tensor
-                                                Image LMS data to be transformed to RGB space
+        lms_color_tensor                        : torch.tensor
+                                                  LMS data to be transformed to primaries space [Bx3xHxW]
 
 
         Returns
         -------
-       rgb_image_tensor                       : float
-                                              : Image RGB data transformed from RGB space [3xHxW]
+        primaries                              : float
+                                               : Primaries data transformed from primaries space [BxPxHxW]
         """
-        image_flatten = torch.flatten(lms_image_tensor, start_dim=0, end_dim=1)
+        lms_color_tensor = lms_color_tensor.permute(0, 2, 3, 1).to(self.device)
+        lms_color_flatten = torch.flatten(lms_color_tensor, start_dim=0, end_dim=1)
         unflatten = torch.nn.Unflatten(
-            0, (lms_image_tensor.size(0), lms_image_tensor.size(1)))
+            0, (lms_color_tensor.size(0), lms_color_tensor.size(1)))
         converted_unflatten = torch.matmul(
-            image_flatten.double(), self.lms_tensor.inverse().double())
-        converted_rgb_image = unflatten(converted_unflatten)        
-        return converted_rgb_image.to(self.device)
+            lms_color_flatten.double(), self.lms_tensor.pinverse().double())
+        primaries = unflatten(converted_unflatten)     
+        primaries = primaries.permute(0, 3, 1, 2)   
+        return primaries
 
  
     def second_to_third_stage(self, lms_image):
@@ -329,11 +328,6 @@ class display_color_hvs():
         third_stage[:, :, :, 2] = torch.sum(lms_image, dim=3) / 3.
         third_stage = third_stage.permute(0, 3, 1, 2)
         return third_stage
-
-
-    def convert_to_second_stage(self,image_channel, wavelength, intensity):
-       second_stage_image = self.second_to_third_stage(self.convert_to_lms(image_channel, wavelength, intensity))
-       return second_stage_image.to(self.device)
 
 
     def to(self, device):
