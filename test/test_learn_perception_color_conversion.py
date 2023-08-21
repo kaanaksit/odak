@@ -3,6 +3,7 @@ import torch
 import sys
 
 
+
 def test():
     device = torch.device('cpu')
     input_rgb_image = torch.randn((1, 3, 256, 256)).to(device)
