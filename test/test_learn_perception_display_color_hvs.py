@@ -2,7 +2,6 @@ import odak
 import torch
 import sys
 from odak.learn.perception.color_conversion import display_color_hvs
-from odak.learn.perception.color_conversion_rgb_only import display_color_hvs as display_color_hvs_rgb_only
 from odak.learn.tools import load_image, save_image, resize
 
 
