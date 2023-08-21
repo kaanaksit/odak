@@ -2,16 +2,19 @@ import odak
 import torch
 import sys
 from odak.learn.perception.color_conversion import display_color_hvs
+from odak.learn.perception.color_conversion_rgb_only import display_color_hvs as display_color_hvs_rgb_only
 from odak.learn.tools import load_image, save_image, resize
 
 
 def test():
-    the_number_of_primaries = 5
-    target_primaries = torch.rand(10,
+    torch.manual_seed(0)
+    the_number_of_primaries = 3
+    target_primaries = torch.rand(1,
                                   the_number_of_primaries,
                                   1024,
                                   1024
                                   )
+
     multi_spectrum = torch.rand(the_number_of_primaries,
                                 301
                                 ) 
