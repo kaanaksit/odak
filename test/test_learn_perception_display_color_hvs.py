@@ -6,14 +6,22 @@ from odak.learn.tools import load_image, save_image, resize
 
 
 def test():
-    target_image = torch.rand(10, 3, 1024, 1024)
-    rgb_spectrum = torch.rand(3, 301) # 400-700 nm
+    the_number_of_primaries = 5
+    target_primaries = torch.rand(10,
+                                  the_number_of_primaries,
+                                  1024,
+                                  1024
+                                  )
+    multi_spectrum = torch.rand(the_number_of_primaries,
+                                301
+                                ) 
     device_ = torch.device('cpu')
-    display_color = display_color_hvs(read_spectrum ='default',
-                                      primaries_spectrum=rgb_spectrum,
+    display_color = display_color_hvs(read_spectrum ='tensor',
+                                      primaries_spectrum=multi_spectrum,
                                       device = device_)
-    lms_image = display_color.rgb_to_lms(target_image)
-    third_stage = display_color.second_to_third_stage(display_color.rgb_to_lms(target_image))
+    lms_color = display_color.primaries_to_lms(target_primaries)
+    third_stage = display_color.second_to_third_stage(display_color.primaries_to_lms(target_primaries))
+        
     assert True == True
 
 if __name__ == "__main__":
