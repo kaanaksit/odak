@@ -3,7 +3,6 @@ import torch
 import numpy as np_cpu
 import odak
 from torch.functional import F
-import os
 import logging
 
 
@@ -14,7 +13,6 @@ class display_color_hvs():
                  distance_from_screen = 800,
                  pixel_pitch = 0.311,
                  read_spectrum = 'tensor',
-                 spectrum_data_root = './backlight/',
                  primaries_spectrum = torch.rand(3, 301),
                  device = torch.device('cpu')):
         '''
@@ -40,9 +38,13 @@ class display_color_hvs():
         self.resolution = resolution
         self.distance_from_screen = distance_from_screen
         self.pixel_pitch = pixel_pitch
-        self.spectrum_data_root = os.path.join(spectrum_data_root, '')
         self.l_normalised, self.m_normalised, self.s_normalised = self.initialize_cones_normalised()
         self.lms_tensor = self.construct_matrix_lms(
+                                                    self.l_normalised,
+                                                    self.m_normalised,
+                                                    self.s_normalised
+                                                   )   
+        self.primaries_tensor = self.construct_matrix_primaries(
                                                     self.l_normalised,
                                                     self.m_normalised,
                                                     self.s_normalised
@@ -167,7 +169,6 @@ class display_color_hvs():
         optimizer.step(closure)
         spectrum = function(x_spectrum, weights)
         return spectrum.detach().to(self.device)
-
     
    
     def display_spectrum_response(wavelength, function):
@@ -251,6 +252,40 @@ class display_color_hvs():
                                                                    ) 
         return self.lms_tensor    
     
+    def construct_matrix_primaries(self, l_response, m_response, s_response):
+        '''
+        Internal function to calculate cone  response at particular light spectrum. 
+
+        Parameters
+        ----------
+        *_response                             : torch.tensor
+                                                 Cone response spectrum tensor (normalised response vs wavelength)
+
+        Returns
+        -------
+        lms_image_tensor                      : torch.tensor
+                                                3x3 LMSrgb tensor
+
+        '''
+        if self.read_spectrum == 'tensor':
+            logging.warning('Tensor primary spectrum is used')
+            logging.warning('The number of primaries used is {}'.format(self.primaries_spectrum.shape[0]))
+        else:
+            logging.warning("No Spectrum data is provided")
+        
+        self.primaries_tensor = torch.zeros(3, self.primaries_spectrum.shape[0]).to(self.device)
+        for i in range(self.primaries_spectrum.shape[0]):
+            self.primaries_tensor[0, i] = self.cone_response_to_spectrum(l_response,
+                                                                   self.primaries_spectrum[i]
+                                                                   )
+            self.primaries_tensor[1, i] = self.cone_response_to_spectrum(m_response,
+                                                                   self.primaries_spectrum[i]
+                                                                   )
+            self.primaries_tensor[2, i] = self.cone_response_to_spectrum(s_response,
+                                                                   self.primaries_spectrum[i]
+                                                                   ) 
+        return self.primaries_tensor    
+    
 
     def primaries_to_lms(self, primaries):
         """
@@ -266,10 +301,10 @@ class display_color_hvs():
         -------
         lms_color                              : torch.tensor
                                                  LMS data transformed from Primaries space [BxPxHxW]
-        """
+        """                
         primaries = primaries.permute(0, 2, 3, 1).to(self.device)
-        primaries_flatten = torch.flatten(primaries, start_dim = 0, end_dim = 1)
-        unflatten = torch.nn.Unflatten(0, (primaries.size(0), primaries.size(1)))
+        primaries_flatten = torch.flatten(primaries, start_dim = 1, end_dim = 2)
+        unflatten = torch.nn.Unflatten(1, (primaries.size(1), primaries.size(2)))
         converted_unflatten = torch.matmul(primaries_flatten.double(), self.lms_tensor.double())
         lms_color = unflatten(converted_unflatten)        
         lms_color = lms_color.permute(0, 3, 1, 2)
@@ -288,8 +323,8 @@ class display_color_hvs():
 
         Returns
         -------
-        primaries                              : float
-                                               : Primaries data transformed from primaries space [BxPxHxW]
+        primaries                              : torch.tensor
+                                               : Primaries data transformed from LMS space [BxPxHxW]
         """
         lms_color_tensor = lms_color_tensor.permute(0, 2, 3, 1).to(self.device)
         lms_color_flatten = torch.flatten(lms_color_tensor, start_dim=0, end_dim=1)
@@ -571,101 +606,6 @@ def hsv_to_rgb(image):
     image_rgb = torch.gather(image_rgb, -3, indices)
     return image_rgb
 
-
-def rgb_to_lms(image):
-    """
-    Internal function to calculate LMS cone response at particular light spectrum. LMS conversion tensor is hard coded for an standard LCD display backlight.
-
-    Parameters
-    ----------
-    image            : torch.tensor
-                       Image RGB data to be transformed to LMS space [k x 3 x m x n] or [3 x m x n]. Image(s) must be normalized between zero and one.
-
-
-    Returns
-    -------
-    lms_image_tensor : float
-                       Image LMS data transformed from RGB space [k x 3 x m x n] or [1 x 3 x m x n].
-    """
-    if len(image.shape) == 3:
-        image = image.unsqueeze(0)
-    a11 = 12.245
-    a12 = 2.6253
-    a13 = 4.7270e-08
-    a21 = 37.442
-    a22 = 38.719
-    a23 = 0.080662
-    a31 = 2.2498
-    a32 = 3.1804
-    a33 = 34.629
-    M = torch.tensor([[a11, a21, a31], 
-                      [a12, a22, a32],
-                      [a13, a23, a33]])
-    size = image.size()
-    image = image.reshape(size[0], size[1], size[2]*size[3])
-    image_lms = torch.matmul(M, image)
-    image_lms = image_lms.reshape(size[0], size[1], size[2], size[3]) 
-    
-    return image_lms
-
-
-def lms_to_rgb(image):
-    """
-    Internal function to convert LMS cone response to RGB space. LMS conversion tensor is hard coded for an standard LCD display backlight.
-
-    Parameters
-    ----------
-    image               : torch.tensor
-                          Image LMS data to be transformed to RGB space [k x 3 x m x n] or [3 x m x n].
-
-
-    Returns
-    -------
-    image_rgb           : float
-                          Image RGB data transformed from RGB space [k x 3 x m x n] or [1 x 3 x m x n].
-    """
-    if len(image.shape) == 3:
-        image = image.unsqueeze(0)
-    a11 = 12.245
-    a12 = 2.6253
-    a13 = 4.7270e-08
-    a21 = 37.442
-    a22 = 38.719
-    a23 = 0.080662
-    a31 = 2.2498
-    a32 = 3.1804
-    a33 = 34.629
-    M = torch.tensor([[a11, a21, a31], 
-                      [a12, a22, a32],
-                      [a13, a23, a33]])
-    size = image.size()
-    image = image.reshape(size[0], size[1], size[2]*size[3])
-    image_rgb = torch.matmul(M.inverse(), image)
-    image_rgb = image_rgb.reshape(size[0], size[1], size[2], size[3])       
-    return image_rgb
-
-
-def lms_to_hvs_second_stage(image):
-    '''
-    This function turns LMS stage [L,M,S] values into HVS second stage [(M+S)-L, (L+S)-M, (L+M+S)/3]
-    Equations are taken from Schmidt et al "Neurobiological hypothesis of color appearance and hue perception" 2014
-
-    Parameters
-    ----------
-    image                             : torch.tensor
-                                        Image data at LMS space [k x 3 x m x n] or [3 x m x n].
-
-    Returns
-    -------
-    third_stage                       : torch.tensor
-                                        Image data at second stage of HVS
-
-    '''
-    hvs_second_stage = torch.zeros(image.shape[0], 3, image.shape[2],image.shape[3])
-    hvs_second_stage[:, 0, :, :] = (image[:, 1, :, :] +  image[:, 2, :, :]) - image[:, 0, :, :]
-    hvs_second_stage[:, 1, :, :] = (image[:, 0, :, :] +  image[:, 2, :, :]) - image[:, 1, :, :]
-    hvs_second_stage[:, 2, :, :] = torch.sum(image, dim=1) / 3.
-    return hvs_second_stage
 
 def srgb_to_lab(image):    
     """
