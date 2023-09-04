@@ -315,16 +315,15 @@ def impulse_response_fresnel(field, k, distance, dx, wavelength):
 
     """
     nv, nu = field.shape
-    x = np.linspace(-nu/2*dx, nu/2*dx, nu)
-    y = np.linspace(-nv/2*dx, nv/2*dx, nv)
+    x = np.linspace(-nu / 2 * dx, nu / 2 * dx, nu)
+    y = np.linspace(-nv / 2 * dx, nv / 2 * dx, nv)
     X, Y = np.meshgrid(x, y)
-    Z = X**2+Y**2
-    h = np.exp(1j*k*distance)/(1j*wavelength*distance) * \
-        np.exp(1j*k/2/distance*Z)
-    h = np.fft.fft2(np.fft.fftshift(h))*dx**2
+    Z = X ** 2 + Y ** 2
+    h = np.exp(1j * k * distance) / (1j * wavelength * distance) * np.exp(1j * k / 2. / distance * Z)
+    h = np.fft.fft2(h) * dx ** 2
     U1 = np.fft.fft2(np.fft.fftshift(field))
-    U2 = h*U1
-    result = np.fft.ifftshift(np.fft.ifft2(U2))
+    U2 = h * U1
+    result = np.fft.ifft2(U2)
     return result
 
 
