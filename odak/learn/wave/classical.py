@@ -165,12 +165,11 @@ def transfer_function_fresnel(field, k, distance, dx, wavelength, zero_padding =
     nv, nu = field.shape[-1], field.shape[-2]
     fx = torch.linspace(-1./2./dx, 1./2./dx, nu, dtype = torch.float32, device = field.device)
     fy = torch.linspace(-1./2./dx, 1./2./dx, nv, dtype = torch.float32, device = field.device)
-    FY, FX = torch.meshgrid(fx, fy, indexing='ij')
-    H = torch.exp(1j* k * distance * (1 - (FX * wavelength) ** 2 - (FY * wavelength) ** 2) ** 0.5)
-    H = H.to(field.device)
+    FY, FX = torch.meshgrid(fx, fy, indexing = 'ij')
+    H = torch.exp(1j* k * distance * (1 - (FX * wavelength) ** 2 - (FY * wavelength) ** 2) ** 0.5).to(field.device)
     U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field)))
     if zero_padding == False:
-        U2 = H*U1
+        U2 = H * U1
     elif zero_padding == True:
         U2 = zero_pad(H*U1)
     result = torch.fft.ifftshift(torch.fft.ifft2(torch.fft.ifftshift(U2)))
