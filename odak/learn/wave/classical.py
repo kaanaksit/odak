@@ -16,7 +16,8 @@ def propagate_beam(
                    wavelength, 
                    propagation_type='TR Fresnel', 
                    kernel = None, 
-                   zero_padding = [False, False, False]
+                   zero_padding = [False, False, False],
+                   aperture = None
                   ):
     """
     Definitions for various beam propagation methods mostly in accordence with "Computational Fourier Optics" by David Vuelz.
@@ -49,16 +50,18 @@ def propagate_beam(
     result           : torch.complex
                        Final complex field [m x n].
     """
+    if isinstance(aperture, type(None)):
+        aperture = 1.
     if zero_padding[0]:
         field = zero_pad(field)
     if propagation_type == 'Angular Spectrum':
-        result = angular_spectrum(field, k, distance, dx, wavelength, zero_padding[1])
+        result = angular_spectrum(field, k, distance, dx, wavelength, zero_padding[1], aperture = aperture)
     elif propagation_type == 'Bandlimited Angular Spectrum':
-        result = band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_padding[1])
+        result = band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_padding[1], aperture = aperture)
     elif propagation_type == 'TR Fresnel':
-        result = transfer_function_fresnel(field, k, distance, dx, wavelength, zero_padding[1])
+        result = transfer_function_fresnel(field, k, distance, dx, wavelength, zero_padding[1], aperture = aperture)
     elif propagation_type == 'custom':
-        result = custom(field, kernel, zero_padding[1])
+        result = custom(field, kernel, zero_padding[1], aperture = aperture)
     elif propagation_type == 'Fraunhofer':
         result = fraunhofer(field, k, distance, dx, wavelength)
     else:
@@ -103,18 +106,21 @@ def fraunhofer(field, k, distance, dx, wavelength):
     return result
 
 
-def custom(field, kernel, zero_padding = False):
+def custom(field, kernel, zero_padding = False, aperture = 1.):
     """
     A definition to calculate convolution based Fresnel approximation for beam propagation.
 
     Parameters
     ----------
     field            : torch.complex
-                       Complex field (MxN).
+                       Complex field [m x n].
     kernel           : torch.complex
                        Custom complex kernel for beam propagation.
     zero_padding     : bool
                        Zero pad in Fourier domain.
+    aperture         : torch.tensor
+                       Fourier domain aperture (e.g., pinhole in a typical holographic display).
+                       The default is one, but an aperture could be as large as input field [m x n].
 
     Returns
     -------
@@ -123,19 +129,19 @@ def custom(field, kernel, zero_padding = False):
 
     """
     if type(kernel) == type(None):
-        H = torch.zeros(field.shape).to(field.device)
+        H = torch.zeros(field.shape).to(field.device) * aperture
     else:
-        H = kernel
+        H = kernel * aperture
     U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field)))
     if zero_padding == False:
-        U2 = H*U1
+        U2 = H * U1
     elif zero_padding == True:
-        U2 = zero_pad(H*U1)
+        U2 = zero_pad(H * U1)
     result = torch.fft.ifftshift(torch.fft.ifft2(torch.fft.ifftshift(U2)))
     return result
 
 
-def transfer_function_fresnel(field, k, distance, dx, wavelength, zero_padding = False):
+def transfer_function_fresnel(field, k, distance, dx, wavelength, zero_padding = False, aperture = 1.):
     """
     A definition to calculate convolution based Fresnel approximation for beam propagation.
 
@@ -153,6 +159,9 @@ def transfer_function_fresnel(field, k, distance, dx, wavelength, zero_padding =
                        Wavelength of the electric field.
     zero_padding     : bool
                        Zero pad in Fourier domain.
+    aperture         : torch.tensor
+                       Fourier domain aperture (e.g., pinhole in a typical holographic display).
+                       The default is one, but an aperture could be as large as input field [m x n].
 
 
     Returns
@@ -166,24 +175,24 @@ def transfer_function_fresnel(field, k, distance, dx, wavelength, zero_padding =
     fx = torch.linspace(-1./2./dx, 1./2./dx, nu, dtype = torch.float32, device = field.device)
     fy = torch.linspace(-1./2./dx, 1./2./dx, nv, dtype = torch.float32, device = field.device)
     FY, FX = torch.meshgrid(fx, fy, indexing = 'ij')
-    H = torch.exp(1j* k * distance * (1 - (FX * wavelength) ** 2 - (FY * wavelength) ** 2) ** 0.5).to(field.device)
+    H = torch.exp(1j* k * distance * (1 - (FX * wavelength) ** 2 - (FY * wavelength) ** 2) ** 0.5).to(field.device) * aperture
     U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field)))
     if zero_padding == False:
         U2 = H * U1
     elif zero_padding == True:
-        U2 = zero_pad(H*U1)
+        U2 = zero_pad(H * U1)
     result = torch.fft.ifftshift(torch.fft.ifft2(torch.fft.ifftshift(U2)))
     return result
 
 
-def angular_spectrum(field, k, distance, dx, wavelength, zero_padding = False):
+def angular_spectrum(field, k, distance, dx, wavelength, zero_padding = False, aperture = 1.):
     """
     A definition to calculate convolution with Angular Spectrum method for beam propagation.
 
     Parameters
     ----------
     field            : torch.complex
-                       Complex field (MxN).
+                       Complex field [m x n].
     k                : odak.wave.wavenumber
                        Wave number of a wave, see odak.wave.wavenumber for more.
     distance         : float
@@ -194,6 +203,9 @@ def angular_spectrum(field, k, distance, dx, wavelength, zero_padding = False):
                        Wavelength of the electric field.
     zero_padding     : bool
                        Zero pad in Fourier domain.
+    aperture         : torch.tensor
+                       Fourier domain aperture (e.g., pinhole in a typical holographic display).
+                       The default is one, but an aperture could be as large as input field [m x n].
 
 
     Returns
@@ -208,7 +220,7 @@ def angular_spectrum(field, k, distance, dx, wavelength, zero_padding = False):
     fy = torch.linspace(-1./2./dx, 1./2./dx, nv, dtype = torch.float32, device = field.device)
     FY, FX = torch.meshgrid(fx, fy, indexing='ij')
     H = torch.exp(1j  * distance * (2 * (np.pi * (1 / wavelength) * torch.sqrt(1. - (wavelength * FX) ** 2 - (wavelength * FY) ** 2))))
-    H = H.to(field.device)
+    H = H.to(field.device) * aperture
     U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field)))
     if zero_padding == False:
         U2 = H*U1
@@ -218,7 +230,7 @@ def angular_spectrum(field, k, distance, dx, wavelength, zero_padding = False):
     return result
 
 
-def band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_padding = False):
+def band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_padding = False, aperture = 1.):
     """
     A definition to calculate bandlimited angular spectrum based beam propagation. For more 
     `Matsushima, Kyoji, and Tomoyoshi Shimobaba. "Band-limited angular spectrum method for numerical simulation of free-space propagation in far and near fields." Optics express 17.22 (2009): 19662-19673`.
@@ -238,6 +250,9 @@ def band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_paddi
                        Wavelength of the electric field.
     zero_padding     : bool
                        Zero pad in Fourier domain.
+    aperture         : torch.tensor
+                       Fourier domain aperture (e.g., pinhole in a typical holographic display).
+                       The default is one, but an aperture could be as large as input field [m x n].
 
 
     Returns
@@ -257,7 +272,7 @@ def band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_paddi
     fy_max = 1 / torch.sqrt((2 * distance * (1 / y))**2 + 1) / wavelength
     fx_max = 1 / torch.sqrt((2 * distance * (1 / x))**2 + 1) / wavelength
     H_filter = ((torch.abs(FX) < fx_max) & (torch.abs(FY) < fy_max)).clone().detach()
-    H = generate_complex_field(H_filter,H_exp)
+    H = generate_complex_field(H_filter, H_exp) * aperture
     U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field)))
     if zero_padding == False:
        U2 = H * U1
