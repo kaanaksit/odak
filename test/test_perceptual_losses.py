@@ -30,7 +30,7 @@ def test_perceptual_losses():
         test_image, test_target, gaze=gaze).item())
     print("Blur Loss:", my_blur_loss(test_image, test_target, gaze=gaze).item())
 
-    return True
+    assert True == True
 
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ def propagate_beam(
                    propagation_type='TR Fresnel', 
                    kernel = None, 
                    zero_padding = [False, False, False],
-                   aperture = None
+                   aperture = 1.
                   ):
     """
     Definitions for various beam propagation methods mostly in accordence with "Computational Fourier Optics" by David Vuelz.
@@ -50,8 +50,6 @@ def propagate_beam(
     result           : torch.complex
                        Final complex field [m x n].
     """
-    if isinstance(aperture, type(None)):
-        aperture = 1.
     if zero_padding[0]:
         field = zero_pad(field)
     if propagation_type == 'Angular Spectrum':
@@ -129,10 +127,10 @@ def custom(field, kernel, zero_padding = False, aperture = 1.):
 
     """
     if type(kernel) == type(None):
-        H = torch.zeros(field.shape).to(field.device) * aperture
+        H = torch.zeros(field.shape).to(field.device)
     else:
         H = kernel * aperture
-    U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field)))
+    U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field))) * aperture
     if zero_padding == False:
         U2 = H * U1
     elif zero_padding == True:
@@ -175,8 +173,8 @@ def transfer_function_fresnel(field, k, distance, dx, wavelength, zero_padding =
     fx = torch.linspace(-1./2./dx, 1./2./dx, nu, dtype = torch.float32, device = field.device)
     fy = torch.linspace(-1./2./dx, 1./2./dx, nv, dtype = torch.float32, device = field.device)
     FY, FX = torch.meshgrid(fx, fy, indexing = 'ij')
-    H = torch.exp(1j* k * distance * (1 - (FX * wavelength) ** 2 - (FY * wavelength) ** 2) ** 0.5).to(field.device) * aperture
-    U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field)))
+    H = torch.exp(1j* k * distance * (1 - (FX * wavelength) ** 2 - (FY * wavelength) ** 2) ** 0.5).to(field.device)
+    U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field))) * aperture
     if zero_padding == False:
         U2 = H * U1
     elif zero_padding == True:
@@ -220,8 +218,8 @@ def angular_spectrum(field, k, distance, dx, wavelength, zero_padding = False, a
     fy = torch.linspace(-1./2./dx, 1./2./dx, nv, dtype = torch.float32, device = field.device)
     FY, FX = torch.meshgrid(fx, fy, indexing='ij')
     H = torch.exp(1j  * distance * (2 * (np.pi * (1 / wavelength) * torch.sqrt(1. - (wavelength * FX) ** 2 - (wavelength * FY) ** 2))))
-    H = H.to(field.device) * aperture
-    U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field)))
+    H = H.to(field.device)
+    U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field))) * aperture
     if zero_padding == False:
         U2 = H*U1
     elif zero_padding == True:
@@ -272,8 +270,8 @@ def band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_paddi
     fy_max = 1 / torch.sqrt((2 * distance * (1 / y))**2 + 1) / wavelength
     fx_max = 1 / torch.sqrt((2 * distance * (1 / x))**2 + 1) / wavelength
     H_filter = ((torch.abs(FX) < fx_max) & (torch.abs(FY) < fy_max)).clone().detach()
-    H = generate_complex_field(H_filter, H_exp) * aperture
-    U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field)))
+    H = generate_complex_field(H_filter, H_exp)
+    U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field))) * aperture
     if zero_padding == False:
        U2 = H * U1
     elif zero_padding == True:
