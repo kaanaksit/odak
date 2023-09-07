@@ -1,24 +1,18 @@
 import torch
-from tqdm import tqdm
-from .ray import propagate_ray, create_ray_from_two_points
+from .ray import propagate_ray
 from .primitives import is_it_on_triangle, center_of_triangle
-from ..tools.vector import distance_between_two_points
 
 
 def refract(vector, normvector, n1, n2, error = 0.01):
     """
     Definition to refract an incoming ray.
-    Used method described in G.H. Spencer and M.V.R.K. Murty, "General Ray-Tracing Procedure", 1961.
-
 
     Parameters
     ----------
     vector         : torch.tensor
                      Incoming ray.
-                     Expected size is [2, 3], [1, 2, 3] or [m, 2, 3].
     normvector     : torch.tensor
                      Normal vector.
-                     Expected size is [2, 3], [1, 2, 3] or [m, 2, 3]].
     n1             : float
                      Refractive index of the incoming medium.
     n2             : float
@@ -30,7 +24,6 @@ def refract(vector, normvector, n1, n2, error = 0.01):
     -------
     output         : torch.tensor
                      Refracted ray.
-                     Expected size is [1, 2, 3]
     """
     if len(vector.shape) == 2:
         vector = vector.unsqueeze(0)
@@ -50,6 +43,8 @@ def refract(vector, normvector, n1, n2, error = 0.01):
        deltav = 2 * (to + a)
        to     = to - v / deltav
        eps    = abs(oldto - to)
+    if num > 5000:
+       return False
     output = torch.zeros_like(vector)
     output[:, 0, 0] = normvector[:, 0, 0]
     output[:, 0, 1] = normvector[:, 0, 1]
@@ -62,141 +57,63 @@ def refract(vector, normvector, n1, n2, error = 0.01):
 
 def reflect(input_ray, normal):
     """ 
-    Definition to reflect an incoming ray from a surface defined by a surface normal. 
-    Used method described in G.H. Spencer and M.V.R.K. Murty, "General Ray-Tracing Procedure", 1961.
-
+    Definition to reflect an incoming ray from a surface defined by a surface normal. Used method described in G.H. Spencer and M.V.R.K. Murty, "General Ray-Tracing Procedure", 1961.
 
     Parameters
     ----------
     input_ray    : torch.tensor
-                   A ray or rays.
-                   Expected size is [2 x 3], [1 x 2 x 3] or [m x 2 x 3].
+                   A vector/ray (2x3). It can also be a list of rays (nx2x3).
     normal       : torch.tensor
-                   A surface normal(s).
-                   Expected size is [2 x 3], [1 x 2 x 3] or [m x 2 x 3].
+                   A surface normal (2x3). It also be a list of normals (nx2x3).
 
     Returns
     ----------
     output_ray   : torch.tensor
                    Array that contains starting points and cosines of a reflected ray.
-                   Expected size is [1 x 2 x 3] or [m x 2 x 3].
     """
     if len(input_ray.shape) == 2:
-        input_ray = input_ray.unsqueeze(0)
+        input_ray = input_ray.view((1, 2, 3))
     if len(normal.shape) == 2:
-        normal = normal.unsqueeze(0)
+        normal = normal.view((1, 2, 3))
     mu = 1
     div = normal[:, 1, 0]**2 + normal[:, 1, 1]**2 + normal[:, 1, 2]**2 + 1e-8
-    a = mu * (input_ray[:, 1, 0] * normal[:, 1, 0] + input_ray[:, 1, 1] * normal[:, 1, 1] + input_ray[:, 1, 2] * normal[:, 1, 2]) / div
+    a = mu * (input_ray[:, 1, 0] * normal[:, 1, 0]
+              + input_ray[:, 1, 1] * normal[:, 1, 1]
+              + input_ray[:, 1, 2] * normal[:, 1, 2]) / div
     a = a.unsqueeze(1)
     n = int(torch.amax(torch.tensor([normal.shape[0], input_ray.shape[0]])))
     output_ray = torch.zeros((n, 2, 3)).to(input_ray.device)
     output_ray[:, 0] = normal[:, 0]
     output_ray[:, 1] = input_ray[:, 1] - 2 * a * normal[:, 1]
+    if output_ray.shape[0] == 1:
+        output_ray = output_ray.view((2, 3))
     return output_ray
-
-
-def intersect_w_sphere(ray, sphere, learning_rate = 2e-1, number_of_steps = 5000, error_threshold = 1e-2):
-    """
-    Definition to find the intersection between ray(s) and sphere(s).
-
-    Parameters
-    ----------
-    ray                 : torch.tensor
-                          Input ray(s).
-                          Expected size is [1 x 2 x 3] or [m x 2 x 3].
-    sphere              : torch.tensor
-                          Input sphere.
-                          Expected size is [1 x 4].
-    learning_rate       : float
-                          Learning rate used in the optimizer for finding the propagation distances of the rays.
-    number_of_steps     : int
-                          Number of steps used in the optimizer.
-    error_threshold     : float
-                          The error threshold that will help deciding intersection or no intersection.
-
-    Returns
-    -------
-    intersecting_ray    : torch.tensor
-                          Ray(s) that intersecting with the given sphere.
-                          Expected size is [n x 2 x 3], where n could be any real number.
-    intersecting_normal : torch.tensor
-                          Normal(s) for the ray(s) intersecting with the given sphere
-                          Expected size is [n x 2 x 3], where n could be any real number.
-
-    """
-    if len(ray.shape) == 2:
-        ray = ray.unsqueeze(0)
-    if len(sphere.shape) == 1:
-        sphere = sphere.unsqueeze(0)
-    distance = torch.zeros(ray.shape[0], device = ray.device, requires_grad = True)
-    loss_l2 = torch.nn.MSELoss(reduction = 'sum')
-    optimizer = torch.optim.AdamW([distance], lr = learning_rate)    
-    t = tqdm(range(number_of_steps), leave = False, dynamic_ncols = True)
-    for step in t:
-        optimizer.zero_grad()
-        propagated_ray = propagate_ray(ray, distance)
-        test = torch.abs((propagated_ray[:, 0, 0] - sphere[:, 0]) ** 2 + (propagated_ray[:, 0, 1] - sphere[:, 1]) ** 2 + (propagated_ray[:, 0, 2] - sphere[:, 2]) ** 2 - sphere[:, 3] ** 2)
-        loss = loss_l2(
-                       test,
-                       torch.zeros_like(test)
-                      )
-        loss.backward(retain_graph = True)
-        optimizer.step()
-        t.set_description('Sphere intersection loss: {}'.format(loss.item()))
-    check = test < error_threshold
-    intersecting_ray = propagate_ray(ray[check == True], distance[check == True])
-    intersecting_normal = create_ray_from_two_points(
-                                                     sphere[:, 0:3],
-                                                     intersecting_ray[:, 0]
-                                                    )
-    return intersecting_ray, intersecting_normal, distance, check
 
 
 def intersect_w_triangle(ray, triangle):
     """
-    Definition to find intersection point of a ray with a triangle. 
+    Definition to find intersection point of a ray with a triangle. Returns False for each variable if the ray doesn't intersect with a given triangle.
 
     Parameters
     ----------
-    ray                 : torch.tensor
-                          A ray [1 x 2 x 3] or a batch of ray [m x 2 x 3].
-    triangle            : torch.tensor
-                          Set of points in X,Y and Z to define a single triangle [1 x 3 x 3].
+    ray          : torch.tensor
+                   A ray [1 x 2 x 3] or a batch of ray [m x 2 x 3].
+    triangle     : torch.tensor
+                   Set of points in X,Y and Z to define a single triangle [1 x 3 x 3].
 
     Returns
     ----------
-    normal              : torch.tensor
-                          Surface normal at the point of intersection with the surface of triangle.
-                          This could also involve surface normals that are not on the triangle.
-                          Expected size is [1 x 2 x 3] or [m x 2 x 3] depending on the input.
-    distance            : float
-                          Distance in between a starting point of a ray and the intersection point with a given triangle.
-                          Expected size is [1 x 1] or [m x 1] depending on the input.
-    intersecting_ray    : torch.tensor
-                          Rays that intersect with the triangle plane and on the triangle.
-                          Expected size is [1 x 2 x 3] or [m x 2 x 3] depending on the input.
-    intersecting_normal : torch.tensor
-                          Normals that intersect with the triangle plane and on the triangle.
-                          Expected size is [1 x 2 x 3] or [m x 2 x 3] depending on the input.
-    check               : torch.tensor
-                          A list that provides a bool as True or False for each ray used as input.
-                          A test to see is a ray could be on the given triangle.
-                          Expected size is [1] or [m].
+    normal       : torch.tensor
+                   Surface normal at the point of intersection.
+                   Expected size is [1 x 2 x 3] or [m x 2 x 3] depending on the input.
+    distance     : float
+                   Distance in between a starting point of a ray and the intersection point with a given triangle.
+                   Expected size is [1 x 1] or [m x 1] depending on the input.
     """
-    if len(triangle.shape) == 2:
-       triangle = triangle.unsqueeze(0)
-    if len(ray.shape) == 2:
-       ray = ray.unsqueeze(0)
     normal, distance = intersect_w_surface(ray, triangle)
     check = is_it_on_triangle(normal[:, 0], triangle)
-    intersecting_ray = ray.unsqueeze(0)
-    intersecting_ray = intersecting_ray.repeat(triangle.shape[0], 1, 1, 1)
-    intersecting_ray = intersecting_ray[check == True]
-    intersecting_normal = normal.unsqueeze(0)
-    intersecting_normal = intersecting_normal.repeat(triangle.shape[0], 1, 1, 1)
-    intersecting_normal = intersecting_normal[check ==  True]
-    return normal, distance, intersecting_ray, intersecting_normal, check
+    new_ray = propagate_ray(ray, distance)
+    return normal, distance, new_ray, check
 
 
 def intersect_w_surface(ray, points):
@@ -277,56 +194,3 @@ def get_triangle_normal(triangle, triangle_center=None):
     return normal
 
 
-def get_sphere_normal_torch(point, sphere):
-    """
-    Definition to get a normal of a point on a given sphere.
-
-    Parameters
-    ----------
-    point         : torch.tensor
-                    Point on sphere in X,Y,Z.
-    sphere        : torch.tensor
-                    Center defined in X,Y,Z and radius.
-
-    Returns
-    ----------
-    normal_vector : torch.tensor
-                    Normal vector.
-    """
-    if len(point.shape) == 1:
-        point = point.reshape((1, 3))
-    normal_vector = create_ray_from_two_points(point, sphere[0:3])
-    return normal_vector
-
-def intersect_w_circle(ray, circle):
-    """
-    Definition to find intersection point of a ray with a circle. 
-    Returns distance as zero if there isn't an intersection.
-
-    Parameters
-    ----------
-    ray          : torch.Tensor
-                   A vector/ray.
-    circle       : list
-                   A list that contains (0) Set of points in X,Y and Z to define plane of a circle, (1) circle center, and (2) circle radius.
-
-    Returns
-    ----------
-    normal       : torch.Tensor
-                   Surface normal at the point of intersection.
-    distance     : torch.Tensor
-                   Distance in between a starting point of a ray and the intersection point with a given triangle.
-    """
-    normal, distance = intersect_w_surface(ray, circle[0])
-
-    if len(normal.shape) == 2:
-        normal = normal.unsqueeze(0)
-
-    distance_to_center = distance_between_two_points(normal[:, 0], circle[1])
-    mask = distance_to_center > circle[2]
-    distance[mask] = 0
-    
-    if len(ray.shape) == 2:
-        normal = normal.squeeze(0)
-
-    return normal, distance
