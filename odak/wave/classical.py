@@ -33,7 +33,7 @@ def propagate_beam(field, k, distance, dx, wavelength, propagation_type='IR Fres
         result = rayleigh_sommerfeld(field, k, distance, dx, wavelength)
     elif propagation_type == 'Angular Spectrum':
         result = angular_spectrum(field, k, distance, dx, wavelength)
-    elif propagation_type == 'IR Fresnel':
+    elif propagation_type == 'Impulse Response Fresnel':
         result = impulse_response_fresnel(field, k, distance, dx, wavelength)
     elif propagation_type == 'Bandlimited Angular Spectrum':
         result = band_limited_angular_spectrum(
@@ -44,7 +44,7 @@ def propagate_beam(field, k, distance, dx, wavelength, propagation_type='IR Fres
     elif propagation_type == 'Adaptive Sampling Angular Spectrum':
         result = adaptive_sampling_angular_spectrum(
             field, k, distance, dx, wavelength)
-    elif propagation_type == 'TR Fresnel':
+    elif propagation_type == 'Transfer Function Fresnel':
         result = transfer_function_fresnel(field, k, distance, dx, wavelength)
     elif propagation_type == 'Fraunhofer':
         result = fraunhofer(field, k, distance, dx, wavelength)
@@ -318,12 +318,16 @@ def impulse_response_fresnel(field, k, distance, dx, wavelength):
     x = np.linspace(-nu / 2 * dx, nu / 2 * dx, nu)
     y = np.linspace(-nv / 2 * dx, nv / 2 * dx, nv)
     X, Y = np.meshgrid(x, y)
-    Z = X ** 2 + Y ** 2
-    h = np.exp(1j * k * distance) / (1j * wavelength * distance) * np.exp(1j * k / 2. / distance * Z)
-    h = np.fft.fft2(h) * dx ** 2
+    diffraction_angle = np.arcsin(wavelength / dx) / np.pi * 180.
+    r = np.sqrt(X ** 2 + Y ** 2 + distance ** 2) 
+    cos_theta = distance / r
+    angles = np.arccos(np.abs(cos_theta)) / np.pi * 180.
+    cos_theta[angles > diffraction_angle / 2.] = 0.
+    h = np.exp(1j * k * r) / (2 * np.pi * r) * cos_theta * (1. / r - 1j * k) * dx ** 2 
+    h = np.fft.fft2(np.fft.fftshift(h))
     U1 = np.fft.fft2(np.fft.fftshift(field))
     U2 = h * U1
-    result = np.fft.ifft2(U2)
+    result = np.fft.ifftshift(np.fft.ifft2(U2))
     return result
 
 
@@ -351,12 +355,12 @@ def transfer_function_fresnel(field, k, distance, dx, wavelength):
 
     """
     nv, nu = field.shape
-    fx = np.linspace(-1./2./dx, 1./2./dx, nu)
-    fy = np.linspace(-1./2./dx, 1./2./dx, nv)
+    fx = np.linspace(-1. / 2. /dx, 1. /2. /dx, nu)
+    fy = np.linspace(-1. / 2. /dx, 1. /2. /dx, nv)
     FX, FY = np.meshgrid(fx, fy)
-    H = np.exp(1j*k*distance*(1-(FX*wavelength)**2-(FY*wavelength)**2)**0.5)
+    H = np.exp(1j * k * distance * (1 - (FX * wavelength) ** 2 - (FY * wavelength) ** 2) ** 0.5)
     U1 = np.fft.fftshift(np.fft.fft2(np.fft.fftshift(field)))
-    U2 = H*U1
+    U2 = H * U1
     result = np.fft.ifftshift(np.fft.ifft2(np.fft.ifftshift(U2)))
     return result
 
@@ -436,20 +440,19 @@ def rayleigh_sommerfeld(field, k, distance, dx, wavelength):
                        Final complex field (MxN).
     """
     nv, nu = field.shape
-    x = np.linspace(-nv*dx/2, nv*dx/2, nv)
-    y = np.linspace(-nu*dx/2, nu*dx/2, nu)
+    x = np.linspace(-nv * dx / 2, nv * dx / 2, nv)
+    y = np.linspace(-nu * dx / 2, nu * dx / 2, nu)
     X, Y = np.meshgrid(x, y)
-    Z = X**2+Y**2
+    Z = X ** 2 + Y ** 2
     result = np.zeros(field.shape, dtype=np.complex64)
     direction = int(distance/np.abs(distance))
     for i in range(nu):
         for j in range(nv):
             if field[i, j] != 0:
-                r01 = np.sqrt(
-                    distance**2+(X-X[i, j])**2+(Y-Y[i, j])**2)*direction
-                cosnr01 = np.cos(distance/r01)
-                result += field[i, j]*np.exp(1j*k*r01)/r01*cosnr01
-    result *= 1./(1j*wavelength)
+                r01 = np.sqrt(distance ** 2 + (X - X[i, j]) ** 2 + (Y - Y[i, j]) ** 2) * direction
+                cosnr01 = np.cos(distance / r01)
+                result += field[i, j] * np.exp(1j * k * r01) / r01 * cosnr01
+    result *= 1. / (1j * wavelength)
     return result
 
 
@@ -606,3 +609,4 @@ def gerchberg_saxton_3d(fields, n_iterations, distances, dx, wavelength, slm_ran
         center[1]-orig_shape[1]:center[1]+orig_shape[1]
     ]
     return hologram
+
