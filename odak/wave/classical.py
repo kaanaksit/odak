@@ -322,7 +322,7 @@ def impulse_response_fresnel(field, k, distance, dx, wavelength):
     r = np.sqrt(X ** 2 + Y ** 2 + distance ** 2) 
     cos_theta = distance / r
     angles = np.arccos(np.abs(cos_theta)) / np.pi * 180.
-    cos_theta[angles > diffraction_angle / 2.] = 0.
+    cos_theta[angles > diffraction_angle] = 0.
     h = np.exp(1j * k * r) / (2 * np.pi * r) * cos_theta * (1. / r - 1j * k) * dx ** 2 
     h = np.fft.fft2(np.fft.fftshift(h))
     U1 = np.fft.fft2(np.fft.fftshift(field))
