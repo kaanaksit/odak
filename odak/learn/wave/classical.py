@@ -14,7 +14,7 @@ def propagate_beam(
                    distance, 
                    dx, 
                    wavelength, 
-                   propagation_type='Transfer Function Fresnel', 
+                   propagation_type='Bandlimited Angular Spectrum', 
                    kernel = None, 
                    zero_padding = [False, False, False],
                    aperture = 1.
