@@ -14,7 +14,7 @@ def propagate_beam(
                    distance, 
                    dx, 
                    wavelength, 
-                   propagation_type='TR Fresnel', 
+                   propagation_type='Transfer Function Fresnel', 
                    kernel = None, 
                    zero_padding = [False, False, False],
                    aperture = 1.
@@ -36,7 +36,7 @@ def propagate_beam(
                        Wavelength of the electric field.
     propagation_type : str
                        Type of the propagation.
-                       The options are TR Fresnel, Angular Spectrum, Bandlimited Angular Spectrum, Fraunhofer.
+                       The options are Transfer Function Fresnel, Angular Spectrum, Bandlimited Angular Spectrum, Fraunhofer.
     kernel           : torch.complex
                        Custom complex kernel.
     zero_padding     : list
@@ -56,7 +56,7 @@ def propagate_beam(
         result = angular_spectrum(field, k, distance, dx, wavelength, zero_padding[1], aperture = aperture)
     elif propagation_type == 'Bandlimited Angular Spectrum':
         result = band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_padding[1], aperture = aperture)
-    elif propagation_type == 'TR Fresnel':
+    elif propagation_type == 'Transfer Function Fresnel':
         result = transfer_function_fresnel(field, k, distance, dx, wavelength, zero_padding[1], aperture = aperture)
     elif propagation_type == 'custom':
         result = custom(field, kernel, zero_padding[1], aperture = aperture)
@@ -280,7 +280,7 @@ def band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_paddi
     return result
 
 
-def gerchberg_saxton(field, n_iterations, distance, dx, wavelength, slm_range=6.28, propagation_type='TR Fresnel'):
+def gerchberg_saxton(field, n_iterations, distance, dx, wavelength, slm_range=6.28, propagation_type='Transfer Function Fresnel'):
     """
     Definition to compute a hologram using an iterative method called Gerchberg-Saxton phase retrieval algorithm. For more on the method, see: Gerchberg, Ralph W. "A practical algorithm for the determination of phase from image and diffraction plane pictures." Optik 35 (1972): 237-246.
 
@@ -437,7 +437,7 @@ def point_wise(target, wavelength, distance, dx, device, lens_size=401):
     return hologram
 
 
-def shift_w_double_phase(phase, depth_shift, pixel_pitch, wavelength, propagation_type='TR Fresnel', kernel_length=4, sigma=0.5, amplitude=None):
+def shift_w_double_phase(phase, depth_shift, pixel_pitch, wavelength, propagation_type='Transfer Function Fresnel', kernel_length=4, sigma=0.5, amplitude=None):
     """
     Shift a phase-only hologram by propagating the complex hologram and double phase principle. Coded following in [here](https://github.com/liangs111/tensor_holography/blob/6fdb26561a4e554136c579fa57788bb5fc3cac62/optics.py#L131-L207) and Shi, L., Li, B., Kim, C., Kellnhofer, P., & Matusik, W. (2021). Towards real-time photorealistic 3D holography with deep neural networks. Nature, 591(7849), 234-239.
 
