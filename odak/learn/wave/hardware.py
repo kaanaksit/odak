@@ -2,6 +2,7 @@ import torch
 import numpy as np
 from ..tools import circular_binary_mask, zero_pad, crop_center
 from .util import generate_complex_field, calculate_amplitude
+from .classical import get_propagation_kernel
 
 
 class holographic_display():
@@ -18,6 +19,7 @@ class holographic_display():
                  pinhole_size = 1500,
                  pad = [True, True],
                  illumination = None,
+                 propagation_type = 'Bandlimited Angular Spectrum',
                  device = None
                 ):
         """
@@ -55,6 +57,7 @@ class holographic_display():
         self.image_location_offset = torch.tensor(image_location_offset, device = device)
         self.number_of_depth_layers = number_of_depth_layers
         self.number_of_wavelengths = len(self.wavelengths)
+        self.propagation_type = propagation_type
         self.pinhole_size = pinhole_size
         self.init_distances()
         self.init_amplitude(illumination)
@@ -154,44 +157,15 @@ class holographic_display():
                                   )
         for distance_id, distance in enumerate(self.distances):
             for wavelength_id, wavelength in enumerate(self.wavelengths):
-                 self.kernels[distance_id, wavelength_id] = self.generate_kernel(
-                                                                                 self.kernels.shape[-2],
-                                                                                 self.kernels.shape[-1],
-                                                                                 dx = self.pixel_pitch, 
-                                                                                 wavelength = wavelength, 
-                                                                                 distance = distance
-                                                                                )
-
-
-    def generate_kernel(self, nu, nv, dx = 8e-6, wavelength = 515e-9, distance = 0.):
-        """
-        Internal function used for self.propagate().
-        """
-        x = dx * float(nu)
-        y = dx * float(nv)
-        fx = torch.linspace(
-                            -1 / (2 * dx) + 0.5 / (2 * x),
-                            1 / (2 * dx) - 0.5 / (2 * x),
-                            nu,
-                            dtype = torch.float32,
-                            device = self.device
-                           )
-        fy = torch.linspace(
-                            -1 / (2 * dx) + 0.5 / (2 * y),
-                            1 / (2 * dx) - 0.5 / (2 * y),
-                            nv,
-                            dtype = torch.float32,
-                            device = self.device
-                           )
-        FY, FX = torch.meshgrid(fx, fy, indexing='ij')
-        HH_exp = 2 * np.pi * torch.sqrt(1 / wavelength ** 2 - (FX ** 2 + FY ** 2))
-        distance = torch.tensor([distance], device = self.device)
-        H_exp = torch.mul(HH_exp, distance)
-        fx_max = 1 / torch.sqrt((2 * distance * (1 / x))**2 + 1) / wavelength
-        fy_max = 1 / torch.sqrt((2 * distance * (1 / y))**2 + 1) / wavelength
-        H_filter = ((torch.abs(FX) < fx_max) & (torch.abs(FY) < fy_max)).clone().detach()
-        H = generate_complex_field(H_filter, H_exp)
-        return H
+                 self.kernels[distance_id, wavelength_id] = get_propagation_kernel(
+                                                                                   nu = self.kernels.shape[-2],
+                                                                                   nv = self.kernels.shape[-1],
+                                                                                   dx = self.pixel_pitch, 
+                                                                                   wavelength = wavelength, 
+                                                                                   distance = distance,
+                                                                                   device = self.device,
+                                                                                   propagation_type = self.propagation_type
+                                                                                  )
 
 
     def reconstruct(self, hologram_phases, laser_powers):

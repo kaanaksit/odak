@@ -13,6 +13,7 @@ def test():
                                                   number_of_depth_layers = 2,
                                                   image_location_offset = 5e-3,
                                                   pinhole_size = 1500,
+                                                  propagation_type = 'Bandlimited Angular Spectrum',
                                                   device = device
                                                  )
     hologram_phases = odak.learn.tools.load_image(
