@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 import torch.fft
+import logging
 from .util import set_amplitude, produce_phase_only_slm_pattern, generate_complex_field, calculate_amplitude, calculate_phase
 from .lens import quadratic_phase_function
 from .util import wavenumber
@@ -63,10 +64,49 @@ def propagate_beam(
     elif propagation_type == 'Fraunhofer':
         result = fraunhofer(field, k, distance, dx, wavelength)
     else:
-        assert True == False, "Propagation type not recognized."
+        logging.warning('Propagation type not recognized')
+        assert True == False
     if zero_padding[2]:
         result = crop_center(result)
     return result
+
+
+def get_propagation_kernel(nu, nv, dx = 8e-6, wavelength = 515e-9, distance = 0., device = torch.device('cpu'), propagation_type = 'Bandlimited Angular Spectrum', scale = 1):
+    """
+    Get propagation kernel for the propagation type.
+
+    Parameters
+    ----------
+    nu                 : int
+                         Resolution at X axis in pixels.
+    nv                 : int
+                         Resolution at Y axis in pixels.
+    dx                 : float
+                         Pixel pitch in meters.
+    wavelength         : float
+                         Wavelength in meters.
+    distance           : float
+                         Distance in meters.
+    device             : torch.device
+                         Device, for more see torch.device().
+    propagation_type   : str
+                         Propagation type.
+    scale              : int
+                         Scale factor for scaled beam propagation.
+   
+
+    Returns
+    -------
+    kernel             : torch.tensor
+                         Complex kernel for the given propagation type.
+    """
+    if propagation_type == 'Bandlimited Angular Spectrum':
+        kernel = get_band_limited_angular_spectrum_kernel(nu, nv, dx, wavelength, distance, device)
+    else:
+        logging.warning('Propagation type not recognized')
+        assert True == False
+    return kernel
+
 
 
 def fraunhofer(field, k, distance, dx, wavelength):
@@ -228,6 +268,58 @@ def angular_spectrum(field, k, distance, dx, wavelength, zero_padding = False, a
     return result
 
 
+def get_band_limited_angular_spectrum_kernel(nu, nv, dx = 8e-6, wavelength = 515e-9, distance = 0., device = torch.device('cpu')):
+    """
+    Helper function for odak.learn.wave.band_limited_angular_spectrum.
+
+    Parameters
+    ----------
+    nu                 : int
+                         Resolution at X axis in pixels.
+    nv                 : int
+                         Resolution at Y axis in pixels.
+    dx                 : float
+                         Pixel pitch in meters.
+    wavelength         : float
+                         Wavelength in meters.
+    distance           : float
+                         Distance in meters.
+    device             : torch.device
+                         Device, for more see torch.device().
+
+
+    Returns
+    -------
+    H                  : float
+                         Complex kernel in Fourier domain.
+    """
+    x = dx * float(nu)
+    y = dx * float(nv)
+    fx = torch.linspace(
+                        -1 / (2 * dx) + 0.5 / (2 * x),
+                         1 / (2 * dx) - 0.5 / (2 * x),
+                         nu,
+                         dtype = torch.float32,
+                         device = device
+                        )
+    fy = torch.linspace(
+                        -1 / (2 * dx) + 0.5 / (2 * y),
+                        1 / (2 * dx) - 0.5 / (2 * y),
+                        nv,
+                        dtype = torch.float32,
+                        device = device
+                       )
+    FY, FX = torch.meshgrid(fx, fy, indexing='ij')
+    HH_exp = 2 * np.pi * torch.sqrt(1 / wavelength ** 2 - (FX ** 2 + FY ** 2))
+    distance = torch.tensor([distance], device = device)
+    H_exp = torch.mul(HH_exp, distance)
+    fx_max = 1 / torch.sqrt((2 * distance * (1 / x))**2 + 1) / wavelength
+    fy_max = 1 / torch.sqrt((2 * distance * (1 / y))**2 + 1) / wavelength
+    H_filter = ((torch.abs(FX) < fx_max) & (torch.abs(FY) < fy_max)).clone().detach()
+    H = generate_complex_field(H_filter, H_exp)
+    return H
+
+
 def band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_padding = False, aperture = 1.):
     """
     A definition to calculate bandlimited angular spectrum based beam propagation. For more 
@@ -258,19 +350,7 @@ def band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_paddi
     result           : torch.complex
                        Final complex field [m x n].
     """
-    distance = torch.tensor([distance], device = field.device)
-    nv, nu = field.shape[-1], field.shape[-2]
-    y, x = (dx * float(nv), dx * float(nu))
-    fy = torch.linspace(-1 / (2 * dx) + 0.5 / (2 * y), 1 / (2 * dx) - 0.5 / (2 * y), nv, dtype = torch.float32, device = field.device)
-    fx = torch.linspace(-1 / (2 * dx) + 0.5 / (2 * x), 1 / (2 * dx) - 0.5 / (2 * x), nu, dtype = torch.float32, device = field.device)
-    FY, FX = torch.meshgrid(fx, fy, indexing='ij')
-    HH = 2 * np.pi * torch.sqrt(1 / wavelength ** 2 - (FX ** 2 + FY ** 2))
-    H_exp = HH.to(field.device)
-    H_exp = torch.mul(H_exp, distance)
-    fy_max = 1 / torch.sqrt((2 * distance * (1 / y))**2 + 1) / wavelength
-    fx_max = 1 / torch.sqrt((2 * distance * (1 / x))**2 + 1) / wavelength
-    H_filter = ((torch.abs(FX) < fx_max) & (torch.abs(FY) < fy_max)).clone().detach()
-    H = generate_complex_field(H_filter, H_exp)
+    H = get_band_limited_angular_spectrum_kernel(field.shape[-2], field.shape[-1], dx = dx, wavelength = wavelength, distance = distance, device = field.device)
     U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field))) * aperture
     if zero_padding == False:
        U2 = H * U1

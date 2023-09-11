@@ -33,8 +33,7 @@ def test():
                                               number_of_planes = 2,
                                               mask_limits = [0.0, 1.0, 0.0, 1.0], 
                                               zero_mode_distance = 0.3,
-                                              loss_function = loss_function,
-                                              optimize_amplitude = True
+                                              loss_function = loss_function
                                              )
     phase, amplitude, reconstructions = optimizer.optimize()
     assert True == True
