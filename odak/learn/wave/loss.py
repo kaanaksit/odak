@@ -164,7 +164,7 @@ class multiplane_loss():
 
     def __init__(self, target_image, target_depth, blur_ratio = 0.25, 
                  target_blur_size = 10, number_of_planes = 4, weights = [1., 2.1, 0.6, 0.], 
-                 multiplier = 1., scheme = 'defocus', reduction = 'sum', device = torch.device('cpu')):
+                 multiplier = 1., scheme = 'defocus', reduction = 'mean', device = torch.device('cpu')):
         """
         Parameters
         ----------
