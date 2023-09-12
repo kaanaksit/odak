@@ -114,14 +114,6 @@ class propagator():
                                    dtype = torch.complex64,
                                    device = self.device
                                   )
-        self.kernel_components = torch.zeros(
-                                             self.number_of_depth_layers,
-                                             self.number_of_channels,
-                                             2,
-                                             self.resolution[0] * self.resolution_factor * 2,
-                                             self.resolution[1] * self.resolution_factor * 2,
-                                             device = self.device
-                                            )
 
 
     def init_channel_power(self, channel_power):
