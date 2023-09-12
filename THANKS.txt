@@ -3,6 +3,7 @@ Ahmet Serdar Karadeniz
 David Robert Walton
 Jeanne Beyazian
 Koray Kavaklı
+Liang Shi
 Praneeth Chakravarthula
 Runze Zhu
 Yujie Wang
