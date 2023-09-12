@@ -686,4 +686,5 @@ class mixed_color_hologram_optimizer():
         laser_powers = self.propagator.get_laser_powers()
         channel_powers = self.propagator.channel_power
         logging.warning("Final peak amplitude: {}".format(self.peak_amplitude))
+        logging.warning('Laser powers: {}'.format(laser_powers))
         return hologram_phases, reconstruction_intensities, laser_powers, channel_powers, float(self.peak_amplitude)
