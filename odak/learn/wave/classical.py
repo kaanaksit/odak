@@ -195,7 +195,7 @@ def custom(field, kernel, zero_padding = False, aperture = 1.):
 
 def get_transfer_function_fresnel_kernel(nu, nv, dx = 8e-6, wavelength = 515e-9, distance = 0., device = torch.device('cpu')):
     """
-    Helper function for odak.learn.wave.angular_spectrum.
+    Helper function for odak.learn.wave.transfer_function_fresnel.
 
     Parameters
     ----------
