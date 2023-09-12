@@ -112,9 +112,9 @@ def get_propagation_kernel(
     """
     if propagation_type == 'Bandlimited Angular Spectrum':
         kernel = get_band_limited_angular_spectrum_kernel(nu, nv, dx, wavelength, distance, device)
-    if propagation_type == 'Angular Spectrum':
+    elif propagation_type == 'Angular Spectrum':
         kernel = get_angular_spectrum_kernel(nu, nv, dx, wavelength, distance, device)
-    if propagation_type == 'Transfer Function Fresnel':
+    elif propagation_type == 'Transfer Function Fresnel':
         kernel = get_transfer_function_fresnel_kernel(nu, nv, dx, wavelength, distance, device)
     else:
         logging.warning('Propagation type not recognized')
