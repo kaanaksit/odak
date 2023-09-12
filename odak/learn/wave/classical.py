@@ -71,7 +71,16 @@ def propagate_beam(
     return result
 
 
-def get_propagation_kernel(nu, nv, dx = 8e-6, wavelength = 515e-9, distance = 0., device = torch.device('cpu'), propagation_type = 'Bandlimited Angular Spectrum', scale = 1):
+def get_propagation_kernel(
+                           nu, 
+                           nv, 
+                           dx = 8e-6, 
+                           wavelength = 515e-9, 
+                           distance = 0., 
+                           device = torch.device('cpu'), 
+                           propagation_type = 'Bandlimited Angular Spectrum', 
+                           scale = 1
+                          ):
     """
     Get propagation kernel for the propagation type.
 
@@ -91,6 +100,7 @@ def get_propagation_kernel(nu, nv, dx = 8e-6, wavelength = 515e-9, distance = 0.
                          Device, for more see torch.device().
     propagation_type   : str
                          Propagation type.
+                         The options are `Angular Spectrum`, `Bandlimited Angular Spectrum` and `Transfer Function Fresnel`.
     scale              : int
                          Scale factor for scaled beam propagation.
    
@@ -102,6 +112,10 @@ def get_propagation_kernel(nu, nv, dx = 8e-6, wavelength = 515e-9, distance = 0.
     """
     if propagation_type == 'Bandlimited Angular Spectrum':
         kernel = get_band_limited_angular_spectrum_kernel(nu, nv, dx, wavelength, distance, device)
+    if propagation_type == 'Angular Spectrum':
+        kernel = get_angular_spectrum_kernel(nu, nv, dx, wavelength, distance, device)
+    if propagation_type == 'Transfer Function Fresnel':
+        kernel = get_transfer_function_fresnel_kernel(nu, nv, dx, wavelength, distance, device)
     else:
         logging.warning('Propagation type not recognized')
         assert True == False
@@ -179,6 +193,40 @@ def custom(field, kernel, zero_padding = False, aperture = 1.):
     return result
 
 
+def get_transfer_function_fresnel_kernel(nu, nv, dx = 8e-6, wavelength = 515e-9, distance = 0., device = torch.device('cpu')):
+    """
+    Helper function for odak.learn.wave.angular_spectrum.
+
+    Parameters
+    ----------
+    nu                 : int
+                         Resolution at X axis in pixels.
+    nv                 : int
+                         Resolution at Y axis in pixels.
+    dx                 : float
+                         Pixel pitch in meters.
+    wavelength         : float
+                         Wavelength in meters.
+    distance           : float
+                         Distance in meters.
+    device             : torch.device
+                         Device, for more see torch.device().
+
+
+    Returns
+    -------
+    H                  : float
+                         Complex kernel in Fourier domain.
+    """
+    distance = torch.tensor([distance]).to(device)
+    fx = torch.linspace(-1. / 2. /dx, 1. / 2. /dx, nu, dtype = torch.float32, device = device)
+    fy = torch.linspace(-1. / 2. /dx, 1. / 2. /dx, nv, dtype = torch.float32, device = device)
+    FY, FX = torch.meshgrid(fx, fy, indexing = 'ij')
+    k = wavenumber(wavelength)
+    H = torch.exp(1j* k * distance * (1 - (FX * wavelength) ** 2 - (FY * wavelength) ** 2) ** 0.5).to(device)
+    return H
+
+
 def transfer_function_fresnel(field, k, distance, dx, wavelength, zero_padding = False, aperture = 1.):
     """
     A definition to calculate convolution based Fresnel approximation for beam propagation.
@@ -208,19 +256,50 @@ def transfer_function_fresnel(field, k, distance, dx, wavelength, zero_padding =
                        Final complex field (MxN).
 
     """
-    distance = torch.tensor([distance]).to(field.device)
-    nv, nu = field.shape[-1], field.shape[-2]
-    fx = torch.linspace(-1./2./dx, 1./2./dx, nu, dtype = torch.float32, device = field.device)
-    fy = torch.linspace(-1./2./dx, 1./2./dx, nv, dtype = torch.float32, device = field.device)
-    FY, FX = torch.meshgrid(fx, fy, indexing = 'ij')
-    H = torch.exp(1j* k * distance * (1 - (FX * wavelength) ** 2 - (FY * wavelength) ** 2) ** 0.5).to(field.device)
-    U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field))) * aperture
-    if zero_padding == False:
-        U2 = H * U1
-    elif zero_padding == True:
-        U2 = zero_pad(H * U1)
-    result = torch.fft.ifftshift(torch.fft.ifft2(torch.fft.ifftshift(U2)))
+    H = get_transfer_function_fresnel_kernel(
+                                             field.shape[-2], 
+                                             field.shape[-1], 
+                                             dx = dx, 
+                                             wavelength = wavelength, 
+                                             distance = distance, 
+                                             device = field.device
+                                            )
+    result = custom(field, H, zero_padding = zero_padding, aperture = aperture)
     return result
+
+
+def get_angular_spectrum_kernel(nu, nv, dx = 8e-6, wavelength = 515e-9, distance = 0., device = torch.device('cpu')):
+    """
+    Helper function for odak.learn.wave.angular_spectrum.
+
+    Parameters
+    ----------
+    nu                 : int
+                         Resolution at X axis in pixels.
+    nv                 : int
+                         Resolution at Y axis in pixels.
+    dx                 : float
+                         Pixel pitch in meters.
+    wavelength         : float
+                         Wavelength in meters.
+    distance           : float
+                         Distance in meters.
+    device             : torch.device
+                         Device, for more see torch.device().
+
+
+    Returns
+    -------
+    H                  : float
+                         Complex kernel in Fourier domain.
+    """
+    distance = torch.tensor([distance]).to(device)
+    fx = torch.linspace(-1. /2. / dx, 1. / 2. / dx, nu, dtype = torch.float32, device = device)
+    fy = torch.linspace(-1. /2. / dx, 1. / 2. / dx, nv, dtype = torch.float32, device = device)
+    FY, FX = torch.meshgrid(fx, fy, indexing='ij')
+    H = torch.exp(1j  * distance * (2 * (np.pi * (1 / wavelength) * torch.sqrt(1. - (wavelength * FX) ** 2 - (wavelength * FY) ** 2))))
+    H = H.to(device)
+    return H
 
 
 def angular_spectrum(field, k, distance, dx, wavelength, zero_padding = False, aperture = 1.):
@@ -252,19 +331,15 @@ def angular_spectrum(field, k, distance, dx, wavelength, zero_padding = False, a
                        Final complex field (MxN).
 
     """
-    distance = torch.tensor([distance]).to(field.device)
-    nv, nu = field.shape[-1], field.shape[-2]
-    fx = torch.linspace(-1./2./dx, 1./2./dx, nu, dtype = torch.float32, device = field.device)
-    fy = torch.linspace(-1./2./dx, 1./2./dx, nv, dtype = torch.float32, device = field.device)
-    FY, FX = torch.meshgrid(fx, fy, indexing='ij')
-    H = torch.exp(1j  * distance * (2 * (np.pi * (1 / wavelength) * torch.sqrt(1. - (wavelength * FX) ** 2 - (wavelength * FY) ** 2))))
-    H = H.to(field.device)
-    U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field))) * aperture
-    if zero_padding == False:
-        U2 = H*U1
-    elif zero_padding == True:
-        U2 = zero_pad(H*U1)
-    result = torch.fft.ifftshift(torch.fft.ifft2(torch.fft.ifftshift(U2)))
+    H = get_angular_spectrum_kernel(
+                                    field.shape[-2], 
+                                    field.shape[-1], 
+                                    dx = dx, 
+                                    wavelength = wavelength, 
+                                    distance = distance, 
+                                    device = field.device
+                                   )
+    result = custom(field, H, zero_padding = zero_padding, aperture = aperture)
     return result
 
 
@@ -350,13 +425,15 @@ def band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_paddi
     result           : torch.complex
                        Final complex field [m x n].
     """
-    H = get_band_limited_angular_spectrum_kernel(field.shape[-2], field.shape[-1], dx = dx, wavelength = wavelength, distance = distance, device = field.device)
-    U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field))) * aperture
-    if zero_padding == False:
-       U2 = H * U1
-    elif zero_padding == True:
-       U2 = zero_pad(H) * zero_pad(U1)
-    result = torch.fft.ifftshift(torch.fft.ifft2(torch.fft.ifftshift(U2)))
+    H = get_band_limited_angular_spectrum_kernel(
+                                                 field.shape[-2], 
+                                                 field.shape[-1], 
+                                                 dx = dx, 
+                                                 wavelength = wavelength, 
+                                                 distance = distance, 
+                                                 device = field.device
+                                                )
+    result = custom(field, H, zero_padding = zero_padding, aperture = aperture)
     return result
 
 

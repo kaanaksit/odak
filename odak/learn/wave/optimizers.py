@@ -396,6 +396,7 @@ class mixed_color_hologram_optimizer():
             logging.warning('Channel powers:')
             logging.warning(self.channel_power)
             logging.warning('Channel powers loaded from {}.'.format(self.channel_power_filename))
+        self.propagator.set_laser_powers(self.channel_power)
 
 
 
@@ -407,7 +408,7 @@ class mixed_color_hologram_optimizer():
         if self.optimize_peak_amplitude:
             optimization_variables.append(self.peak_amplitude)
         if self.method == 'multi-color':
-            optimization_variables.append(self.channel_power)
+            optimization_variables.append(self.propagator.channel_power)
         self.optimizer = torch.optim.Adam(optimization_variables, lr=self.learning_rate)
 
 
@@ -422,21 +423,6 @@ class mixed_color_hologram_optimizer():
             self.loss_type = 'conventional'
             self.loss_function = torch.nn.MSELoss(reduction = reduction)
 
-
-    def get_laser_powers(self):
-        """
-        Internal function to get the laser powers.
-
-        Returns
-        -------
-        laser_power      : torch.tensor
-                           Laser powers.
-        """
-        if self.method == 'conventional':
-            laser_power = self.channel_power
-        if self.method == 'multi-color':
-            laser_power = torch.abs(torch.cos(self.channel_power))
-        return laser_power
 
 
     def evaluate(self, input_image, target_image, plane_id = 0):
@@ -488,7 +474,7 @@ class mixed_color_hologram_optimizer():
         for frame_id in range(self.number_of_frames):
             for depth_id in range(self.number_of_depth_layers):
                 for channel_id in range(self.number_of_channels):
-                    laser_power = self.get_laser_powers()[frame_id][channel_id]
+                    laser_power = self.propagator_get_laser_powers()[frame_id][channel_id]
                     hologram = generate_complex_field(laser_power * self.amplitude, hologram_phases[frame_id] * self.phase_scale[channel_id])
                     reconstruction_field = self.propagator(hologram, channel_id, depth_id)
                     reconstruction_intensities[frame_id, depth_id, channel_id] = calculate_amplitude(reconstruction_field) ** 2
@@ -592,7 +578,7 @@ class mixed_color_hologram_optimizer():
                                                          device = self.device
                                                         )
                 loss_variation_hologram = 0
-                laser_powers = self.get_laser_powers()
+                laser_powers = self.propagator.get_laser_powers()
                 for frame_id in range(self.number_of_frames):
                     if self.double_phase:
                         phase, loss_phase = self.double_phase_constrain(
@@ -607,7 +593,6 @@ class mixed_color_hologram_optimizer():
                     loss_variation_hologram += loss_phase
                     for channel_id in range(self.number_of_channels):
                         if self.scale_factor != 1:
-                            phase_scaled = self.upsample(phase.unsqueeze(0).unsqueeze(0)).squeeze(0).squeeze(0)
                             phase_scaled = torch.zeros_like(self.amplitude)
                             phase_scaled[::self.scale_factor, ::self.scale_factor] = phase
                             self.amplitude[1::self.scale_factor, 1::self.scale_factor] = 0.
@@ -698,7 +683,7 @@ class mixed_color_hologram_optimizer():
                                                )
         torch.no_grad()
         reconstruction_intensities = self.propagator.reconstruct(hologram_phases)
-        laser_powers = self.get_laser_powers()
-        channel_powers = self.channel_power
+        laser_powers = self.propagator.get_laser_powers()
+        channel_powers = self.propagator.channel_power
         logging.warning("Final peak amplitude: {}".format(self.peak_amplitude))
         return hologram_phases, reconstruction_intensities, laser_powers, channel_powers, float(self.peak_amplitude)

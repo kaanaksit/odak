@@ -27,6 +27,7 @@ class propagator():
                  laser_channel_power = None,
                  aperture = None,
                  aperture_size = None,
+                 method = 'conventional',
                  device = torch.device('cpu')
                 ):
         """
@@ -61,6 +62,8 @@ class propagator():
                                   Laser channel powers for given number of frames and number of wavelengths.
         aperture                : torch.tensor
                                   Aperture at the Fourier plane.
+        method                  : str
+                                  Hologram type conventional or multi-color.
         device                  : torch.device
                                   Device to be used for computation. For more see torch.device().
         """
@@ -77,6 +80,7 @@ class propagator():
         self.propagation_type = propagation_type
         self.propagator_type = propagator_type
         self.zero_mode_distance = back_and_forth_distance
+        self.method = method
         self.aperture = aperture
         self.init_distances()
         self.init_kernels()
@@ -182,16 +186,18 @@ class propagator():
 
     def get_laser_powers(self):
         """
-        #Internal function to get the laser powers.
+        Internal function to get the laser powers.
 
         Returns
         -------
         laser_power      : torch.tensor
                            Laser powers.
         """
-        laser_power = self.channel_power
+        if self.method == 'conventional':
+            laser_power = self.channel_power
+        if self.method == 'multi-color':
+            laser_power = torch.abs(torch.cos(self.channel_power))
         return laser_power
-
 
 
     def set_laser_powers(self, laser_power):
@@ -338,10 +344,12 @@ class propagator():
                 for channel_id in range(self.number_of_channels):
                     laser_power = self.get_laser_powers()[frame_id][channel_id]
                     if self.resolution_factor != 1:
-                        phase = self.upsample_nearest(hologram_phases[frame_id].unsqueeze(0).unsqueeze(0)).squeeze(0).squeeze(0)
+                        phase = torch.zeros_like(amplitude)
+                        phase[::self.resolution_factor, ::self.resolution_factor] = phase
+                        amplitude[1::self.resolution_factor, 1::self.resolution_factor] = 0.
                     else:
                         phase = hologram_phases[frame_id]
                     hologram = generate_complex_field(laser_power * amplitude[channel_id], phase * self.phase_scale[channel_id]) 
-                    reconstruction_field = self.forward(hologram, channel_id, depth_id)
+                    reconstruction_field = self.__call__(hologram, channel_id, depth_id)
                     reconstruction_intensities[frame_id, depth_id, channel_id] = calculate_amplitude(reconstruction_field) ** 2
         return reconstruction_intensities
