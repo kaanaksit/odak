@@ -26,6 +26,7 @@ class propagator():
                  back_and_forth_distance = 0.3,
                  laser_channel_power = None,
                  aperture = None,
+                 aperture_size = None,
                  device = torch.device('cpu')
                 ):
         """
@@ -81,7 +82,7 @@ class propagator():
         self.init_kernels()
         self.init_channel_power(laser_channel_power)
         self.init_phase_scale()
-        self.set_aperture(aperture)
+        self.set_aperture(aperture, aperture_size)
 
 
     def init_distances(self):
@@ -293,3 +294,45 @@ class propagator():
             H = self.kernels[depth_id, channel_id].detach().clone()
         output_field = self.propagate(input_field, H)
         return output_field
+
+
+    def reconstruct(self, hologram_phases):
+        """
+        Internal function to reconstruct a given hologram.
+
+
+        Parameters
+        ----------
+        hologram_phase             : torch.tensor
+                                     A monochrome hologram phase [mxn].
+
+        Returns
+        -------
+        reconstruction_intensities : torch.tensor
+                                     Reconstructed frames.
+        reconstruction_intensity   : torch.tensor
+                                     Reconstructed image.
+        peak_intensity             : float
+                                     Peak intensity in the reconstructed image.
+        """
+        torch.no_grad()
+        reconstruction_intensities = torch.zeros(
+                                                 self.number_of_frames,
+                                                 self.number_of_depth_layers,
+                                                 self.number_of_channels,
+                                                 self.resolution[0] * self.resolution_factor,
+                                                 self.resolution[1] * self.resolution_factor,
+                                                 device = self.device
+                                                )
+        for frame_id in range(self.number_of_frames):
+            for depth_id in range(self.number_of_depth_layers):
+                for channel_id in range(self.number_of_channels):
+                    laser_power = self.get_laser_powers()[frame_id][channel_id]
+                    if self.resolution_factor != 1:
+                        phase = self.upsample_nearest(hologram_phases[frame_id].unsqueeze(0).unsqueeze(0)).squeeze(0).squeeze(0)
+                    else:
+                        phase = hologram_phases[frame_id]
+                    hologram = odak.learn.wave.generate_complex_field(laser_power * self.amplitude, phase * self.phase_scale[channel_id])
+                    reconstruction_field = self.forward(hologram, channel_id, depth_id)
+                    reconstruction_intensities[frame_id, depth_id, channel_id] = odak.learn.wave.calculate_amplitude(reconstruction_field) ** 2
+        return reconstruction_intensities
