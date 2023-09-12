@@ -79,7 +79,7 @@ class propagator():
         self.image_location_offset = image_location_offset
         self.propagation_type = propagation_type
         self.propagator_type = propagator_type
-        self.zero_mode_distance = back_and_forth_distance
+        self.zero_mode_distance = torch.tensor(back_and_forth_distance, device = device)
         self.method = method
         self.aperture = aperture
         self.init_distances()
