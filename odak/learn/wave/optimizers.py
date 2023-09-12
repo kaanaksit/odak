@@ -626,7 +626,7 @@ class mixed_color_hologram_optimizer():
                 loss += weights[2] * loss_variation_hologram
                 include_pa_loss_flag = self.optimize_peak_amplitude and loss_image < self.img_loss_thres
                 if include_pa_loss_flag:
-                    loss -= self.peak_amplitude
+                    loss -= self.peak_amplitude * 1.
                 if self.method == 'conventional':
                     loss.backward()
                 else:
