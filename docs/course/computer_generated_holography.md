@@ -248,6 +248,9 @@ Note that beam propagation can also be learned for physical setups to avoid impe
 The above descriptions establish a mathematical understanding of beam propagation.
 Let us examine the implementation of a beam propagation method called `Bandlimited Angular Spectrum` by reviewing these two utility functions from `odak`:
 
+=== ":octicons-file-code-16: `odak.learn.wave.get_band_limited_angular_spectrum_kernel`"
+
+    ::: odak.learn.wave.get_band_limited_angular_spectrum_kernel
 
 === ":octicons-file-code-16: `odak.learn.wave.band_limited_angular_spectrum`"
 
