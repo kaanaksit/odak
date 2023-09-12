@@ -296,7 +296,7 @@ class propagator():
         return output_field
 
 
-    def reconstruct(self, hologram_phases):
+    def reconstruct(self, hologram_phases, amplitude = None):
         """
         Internal function to reconstruct a given hologram.
 
@@ -304,7 +304,9 @@ class propagator():
         Parameters
         ----------
         hologram_phase             : torch.tensor
-                                     A monochrome hologram phase [mxn].
+                                     A monochrome hologram phase [m x n].
+        amplitude                  : torch.tensor
+                                     Amplitude profiles for each color primary [ch x m x n]
 
         Returns
         -------
@@ -324,6 +326,13 @@ class propagator():
                                                  self.resolution[1] * self.resolution_factor,
                                                  device = self.device
                                                 )
+        if isinstance(amplitude, type(None)):
+            amplitude = torch.ones(
+                                   self.number_of_channels,
+                                   self.resolution[0] * self.resolution_factor,
+                                   self.resolution[1] * self.resolution_factor,
+                                   device = self.device
+                                  )
         for frame_id in range(self.number_of_frames):
             for depth_id in range(self.number_of_depth_layers):
                 for channel_id in range(self.number_of_channels):
@@ -332,7 +341,7 @@ class propagator():
                         phase = self.upsample_nearest(hologram_phases[frame_id].unsqueeze(0).unsqueeze(0)).squeeze(0).squeeze(0)
                     else:
                         phase = hologram_phases[frame_id]
-                    hologram = generate_complex_field(laser_power * self.amplitude, phase * self.phase_scale[channel_id]) 
+                    hologram = generate_complex_field(laser_power * amplitude[channel_id], phase * self.phase_scale[channel_id]) 
                     reconstruction_field = self.forward(hologram, channel_id, depth_id)
                     reconstruction_intensities[frame_id, depth_id, channel_id] = calculate_amplitude(reconstruction_field) ** 2
         return reconstruction_intensities
