@@ -332,7 +332,7 @@ class propagator():
                         phase = self.upsample_nearest(hologram_phases[frame_id].unsqueeze(0).unsqueeze(0)).squeeze(0).squeeze(0)
                     else:
                         phase = hologram_phases[frame_id]
-                    hologram = odak.learn.wave.generate_complex_field(laser_power * self.amplitude, phase * self.phase_scale[channel_id])
+                    hologram = generate_complex_field(laser_power * self.amplitude, phase * self.phase_scale[channel_id]) 
                     reconstruction_field = self.forward(hologram, channel_id, depth_id)
-                    reconstruction_intensities[frame_id, depth_id, channel_id] = odak.learn.wave.calculate_amplitude(reconstruction_field) ** 2
+                    reconstruction_intensities[frame_id, depth_id, channel_id] = calculate_amplitude(reconstruction_field) ** 2
         return reconstruction_intensities
