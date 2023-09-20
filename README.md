@@ -35,7 +35,7 @@ pip3 install -e .
 ### Usage and examples
 You can import Odak and start designing your next in Optics, Computer Graphics, or Perception! 
 We prepared a [documentation](https://kaanaksit.com/odak/) on usage and much more.
-For absolute begineers can [learn light, computation and odak with our Computatioonal Light.](https://kaanaksit.com/odak/course)
+For absolute begineers can [learn light, computation and odak with our Computatioonal Light course.](https://kaanaksit.com/odak/course)
 
 Here is a simple example of `raytracing` with odak:
 
