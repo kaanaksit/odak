@@ -105,10 +105,11 @@ For more of these examples, you can either check our [course documentation](http
 ## Sample Projects that uses Odak
 Here are some sample projects that uses `odak`:
 
+* [Multi-color Holograms Improve Brightness in Holographic Displays](https://complightlab.com/publications/multi_color/)
 * [ChromaCorrect: Prescription Correction in Virtual Reality Headsets through Perceptual Guidance](http://complightlab.com/ChromaCorrect/)
 * [HoloBeam: Paper-Thin Near-Eye Displays](https://complightlab.com/publications/holobeam/)
-* [Optimizing Vision and Visuals: Lectures on Cameras, Displays and Perception](https://github.com/complight/cameras-displays-perception-course)
-* [Realistic Defocus Blur for Multiplane Computer-Generated Holography](https://github.com/complight/realistic_defocus)
+* [Optimizing Vision and Visuals: Lectures on Cameras, Displays and Perception](https://complightlab.com/teaching/siggraph2022_optimizing_vision_and_visuals/)
+* [Realistic Defocus Blur for Multiplane Computer-Generated Holography](https://complightlab.com/publications/realistic_defocus_cgh/)
 * [Metameric Varifocal Computer-Generated Holography](https://github.com/complight/metameric_holography)
 * [Learned Holographic Light Transport](https://github.com/complight/realistic_holography)
 
