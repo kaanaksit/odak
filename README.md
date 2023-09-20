@@ -11,7 +11,7 @@ To learn more about what Odak can do to help your design, experimentation, and d
 ## Getting Started
 
 ### Installing
-For the most recent guidance on installing Odak, please consult to [installation documentation](https://kaanaksit.github.io/odak/odak/installation/).
+For the most recent guidance on installing Odak, please consult [installation documentation](https://kaanaksit.github.io/odak/odak/installation/).
 Odak can be installed using [pip](https://pypi.org/project/pip):
 
 ```bash
@@ -35,7 +35,7 @@ pip3 install -e .
 ### Usage and examples
 You can import Odak and start designing your next in Optics, Computer Graphics, or Perception! 
 We prepared a [documentation](https://kaanaksit.com/odak/) on usage and much more.
-For absolute begineers can [learn light, computation and odak with our Computatioonal Light course.](https://kaanaksit.com/odak/course)
+Absolute beginners can [learn light, computation, and odak with our Computational Light course.](https://kaanaksit.com/odak/course)
 
 Here is a simple example of `raytracing` with odak:
 
@@ -112,8 +112,8 @@ rgb_image = odak.learn.perception.color_conversion.ycrcb_2_rgb(ycrcb_image)
 
 For more of these examples, you can either check our [course documentation](https://kaanaksit.com/odak/course) or visit our [unit tests](https://github.com/kaanaksit/odak/tree/master/test) to get inspired.
 
-## Sample Projects that uses Odak
-Here are some sample projects that uses `odak`:
+## Sample Projects that use Odak
+Here are some sample projects that use `odak`:
 
 * [Multi-color Holograms Improve Brightness in Holographic Displays](https://complightlab.com/publications/multi_color/)
 * [ChromaCorrect: Prescription Correction in Virtual Reality Headsets through Perceptual Guidance](http://complightlab.com/ChromaCorrect/)
@@ -125,7 +125,7 @@ Here are some sample projects that uses `odak`:
 
 
 ## How to cite
-For adding the link of this repository in your publication, please use [Zenodo's citation](https://zenodo.org/badge/latestdoi/3987171). 
+To add the link to this repository in your publication, please use [Zenodo's citation](https://zenodo.org/badge/latestdoi/3987171). 
 If you have used `odak` in your research project, please consider citing any of the following works:
 
 
