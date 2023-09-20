@@ -37,7 +37,7 @@ You can import Odak and start designing your next in Optics, Computer Graphics, 
 We prepared a [documentation](https://kaanaksit.com/odak/) on usage and much more.
 For absolute begineers can [learn light, computation and odak with our Computatioonal Light.](https://kaanaksit.com/odak/course)
 
-Here is a simple example of raytracing with odak:
+Here is a simple example of `raytracing` with odak:
 
 ```python
 import odak
@@ -63,7 +63,7 @@ normals, distance, _, _, check = odak.learn.raytracing.intersect_w_triangle(
 print('intersection point is {}. Surface normal cosines are {}.'.format(normals[0, 0], normals[0, 1]))
 ```
 
-Here is a simple example of computer-generated holography with odak:
+Here is a simple example of `computer-generated holography` with odak:
 ```python
 import odak
 import torch
@@ -98,6 +98,16 @@ odak.learn.tools.save_image(
                             cmin = 0., 
                             cmax = 1.
                            )
+```
+
+Here is a simple example of `color conversion` with odak:
+```python
+import odak
+import torch
+
+input_rgb_image = torch.randn((1, 3, 256, 256))
+ycrcb_image = odak.learn.perception.color_conversion.rgb_2_ycrcb(input_rgb_image)
+rgb_image = odak.learn.perception.color_conversion.ycrcb_2_rgb(ycrcb_image)
 ```
 
 For more of these examples, you can either check our [course documentation](https://kaanaksit.com/odak/course) or visit our [unit tests](https://github.com/kaanaksit/odak/tree/master/test) to get inspired.
