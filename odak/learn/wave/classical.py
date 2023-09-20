@@ -17,7 +17,7 @@ def propagate_beam(
                    wavelength, 
                    propagation_type='Bandlimited Angular Spectrum', 
                    kernel = None, 
-                   zero_padding = [False, False, False],
+                   zero_padding = [True, False, True],
                    aperture = 1.
                   ):
     """

@@ -27,21 +27,80 @@ or this:
 
 ```bash
 git clone git@github.com:kaanaksit/odak.git
-```
-```bash
 cd odak
-```
-```bash
 pip3 install -r requirements.txt
-```
-```bash
 pip3 install -e .
 ```
 
-### Usage
+### Usage and examples
 You can import Odak and start designing your next in Optics, Computer Graphics, or Perception! 
-We prepared a [documentation](https://kaanaksit.github.io/odak) on usage and much more.
+We prepared a [documentation](https://kaanaksit.com/odak/) on usage and much more.
+For absolute begineers can [learn light, computation and odak with our Computatioonal Light.](https://kaanaksit.com/odak/course)
 
+Here is a simple example of raytracing with odak:
+
+```python
+import odak
+import torch
+
+starting_point = torch.tensor([0., 0., 0.])
+end_point = torch.tensor([1., 1., 5.])
+rays = odak.learn.raytracing.create_ray_from_two_points(
+                                                        starting_point,
+                                                        end_point
+                                                       )
+
+triangle = torch.tensor([[
+                          [-5., -5., 5.],
+                          [ 5., -5., 5.],
+                          [ 0.,  5., 5.]
+                         ]])
+
+normals, distance, _, _, check = odak.learn.raytracing.intersect_w_triangle(
+                                                                            rays,
+                                                                            triangle
+                                                                           )
+print('intersection point is {}. Surface normal cosines are {}.'.format(normals[0, 0], normals[0, 1]))
+```
+
+Here is a simple example of computer-generated holography with odak:
+```python
+import odak
+import torch
+
+
+wavelength = 532e-9
+pixel_pitch = 8e-6 
+distance = 5e-3
+propagation_type = 'Angular Spectrum'
+k = odak.learn.wave.wavenumber(wavelength)
+
+
+amplitude = torch.zeros(500, 500)
+amplitude[200:300, 200:300 ] = 1.
+phase = torch.randn_like(amplitude) * 2 * odak.pi
+hologram = odak.learn.wave.generate_complex_field(amplitude, phase)
+
+
+image_plane = odak.learn.wave.propagate_beam(
+                                             hologram,
+                                             k,
+                                             distance,
+                                             pixel_pitch,
+                                             wavelength,
+                                             propagation_type,
+                                             zero_padding = [True, False, True]
+                                            )
+image_intensity = odak.learn.wave.calculate_amplitude(image_plane) ** 2 
+odak.learn.tools.save_image(
+                            'image_intensity.png', 
+                            image_intensity, 
+                            cmin = 0., 
+                            cmax = 1.
+                           )
+```
+
+For more of these examples, you can either check our [course documentation](https://kaanaksit.com/odak/course) or visit our [unit tests](https://github.com/kaanaksit/odak/tree/master/test) to get inspired.
 
 ## Sample Projects that uses Odak
 Here are some sample projects that uses `odak`:
