@@ -3,7 +3,7 @@ import numpy as np
 from ..tools import rotate_points
 
 
-def create_ray(xyz, abg):
+def create_ray(xyz, abg, direction = False):
     """
     Definition to create a ray.
 
@@ -15,6 +15,8 @@ def create_ray(xyz, abg):
     abg          : torch.tensor
                    List that contains angles in degrees with respect to the X,Y and Z axes.
                    Size could be [1 x 3], [3], [m x 3].
+    direction    : bool
+                   If set to True, cosines of `abg` is not calculated.
 
     Returns
     ----------
@@ -30,7 +32,10 @@ def create_ray(xyz, abg):
         angles = abg.unsqueeze(0)
     ray = torch.zeros(points.shape[0], 2, 3, device = points.device)
     ray[:, 0] = points
-    ray[:, 1] = torch.cos(torch.deg2rad(abg))
+    if direction:
+        ray[:, 1] = abg
+    else:
+        ray[:, 1] = torch.cos(torch.deg2rad(abg))
     return ray
 
 
