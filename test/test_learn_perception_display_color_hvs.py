@@ -23,7 +23,9 @@ def test():
                                       device = device_)
     lms_color = display_color.primaries_to_lms(target_primaries)
     third_stage = display_color.second_to_third_stage(display_color.primaries_to_lms(target_primaries))
-        
+    sample_input_image = torch.rand(1, 3, 100, 100)
+    sample_ground_truth = torch.rand(1, 3, 100, 100)
+    sample_loss = display_color(sample_input_image, sample_ground_truth)
     assert True == True
 
 if __name__ == "__main__":

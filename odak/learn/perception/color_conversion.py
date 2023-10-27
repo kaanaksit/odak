@@ -56,14 +56,11 @@ class display_color_hvs():
         """
         Evaluating an input image against a target ground truth image for a given gaze of a viewer.
         """
-        lms_image_second = self.rgb_to_lms(input_image.to(self.device))
-        lms_ground_truth_second = self.rgb_to_lms(ground_truth.to(self.device))
+        lms_image_second = self.primaries_to_lms(input_image.to(self.device))
+        lms_ground_truth_second = self.primaries_to_lms(ground_truth.to(self.device))
         lms_image_third = self.second_to_third_stage(lms_image_second)
-        lms_ground_truth_third = self.second_to_third_stage(
-            lms_ground_truth_second)
-        loss_metamer_color = torch.mean(
-            (lms_ground_truth_third - lms_image_third)**2)
-
+        lms_ground_truth_third = self.second_to_third_stage(lms_ground_truth_second)
+        loss_metamer_color = torch.mean((lms_ground_truth_third - lms_image_third) ** 2)
         return loss_metamer_color
     
     
