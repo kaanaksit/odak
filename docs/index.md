@@ -2,6 +2,7 @@
 Odak (pronounced "O-dac") is the fundamental library for scientific computing in optical sciences, computer graphics, and visual perception.
 We designed this page to help first-time users, new contributors, and existing users understand where to go within this documentation when they need help with certain aspects of Odak.
 If you think you need a refresher or are a beginner willing to learn more about light and computation, we created an entire course named `Computational Light` for you to get to pace with the computational aspects of light.
+[Source code](https://github.com/kaanaksit/odak){ .md-button .md-button--primary }
 
 ## Absolute Beginners
 - [`Computational Light Course`](course/index.md)
