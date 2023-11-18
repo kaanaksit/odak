@@ -37,6 +37,7 @@ def save_image(fn, img, cmin = 0, cmax = 255, color_depth = 8):
     """
     Definition to save a Numpy array as an image.
 
+
     Parameters
     ----------
     fn           : str
@@ -49,6 +50,7 @@ def save_image(fn, img, cmin = 0, cmax = 255, color_depth = 8):
                    Maximum value that will be interpreted as 255 level in the final image.
     color_depth  : int
                    Pixel color depth in bits, default is eight bits.
+
 
     Returns
     ----------
@@ -81,6 +83,7 @@ def load_image(fn, normalizeby = 0., torch_style = False):
     """ 
     Definition to load an image from a given location as a Numpy array.
 
+
     Parameters
     ----------
     fn           : str
@@ -89,6 +92,7 @@ def load_image(fn, normalizeby = 0., torch_style = False):
                    Value to to normalize images with. Default value of zero will lead to no normalization.
     torch_style  : bool
                    If set True, it will load an image mxnx3 as 3xmxn.
+
 
     Returns
     ----------
@@ -116,6 +120,7 @@ def shell_command(cmd, cwd = '.', timeout = None, check = True):
     """
     Definition to initiate shell commands.
 
+
     Parameters
     ----------
     cmd          : list
@@ -126,6 +131,7 @@ def shell_command(cmd, cwd = '.', timeout = None, check = True):
                    Timeout if the process isn't complete in the given number of seconds.
     check        : bool
                    Set it to True to return the results and to enable timeout.
+
 
     Returns
     ----------
@@ -157,6 +163,7 @@ def shell_command(cmd, cwd = '.', timeout = None, check = True):
 def check_directory(directory):
     """
     Definition to check if a directory exist. If it doesn't exist, this definition will create one.
+
 
     Parameters
     ----------
@@ -196,6 +203,7 @@ def load_dictionary(filename):
     filename      : str
                     Filename.
 
+
     Returns
     ----------
     settings      : dict
@@ -210,6 +218,7 @@ def list_files(path, key = '*.*', recursive = True):
     """
     Definition to list files in a given path with a given key.
 
+
     Parameters
     ----------
     path        : str
@@ -218,6 +227,7 @@ def list_files(path, key = '*.*', recursive = True):
                   Key used for scanning a path.
     recursive   : bool
                   If set True, scan the path recursively.
+
 
     Returns
     ----------
@@ -239,10 +249,12 @@ def convert_bytes(num):
     """
     A definition to convert bytes to semantic scheme (MB,GB or alike). Inspired from https://stackoverflow.com/questions/2104080/how-can-i-check-file-size-in-python#2104083.
 
+
     Parameters
     ----------
     num        : float
                  Size in bytes
+
 
     Returns
     ----------
@@ -262,10 +274,12 @@ def size_of_a_file(file_path):
     """
     A definition to get size of a file with a relevant unit.
 
+
     Parameters
     ----------
     file_path  : float
                  Path of the file.
+
 
     Returns
     ----------
@@ -285,10 +299,12 @@ def expanduser(filename):
     """
     Definition to decode filename using namespaces and shortcuts.
 
+
     Parameters
     ----------
     filename      : str
                     Filename.
+
 
     Returns
     -------
@@ -302,6 +318,8 @@ def expanduser(filename):
 def copy_file(source, destination, follow_symlinks = True):
     """
     Definition to copy a file from one location to another.
+
+
 
     Parameters
     ----------
@@ -317,3 +335,21 @@ def copy_file(source, destination, follow_symlinks = True):
                            expanduser(source),
                            follow_symlinks = follow_symlinks
                           )
+
+
+def write_to_text_file(content, filename):
+    """
+    Defininition to write a Pythonic list to a text file.
+
+
+    Parameters
+    ----------
+    content         : list
+                      Pythonic string list to be written to a file.
+    filename        : str
+                      Destination filename (i.e. test.txt).
+    """
+    with open(expanduser(filename), 'w') as f:
+        for line in content:
+            f.write('{}\n'.format(line))
+    return True
