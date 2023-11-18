@@ -337,7 +337,7 @@ def copy_file(source, destination, follow_symlinks = True):
                           )
 
 
-def write_to_text_file(content, filename):
+def write_to_text_file(content, filename, write_flag = 'w'):
     """
     Defininition to write a Pythonic list to a text file.
 
@@ -348,8 +348,12 @@ def write_to_text_file(content, filename):
                       Pythonic string list to be written to a file.
     filename        : str
                       Destination filename (i.e. test.txt).
+    write_flag      : str
+                      Defines the interaction with the file. 
+                      The default is "w" (overwrite any existing content).
+                      For more see: https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files
     """
-    with open(expanduser(filename), 'w') as f:
+    with open(expanduser(filename), write_flag) as f:
         for line in content:
             f.write('{}\n'.format(line))
     return True
