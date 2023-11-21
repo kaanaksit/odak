@@ -106,7 +106,7 @@ class latex():
 
     def set_latex_dictonaries(self, begin_dictionary, end_dictionary, syntax_dictionary):
         """
-        Set document specoific dictionaries so that the lines could be labelled in accordance.
+        Set document specific dictionaries so that the lines could be labelled in accordance.
 
 
         Parameters
@@ -149,8 +149,8 @@ class latex():
                     content_type = 'latex'
             if content_type_flag == True:
                 content_type = 'latex'
-                for synax in self.latex_end_dictionary:
-                    if line.find(synax) != -1:
+                for syntax in self.latex_end_dictionary:
+                    if line.find(syntax) != -1:
                          content_type_flag = False
             self.content_type.append(content_type)
 
