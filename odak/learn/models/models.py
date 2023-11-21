@@ -66,7 +66,6 @@ class unet(torch.nn.Module):
             up_out_channels = dimensions * (2 ** i) 
             up_layer = upsample_layer(up_in_channels, up_out_channels, kernel_size=kernel_size, bias=bias, activation=activation, bilinear=bilinear)
             self.upsampling_layers.append(up_layer)
-            
         self.outc = torch.nn.Conv2d(
                                     dimensions, 
                                     output_channels,
@@ -74,6 +73,8 @@ class unet(torch.nn.Module):
                                     padding = kernel_size // 2,
                                     bias = bias
                                    )
+
+    
     def forward(self, x):
         """
         Forward model.
