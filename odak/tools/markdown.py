@@ -32,7 +32,7 @@ class markdown():
         self._label_lines()
 
 
-    def set_dictonaries(self, begin_dictionary, end_dictonary, syntax_dictionary):
+    def set_dictonaries(self, begin_dictionary, end_dictionary, syntax_dictionary):
         """
         Set document specific dictionaries so that the lines could be labelled in accordance.
 
