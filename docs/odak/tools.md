@@ -2,6 +2,7 @@
 ::: odak.tools.asset
 ::: odak.tools.conversions
 ::: odak.tools.file
+::: odak.tools.latex
 ::: odak.tools.matrix
 ::: odak.tools.sample
 ::: odak.tools.vector

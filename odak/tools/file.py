@@ -357,3 +357,26 @@ def write_to_text_file(content, filename, write_flag = 'w'):
         for line in content:
             f.write('{}\n'.format(line))
     return True
+
+
+def read_text_file(filename):
+    """
+    Definition to read a given text file and convert it into a Pythonic list.
+
+    
+    Parameters
+    ----------
+    filename        : str
+                      Source filename (i.e. test.txt).
+
+
+    Returns
+    -------
+    content         : list
+                      Pythonic string list containing the text from the file provided.
+    """
+    content = []
+    loaded_file = open(expanduser(filename))
+    while line := loaded_file.readline():
+        content.append(line.rstrip())
+    return content

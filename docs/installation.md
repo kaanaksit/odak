@@ -27,6 +27,20 @@ pip3 install -r requirements.txt
 pip3 install -e .
 ```
 
+
+## Uninstalling the Development version
+If you have to remove the development version of `odak`, you can first try:
+
+```bash
+pip3 uninstall odak
+sudo pip3 uninstall odak
+```
+
+And if for some reason, you are still able to import `odak` after that, check `easy-install.pth` file which is typically found `~/.local/lib/pythonX/site-packages`, where `~` refers to your home directory and `X` refers to your Python version.
+In that file, if you see odak's directory listed, delete it.
+This will help you remove development version of `odak`.
+
+
 ## Notes before running
 Some notes should be highlighted to users, and these include:
 
