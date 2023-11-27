@@ -1,5 +1,48 @@
 import torch
 from .components import double_convolution, downsample_layer, upsample_layer
+from math import sqrt
+
+
+class multi_layer_perceptron(torch.nn.Module):
+    """
+    A multi-layer perceptron model.
+    """
+
+    def __init__(self, dims):
+        """
+        Parameters
+        ----------
+        dims        : list of int
+                      List of integers representing the dimensions of each layer.
+        """
+        super(multi_layer_perceptron, self).__init__()
+        self.layers = torch.nn.ModuleList()
+        for i in range(len(dims) - 1):
+            self.layers.append(torch.nn.Linear(dims[i], dims[i + 1]))
+            if i < len(dims) - 2:
+                self.layers.append(torch.nn.ReLU())
+
+
+    def forward(self, x):
+        """
+        Forward model.
+        
+        Parameters
+        ----------
+        x             : torch.tensor
+                        Input data.
+      
+ 
+        Returns
+        ----------
+        result        : torch.tensor
+                        Estimated output.      
+        """
+        result = x
+        for layer in self.layers:
+            result = layer(result)
+        return result
+
 
 
 class unet(torch.nn.Module):
