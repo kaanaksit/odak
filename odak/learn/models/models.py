@@ -1,6 +1,6 @@
 import torch
+import math
 from .components import double_convolution, downsample_layer, upsample_layer
-from math import sqrt
 
 
 class multi_layer_perceptron(torch.nn.Module):
@@ -8,19 +8,30 @@ class multi_layer_perceptron(torch.nn.Module):
     A multi-layer perceptron model.
     """
 
-    def __init__(self, dims):
+    def __init__(self,
+                 dimensions,
+                 activation = torch.nn.ReLU(),
+                 bias = False,
+                 periodic = False
+                ):
         """
         Parameters
         ----------
-        dims        : list of int
-                      List of integers representing the dimensions of each layer.
+        dimensions   : list
+                       List of integers representing the dimensions of each layer (e.g., [2, 10, 1], where the first layer has two channels and last one has one channel.).
+        activation   : torch.nn
+                       Nonlinear activation function.
+                       Default is `torch.nn.ReLU()`.
         """
         super(multi_layer_perceptron, self).__init__()
+        self.activation = activation
+        self.bias = bias
+        self.periodic = periodic
         self.layers = torch.nn.ModuleList()
-        for i in range(len(dims) - 1):
-            self.layers.append(torch.nn.Linear(dims[i], dims[i + 1]))
-            if i < len(dims) - 2:
-                self.layers.append(torch.nn.ReLU())
+        for i in range(len(dimensions) - 1):
+            self.layers.append(torch.nn.Linear(dimensions[i], dimensions[i + 1], bias = self.bias))
+            if i < len(dimensions) - 2:
+                self.layers.append(self.activation)
 
 
     def forward(self, x):
@@ -39,8 +50,12 @@ class multi_layer_perceptron(torch.nn.Module):
                         Estimated output.      
         """
         result = x
-        for layer in self.layers:
-            result = layer(result)
+        for layer in self.layers[:-1]:
+            if self.periodic:
+                result = torch.sin(layer(result))
+            else:
+                result = layer(result)
+        result = self.layers[-1](result)
         return result
 
 
