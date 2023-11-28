@@ -1,5 +1,4 @@
 import numpy as np
-import pkg_resources
 
 
 def nufft2(field, fx, fy, size=None, sign=1, eps=10**(-12)):

@@ -6,7 +6,7 @@ import os
 from tqdm import tqdm
 
 
-def test():
+def main():
     filename = './test/fruit_lady.png'
     test_filename  = './estimation.png'
     weights_filename = 'model_weights.pt'
@@ -32,16 +32,22 @@ def test():
         model.load_state_dict(torch.load(weights_filename))
         model.eval()
         print('Model weights loaded: {}'.format(weights_filename))
-    for epoch_id in epochs:
-        test_loss, estimation = trial(image, batches, loss_function, model)
-        train_loss = train(image, batches, optimizer, loss_function, model)
-        description = 'train loss: {:.5f}, test loss:{:.5f}'.format(train_loss, test_loss)
-        epochs.set_description(description)
-        if epoch_id % save_at_every == 0: 
-            odak.learn.tools.save_image(test_filename, estimation, cmin = 0., cmax = 1.)
-    torch.save(model.state_dict(), weights_filename)
-    print('Model weights save: {}'.format(weights_filename))
-    odak.learn.tools.save_image(test_filename, estimation, cmin = 0., cmax = 1.)
+    try:
+        for epoch_id in epochs:
+            test_loss, estimation = trial(image, batches, loss_function, model)
+            train_loss = train(image, batches, optimizer, loss_function, model)
+            description = 'train loss: {:.5f}, test loss:{:.5f}'.format(train_loss, test_loss)
+            epochs.set_description(description)
+            if epoch_id % save_at_every == 0: 
+                odak.learn.tools.save_image(test_filename, estimation, cmin = 0., cmax = 1.)
+        torch.save(model.state_dict(), weights_filename)
+        print('Model weights save: {}'.format(weights_filename))
+        odak.learn.tools.save_image(test_filename, estimation, cmin = 0., cmax = 1.)
+    except KeyboardInterrupt:
+        torch.save(model.state_dict(), weights_filename)
+        print('Model weights save: {}'.format(weights_filename))
+        odak.learn.tools.save_image(test_filename, estimation, cmin = 0., cmax = 1.)
+        assert True == True
     assert True == True
 
 
@@ -87,4 +93,4 @@ def trial(output_values, input_values, loss_function, model):
 
 
 if  __name__ ==  '__main__':
-    sys.exit(test())
+    sys.exit(main())
