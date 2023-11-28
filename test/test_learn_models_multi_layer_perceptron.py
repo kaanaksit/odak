@@ -92,4 +92,4 @@ def test_pass(output_values, input_values, loss_function, model):
 
 
 if  __name__ ==  '__main__':
-    sys.exit(main())
+    sys.exit(test())
