@@ -6,7 +6,7 @@ import os
 from tqdm import tqdm
 
 
-def main():
+def test():
     filename = './test/fruit_lady.png'
     test_filename  = './estimation.png'
     weights_filename = 'model_weights.pt'
@@ -34,7 +34,7 @@ def main():
         print('Model weights loaded: {}'.format(weights_filename))
     try:
         for epoch_id in epochs:
-            test_loss, estimation = test(image, batches, loss_function, model)
+            test_loss, estimation = test_pass(image, batches, loss_function, model)
             train_loss = train(image, batches, optimizer, loss_function, model)
             description = 'train loss: {:.5f}, test loss:{:.5f}'.format(train_loss, test_loss)
             epochs.set_description(description)
@@ -76,7 +76,7 @@ def train(output_values, input_values, optimizer, loss_function, model):
     return total_loss
 
 
-def test(output_values, input_values, loss_function, model):
+def test_pass(output_values, input_values, loss_function, model):
     estimated_image = torch.zeros_like(output_values)
     for input_value in input_values:
         torch.no_grad()

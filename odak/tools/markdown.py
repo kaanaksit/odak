@@ -22,12 +22,12 @@ class markdown():
                                      '#',
                                    ]
         self.markdown_begin_dictionary = [
-                                          '\`\`\`bash',
-                                          '\`\`\`python',
-                                          '\`\`\`',
+                                          '```bash',
+                                          '```python',
+                                          '```',
                                          ]
         self.markdown_end_dictionary = [
-                                        '\`\`\`',
+                                        '```',
                                        ]
         self._label_lines()
 
