@@ -47,6 +47,10 @@ authors:
     given-names: Liang
     orcid:  https://orcid.org/0000-0002-4442-4679
 
+  - family-names: Yılmaz
+    given-names: Doğa
+    orcid:  https://orcid.org/0000-0002-2268-7136
+
 title: "Odak"
 version: 0.2.4
 doi: 10.5281/zenodo.5136406
