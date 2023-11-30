@@ -10,11 +10,11 @@ def main():
     filename = './test/fruit_lady.png'
     test_filename  = './estimation.png'
     weights_filename = 'model_weights.pt'
-    learning_rate = 1e-3
-    no_epochs = 50
+    learning_rate = 1e-4
+    no_epochs = 100
     number_of_batches = 1
     dimensions = [2, 256, 256, 256, 3]
-    positional_encoding_level = 12
+    positional_encoding_level = 24
     device_name = 'cpu'
     save_at_every = 50
     device = torch.device(device_name)
@@ -24,7 +24,7 @@ def main():
                                                      dimensions = dimensions,
                                                      activation = torch.nn.ReLU(),
                                                      bias = False,
-                                                     periodic = False
+                                                     model_type = 'conventional'
                                                     ).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr = learning_rate)
     image = odak.learn.tools.load_image(filename, normalizeby = 255., torch_style = False)[:, :, 0:3].to(device)
