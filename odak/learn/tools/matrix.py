@@ -118,8 +118,8 @@ def crop_center(field, size = None):
         hy = int(size[-1] // 2)
         cropped_padded = field[:, :, cx-hx:cx+hx, cy-hy:cy+hy]
     cropped = cropped_padded
-    if permute_flag == True:
-        field = field.permute(0, 2, 3, 1)
+    if permute_flag:
+        cropped = cropped.permute(0, 2, 3, 1)
     if len(orig_resolution) == 2:
         cropped = cropped_padded.squeeze(0).squeeze(0)
     if len(orig_resolution) == 3:
