@@ -51,10 +51,9 @@ class multi_layer_perceptron(torch.nn.Module):
         """
         result = x
         for layer in self.layers[:-1]:
+            result = layer(result)
             if self.periodic:
-                result = torch.sin(layer(result))
-            else:
-                result = layer(result)
+                result = torch.sin(result)
         result = self.layers[-1](result)
         return result
 
