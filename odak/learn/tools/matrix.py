@@ -74,7 +74,7 @@ def zero_pad(field, size = None, method = 'center'):
                          0: field.shape[-1]
                         ] = field
     if permute_flag == True:
-        field = field.permute(0, 3, 1, 2)
+        field_zero_padded = field_zero_padded.permute(0, 2, 3, 1)
     if len(orig_resolution) == 2:
         field_zero_padded = field_zero_padded.squeeze(0).squeeze(0)
     if len(orig_resolution) == 3:
