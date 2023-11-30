@@ -10,26 +10,22 @@ def main():
     filename = './test/fruit_lady.png'
     test_filename  = './estimation.png'
     weights_filename = 'model_weights.pt'
-    learning_rate = 1e-2
-    no_epochs = 100
+    learning_rate = 1e-3
+    no_epochs = 2000
     number_of_batches = 1
-    dimensions = [2, 220, 100, 3]
-    device_name = 'cpu'
-    save_at_every = 50
+    dimensions = [2, 128, 128, 3]
+    device_name = 'cuda'
+    save_at_every = 500
     device = torch.device(device_name)
     model = odak.learn.models.multi_layer_perceptron(
                                                      dimensions = dimensions,
                                                      activation = torch.nn.Tanh(),
-                                                     bias = True,
-                                                     periodic = True
+                                                     bias = False,
+                                                     model_type = 'FILM SIREN'
                                                     ).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr = learning_rate)
     image = odak.learn.tools.load_image(filename, normalizeby = 255., torch_style = False)[:, :, 0:3].to(device)
-    print(image.shape)
-    image_padded = odak.learn.tools.zero_pad(image)
-    image = image_padded
-    print(image_padded.shape)
-    import sys; sys.exit()
+    image = odak.learn.tools.zero_pad(image)
     train_batches = get_train_batches(image, number_of_batches).to(device)
     test_batches = get_test_batches(image, number_of_batches).to(device)
     loss_function = torch.nn.MSELoss()
@@ -46,10 +42,12 @@ def main():
             epochs.set_description(description)
             if epoch_id % save_at_every == 0: 
                 odak.learn.tools.save_image(test_filename, estimation, cmin = 0., cmax = 1.)
+        print(description)
         torch.save(model.state_dict(), weights_filename)
         print('Model weights save: {}'.format(weights_filename))
         odak.learn.tools.save_image(test_filename, estimation, cmin = 0., cmax = 1.)
     except KeyboardInterrupt:
+        print(description)
         torch.save(model.state_dict(), weights_filename)
         print('Model weights save: {}'.format(weights_filename))
         odak.learn.tools.save_image(test_filename, estimation, cmin = 0., cmax = 1.)
@@ -109,7 +107,9 @@ def trial(output_values, input_values, loss_function, model):
         ground_truth = output_values[input_value[:, 0].int(), input_value[:, 1].int(), :]
         estimated_image[input_value[:, 0].int(), input_value[:, 1].int(), :] = estimation
         loss = loss_function(estimation, ground_truth)
-    loss = loss_function(estimated_image, output_values)
+    estimated_cropped_image = odak.learn.tools.crop_center(estimated_image)
+    output_values = odak.learn.tools.crop_center(output_values)
+    loss = loss_function(estimated_cropped_image, output_values)
     return loss, estimated_image
 
 
