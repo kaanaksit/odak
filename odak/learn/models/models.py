@@ -42,8 +42,7 @@ class multi_layer_perceptron(torch.nn.Module):
             self.alpha = torch.nn.ParameterList()
             self.beta = torch.nn.ParameterList()
             for j in self.dimensions[1:-1]:
-                self.alpha.append(torch.nn.Parameter(torch.randn(1, j)))
-                self.beta.append(torch.nn.Parameter(torch.randn(1, j)))
+                self.alpha.append(torch.nn.Parameter(torch.randn(2, 1, j)))
 
 
     def forward(self, x):
@@ -69,7 +68,7 @@ class multi_layer_perceptron(torch.nn.Module):
             if self.model_type == 'SIREN':
                 result = torch.sin(result)
             elif self.model_type == 'FILM SIREN':
-                result = torch.sin(self.alpha[layer_id] * result + self.beta[layer_id])
+                result = torch.sin(self.alpha[layer_id][0] * result + self.alpha[layer_id][1])
         result = self.layers[-1](result)
         return result
 
