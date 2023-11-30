@@ -25,7 +25,13 @@ def main():
                                                     ).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr = learning_rate)
     image = odak.learn.tools.load_image(filename, normalizeby = 255., torch_style = False)[:, :, 0:3].to(device)
-    batches = get_batches(image, number_of_batches).to(device)
+    print(image.shape)
+    image_padded = odak.learn.tools.zero_pad(image)
+    image = image_padded
+    print(image_padded.shape)
+    import sys; sys.exit()
+    train_batches = get_train_batches(image, number_of_batches).to(device)
+    test_batches = get_test_batches(image, number_of_batches).to(device)
     loss_function = torch.nn.MSELoss()
     epochs = tqdm(range(no_epochs), leave = False, dynamic_ncols = True)    
     if os.path.isfile(weights_filename):
@@ -34,8 +40,8 @@ def main():
         print('Model weights loaded: {}'.format(weights_filename))
     try:
         for epoch_id in epochs:
-            test_loss, estimation = trial(image, batches, loss_function, model)
-            train_loss = train(image, batches, optimizer, loss_function, model)
+            test_loss, estimation = trial(image, test_batches, loss_function, model)
+            train_loss = train(image, train_batches, optimizer, loss_function, model)
             description = 'train loss: {:.5f}, test loss:{:.5f}'.format(train_loss, test_loss)
             epochs.set_description(description)
             if epoch_id % save_at_every == 0: 
@@ -51,7 +57,7 @@ def main():
     assert True == True
 
 
-def get_batches(image, number_of_batches = 100):
+def get_test_batches(image, number_of_batches = 100):
     xs = torch.arange(image.shape[0])
     ys = torch.arange(image.shape[1])
     XS, YS = torch.meshgrid(xs, ys, indexing = 'ij')
@@ -59,6 +65,27 @@ def get_batches(image, number_of_batches = 100):
     YS = YS.reshape(number_of_batches, -1, 1)
     batches = torch.concat((XS, YS), axis = 2).float()
     return batches
+
+
+def get_train_batches(image, number_of_batches = 100):
+    xs = torch.arange(image.shape[0] // 2) + image.shape[0] // 4
+    ys = torch.arange(image.shape[1] // 2) + image.shape[1] // 4
+    XS, YS = torch.meshgrid(xs, ys, indexing = 'ij')
+    XS = XS.reshape(number_of_batches, -1, 1)
+    YS = YS.reshape(number_of_batches, -1, 1)
+    batches = torch.concat((XS, YS), axis = 2).float()
+    return batches
+
+
+def get_test_batches(image, number_of_batches = 100):
+    xs = torch.arange(image.shape[0])
+    ys = torch.arange(image.shape[1])
+    XS, YS = torch.meshgrid(xs, ys, indexing = 'ij')
+    XS = XS.reshape(number_of_batches, -1, 1)
+    YS = YS.reshape(number_of_batches, -1, 1)
+    batches = torch.concat((XS, YS), axis = 2).float()
+    return batches
+
 
 
 def train(output_values, input_values, optimizer, loss_function, model):
