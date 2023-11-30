@@ -32,7 +32,7 @@ def zero_pad(field, size = None, method = 'center'):
     Parameters
     ----------
     field             : ndarray
-                        Input field MxN or KxJxMxN array.
+                        Input field MxN or KxJxMxN or KxMxNxJ array.
     size              : list
                         Size to be zeropadded (e.g., [m, n], last two dimensions only).
     method            : str
@@ -48,6 +48,10 @@ def zero_pad(field, size = None, method = 'center'):
         field = field.unsqueeze(0)
     if len(field.shape) < 4:
         field = field.unsqueeze(0)
+    permute_flag = False
+    if field.shape[-1] < 5:
+        permute_flag = True
+        field = field.permute(0, 3, 1, 2)
     if type(size) == type(None):
         resolution = [field.shape[0], field.shape[1], 2 * field.shape[-2], 2 * field.shape[-1]]
     else:
@@ -69,6 +73,8 @@ def zero_pad(field, size = None, method = 'center'):
                          0: field.shape[-2],
                          0: field.shape[-1]
                         ] = field
+    if permute_flag == True:
+        field = field.permute(0, 3, 1, 2)
     if len(orig_resolution) == 2:
         field_zero_padded = field_zero_padded.squeeze(0).squeeze(0)
     if len(orig_resolution) == 3:
@@ -83,7 +89,7 @@ def crop_center(field, size = None):
     Parameters
     ----------
     field       : ndarray
-                  Input field 2M x 2N or K x L x 2M x 2N array.
+                  Input field 2M x 2N or K x L x 2M x 2N or K x 2M x 2N x L array.
     size        : list
                   Dimensions to crop with respect to center of the image (e.g., M x N or 1 x 1 x M x N).
 
@@ -97,6 +103,10 @@ def crop_center(field, size = None):
         field = field.unsqueeze(0)
     if len(field.shape) < 4:
         field = field.unsqueeze(0)
+    permute_flag = False
+    if field.shape[-1] < 5:
+        permute_flag = True
+        field = field.permute(0, 3, 1, 2)
     if type(size) == type(None):
         qx = int(field.shape[-2] // 4)
         qy = int(field.shape[-1] // 4)
@@ -108,6 +118,8 @@ def crop_center(field, size = None):
         hy = int(size[-1] // 2)
         cropped_padded = field[:, :, cx-hx:cx+hx, cy-hy:cy+hy]
     cropped = cropped_padded
+    if permute_flag == True:
+        field = field.permute(0, 3, 1, 2)
     if len(orig_resolution) == 2:
         cropped = cropped_padded.squeeze(0).squeeze(0)
     if len(orig_resolution) == 3:
