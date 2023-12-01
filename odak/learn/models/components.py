@@ -546,35 +546,37 @@ class upsample_layer(torch.nn.Module):
         return result
 
 
-class ChannelGate(torch.nn.Module):
+class channel_gate(torch.nn.Module):
     """
     Channel attention module with various pooling strategies.
+    This class is heavily inspired https://github.com/Jongchan/attention-module/commit/e4ee180f1335c09db14d39a65d97c8ca3d1f7b16 (MIT License).
     """
-    def __init__(self, 
-                    gate_channels, 
-                    reduction_ratio=16, 
-                    pool_types=['avg', 'max']
+    def __init__(
+                 self, 
+                 gate_channels, 
+                 reduction_ratio = 16, 
+                 pool_types = ['avg', 'max']
                 ):
         """
         Initializes the channel gate module.
 
         Parameters
         ----------
-        gate_channels : int
-                        Number of channels of the input feature map.
+        gate_channels   : int
+                          Number of channels of the input feature map.
         reduction_ratio : int
-                            Reduction ratio for the intermediate layer.
-        pool_types : list
-                        List of pooling operations to apply.
+                          Reduction ratio for the intermediate layer.
+        pool_types      : list
+                          List of pooling operations to apply.
         """
         super().__init__()
         self.gate_channels = gate_channels
         self.mlp = torch.nn.Sequential(
-            CBAM.Flatten(),
-            torch.nn.Linear(gate_channels, gate_channels // reduction_ratio),
-            torch.nn.ReLU(),
-            torch.nn.Linear(gate_channels // reduction_ratio, gate_channels)
-        )
+                                       convolutional_block_attention.Flatten(),
+                                       torch.nn.Linear(gate_channels, gate_channels // reduction_ratio),
+                                       torch.nn.ReLU(),
+                                       torch.nn.Linear(gate_channels // reduction_ratio, gate_channels)
+                                      )
         self.pool_types = pool_types
 
 
@@ -586,13 +588,13 @@ class ChannelGate(torch.nn.Module):
 
         Parameters
         ----------
-        x : torch.tensor
-            Input tensor to the ChannelGate module.
+        x            : torch.tensor
+                       Input tensor to the ChannelGate module.
 
         Returns
         -------
-        torch.tensor
-            Output tensor after applying channel attention.
+        output       : torch.tensor
+                       Output tensor after applying channel attention.
         """
         channel_att_sum = None
         for pool_type in self.pool_types:
@@ -603,12 +605,14 @@ class ChannelGate(torch.nn.Module):
             channel_att_raw = self.mlp(pool)
             channel_att_sum = channel_att_raw if channel_att_sum is None else channel_att_sum + channel_att_raw
         scale = torch.sigmoid(channel_att_sum).unsqueeze(2).unsqueeze(3).expand_as(x)
-        return x * scale
+        output = x * scale
+        return output
 
 
-class SpatialGate(torch.nn.Module):
+class spatial_gate(torch.nn.Module):
     """
     Spatial attention module that applies a convolution layer after channel pooling.
+    This class is heavily inspired by https://github.com/Jongchan/attention-module/blob/master/MODELS/cbam.py.
     """
     def __init__(self):
         """
@@ -616,16 +620,27 @@ class SpatialGate(torch.nn.Module):
         """
         super().__init__()
         kernel_size = 7
-        self.spatial = convolution_layer(2, 1, kernel_size, bias=False, activation=torch.nn.Identity())
+        self.spatial = convolution_layer(2, 1, kernel_size, bias = False, activation = torch.nn.Identity())
 
 
     def channel_pool(self, x):
         """
         Applies max and average pooling on the channels.
+
+        Parameters
+        ----------
+        x             : torch.tensor
+                        Input tensor.
+
+        Returns
+        -------
+        output        : torch.tensor
+                        Output tensor.
         """
         max_pool = torch.max(x, 1)[0].unsqueeze(1)
         avg_pool = torch.mean(x, 1).unsqueeze(1)
-        return torch.cat((max_pool, avg_pool), dim=1)
+        output = torch.cat((max_pool, avg_pool), dim=1)
+        return output
 
 
     def forward(self, x):
@@ -636,50 +651,52 @@ class SpatialGate(torch.nn.Module):
 
         Parameters
         ----------
-        x : torch.tensor
-            Input tensor to the SpatialGate module.
+        x            : torch.tensor
+                       Input tensor to the SpatialGate module.
 
         Returns
         -------
-        torch.tensor
-            Output tensor after applying spatial attention.
+        scaled_x     : torch.tensor
+                       Output tensor after applying spatial attention.
         """
         x_compress = self.channel_pool(x)
         x_out = self.spatial(x_compress)
         scale = torch.sigmoid(x_out)
-        return x * scale
+        scaled_x = x * scale
+        return scaled_x
     
     
-class CBAM(torch.nn.Module):
+class convolutional_block_attention(torch.nn.Module):
     """
     Convolutional Block Attention Module (CBAM) class. 
-    This class is highly inspired by https://github.com/Jongchan/attention-module/blob/master/MODELS/cbam.py
+    This class is heavily inspired https://github.com/Jongchan/attention-module/commit/e4ee180f1335c09db14d39a65d97c8ca3d1f7b16 (MIT License).
     """
-    def __init__(self, 
+    def __init__(
+                 self, 
                  gate_channels, 
-                 reduction_ratio=16, 
-                 pool_types=['avg', 'max'], 
-                 no_spatial=False
+                 reduction_ratio = 16, 
+                 pool_types = ['avg', 'max'], 
+                 no_spatial = False
                 ):
         """
         Initializes the CBAM module.
 
         Parameters
         ----------
-        gate_channels : int
-                        Number of channels of the input feature map.
+        gate_channels   : int
+                          Number of channels of the input feature map.
         reduction_ratio : int
                           Reduction ratio for the channel attention.
-        pool_types : list
-                     List of pooling operations to apply for channel attention.
-        no_spatial : bool
-                     If True, spatial attention is not applied.
+        pool_types      : list
+                          List of pooling operations to apply for channel attention.
+        no_spatial      : bool
+                          If True, spatial attention is not applied.
         """
-        super(CBAM, self).__init__()
-        self.ChannelGate = ChannelGate(gate_channels, reduction_ratio, pool_types)
+        super(convolutional_block_attention, self).__init__()
+        self.ChannelGate = channel_gate(gate_channels, reduction_ratio, pool_types)
         self.no_spatial = no_spatial
         if not no_spatial:
-            self.SpatialGate = SpatialGate()
+            self.SpatialGate = spatial_gate()
 
     
     class Flatten(torch.nn.Module):
@@ -694,10 +711,20 @@ class CBAM(torch.nn.Module):
     def logsumexp_2d(tensor):
         """
         Applies log-sum-exp operation on the tensor.
+
+        Parameters
+        ----------
+        x            : tensor
+                       Input tensor.
+
+        Returns
+        -------
+        outputs      : tensor
+                       Processed outputs.
         """
         tensor_flatten = tensor.view(tensor.size(0), tensor.size(1), -1)
-        s, _ = torch.max(tensor_flatten, dim=2, keepdim=True)
-        outputs = s + (tensor_flatten - s).exp().sum(dim=2, keepdim=True).log()
+        s, _ = torch.max(tensor_flatten, dim = 2, keepdim = True)
+        outputs = s + (tensor_flatten - s).exp().sum(dim = 2, keepdim = True).log()
         return outputs
 
 
@@ -707,13 +734,13 @@ class CBAM(torch.nn.Module):
 
         Parameters
         ----------
-        x : torch.tensor
-            Input tensor to the CBAM module.
+        x            : torch.tensor
+                       Input tensor to the CBAM module.
 
         Returns
         -------
-        torch.tensor
-            Output tensor after applying channel and spatial attention.
+        x_out        : torch.tensor
+                       Output tensor after applying channel and spatial attention.
         """
         x_out = self.ChannelGate(x)
         if not self.no_spatial:
