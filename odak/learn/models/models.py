@@ -65,7 +65,7 @@ class multi_layer_perceptron(torch.nn.Module):
             result = layer(result)
             if self.model_type == 'conventional':
                 result = self.activation(result)
-            if self.model_type == 'SIREN':
+            elif self.model_type == 'SIREN':
                 result = torch.sin(result)
             elif self.model_type == 'FILM SIREN':
                 result = torch.sin(self.alpha[layer_id][0] * result + self.alpha[layer_id][1])
