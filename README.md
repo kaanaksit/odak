@@ -127,6 +127,8 @@ model_mlp = odak.learn.models.multi_layer_perceptron(
                                                      bias = False,
                                                      model_type = 'conventional'
                                                     )
+
+
 optimizer = torch.optim.AdamW(model_mlp.parameters(), lr = 1e-3)
 loss_function = torch.nn.MSELoss()
 for epoch in range(10000):
@@ -137,6 +139,7 @@ for epoch in range(10000):
     loss.backward(retain_graph = True)
     optimizer.step()
 print('Training loss: {}'.format(loss.item()))
+
 
 for item_id, item in enumerate(pos_x1):
     torch.no_grad()
