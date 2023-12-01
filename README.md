@@ -110,6 +110,41 @@ ycrcb_image = odak.learn.perception.color_conversion.rgb_2_ycrcb(input_rgb_image
 rgb_image = odak.learn.perception.color_conversion.ycrcb_2_rgb(ycrcb_image)
 ```
 
+Here is a simple example on `deep learning` methods with odak:
+```python
+import odak
+import torch
+
+x0 = torch.rand(1, 8, 128, 128)
+model_cbam = odak.learn.models.convolutional_block_attention(gate_channels = 8)
+y0 = model_cbam(x0)
+
+
+x1 = torch.arange(10).unsqueeze(-1) * 30.
+pos_x1 = torch.arange(x1.shape[0]).unsqueeze(-1) * 1.
+model_mlp = odak.learn.models.multi_layer_perceptron(
+                                                     dimensions = [1, 5, 1],
+                                                     bias = False,
+                                                     model_type = 'conventional'
+                                                    )
+optimizer = torch.optim.AdamW(model_mlp.parameters(), lr = 1e-3)
+loss_function = torch.nn.MSELoss()
+for epoch in range(10000):
+    optimizer.zero_grad()
+    estimation = model_mlp(pos_x1)
+    ground_truth = x1
+    loss = loss_function(estimation, ground_truth)
+    loss.backward(retain_graph = True)
+    optimizer.step()
+print('Training loss: {}'.format(loss.item()))
+
+for item_id, item in enumerate(pos_x1):
+    torch.no_grad()
+    ground_truth = x1[item_id]
+    estimation = model_mlp(item)
+    print('Input: {}, Ground truth: {}, Estimation: {}'.format(item, ground_truth, estimation))
+```
+
 For more of these examples, you can either check our [course documentation](https://kaanaksit.com/odak/course) or visit our [unit tests](https://github.com/kaanaksit/odak/tree/master/test) to get inspired.
 
 ## Sample Projects that use Odak

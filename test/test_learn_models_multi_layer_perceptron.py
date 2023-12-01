@@ -103,6 +103,7 @@ def trial(output_values, input_values, loss_function, model):
     estimated_image = torch.zeros_like(output_values)
     for input_value in input_values:
         torch.no_grad()
+        print(input_value.shape);import sys;sys.exit()
         estimation = model(input_value)
         ground_truth = output_values[input_value[:, 0].int(), input_value[:, 1].int(), :]
         estimated_image[input_value[:, 0].int(), input_value[:, 1].int(), :] = estimation
