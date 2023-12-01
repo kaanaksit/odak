@@ -1,6 +1,7 @@
 Ahmet Hamdi Güzel
 Ahmet Serdar Karadeniz
 David Robert Walton
+Doğa Yılmaz
 Jeanne Beyazian
 Koray Kavaklı
 Liang Shi
@@ -9,4 +10,3 @@ Runze Zhu
 Yujie Wang
 Yuta Itoh
 Ziyang Chen
-Doğa Yılmaz

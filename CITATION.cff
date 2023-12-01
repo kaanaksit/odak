@@ -5,52 +5,53 @@ authors:
     given-names: Kaan
     orcid: https://orcid.org/0000-0002-5934-5500
 
-  - family-names: Karadeniz
-    given-names: Ahmet Serdar
-    orcid: https://orcid.org/0000-0002-7894-4891
+  - family-names: Beyazian
+    given-names: Jeanne
+    orcid:  https://orcid.org/0000-0003-4412-1165
 
   - family-names: Chakravarthula
     given-names: Praneeth
     orcid: https://orcid.org/0000-0002-3092-7435
-    
-  - family-names: Yujie
-    given-names: Wang
-    
-  - family-names: Kavaklı
-    given-names: Koray
-    orcid: https://orcid.org/0000-0003-4678-2522
+ 
+  - family-names: Chen
+    given-names: Ziyang
+
+  - family-names: Güzel
+    given-names: Ahmet Hamdi
+    orcid:  https://orcid.org/0000-0001-7955-4396
 
   - family-names: Itoh
     given-names: Yuta
     orcid: https://orcid.org/0000-0002-5901-797X
 
-  - family-names: Walton
-    given-names: David Robert
-    orcid:  https://orcid.org/0000-0001-5879-9714
+  - family-names: Karadeniz
+    given-names: Ahmet Serdar
+    orcid: https://orcid.org/0000-0002-7894-4891
 
-  - family-names: Zhu
-    given-names: Runze
-    orcid:  https://orcid.org/0000-0003-3300-1694
-    
-  - family-names: Beyazian
-    given-names: Jeanne
-    orcid:  https://orcid.org/0000-0003-4412-1165
- 
-  - family-names: Güzel
-    given-names: Ahmet Hamdi
-    orcid:  https://orcid.org/0000-0001-7955-4396
-  
-  - family-names: Chen
-    given-names: Ziyang
+  - family-names: Kavaklı
+    given-names: Koray
+    orcid: https://orcid.org/0000-0003-4678-2522
 
   - family-names: Shi
     given-names: Liang
     orcid:  https://orcid.org/0000-0002-4442-4679
+  
+  - family-names: Walton
+    given-names: David Robert
+    orcid:  https://orcid.org/0000-0001-5879-9714
 
   - family-names: Yılmaz
     given-names: Doğa
     orcid:  https://orcid.org/0000-0002-2268-7136
 
+  - family-names: Yujie
+    given-names: Wang
+ 
+  - family-names: Zhu
+    given-names: Runze
+    orcid:  https://orcid.org/0000-0003-3300-1694
+
+ 
 title: "Odak"
 version: 0.2.4
 doi: 10.5281/zenodo.5136406
