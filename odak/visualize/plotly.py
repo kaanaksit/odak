@@ -1,11 +1,13 @@
 import sys
 import torch
+import logging
 try:
     import plotly
     import plotly.graph_objects as go
     from plotly.subplots import make_subplots
 except:
-    print('odak.visualize.plotly requires certain packages: pip install plotly kaleido')
+    warning = 'odak.visualize.plotly requires certain packages: pip install plotly kaleido'
+    logging.warning(warning)
 import numpy as np
 from ..wave import calculate_phase, calculate_amplitude, calculate_intensity
 
