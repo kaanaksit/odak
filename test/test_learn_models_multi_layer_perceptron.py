@@ -21,7 +21,8 @@ def main():
                                                      dimensions = dimensions,
                                                      activation = torch.nn.Tanh(),
                                                      bias = True,
-                                                     model_type = model_type
+                                                     model_type = model_type,
+                                                     input_multiplier = 200,
                                                     ).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr = learning_rate)
     image = odak.learn.tools.load_image(filename, normalizeby = 255., torch_style = False)[:, :, 0:3].to(device)
@@ -57,12 +58,8 @@ def main():
 
 
 def get_batches(size, model_type):
-    if model_type == 'SIREN' or model_type == 'FILM SIREN':
-        xs = torch.linspace(-size[0] // 2, size[0] // 2, steps = size[0])
-        ys = torch.linspace(-size[0] // 2, size[1] // 2, steps = size[1])
-    else:
-        xs = torch.linspace(-1, 1, steps = size[0])
-        ys = torch.linspace(-1, 1, steps = size[1])
+    xs = torch.linspace(-1, 1, steps = size[0])
+    ys = torch.linspace(-1, 1, steps = size[1])
     XS, YS = torch.meshgrid(xs, ys, indexing = 'ij')
     batches = torch.concat((XS.reshape(-1, 1), YS.reshape(-1, 1)), axis = 1).float()
     return batches

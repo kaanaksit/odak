@@ -13,7 +13,8 @@ class multi_layer_perceptron(torch.nn.Module):
                  activation = torch.nn.ReLU(),
                  bias = False,
                  model_type = 'conventional',
-                 siren_multiplier = 1.
+                 siren_multiplier = 1.,
+                 input_multiplier = None
                 ):
         """
         Parameters
@@ -29,6 +30,8 @@ class multi_layer_perceptron(torch.nn.Module):
                             When using `SIREN` model type, this parameter functions as a hyperparameter.
                             The original SIREN work uses 30.
                             You can bypass this parameter by providing input that are not normalized and larger then one.
+        input_multiplier  : float
+                            Initial value of the input multiplier before the very first layer.
         model_type        : str
                             Model type: `conventional`, `SIREN`, `FILM SIREN`.
                             `conventional` refers to a standard multi layer perceptron.
@@ -38,15 +41,16 @@ class multi_layer_perceptron(torch.nn.Module):
         super(multi_layer_perceptron, self).__init__()
         self.activation = activation
         self.bias = bias
-        self.siren_multiplier = siren_multiplier
         self.model_type = model_type
         self.layers = torch.nn.ModuleList()
         self.dimensions = dimensions
         for i in range(len(self.dimensions) - 1):
             self.layers.append(torch.nn.Linear(dimensions[i], dimensions[i + 1], bias = self.bias))
+        if not isinstance(input_multiplier, type(None)):
+            self.input_multiplier = torch.nn.ParameterList()
+            self.input_multiplier.append(torch.nn.Parameter(torch.ones(1, self.dimensions[0]) * input_multiplier))
         if self.model_type == 'FILM SIREN':
             self.alpha = torch.nn.ParameterList()
-            self.beta = torch.nn.ParameterList()
             for j in self.dimensions[1:-1]:
                 self.alpha.append(torch.nn.Parameter(torch.randn(2, 1, j)))
 
@@ -66,13 +70,16 @@ class multi_layer_perceptron(torch.nn.Module):
         result        : torch.tensor
                         Estimated output.      
         """
-        result = x
+        if hasattr(self, 'input_multiplier'):
+            result = x * self.input_multiplier[0]
+        else:
+            result = x
         for layer_id, layer in enumerate(self.layers[:-1]):
             result = layer(result)
             if self.model_type == 'conventional':
                 result = self.activation(result)
             elif self.model_type == 'SIREN':
-                result = torch.sin(self.siren_multiplier * result)
+                result = torch.sin(result)
             elif self.model_type == 'FILM SIREN':
                 result = torch.sin(self.alpha[layer_id][0] * result + self.alpha[layer_id][1])
         result = self.layers[-1](result)
