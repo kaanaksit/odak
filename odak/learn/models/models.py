@@ -12,27 +12,33 @@ class multi_layer_perceptron(torch.nn.Module):
                  dimensions,
                  activation = torch.nn.ReLU(),
                  bias = False,
-                 model_type = 'conventional'
+                 model_type = 'conventional',
+                 siren_multiplier = 1.
                 ):
         """
         Parameters
         ----------
-        dimensions   : list
-                       List of integers representing the dimensions of each layer (e.g., [2, 10, 1], where the first layer has two channels and last one has one channel.).
-        activation   : torch.nn
-                       Nonlinear activation function.
-                       Default is `torch.nn.ReLU()`.
-        bias         : bool
-                       If set to True, linear layers will include biases.
-        model_type   : str
-                       Model type: `conventional`, `SIREN`, `FILM SIREN`.
-                       `conventional` refers to a standard multi layer perceptron.
-                       For `SIREN,` see: Sitzmann, Vincent, et al. "Implicit neural representations with periodic activation functions." Advances in neural information processing systems 33 (2020): 7462-7473.
-                       For `FILM SIREN,` see: Chan, Eric R., et al. "pi-gan: Periodic implicit generative adversarial networks for 3d-aware image synthesis." Proceedings of the IEEE/CVF conference on computer vision and pattern recognition. 2021.
+        dimensions        : list
+                            List of integers representing the dimensions of each layer (e.g., [2, 10, 1], where the first layer has two channels and last one has one channel.).
+        activation        : torch.nn
+                            Nonlinear activation function.
+                            Default is `torch.nn.ReLU()`.
+        bias              : bool
+                            If set to True, linear layers will include biases.
+        siren_multiplier  : float
+                            When using `SIREN` model type, this parameter functions as a hyperparameter.
+                            The original SIREN work uses 30.
+                            You can bypass this parameter by providing input that are not normalized and larger then one.
+        model_type        : str
+                            Model type: `conventional`, `SIREN`, `FILM SIREN`.
+                            `conventional` refers to a standard multi layer perceptron.
+                            For `SIREN,` see: Sitzmann, Vincent, et al. "Implicit neural representations with periodic activation functions." Advances in neural information processing systems 33 (2020): 7462-7473.
+                            For `FILM SIREN,` see: Chan, Eric R., et al. "pi-gan: Periodic implicit generative adversarial networks for 3d-aware image synthesis." Proceedings of the IEEE/CVF conference on computer vision and pattern recognition. 2021.
         """
         super(multi_layer_perceptron, self).__init__()
         self.activation = activation
         self.bias = bias
+        self.siren_multiplier = siren_multiplier
         self.model_type = model_type
         self.layers = torch.nn.ModuleList()
         self.dimensions = dimensions
@@ -66,7 +72,7 @@ class multi_layer_perceptron(torch.nn.Module):
             if self.model_type == 'conventional':
                 result = self.activation(result)
             elif self.model_type == 'SIREN':
-                result = torch.sin(result)
+                result = torch.sin(self.siren_multiplier * result)
             elif self.model_type == 'FILM SIREN':
                 result = torch.sin(self.alpha[layer_id][0] * result + self.alpha[layer_id][1])
         result = self.layers[-1](result)
