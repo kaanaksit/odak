@@ -1,5 +1,5 @@
 import torch
-import torch.nn.functional as F
+
 
 class residual_layer(torch.nn.Module):
     """
@@ -571,11 +571,14 @@ class channel_gate(torch.nn.Module):
         """
         super().__init__()
         self.gate_channels = gate_channels
+        hidden_channels = gate_channels // reduction_ratio
+        if hidden_channels == 0:
+            hidden_channels = 1
         self.mlp = torch.nn.Sequential(
                                        convolutional_block_attention.Flatten(),
-                                       torch.nn.Linear(gate_channels, gate_channels // reduction_ratio),
+                                       torch.nn.Linear(gate_channels, hidden_channels),
                                        torch.nn.ReLU(),
-                                       torch.nn.Linear(gate_channels // reduction_ratio, gate_channels)
+                                       torch.nn.Linear(hidden_channels, gate_channels)
                                       )
         self.pool_types = pool_types
 
@@ -599,9 +602,9 @@ class channel_gate(torch.nn.Module):
         channel_att_sum = None
         for pool_type in self.pool_types:
             if pool_type == 'avg':
-                pool = F.avg_pool2d(x, (x.size(2), x.size(3)), stride=(x.size(2), x.size(3)))
+                pool = torch.nn.functional.avg_pool2d(x, (x.size(2), x.size(3)), stride=(x.size(2), x.size(3)))
             elif pool_type == 'max':
-                pool = F.max_pool2d(x, (x.size(2), x.size(3)), stride=(x.size(2), x.size(3)))
+                pool = torch.nn.functional.max_pool2d(x, (x.size(2), x.size(3)), stride=(x.size(2), x.size(3)))
             channel_att_raw = self.mlp(pool)
             channel_att_sum = channel_att_raw if channel_att_sum is None else channel_att_sum + channel_att_raw
         scale = torch.sigmoid(channel_att_sum).unsqueeze(2).unsqueeze(3).expand_as(x)
@@ -693,10 +696,10 @@ class convolutional_block_attention(torch.nn.Module):
                           If True, spatial attention is not applied.
         """
         super(convolutional_block_attention, self).__init__()
-        self.ChannelGate = channel_gate(gate_channels, reduction_ratio, pool_types)
+        self.channel_gate = channel_gate(gate_channels, reduction_ratio, pool_types)
         self.no_spatial = no_spatial
         if not no_spatial:
-            self.SpatialGate = spatial_gate()
+            self.spatial_gate = spatial_gate()
 
     
     class Flatten(torch.nn.Module):
@@ -705,27 +708,6 @@ class convolutional_block_attention(torch.nn.Module):
         """
         def forward(self, x):
             return x.view(x.size(0), -1)
-
-
-    @staticmethod
-    def logsumexp_2d(tensor):
-        """
-        Applies log-sum-exp operation on the tensor.
-
-        Parameters
-        ----------
-        x            : tensor
-                       Input tensor.
-
-        Returns
-        -------
-        outputs      : tensor
-                       Processed outputs.
-        """
-        tensor_flatten = tensor.view(tensor.size(0), tensor.size(1), -1)
-        s, _ = torch.max(tensor_flatten, dim = 2, keepdim = True)
-        outputs = s + (tensor_flatten - s).exp().sum(dim = 2, keepdim = True).log()
-        return outputs
 
 
     def forward(self, x):
@@ -742,7 +724,7 @@ class convolutional_block_attention(torch.nn.Module):
         x_out        : torch.tensor
                        Output tensor after applying channel and spatial attention.
         """
-        x_out = self.ChannelGate(x)
+        x_out = self.channel_gate(x)
         if not self.no_spatial:
-            x_out = self.SpatialGate(x_out)
+            x_out = self.spatial_gate(x_out)
         return x_out
