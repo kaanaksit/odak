@@ -29,7 +29,7 @@ def main():
     original_resolution = image.shape
     image = (image * 2.) - 1.
     image = image.reshape(-1, original_resolution[-1])
-    batches = get_batches(original_resolution, model_type).to(device)
+    batches = get_batches(original_resolution).to(device)
     loss_function = torch.nn.MSELoss(reduction = 'sum')
     epochs = tqdm(range(no_epochs), leave = False, dynamic_ncols = True)    
     if os.path.isfile(weights_filename):
@@ -57,7 +57,7 @@ def main():
     assert True == True
 
 
-def get_batches(size, model_type):
+def get_batches(size):
     xs = torch.linspace(-1, 1, steps = size[0])
     ys = torch.linspace(-1, 1, steps = size[1])
     XS, YS = torch.meshgrid(xs, ys, indexing = 'ij')
