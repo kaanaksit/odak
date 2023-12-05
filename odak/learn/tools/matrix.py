@@ -184,9 +184,16 @@ def generate_2d_gaussian(kernel_length = [21, 21], nsigma = [3, 3], mu = [0, 0],
         kernel_2d = kernel_2d / kernel_2d.max()
     return kernel_2d
 
-def generate_2d_dirac_delta(kernel_length = [21, 21], a = [3, 3], mu = [0, 0], theta=0, normalize = False):
+def generate_2d_dirac_delta(
+                            kernel_length = [21, 21],
+                            a = [3, 3],
+                            mu = [0, 0],
+                            theta = 0,
+                            normalize = False
+                           ):
     """
-    Generate 2D Dirac delta function by using Gaussian distribution. Inspired from https://en.wikipedia.org/wiki/Dirac_delta_function
+    Generate 2D Dirac delta function by using Gaussian distribution.
+    Inspired from https://en.wikipedia.org/wiki/Dirac_delta_function
 
     Parameters
     ----------
@@ -207,17 +214,18 @@ def generate_2d_dirac_delta(kernel_length = [21, 21], a = [3, 3], mu = [0, 0], t
     kernel_2d     : torch.tensor
                     Generated 2D Dirac delta function.
     """
-    x = torch.linspace(-kernel_length[0]/2., kernel_length[0]/2., kernel_length[0])
-    y = torch.linspace(-kernel_length[1]/2., kernel_length[1]/2., kernel_length[1])
+    x = torch.linspace(-kernel_length[0] / 2., kernel_length[0] / 2., kernel_length[0])
+    y = torch.linspace(-kernel_length[1] / 2., kernel_length[1] / 2., kernel_length[1])
     X, Y = torch.meshgrid(x, y, indexing='ij')
     X = X - mu[0]
     Y = Y - mu[1]
     X_rot = X * np.cos(theta) - Y * np.sin(theta)
     Y_rot = X * np.sin(theta) + Y * np.cos(theta)
-    kernel_2d = (1 / (abs(a[0] * a[1]) * np.pi)) * np.exp(-((X_rot/a[0])**2 + (Y_rot/a[1])**2))
+    kernel_2d = (1 / (abs(a[0] * a[1]) * np.pi)) * np.exp(-((X_rot / a[0]) ** 2 + (Y_rot / a[1]) ** 2))
     if normalize:
         kernel_2d = kernel_2d / kernel_2d.max()
     return kernel_2d
+
 
 def blur_gaussian(field, kernel_length = [21, 21], nsigma = [3, 3], padding = 'same'):
     """
