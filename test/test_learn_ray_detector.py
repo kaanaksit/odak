@@ -25,7 +25,6 @@ def test():
     number_of_steps = 1
     save_at_every = 1
     heights = None
-#    heights = odak.learn.tools.torch.load('test/heights.pt')
   
 
     detector = odak.learn.raytracing.detector(
@@ -56,7 +55,7 @@ def test():
     start_points = start_points.to(device)
     end_points = end_points.to(device)
     rays = odak.learn.raytracing.create_ray_from_two_points(start_points, end_points)
-    target = odak.learn.tools.load_image('test/kaan.png', normalizeby = 255., torch_style = True)[1].unsqueeze(0).to(device)
+    target = odak.learn.tools.load_image('test/data/kaan.png', normalizeby = 255., torch_style = True)[1].unsqueeze(0).to(device)
     target_binary = torch.ones_like(target) * (target > 0.) * 1.
     target_binary = target_binary.reshape(1, -1)
     target_binary_inverted = torch.abs(1. - target_binary) * 1e6

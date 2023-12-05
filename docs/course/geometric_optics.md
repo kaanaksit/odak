@@ -109,10 +109,10 @@ The below script provides a sample use case for the functions provided above.
 I also leave comments near some lines explaining the code in steps.
 
 
-=== ":octicons-file-code-16: `test_learn_ray.py`"
+=== ":octicons-file-code-16: `test_learn_ray_create_ray_from_two_points.py`"
 
     ```python 
-    --8<-- "test/test_learn_ray.py"
+    --8<-- "test/test_learn_ray_create_ray_from_two_points.py"
     ```
 
     1. Required libraries are imported.
