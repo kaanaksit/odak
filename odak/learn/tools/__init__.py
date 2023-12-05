@@ -12,5 +12,4 @@ from .vector import *
 from .transformation import *
 from .sample import *
 from .loss import * 
-from .fitcurve import *
 from .mask import * 

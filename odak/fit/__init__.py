@@ -7,6 +7,7 @@ Provides functions to fit models to a provided data. These functions could be be
 import numpy as np
 from tqdm import tqdm
 
+
 def least_square_1d(x, y):
     """
     A function to fit a line to given x and y data (y=mx+n). Inspired from: https://mmas.github.io/least-squares-fitting-numpy-scipy
