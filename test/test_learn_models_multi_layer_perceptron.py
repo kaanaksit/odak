@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 
 def main():
-    filename = './test/fruit_lady.png'
+    filename = './test/data/fruit_lady.png'
     test_filename  = './estimation.png'
     weights_filename = 'model_weights.pt'
     learning_rate = 1e-4

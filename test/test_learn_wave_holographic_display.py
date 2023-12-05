@@ -17,7 +17,7 @@ def test():
                                                   device = device
                                                  )
     hologram_phases = odak.learn.tools.load_image(
-                                                  './test/sample_hologram.png', 
+                                                  './test/data/sample_hologram.png', 
                                                   normalizeby = 255., 
                                                   torch_style = True
                                                  ) * odak.pi * 2.

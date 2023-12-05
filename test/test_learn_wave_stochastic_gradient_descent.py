@@ -5,7 +5,7 @@ import torch
 
 def test():
     device = torch.device('cpu') # (1)
-    target = odak.learn.tools.load_image('./test/usaf1951.png', normalizeby = 255., torch_style = True)[1] # (4)
+    target = odak.learn.tools.load_image('./test/data/usaf1951.png', normalizeby = 255., torch_style = True)[1] # (4)
     hologram, reconstruction = odak.learn.wave.stochastic_gradient_descent(
                                                                            target,
                                                                            wavelength = 532e-9,
