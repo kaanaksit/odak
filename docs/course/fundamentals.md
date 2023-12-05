@@ -359,7 +359,7 @@ pyflakes3 sample.py
 
 
 In addition, I use `flake8` and `autopep8` for standard code violations.
-To learn more about these, please read the [code section of the contribution guide](../contributing/#code).
+To learn more about these, please read the [code section of the contribution guide](../contributing.md#code).
 
 
 ### Naming variables

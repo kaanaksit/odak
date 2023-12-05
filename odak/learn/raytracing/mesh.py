@@ -142,12 +142,18 @@ class planar_mesh():
  
         Parameters
         ----------
-        rays        : torch.tensor
-                      Rays to be bounced.
-                      Expected size is [2 x 3], [1 x 2 x 3] or [m x 2 x 3].
+        rays              : torch.tensor
+                            Rays to be bounced.
+                            Expected size is [2 x 3], [1 x 2 x 3] or [m x 2 x 3].
  
         Returns
         -------
+        reflected_rays    : torch.tensor
+                            Reflected rays.
+                            Expected size is [2 x 3], [1 x 2 x 3] or [m x 2 x 3].
+        reflected_normals : torch.tensor
+                            Reflected normals.
+                            Expected size is [2 x 3], [1 x 2 x 3] or [m x 2 x 3].
         
         """
         if len(rays.shape) == 2:

@@ -35,7 +35,7 @@ class propagator():
         ----------
         resolution              : list
                                   Resolution.
-        wavelength              : float
+        wavelengths             : float
                                   Wavelength of light in meters.
         pixel_pitch             : float
                                   Pixel pitch in meters.
@@ -301,7 +301,7 @@ class propagator():
 
         Parameters
         ----------
-        hologram_phase             : torch.tensor
+        hologram_phases            : torch.tensor
                                      A monochrome hologram phase [m x n].
         amplitude                  : torch.tensor
                                      Amplitude profiles for each color primary [ch x m x n]

@@ -26,8 +26,6 @@ class display_color_hvs():
                                       Pixel pitch of the display in mm.
         read_spectrum               : str
                                       Spectrum of the display. Default is 'default' which is the spectrum of the Dell U2415 display.
-        spectrum_data_root          : str
-                                      Path to the folder containing the spectrum data of the display.
         device                      : torch.device
                                       Device to run the code on. Default is None which means the code will run on CPU.
 
@@ -124,17 +122,12 @@ class display_color_hvs():
     
     def initialize_random_spectrum_normalised(self, dataset):
         """
-        initialize normalised light spectrum via combination of 3 gaussian distribution curve fitting [L-BFGS]. 
+        Initialize normalised light spectrum via combination of 3 gaussian distribution curve fitting [L-BFGS]. 
+
         Parameters
         ----------
         dataset                                : torch.tensor 
                                                  spectrum value against wavelength 
-        peakspectrum                           :
-
-        Returns
-        -------
-        light_spectrum                         : torch.tensor
-                                                 Normalized light spectrum function       
         """
         if (type(dataset).__module__) == "torch":
             dataset = dataset.numpy()
@@ -221,8 +214,14 @@ class display_color_hvs():
 
         Parameters
         ----------
-        *_response                             : torch.tensor
+        l_response                             : torch.tensor
                                                  Cone response spectrum tensor (normalised response vs wavelength)
+        m_response                             : torch.tensor
+                                                 Cone response spectrum tensor (normalised response vs wavelength)
+        s_response                             : torch.tensor
+                                                 Cone response spectrum tensor (normalised response vs wavelength)
+
+
 
         Returns
         -------
@@ -255,8 +254,14 @@ class display_color_hvs():
 
         Parameters
         ----------
-        *_response                             : torch.tensor
+        l_response                             : torch.tensor
                                                  Cone response spectrum tensor (normalised response vs wavelength)
+        m_response                             : torch.tensor
+                                                 Cone response spectrum tensor (normalised response vs wavelength)
+        s_response                             : torch.tensor
+                                                 Cone response spectrum tensor (normalised response vs wavelength)
+
+
 
         Returns
         -------
@@ -719,7 +724,7 @@ def color_map(input_image, target_image, model = 'Lab Stats'):
     
     Parameters
     ----------
-    image               : torch.Tensor
+    input_image         : torch.Tensor
                           Input image in RGB color space [3 x m x n].
     target_image        : torch.Tensor
     

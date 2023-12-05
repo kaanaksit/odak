@@ -450,7 +450,7 @@ class mixed_color_hologram_optimizer():
 
         Parameters
         ----------
-        hologram_phase             : torch.tensor
+        hologram_phases            : torch.tensor
                                      A monochrome hologram phase [mxn].
 
         Returns

@@ -3,7 +3,7 @@ This note is compiled by `David Walton`.
 If you have further questions regarding this note, please email `David` at `david.walton.13@ucl.ac.uk`.
 
 Our metameric loss function works in a very similar way to built in loss functions in `pytorch`, such as `torch.nn.MSELoss()`. 
-However, it has a number of parameters which can be adjusted on creation (see the [documentation](../../odak/learn_perception/#odak.learn.perception.metameric_loss.MetamericLoss)). 
+However, it has a number of parameters which can be adjusted on creation (see the [documentation](../odak/learn_perception.md#odak.learn.perception.metameric_loss.MetamericLoss)). 
 Additionally, when calculating the loss a gaze location must be specified. For example:
 
 ```
@@ -26,4 +26,4 @@ Support for equirectangular 3D images is planned for the future.
 
 ## See also
 
-[`Visual perception`](../../perception)
+[`Visual perception`](../perception.md)
