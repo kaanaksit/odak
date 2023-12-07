@@ -73,7 +73,7 @@ class propagator():
         self.resolution = resolution
         self.resolution_factor = resolution_factor
         self.number_of_frames = number_of_frames
-        self.number_of_depth_layers= number_of_depth_layers
+        self.number_of_depth_layers = number_of_depth_layers
         self.number_of_channels = len(self.wavelengths)
         self.volume_depth = volume_depth
         self.image_location_offset = image_location_offset
@@ -294,7 +294,7 @@ class propagator():
         return output_field
 
 
-    def reconstruct(self, hologram_phases, amplitude = None):
+    def reconstruct(self, hologram_phases, amplitude = None, no_grad = True):
         """
         Internal function to reconstruct a given hologram.
 
@@ -302,9 +302,11 @@ class propagator():
         Parameters
         ----------
         hologram_phases            : torch.tensor
-                                     A monochrome hologram phase [m x n].
+                                     Hologram phases [ch x m x n].
         amplitude                  : torch.tensor
                                      Amplitude profiles for each color primary [ch x m x n]
+        no_grad                    : bool
+                                     If set True, uses torch.no_grad in reconstruction.
 
         Returns
         -------
@@ -315,7 +317,8 @@ class propagator():
         peak_intensity             : float
                                      Peak intensity in the reconstructed image.
         """
-        torch.no_grad()
+        if no_grad:
+            torch.no_grad()
         reconstruction_intensities = torch.zeros(
                                                  self.number_of_frames,
                                                  self.number_of_depth_layers,

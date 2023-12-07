@@ -268,11 +268,11 @@ Let us examine the implementation of a beam propagation method called `Bandlimit
 Let us see how we can use the given beam propagation function with an example:
 
 
-=== ":octicons-file-code-16: `test_learn_wave_beam_propagation.py`"
+=== ":octicons-file-code-16: `test_learn_wave_propagate_beam.py`"
 
 
     ```python 
-    --8<-- "test/test_learn_wave_beam_propagation.py"
+    --8<-- "test/test_learn_wave_propagate_beam.py"
     ```
 
 

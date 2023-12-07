@@ -12,4 +12,3 @@ from .loss import *
 from .optimizers import * 
 from .propagators import *
 from .util import *
-from .hardware import *
