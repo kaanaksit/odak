@@ -312,13 +312,11 @@ class propagator():
         -------
         reconstruction_intensities : torch.tensor
                                      Reconstructed frames.
-        reconstruction_intensity   : torch.tensor
-                                     Reconstructed image.
-        peak_intensity             : float
-                                     Peak intensity in the reconstructed image.
         """
         if no_grad:
             torch.no_grad()
+        if len(hologram_phases.shape) > 3:
+            hologram_phases = hologram_phases.squeeze(0)
         reconstruction_intensities = torch.zeros(
                                                  self.number_of_frames,
                                                  self.number_of_depth_layers,
@@ -344,7 +342,14 @@ class propagator():
                         amplitude[1::self.resolution_factor, 1::self.resolution_factor] = 0.
                     else:
                         phase = hologram_phases[frame_id]
-                    hologram = generate_complex_field(laser_power * amplitude[channel_id], phase * self.phase_scale[channel_id]) 
+                    hologram = generate_complex_field(
+                                                      laser_power * amplitude[channel_id],
+                                                      phase * self.phase_scale[channel_id]
+                                                     )
                     reconstruction_field = self.__call__(hologram, channel_id, depth_id)
-                    reconstruction_intensities[frame_id, depth_id, channel_id] = calculate_amplitude(reconstruction_field) ** 2
+                    reconstruction_intensities[
+                                               frame_id,
+                                               depth_id,
+                                               channel_id
+                                              ] = calculate_amplitude(reconstruction_field) ** 2
         return reconstruction_intensities
