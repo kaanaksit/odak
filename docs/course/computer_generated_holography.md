@@ -437,14 +437,14 @@ As depicted in the rendering located in the previous section, this aperture is l
 Let us review the class dedicated to accurately simulating a holographic display and its functions:
 
 
-=== ":octicons-file-code-16: `odak.learn.wave.holographic_display.reconstruct`"
+=== ":octicons-file-code-16: `odak.learn.wave.propagator.reconstruct`"
 
-    ::: odak.learn.wave.holographic_display.reconstruct
+    ::: odak.learn.wave.propagator.reconstruct
 
 
-=== ":octicons-file-code-16: `odak.learn.wave.holographic_display.forward`"
+=== ":octicons-file-code-16: `odak.learn.wave.propgator.__call__`"
 
-    ::: odak.learn.wave.holographic_display.forward
+    ::: odak.learn.wave.propagator.__call__
 
 
 This sample unit test provides an example use case of the holographic display class.
