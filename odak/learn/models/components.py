@@ -1,6 +1,7 @@
 import torch
 import math
 
+
 class residual_layer(torch.nn.Module):
     """
     A residual layer.
