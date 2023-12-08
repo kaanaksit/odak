@@ -1,8 +1,5 @@
 import torch
 import math
-import torch.nn.functional as F
-import math
-
 
 class residual_layer(torch.nn.Module):
     """
@@ -777,5 +774,5 @@ class positional_encoder(torch.nn.Module):
         results = results.permute(0, 2, 1)
         results = results.reshape(B, -1)
         return results
-
-
+    
+    
