@@ -1,5 +1,5 @@
 import torch
-
+import math
 
 class residual_layer(torch.nn.Module):
     """
@@ -728,3 +728,51 @@ class convolutional_block_attention(torch.nn.Module):
         if not self.no_spatial:
             x_out = self.spatial_gate(x_out)
         return x_out
+
+
+class positional_encoder(torch.nn.Module):
+    """
+    A positional encoder module.
+    """
+    
+    def __init__(self, L):
+        """
+        A positional encoder module.
+
+        Parameters
+        ----------
+        L                   : int
+                              Positional encoding level.
+        """
+        super(positional_encoder, self).__init__()
+        self.L=L
+        
+    def forward(self, x):
+        """
+        Forward model.
+        
+        Parameters
+        ----------
+        x               : torch.tensor
+                          Input data.
+
+        Returns
+        ----------
+        result          : torch.tensor
+                          Result of the forward operation
+        """
+        B, C = x.shape
+        x = x.view(B, C, 1)
+        results = [x]
+        for i in range(1, self.L + 1):
+            freq = (2 ** i) * math.pi
+            cos_x = torch.cos(freq * x)
+            sin_x = torch.sin(freq * x)
+            results.append(cos_x)
+            results.append(sin_x)
+        results = torch.cat(results, dim=2)
+        results = results.permute(0, 2, 1)
+        results = results.reshape(B, -1)
+        return results
+    
+    

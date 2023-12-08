@@ -1,5 +1,4 @@
 import torch
-import math
 from .components import double_convolution, downsample_layer, upsample_layer
 
 
