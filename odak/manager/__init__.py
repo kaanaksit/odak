@@ -1,6 +1,6 @@
 """
 ``odak.manager``
-===================
+
 Provides necessary definition for submitting, running and gathering compute.
 
 """

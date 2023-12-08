@@ -1,7 +1,8 @@
 """
 ``odak.wave``
--------------
-Provides necessary definitions for merging geometric optics with wave theory and classical approaches in the wave theory as well. See "Introduction to Fourier Optcs" from Joseph Goodman for the theoratical explanation.
+
+Provides necessary definitions for merging geometric optics with wave theory and classical approaches in the wave theory as well.
+See "Introduction to Fourier Optcs" from Joseph Goodman for the theoratical explanation.
 
 """
 # To get sub-modules.

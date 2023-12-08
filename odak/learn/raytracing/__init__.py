@@ -1,6 +1,6 @@
 """
 ``odak.learn.raytracing``
-==========================
+
 Provides necessary definitions for geometric optics.
 See "General Ray tracing procedure" from G.H. Spencerand M.V.R.K Murty for more theoratical explanation.
 """

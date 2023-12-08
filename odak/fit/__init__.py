@@ -1,6 +1,6 @@
 """
 ``odak.fit``
-===================
+
 Provides functions to fit models to a provided data. These functions could be best described as a catalog of machine learning models.
 """
 

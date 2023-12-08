@@ -1,6 +1,6 @@
 """
 ``odak.jones``
-===================
+
 Provides necessary definitions for jones calculus. See "Introduction to Fourier Optics" by Joseph Goodman.
 """
 import numpy as np
