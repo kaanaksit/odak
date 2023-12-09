@@ -530,7 +530,7 @@ class mixed_color_hologram_optimizer():
         """
         phase_only = torch.nan_to_num(phase - phase_offset, nan = 2 * np.pi)
         loss = multi_scale_total_variation_loss(phase, levels = 6)
-        loss = multi_scale_total_variation_loss(phase_offset, levels = 6)
+        loss += multi_scale_total_variation_loss(phase_offset, levels = 6)
         return phase_only, loss
 
 
