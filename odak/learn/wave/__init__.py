@@ -7,6 +7,7 @@ Provides necessary definitions for neural networks and learning algorithms. The 
 import numpy as np
 import torch
 from .classical import *
+from .legacy import *
 from .lens import *
 from .loss import * 
 from .optimizers import * 
