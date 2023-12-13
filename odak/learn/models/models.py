@@ -42,6 +42,7 @@ class multi_layer_perceptron(torch.nn.Module):
         self.bias = bias
         self.model_type = model_type
         self.layers = torch.nn.ModuleList()
+        self.siren_multiplier = siren_multiplier
         self.dimensions = dimensions
         for i in range(len(self.dimensions) - 1):
             self.layers.append(torch.nn.Linear(dimensions[i], dimensions[i + 1], bias = self.bias))
@@ -76,7 +77,7 @@ class multi_layer_perceptron(torch.nn.Module):
         for layer_id, layer in enumerate(self.layers[:-1]):
             result = layer(result)
             if self.model_type == 'conventional':
-                result = self.activation(result)
+                result = self.activation(self.siren_multiplier * result)
             elif self.model_type == 'SIREN':
                 result = torch.sin(result)
             elif self.model_type == 'FILM SIREN':
