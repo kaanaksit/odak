@@ -1,5 +1,5 @@
 """
-``odak.visualizes``
+``odak.visualize``
 
 Provides necessary definitions for visualization.
 
