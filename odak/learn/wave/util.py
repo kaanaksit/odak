@@ -20,7 +20,7 @@ def wavenumber(wavelength):
     return k
 
 
-def calculate_phase(field, deg=False):
+def calculate_phase(field, deg = False):
     """ 
     Definition to calculate phase of a single or multiple given electric field(s).
 
@@ -37,7 +37,7 @@ def calculate_phase(field, deg=False):
                    Phase or phases of electric field(s) in radians.
     """
     phase = field.imag.atan2(field.real)
-    if deg == True:
+    if deg:
         phase *= 180. / np.pi
     return phase
 
