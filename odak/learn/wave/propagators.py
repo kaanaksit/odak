@@ -351,5 +351,5 @@ class propagator():
                                                frame_id,
                                                depth_id,
                                                channel_id
-                                              ] = calculate_amplitude(reconstruction_field) ** 2
+                                              ] = calculate_amplitude(reconstruction_field).detach().clone() ** 2
         return reconstruction_intensities
