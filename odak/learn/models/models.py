@@ -45,7 +45,7 @@ class multi_layer_perceptron(torch.nn.Module):
         self.siren_multiplier = siren_multiplier
         self.dimensions = dimensions
         for i in range(len(self.dimensions) - 1):
-            self.layers.append(torch.nn.Linear(dimensions[i], dimensions[i + 1], bias = self.bias))
+            self.layers.append(torch.nn.Linear(self.dimensions[i], self.dimensions[i + 1], bias = self.bias))
         if not isinstance(input_multiplier, type(None)):
             self.input_multiplier = torch.nn.ParameterList()
             self.input_multiplier.append(torch.nn.Parameter(torch.ones(1, self.dimensions[0]) * input_multiplier))

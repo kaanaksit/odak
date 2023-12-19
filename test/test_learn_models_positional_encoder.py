@@ -7,19 +7,19 @@ from tqdm import tqdm
 
 
 def main():
+    device_name = 'cpu'
     filename = './test/data/fruit_lady.png'
     test_filename  = './estimation.png'
     weights_filename = 'model_weights.pt'
     learning_rate = 1e-4
-    no_epochs = 25000
-    number_of_batches = 1
-    dimensions = [2, 256, 256, 256, 3]
-    positional_encoding_level = 24
-    device_name = 'cuda'
+    no_epochs = 5
     save_at_every = 5000
-    device = torch.device(device_name)
-    positional_encoder = odak.learn.models.components.positional_encoder(L=positional_encoding_level)
+    number_of_batches = 1
+    positional_encoding_level = 24
+    dimensions = [2, 256, 256, 256, 3]
     dimensions[0] = dimensions[0] + dimensions[0] * 2 * positional_encoding_level
+    device = torch.device(device_name)
+    positional_encoder = odak.learn.models.components.positional_encoder(L = positional_encoding_level)
     model = odak.learn.models.multi_layer_perceptron(
                                                      dimensions = dimensions,
                                                      activation = torch.nn.ReLU(),
@@ -89,7 +89,6 @@ def trial(output_values, input_values, loss_function, model, positional_encoder)
         normalized_input_value[:, 0] = input_value[:, 0] / output_values.shape[0]
         normalized_input_value[:, 1] = input_value[:, 1] / output_values.shape[1]
         input_value = positional_encoder(input_value)
-        estimation = model(input_value)
         estimation = model(input_value)
         ground_truth = output_values[input_value[:, 0].int(), input_value[:, 1].int(), :]
         estimated_image[input_value[:, 0].int(), input_value[:, 1].int(), :] = estimation

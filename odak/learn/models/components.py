@@ -683,7 +683,7 @@ class convolutional_block_attention(torch.nn.Module):
                  no_spatial = False
                 ):
         """
-        Initializes the CBAM module.
+        Initializes the convolutional block attention module.
 
         Parameters
         ----------
@@ -713,7 +713,7 @@ class convolutional_block_attention(torch.nn.Module):
 
     def forward(self, x):
         """
-        Forward pass of the CBAM module.
+        Forward pass of the convolutional block attention module.
 
         Parameters
         ----------
@@ -746,8 +746,9 @@ class positional_encoder(torch.nn.Module):
                               Positional encoding level.
         """
         super(positional_encoder, self).__init__()
-        self.L=L
-        
+        self.L = L
+
+
     def forward(self, x):
         """
         Forward model.
@@ -774,6 +775,4 @@ class positional_encoder(torch.nn.Module):
         results = torch.cat(results, dim=2)
         results = results.permute(0, 2, 1)
         results = results.reshape(B, -1)
-        return results
-    
-    
+        return results 
