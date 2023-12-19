@@ -11,13 +11,13 @@ def test():
     pixel_pitch = 3.74e-6
     number_of_frames = 3
     number_of_depth_layers = 3
-    volume_depth = 1e-2
-    image_location_offset = 5e-3
+    volume_depth = 5e-3
+    image_location_offset = 0.
     propagation_type = 'Bandlimited Angular Spectrum'
     propagator_type = 'forward'
     laser_channel_power = None
     aperture = None
-    aperture_size = None
+    aperture_size = 1800
     method = 'conventional'
     device = torch.device('cpu')
     hologram_phases_filename = './test/data/sample_hologram.png'
@@ -37,6 +37,8 @@ def test():
                                             propagation_type = propagation_type,
                                             propagator_type = propagator_type,
                                             laser_channel_power = laser_channel_power,
+                                            aperture_size = aperture_size,
+                                            aperture = aperture,
                                             method = method,
                                             device = device
                                            )

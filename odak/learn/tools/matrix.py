@@ -3,24 +3,27 @@ import torch
 import torch.nn
 
 
-def quantize(image_field, bits=4):
+def quantize(image_field, bits = 4, limits = [0., 1.]):
     """ 
     Definition to quantize a image field (0-255, 8 bit) to a certain bits level.
 
     Parameters
     ----------
     image_field : torch.tensor
-                  Input image field.
+                  Input image field between any range.
     bits        : int
                   A value in between 0 to 8. Can not be zero.
+    limits      : list
+                  The minimum and maximum of the image_field variable.
 
     Returns
     ----------
     new_field   : torch.tensor
                   Quantized image field.
     """
-    divider = 2**(8-bits)
-    new_field = image_field/divider
+    normalized_field = (image_field - limits[0]) / (limits[1] - limits[0])
+    divider = 2 ** bits
+    new_field = normalized_field * divider
     new_field = new_field.int()
     return new_field
 

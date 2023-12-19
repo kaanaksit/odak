@@ -3,7 +3,7 @@ import logging
 import numpy as np
 from tqdm import tqdm
 from .util import wavenumber, generate_complex_field, calculate_amplitude, calculate_phase
-from ..tools import torch_load, multi_scale_total_variation_loss
+from ..tools import torch_load, multi_scale_total_variation_loss, quantize
 from .propagators import propagator
 
 
@@ -386,7 +386,7 @@ class multi_color_hologram_optimizer():
         return hologram_phases.detach()
 
 
-    def optimize(self, number_of_iterations=100, weights=[1., 1., 1.]):
+    def optimize(self, number_of_iterations=100, weights=[1., 1., 1.], bits = 8):
         """
         Function to optimize multiplane phase-only holograms.
 
@@ -396,6 +396,8 @@ class multi_color_hologram_optimizer():
                                      Number of iterations.
         weights                    : list
                                      Loss weights.
+        bits                       : int
+                                     Quantizes the hologram using the given bits and reconstructs.
 
         Returns
         -------
@@ -409,6 +411,7 @@ class multi_color_hologram_optimizer():
                                                 number_of_iterations=number_of_iterations,
                                                 weights=weights
                                                )
+        hologram_phases = quantize(hologram_phases % (2 * np.pi), bits = bits, limits = [0., 2 * np.pi]) / 2 ** bits * 2 * np.pi
         torch.no_grad()
         reconstruction_intensities = self.propagator.reconstruct(hologram_phases)
         laser_powers = self.propagator.get_laser_powers()
