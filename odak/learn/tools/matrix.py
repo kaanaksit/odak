@@ -3,7 +3,7 @@ import torch
 import torch.nn
 
 
-def quantize(image_field, bits = 4, limits = [0., 1.]):
+def quantize(image_field, bits = 8, limits = [0., 1.]):
     """ 
     Definition to quantize a image field (0-255, 8 bit) to a certain bits level.
 
@@ -12,7 +12,7 @@ def quantize(image_field, bits = 4, limits = [0., 1.]):
     image_field : torch.tensor
                   Input image field between any range.
     bits        : int
-                  A value in between 0 to 8. Can not be zero.
+                  A value in between one to eight.
     limits      : list
                   The minimum and maximum of the image_field variable.
 
