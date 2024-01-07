@@ -122,10 +122,6 @@ Here is a simple example on `deep learning` methods with odak:
 import odak
 import torch
 
-x0 = torch.rand(1, 8, 128, 128)
-model_cbam = odak.learn.models.convolutional_block_attention(gate_channels = 8)
-y0 = model_cbam(x0)
-
 
 x1 = torch.arange(10).unsqueeze(-1) * 30.
 pos_x1 = torch.arange(x1.shape[0]).unsqueeze(-1) * 1.
