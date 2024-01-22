@@ -19,10 +19,6 @@ class holobeam_multiholo(torch.nn.Module):
                         Number of channels in the hidden layers.
     n_output          : int
                         Number of channels in the output layer.
-    kernel_size       : tuple
-                        Kernel size provided as a tuple (e.g., (7, 7)).
-    betas             : list
-                        Lower and upper bound in variance.
     device            : torch.device
                         Default device is CPU.
     reduction         : str
