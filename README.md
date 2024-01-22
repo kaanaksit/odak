@@ -156,6 +156,7 @@ For more of these examples, you can either check our [course documentation](http
 ## Sample Projects that use Odak
 Here are some sample projects that use `odak`:
 
+* [AutoColor: Learned Light Power Control for Multi-Color Holograms](https://complightlab.com/autocolor_/)
 * [Multi-color Holograms Improve Brightness in Holographic Displays](https://complightlab.com/publications/multi_color/)
 * [ChromaCorrect: Prescription Correction in Virtual Reality Headsets through Perceptual Guidance](http://complightlab.com/ChromaCorrect/)
 * [HoloBeam: Paper-Thin Near-Eye Displays](https://complightlab.com/publications/holobeam/)
