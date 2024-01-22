@@ -1,6 +1,26 @@
 import numpy as np
 
 
+def create_empty_list(dimensions = [1, 1]):
+    """
+    A definition to create an empty Pythonic list.
+
+    Parameters
+    ----------
+    dimensions   : list
+                   Dimensions of the list to be created.
+
+    Returns
+    -------
+    new_list     : list
+                   New empty list.
+    """
+    new_list = 0
+    for n in reversed(dimensions):
+        new_list = [new_list] * n
+    return new_list
+
+
 def nufft2(field, fx, fy, size=None, sign=1, eps=10**(-12)):
     """
     A definition to take 2D Non-Uniform Fast Fourier Transform (NUFFT).
