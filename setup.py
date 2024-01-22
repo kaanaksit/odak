@@ -15,7 +15,7 @@ if os.path.isfile(requirementPath):
 
 setup(
       name = "odak",
-      version = "0.2.5",
+      version = "0.2.6",
       author = "Kaan Akşit",
       author_email = "kaanaksit@kaanaksit.com",
       description = "Odak, the fundamental Python library for scientific computing in optical sciences.",
@@ -45,7 +45,8 @@ setup(
     package_dir = {'odak': 'odak'},
     package_data = {'odak': ['catalog/data/*.json']},
     data_files = [
-                  ('', ['LICENSE.txt', 'README.md', 'THANKS.txt', 'requirements.txt', 'short_readme.md'])],
+                  ('', ['LICENSE.txt', 'README.md', 'THANKS.txt', 'requirements.txt', 'short_readme.md'])
+                 ],
     long_description = read('short_readme.md'),
     classifiers = [
                    'Development Status :: 5 - Production/Stable',

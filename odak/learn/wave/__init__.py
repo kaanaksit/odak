@@ -10,6 +10,7 @@ from .classical import *
 from .legacy import *
 from .lens import *
 from .loss import * 
+from .models import *
 from .optimizers import * 
 from .propagators import *
 from .util import *
