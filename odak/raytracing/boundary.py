@@ -63,7 +63,7 @@ def intersect_w_surface(ray, points):
     normal = get_triangle_normal(points)
     if len(ray.shape) == 2:
         ray = ray.reshape((1, 2, 3))
-    if len(points) == 2:
+    if len(points.shape) == 2:
         points = points.reshape((1, 3, 3))
     if len(normal.shape) == 2:
         normal = normal.reshape((1, 2, 3))
@@ -99,7 +99,7 @@ def intersect_w_surface_batch(ray, triangle):
     normal = get_triangle_normal(triangle)
     if len(ray.shape) == 2:
         ray = ray.unsqueeze(0)
-    if len(triangle) == 2:
+    if len(triangle.shape) == 2:
         triangle = triangle.unsqueeze(0)
     if len(normal.shape) == 2:
         normal = normal.unsqueeze(0)
