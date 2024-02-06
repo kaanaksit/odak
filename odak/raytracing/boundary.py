@@ -227,7 +227,7 @@ def intersect_w_triangle_batch(ray, triangle):
     intersect_ray   : torch.tensor
                       Intersecting rays (k x 3 x 3) where k <= n.
     intersect_normal: torch.tensor
-                      Intersecting normals (k x 3 x 3) where k <= n.
+                      Intersecting normals (k x 3 x 3) where k <= n*m.
     """
     if len(triangle.shape) == 2:
        triangle = triangle.unsqueeze(0)

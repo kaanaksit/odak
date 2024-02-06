@@ -146,6 +146,47 @@ def is_it_on_triangle(point_to_check, triangle):
     return result
 
 
+def is_it_on_triangle_batch(point_to_check, triangle):
+    """
+    Definition to check if given points are inside triangles. If the given points are inside defined triangles, this definition returns True.
+
+    Parameters
+    ----------
+    pointtocheck  : torch.tensor
+                    Points to check (m x n x 3).
+    triangle      : torch.tensor (m x 3 x 3)
+
+    Returns
+    ----------
+    result        : torch.tensor (m x n)
+                        
+    """
+    if len(point_to_check.shape) == 1:
+        point_to_check = point_to_check.unsqueeze(0)
+    if len(triangle.shape) == 2:
+        triangle = triangle.unsqueeze(0)
+    v0 = triangle[:, 2] - triangle[:, 0]
+    v1 = triangle[:, 1] - triangle[:, 0]
+    v2 = point_to_check - triangle[:, None, 0]
+    if len(v0.shape) == 1:
+        v0 = v0.unsqueeze(0)
+    if len(v1.shape) == 1:
+        v1 = v1.unsqueeze(0)
+    if len(v2.shape) == 1:
+        v2 = v2.unsqueeze(0)
+
+    dot00 = torch.bmm(v0.unsqueeze(1), v0.unsqueeze(1).permute(0, 2, 1)).squeeze(1)
+    dot01 = torch.bmm(v0.unsqueeze(1), v1.unsqueeze(1).permute(0, 2, 1)).squeeze(1)
+    dot02 = torch.bmm(v0.unsqueeze(1), v2.permute(0, 2, 1)).squeeze(1)
+    dot11 = torch.bmm(v1.unsqueeze(1), v1.unsqueeze(1).permute(0, 2, 1)).squeeze(1)
+    dot12 = torch.bmm(v1.unsqueeze(1), v2.permute(0, 2, 1)).squeeze(1)
+    invDenom = 1. / (dot00 * dot11 - dot01 * dot01)
+    u = (dot11 * dot02 - dot01 * dot12) * invDenom
+    v = (dot00 * dot12 - dot01 * dot02) * invDenom
+    result = (u >= 0.) & (v >= 0.) & ((u + v) < 1)
+
+    return result
+
 def define_sphere(center = torch.tensor([[0., 0., 0.]]), radius = torch.tensor([1.])):
     """
     Definition to define a sphere.
