@@ -1,7 +1,7 @@
 import torch
 from tqdm import tqdm
 from .ray import propagate_ray, create_ray_from_two_points
-from .primitives import is_it_on_triangle, center_of_triangle
+from .primitives import is_it_on_triangle, is_it_on_triangle_batch, center_of_triangle
 from ..tools.vector import distance_between_two_points
 
 
@@ -199,6 +199,41 @@ def intersect_w_triangle(ray, triangle):
     return normal, distance, intersecting_ray, intersecting_normal, check
 
 
+def intersect_w_triangle_batch(ray, triangle):
+    """
+    Definition to find intersection points of rays with triangles. Returns False for each variable if the rays doesn't intersect with given triangles.
+
+    Parameters
+    ----------
+    ray          : torch.tensor
+                   vectors/rays (n x 2 x 3).
+    triangle     : ndarray
+                   Set of points in X,Y and Z to define a single triangle.
+
+    Returns
+    ----------
+    normal          : torch.tensor
+                      Surface normal at the point of intersection (m x n x 3 x 3).
+    distance        : torch.tensor
+                      Distance in between starting point of a ray with it's intersection with a planar surface (m x n).
+    intersect_ray   : torch.tensor
+                      Intersecting rays (k x 3 x 3) where k <= n.
+    intersect_normal: torch.tensor
+                      Intersecting normals (k x 3 x 3) where k <= n*m.
+    """
+    if len(triangle.shape) == 2:
+       triangle = triangle.unsqueeze(0)
+    if len(ray.shape) == 2:
+       ray = ray.unsqueeze(0)
+
+    normal, distance = intersect_w_surface_batch(ray, triangle)
+
+    check = is_it_on_triangle_batch(normal[:, :, 0], triangle)
+    intersect_ray = ray[check.any(dim=0) == True]
+    intersect_normal = normal[:, check.any(dim=0) ==  True]
+    return normal, distance, intersect_ray, intersect_normal, check
+
+
 def intersect_w_surface(ray, points):
     """
     Definition to find intersection point inbetween a surface and a ray. For more see: http://geomalgorithms.com/a06-_intersect-2.html
@@ -220,7 +255,7 @@ def intersect_w_surface(ray, points):
     normal = get_triangle_normal(points)
     if len(ray.shape) == 2:
         ray = ray.unsqueeze(0)
-    if len(points) == 2:
+    if len(points.shape) == 2:
         points = points.unsqueeze(0)
     if len(normal.shape) == 2:
         normal = normal.unsqueeze(0)
@@ -243,6 +278,50 @@ def intersect_w_surface(ray, points):
                                )
     return new_normal, distance
 
+
+def intersect_w_surface_batch(ray, triangle):
+    """
+    Parameters
+    ----------
+    ray          : torch.tensor
+                   A vector/ray (2 x 3). It can also be a list of rays (n x 2 x 3).
+    points       : torch.tensor
+                   Set of points in X,Y and Z to define a planar surface. It can also be a list of triangles (m x 3 x 3).
+
+    Returns
+    ----------
+    normal       : torch.tensor
+                   Surface normal at the point of intersection (m x n x 3 x 3).
+    distance     : torch.tensor
+                   Distance in between starting point of a ray with it's intersection with a planar surface (m x n).
+    """
+    normal = get_triangle_normal(triangle)
+    if len(ray.shape) == 2:
+        ray = ray.unsqueeze(0)
+    if len(triangle.shape) == 2:
+        triangle = triangle.unsqueeze(0)
+    if len(normal.shape) == 2:
+        normal = normal.unsqueeze(0)
+
+    f = normal[:, None, 0] - ray[None, :, 0]
+    distance = (torch.bmm(normal[:, None, 1], f.permute(0, 2, 1)).squeeze(1) / torch.mm(normal[:, 1], ray[:, 1].T)).T
+
+    new_normal = torch.zeros((triangle.shape[0], )+ray.shape)
+    new_normal[:, :, 0] = ray[None, :, 0] + (distance[:, :, None] * ray[:, None, 1]).permute(1, 0, 2)
+    new_normal[:, :, 1] = normal[:, None, 1]
+    new_normal = torch.nan_to_num(
+                                  new_normal,
+                                  nan = float('nan'),
+                                  posinf = float('nan'),
+                                  neginf = float('nan')
+                                 )
+    distance = torch.nan_to_num(
+                                distance,
+                                nan = float('nan'),
+                                posinf = float('nan'),
+                                neginf = float('nan')
+                               )
+    return new_normal, distance.T
 
 def get_triangle_normal(triangle, triangle_center=None):
     """
