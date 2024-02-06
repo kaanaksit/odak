@@ -37,10 +37,10 @@ def test():
     normals, distance, _, _, check = odak.learn.raytracing.intersect_w_triangle_batch(
                                                                 rays,
                                                                 triangles
-                                                                ) # (2)
-    visualize = True # (1)
+                                                                )
+    visualize = True
     if visualize:
-        ray_diagram = odak.visualize.plotly.rayshow(line_width = 3., marker_size = 3.) # (1)
+        ray_diagram = odak.visualize.plotly.rayshow(line_width = 3., marker_size = 3.)
         for i, triangle in enumerate(triangles):
             ray_diagram.add_triangle(triangle, color = 'orange')
             ray_diagram.add_point(rays[:, 0], color = 'blue')
@@ -52,6 +52,7 @@ def test():
                 elif check[i, color_id] == False:
                     colors.append('red')
             ray_diagram.add_point(normals[i, :, 0], color = colors)
+            #ray_diagram.show()
 
         html = ray_diagram.save_offline()
         markdown_file = open('ray.txt', 'w')
