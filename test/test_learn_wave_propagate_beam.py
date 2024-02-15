@@ -9,7 +9,7 @@ def test():
     wavelength = 532e-9 # (1)
     pixel_pitch = 8e-6 # (2)
     distance = 0.5e-2 # (3)
-    propagation_type = 'Angular Spectrum' # (4)
+    propagation_type = 'Bandlimited Angular Spectrum' # (4)
     k = odak.learn.wave.wavenumber(wavelength) # (5)
 
 
