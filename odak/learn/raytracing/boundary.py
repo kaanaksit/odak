@@ -313,7 +313,7 @@ def intersect_w_surface_batch(ray, triangle):
     Returns
     ----------
     normal       : torch.tensor
-                   Surface normal at the point of intersection (m x n x 3 x 3).
+                   Surface normal at the point of intersection (m x n x 2 x 3).
     distance     : torch.tensor
                    Distance in between starting point of a ray with it's intersection with a planar surface (m x n).
     """

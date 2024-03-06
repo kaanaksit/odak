@@ -217,17 +217,19 @@ def intersect_w_triangle_batch(ray, triangle):
                    vectors/rays (n x 2 x 3).
     triangle     : torch.tensor
                    Set of points in X,Y and Z to define triangles (m x 3 x 3).
+    triangle     : torch.tensor
+                   Set of points in X,Y and Z to define triangles (m x 3 x 3).
 
     Returns
     ----------
     normal          : torch.tensor
                       Surface normal at the point of intersection (m x n x 2 x 3).
     distance        : List
-                      Distance in between starting point of a ray with it's intersection with a planar surface (m x n).
+                      List of distances (k, k <= n*m) in between starting point of a ray with it's intersection with a planar surface.
     intersect_ray   : List
-                      List of intersecting rays (k x 2 x 3) where k <= n.
+                      List of intersecting rays (k x 2 x 3, k <= n).
     intersect_normal: List
-                      List of intersecting normals (k x 2 x 3) where k <= n*m.
+                      List of intersecting normals (k x 2 x 3, k <= n*m).
     check           : torch.tensor
                       Boolean tensor (m x n) indicating whether each ray intersects with a triangle or not.
     """
