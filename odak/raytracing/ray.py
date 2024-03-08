@@ -175,7 +175,7 @@ def create_ray_from_grid_w_luminous_angle(center, size, no, tilt, num_ray_per_li
     samples[:, :, 1] = Y.detach().clone()
     samples = samples.reshape((no[0]*no[1], 3))
 
-    samples, *_ = rotate_points(samples, angles=tilt)
+    samples = rotate_points(samples, angles=tilt)
     
     samples = torch.tensor(samples)
     samples = samples + center
