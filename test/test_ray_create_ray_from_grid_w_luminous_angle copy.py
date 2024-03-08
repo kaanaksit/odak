@@ -19,7 +19,7 @@ def test():
                                                          )
 
 
-    visualize = True
+    visualize = False
     if visualize:
         ray_diagram = odak.visualize.plotly.rayshow(line_width = 3., marker_size = 3.)
         ray_diagram.add_point(rays_from_point_w_luminous_angle[:, 0], color = 'red')
