@@ -177,6 +177,7 @@ def create_ray_from_grid_w_luminous_angle(center, size, no, tilt, num_ray_per_li
 
     samples, *_ = rotate_points(samples, angles=tilt)
     
+    samples = torch.tensor(samples)
     samples = samples + center
 
     cos_alpha = np.cos(angle_limit*np.pi/180)
