@@ -32,6 +32,7 @@ There are several different display technologies trying to accurately replicate 
 |  |
 |:--:| 
 | *Placeholder for SPD of LED*|
+
 LED (Light Emitting Diode) displays use individual LEDs as pixels or as a backlight for LCD panels. LED displays produce colors by adjusting the intensity of red, green, and blue LEDs, closely aligning with the way human eyes perceive color through trichromatic vision.
 
 ### Liquid Crystal Displays (LCDs)
