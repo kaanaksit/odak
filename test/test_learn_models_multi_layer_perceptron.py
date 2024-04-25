@@ -16,6 +16,7 @@ def main():
     device_name = 'cpu'
     save_at_every = 2000
     model_type = 'FILM SIREN'
+    test_resolution_scale = 4
     device = torch.device(device_name)
     model = odak.learn.models.multi_layer_perceptron(
                                                      dimensions = dimensions,
@@ -29,7 +30,9 @@ def main():
     original_resolution = image.shape
     image = (image * 2.) - 1.
     image = image.reshape(-1, original_resolution[-1])
-    batches = get_batches(original_resolution).to(device)
+    test_resolution = [original_resolution[0] * test_resolution_scale, original_resolution[1] * test_resolution_scale, 3]
+    train_batches = get_batches(original_resolution).to(device)
+    test_batches = get_batches(test_resolution).to(device)
     loss_function = torch.nn.MSELoss(reduction = 'sum')
     epochs = tqdm(range(no_epochs), leave = False, dynamic_ncols = True)    
     if os.path.isfile(weights_filename):
@@ -38,12 +41,14 @@ def main():
         print('Model weights loaded: {}'.format(weights_filename))
     try:
         for epoch_id in epochs:
-            test_loss, estimation = trial(image, batches, loss_function, model, original_resolution)
-            train_loss = train(image, batches, optimizer, loss_function, model)
-            description = 'train loss: {:.5f}, test loss:{:.5f}'.format(train_loss, test_loss)
+            estimation = trial(test_batches, model, test_resolution)
+            train_loss = train(image, train_batches, optimizer, loss_function, model)
+            description = 'train loss: {:.5f}'.format(train_loss)
             epochs.set_description(description)
             if epoch_id % save_at_every == 0: 
                 odak.learn.tools.save_image(test_filename, estimation, cmin = 0., cmax = 1.)
+        estimation = trial(test_batches, model, test_resolution)
+        odak.learn.tools.save_image(test_filename, estimation, cmin = 0., cmax = 1.)
         print(description)
         torch.save(model.state_dict(), weights_filename)
         print('Model weights save: {}'.format(weights_filename))
@@ -74,12 +79,11 @@ def train(output_values, input_values, optimizer, loss_function, model):
     return loss.item()
 
 
-def trial(output_values, input_values, loss_function, model, resolution):
+def trial(input_values, model, resolution):
     torch.no_grad()
     estimation = model(input_values)
-    loss = loss_function(estimation, output_values).item()
     estimated_image = (estimation.reshape(resolution) + 1.) / 2.
-    return loss, estimated_image
+    return estimated_image
 
 
 if  __name__ ==  '__main__':

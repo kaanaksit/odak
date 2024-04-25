@@ -1,5 +1,5 @@
 import torch
-from .components import double_convolution, downsample_layer, upsample_layer
+from .components import double_convolution, downsample_layer, upsample_layer, swish
 
 
 class multi_layer_perceptron(torch.nn.Module):
@@ -32,7 +32,7 @@ class multi_layer_perceptron(torch.nn.Module):
         input_multiplier  : float
                             Initial value of the input multiplier before the very first layer.
         model_type        : str
-                            Model type: `conventional`, `SIREN`, `FILM SIREN`.
+                            Model type: `conventional`, `swish`, `SIREN`, `FILM SIREN`.
                             `conventional` refers to a standard multi layer perceptron.
                             For `SIREN,` see: Sitzmann, Vincent, et al. "Implicit neural representations with periodic activation functions." Advances in neural information processing systems 33 (2020): 7462-7473.
                             For `FILM SIREN,` see: Chan, Eric R., et al. "pi-gan: Periodic implicit generative adversarial networks for 3d-aware image synthesis." Proceedings of the IEEE/CVF conference on computer vision and pattern recognition. 2021.
@@ -77,9 +77,11 @@ class multi_layer_perceptron(torch.nn.Module):
         for layer_id, layer in enumerate(self.layers[:-1]):
             result = layer(result)
             if self.model_type == 'conventional':
-                result = self.activation(self.siren_multiplier * result)
+                result = self.activation(result)
+            elif self.model_type == 'swish':
+                resutl = swish(result)
             elif self.model_type == 'SIREN':
-                result = torch.sin(result)
+                result = torch.sin(result * self.siren_multiplier)
             elif self.model_type == 'FILM SIREN':
                 result = torch.sin(self.alpha[layer_id][0] * result + self.alpha[layer_id][1])
         result = self.layers[-1](result)
