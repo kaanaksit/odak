@@ -795,10 +795,10 @@ Thus, SGD requires less memory for each update.
      If you want to learn more about odak's built-in functions on the matter, visit the below unit test script:
      
      
-    === ":octicons-file-code-16: `test_gradient_descent_1d.py`"
+    === ":octicons-file-code-16: `test_fit_gradient_descent_1d.py`"
 
-        ``` python title="test_gradient_descent_1d.py" 
-        --8<-- "test/test_gradient_descent_1d.py"
+        ``` python title="test_fit_gradient_descent_1d.py" 
+        --8<-- "test/test_fit_gradient_descent_1d.py"
         ```
 
 Torch is a blessing for people that optimizes or trains with their algorithm.
