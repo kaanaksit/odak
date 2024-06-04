@@ -364,10 +364,10 @@ def get_triangle_normal(triangle, triangle_center=None):
     if len(triangle.shape) == 2:
         triangle = triangle.view((1, 3, 3))
     normal = torch.zeros((triangle.shape[0], 2, 3)).to(triangle.device)
-    direction = torch.cross(
-                            triangle[:, 0] - triangle[:, 1], 
-                            triangle[:, 2] - triangle[:, 1]
-                           )
+    direction = torch.linalg.cross(
+                                   triangle[:, 0] - triangle[:, 1], 
+                                   triangle[:, 2] - triangle[:, 1]
+                                  )
     if type(triangle_center) == type(None):
         normal[:, 0] = center_of_triangle(triangle)
     else:

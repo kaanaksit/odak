@@ -2,6 +2,25 @@ import torch
 import math
 
 
+def swish(x):
+    """
+    A swish non-linear activation.
+    For more details: https://en.wikipedia.org/wiki/Swish_function
+
+    Parameters
+    -----------
+    x              : float or torch.tensor
+                     Input.
+
+    Returns
+    -------
+    out            : float or torch.tensor
+                     Output.
+    """
+    out = x * torch.sigmoid(x)
+    return out
+
+
 class residual_layer(torch.nn.Module):
     """
     A residual layer.
