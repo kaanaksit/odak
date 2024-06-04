@@ -18,7 +18,7 @@ def test():
                                                        center = [0., 0., 10.]
                                                       ) 
     
-    rays_from_points_to_points = odak.raytracing.create_ray_from_all_pairs(starting_points, end_points)
+    rays_from_points_to_points = odak.learn.raytracing.create_ray_from_all_pairs(starting_points, end_points)
 
     distances = torch.ones(rays_from_points_to_points.shape[0]) * 12.5
     propagated_rays = odak.learn.raytracing.propagate_ray(

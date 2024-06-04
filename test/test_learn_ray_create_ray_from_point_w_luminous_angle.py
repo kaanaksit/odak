@@ -5,7 +5,7 @@ import odak
 import torch
 
 def test():
-    rays_from_point_w_luminous_angle = odak.raytracing.create_ray_from_point_w_luminous_angle(
+    rays_from_point_w_luminous_angle = odak.learn.raytracing.create_ray_from_point_w_luminous_angle(
         origin = torch.tensor([0, 0, 0]),
         tilt = torch.tensor([15, 0, 0]),
         num_ray = 30,
