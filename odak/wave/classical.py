@@ -318,16 +318,12 @@ def impulse_response_fresnel(field, k, distance, dx, wavelength):
     x = np.linspace(-nu / 2 * dx, nu / 2 * dx, nu)
     y = np.linspace(-nv / 2 * dx, nv / 2 * dx, nv)
     X, Y = np.meshgrid(x, y)
-    diffraction_angle = np.arcsin(wavelength / dx) / np.pi * 180.
-    r = np.sqrt(X ** 2 + Y ** 2 + distance ** 2) 
-    cos_theta = distance / r
-    angles = np.arccos(np.abs(cos_theta)) / np.pi * 180.
-    cos_theta[angles > diffraction_angle] = 0.
-    h = np.exp(1j * k * r) / (2 * np.pi * r) * cos_theta * (1. / r - 1j * k) * dx ** 2 
-    h = np.fft.fft2(np.fft.fftshift(h))
+    h = 1. / (1j * wavelength * distance) * np.exp(1j * k / (2 * distance) * (X ** 2 + Y ** 2))
+    H = np.fft.fft2(np.fft.fftshift(h))
     U1 = np.fft.fft2(np.fft.fftshift(field))
-    U2 = h * U1
+    U2 = H * U1
     result = np.fft.ifftshift(np.fft.ifft2(U2))
+    result = np.roll(result, shift = (1, 1), axis = (0, 1))
     return result
 
 

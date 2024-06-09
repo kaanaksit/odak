@@ -9,12 +9,12 @@ def test(output_directory = 'test_output'):
     odak.tools.check_directory(output_directory)
     wavelength = 515e-9
     pixeltom = 3.74e-6
-    distance = 10e-4
-    propagation_types = ['Transfer Function Fresnel',]
+    distance = 10e-3
+    resolution = [250, 250]
+    propagation_types = ['Transfer Function Fresnel', 'Impulse Response Fresnel']
 
     k = wavenumber(wavelength)
-    sample_field = np.zeros((150, 150), dtype=np.complex64)
-    sample_field = np.zeros((150, 150), dtype=np.complex64)
+    sample_field = np.zeros((resolution[0], resolution[1]), dtype=np.complex64)
     sample_field[
                  sample_field.shape[0] // 2 - 10: sample_field.shape[0] // 2 + 10,
                  sample_field.shape[1] // 2 - 10: sample_field.shape[1] // 2 + 10
