@@ -223,7 +223,7 @@ def get_transfer_function_fresnel_kernel(nu, nv, dx = 8e-6, wavelength = 515e-9,
     fy = torch.linspace(-1. / 2. /dx, 1. / 2. /dx, nv, dtype = torch.float32, device = device)
     FY, FX = torch.meshgrid(fx, fy, indexing = 'ij')
     k = wavenumber(wavelength)
-    H = torch.exp(1j* k * distance * (1 - (FX * wavelength) ** 2 - (FY * wavelength) ** 2) ** 0.5).to(device)
+    H = torch.exp(1j*distance* (k- torch.pi *wavelength*(FX**2 + FY**2)))
     return H
 
 
