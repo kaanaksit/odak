@@ -6,10 +6,11 @@ import os
 from tqdm import tqdm
 
 
-def main():
+def test(output_directory = 'test_output'):
+    odak.tools.check_directory(output_directory)
     filename = './test/data/fruit_lady.png'
-    test_filename  = './estimation.png'
-    weights_filename = 'model_weights.pt'
+    test_filename  = '{}/multi_layer_perceptron_estimation.png'.format(output_directory)
+    weights_filename = '{}/multi_layer_perceptron_model_weights.pt'.format(output_directory)
     learning_rate = 1e-4
     no_epochs = 5
     dimensions = [2, 128, 128, 3]
@@ -87,4 +88,4 @@ def trial(input_values, model, resolution):
 
 
 if  __name__ ==  '__main__':
-    sys.exit(main())
+    sys.exit(test())

@@ -6,11 +6,12 @@ import os
 from tqdm import tqdm
 
 
-def main():
+def test(output_directory = 'test_output'):
+    odak.tools.check_directory(output_directory)
     device_name = 'cpu'
     filename = './test/data/fruit_lady.png'
-    test_filename  = './estimation.png'
-    weights_filename = 'model_weights.pt'
+    test_filename  = '{}/positional_encoder_multi_layer_perceptron_estimation.png'.format(output_directory)
+    weights_filename = '{}/positional_encoder_multi_layer_perceptron_weights.pt'.format(output_directory)
     learning_rate = 1e-4
     no_epochs = 5
     save_at_every = 5000
@@ -98,4 +99,4 @@ def trial(output_values, input_values, loss_function, model, positional_encoder)
 
 
 if  __name__ ==  '__main__':
-    sys.exit(main())
+    sys.exit(test())

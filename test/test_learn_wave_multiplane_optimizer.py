@@ -1,9 +1,9 @@
 import sys
+import torch
+from odak.learn.wave import multiplane_hologram_optimizer, multiplane_loss
 
 
 def test():
-    import torch
-    from odak.learn.wave import multiplane_hologram_optimizer, multiplane_loss
     resolution = [1080, 1920]
     target = torch.zeros(resolution[0], resolution[1])
     target[500::600, :] = 1

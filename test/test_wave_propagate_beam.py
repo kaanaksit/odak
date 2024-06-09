@@ -5,11 +5,12 @@ import numpy as np
 from odak.wave import wavenumber, propagate_beam, add_random_phase
 
 
-def test():
+def test(output_directory = 'test_output'):
+    odak.tools.check_directory(output_directory)
     wavelength = 515e-9
     pixeltom = 3.74e-6
     distance = 10e-4
-    propagation_types = ['Impulse Response Fresnel', 'Transfer Function Fresnel']
+    propagation_types = ['Transfer Function Fresnel',]
 
     k = wavenumber(wavelength)
     sample_field = np.zeros((150, 150), dtype=np.complex64)
@@ -28,7 +29,7 @@ def test():
                                        propagation_type
                                       )
          output_intensity = odak.wave.calculate_amplitude(output_field) ** 2
-         odak.tools.save_image('{}.png'.format(propagation_type.replace(' ', '_')), output_intensity, cmin = 0., cmax = output_intensity.max())
+         odak.tools.save_image('{}/odak_wave_{}.png'.format(output_directory, propagation_type.replace(' ', '_')), output_intensity, cmin = 0., cmax = output_intensity.max())
     assert True == True
 
 

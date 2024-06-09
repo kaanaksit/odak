@@ -5,7 +5,8 @@ import numpy as np
 import torch
 
 
-def test():
+def test(output_directory = 'test_output'):
+    odak.tools.check_directory(output_directory)
     resolution = [2400, 4094]
     wavelengths = [639e-9, 515e-9, 473e-9]
     pixel_pitch = 3.74e-6
@@ -46,7 +47,7 @@ def test():
     reconstruction_intensities = torch.sum(reconstruction_intensities, axis = 0)
     for depth_id, reconstruction_intensity in enumerate(reconstruction_intensities):
         odak.learn.tools.save_image(
-                                    'reconstruction_image_{:03d}.png'.format(depth_id),
+                                    '{}/reconstruction_image_{:03d}.png'.format(output_directory, depth_id),
                                     reconstruction_intensity,
                                     cmin = 0.,
                                     cmax = 1.

@@ -1,13 +1,11 @@
-#!/usr/bin/env python
-
-
 import sys
 import odak
 import torch
 from tqdm import tqdm
 
 
-def test():
+def test(output_directory = 'test_output'):
+    odak.tools.check_directory(output_directory)
     device = torch.device('cpu')
     final_target = torch.tensor([-2., -2., 10.], device = device)
     final_surface = odak.learn.raytracing.define_plane(point = final_target)
@@ -71,7 +69,7 @@ def test():
                                     )
             ray_diagram.add_triangle(triangles[triangle_id], row = 1, column = 2, color = 'orange')
         html = ray_diagram.save_offline()
-        markdown_file = open('ray.txt', 'w')
+        markdown_file = open('{}/ray.txt'.format(output_directory), 'w')
         markdown_file.write(html)
         markdown_file.close()
     assert True == True

@@ -1,13 +1,11 @@
-#!/usr/bin/env python
-
-
 import sys
 import odak
 import torch
 from tqdm import tqdm
 
 
-def test():
+def test(output_directory = 'test_output'):
+    odak.tools.check_directory(output_directory)
     final_surface = torch.tensor([[
                                    [-5., -5., 0.],
                                    [ 5., -5., 0.],
@@ -87,7 +85,7 @@ def test():
         ray_diagram.add_point(final_target, column = 1, color = 'red')
         ray_diagram.add_point(final_target, column = 2, color = 'green')
         html = ray_diagram.save_offline()
-        markdown_file = open('ray.txt', 'w')
+        markdown_file = open('{}/ray.txt'.format(output_directory), 'w')
         markdown_file.write(html)
         markdown_file.close()
     assert True == True
