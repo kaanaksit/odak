@@ -113,19 +113,22 @@ def is_it_on_triangle(pointtocheck, point0, point1, point2):
         return True
     return False
 
+
 def is_it_on_triangle_batch(point_to_check, triangle):
     """
     Definition to check if given points are inside triangles. If the given points are inside defined triangles, this definition returns True.
 
     Parameters
     ----------
-    pointtocheck  : torch.tensor
-                    Points to check (m x n x 3).
-    triangle      : torch.tensor (m x 3 x 3)
+    point_to_check  : torch.tensor
+                      Points to check (m x n x 3).
+    triangle        : torch.tensor
+                      Triangles (m x 3 x 3).
 
     Returns
     ----------
-    result        : torch.tensor (m x n)
+    result          : torch.tensor
+                      Check results (m x n).
                         
     """
     if len(point_to_check.shape) == 1:
@@ -141,7 +144,6 @@ def is_it_on_triangle_batch(point_to_check, triangle):
         v1 = v1.unsqueeze(0)
     if len(v2.shape) == 1:
         v2 = v2.unsqueeze(0)
-
     dot00 = torch.bmm(v0.unsqueeze(1), v0.unsqueeze(1).permute(0, 2, 1)).squeeze(1)
     dot01 = torch.bmm(v0.unsqueeze(1), v1.unsqueeze(1).permute(0, 2, 1)).squeeze(1)
     dot02 = torch.bmm(v0.unsqueeze(1), v2.permute(0, 2, 1)).squeeze(1)
@@ -151,8 +153,8 @@ def is_it_on_triangle_batch(point_to_check, triangle):
     u = (dot11 * dot02 - dot01 * dot12) * invDenom
     v = (dot00 * dot12 - dot01 * dot02) * invDenom
     result = (u >= 0.) & (v >= 0.) & ((u + v) < 1)
-
     return result
+
 
 def define_circle(center, radius, angles):
     """

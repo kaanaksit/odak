@@ -152,13 +152,14 @@ def is_it_on_triangle_batch(point_to_check, triangle):
 
     Parameters
     ----------
-    pointtocheck  : torch.tensor
-                    Points to check (m x n x 3).
-    triangle      : torch.tensor (m x 3 x 3)
+    point_to_check  : torch.tensor
+                      Points to check (m x n x 3).
+    triangle        : torch.tensor 
+                      Triangles (m x 3 x 3).
 
     Returns
     ----------
-    result        : torch.tensor (m x n)
+    result          : torch.tensor (m x n)
                         
     """
     if len(point_to_check.shape) == 1:

@@ -285,7 +285,7 @@ def intersect_w_surface_batch(ray, triangle):
     ----------
     ray          : torch.tensor
                    A vector/ray (2 x 3). It can also be a list of rays (n x 2 x 3).
-    points       : torch.tensor
+    triangle     : torch.tensor
                    Set of points in X,Y and Z to define a planar surface. It can also be a list of triangles (m x 3 x 3).
 
     Returns
