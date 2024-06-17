@@ -2,6 +2,26 @@ import torch
 import math
 
 
+def gaussian(x, multiplier = 1.):
+    """
+    A Gaussian non-linear activation.
+    For more details: Ramasinghe, Sameera, and Simon Lucey. "Beyond periodicity: Towards a unifying framework for activations in coordinate-mlps." In European Conference on Computer Vision, pp. 142-158. Cham: Springer Nature Switzerland, 2022.
+
+    Parameters
+    ----------
+    x            : float or torch.tensor
+                   Input data.
+    multiplier   : float or torch.tensor
+                   Multiplier.
+
+    Returns
+    -------
+    result       : float or torch.tensor
+                   Ouput data.
+    """
+    result = torch.exp(- (multiplier * x) ** 2)
+    return result
+
 def swish(x):
     """
     A swish non-linear activation.
