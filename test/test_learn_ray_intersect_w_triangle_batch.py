@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-
-
 import sys
 import odak
 import torch
@@ -35,9 +32,9 @@ def test():
     
     triangles = torch.concat([triangle1, triangle2])
     normals, distance, _, _, check = odak.learn.raytracing.intersect_w_triangle_batch(
-                                                                rays,
-                                                                triangles
-                                                                )
+                                                                                      rays,
+                                                                                      triangles
+                                                                                     )
     visualize = False
     if visualize:
         ray_diagram = odak.visualize.plotly.rayshow(line_width = 3., marker_size = 3.)

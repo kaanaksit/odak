@@ -207,19 +207,21 @@ def intersect_w_triangle_batch(ray, triangle):
     ----------
     ray          : torch.tensor
                    vectors/rays (n x 2 x 3).
-    triangle     : ndarray
-                   Set of points in X,Y and Z to define a single triangle.
+    triangle     : torch.tensor
+                   Set of points in X,Y and Z to define triangles (m x 3 x 3).
 
     Returns
     ----------
     normal          : torch.tensor
-                      Surface normal at the point of intersection (m x n x 3 x 3).
-    distance        : torch.tensor
+                      Surface normal at the point of intersection (m x n x 2 x 3).
+    distance        : List
                       Distance in between starting point of a ray with it's intersection with a planar surface (m x n).
-    intersect_ray   : torch.tensor
-                      Intersecting rays (k x 3 x 3) where k <= n.
-    intersect_normal: torch.tensor
-                      Intersecting normals (k x 3 x 3) where k <= n*m.
+    intersect_ray   : List
+                      List of intersecting rays (k x 2 x 3) where k <= n.
+    intersect_normal: List
+                      List of intersecting normals (k x 2 x 3) where k <= n*m.
+    check           : torch.tensor
+                      Boolean tensor (m x n) indicating whether each ray intersects with a triangle or not.
     """
     if len(triangle.shape) == 2:
        triangle = triangle.unsqueeze(0)
@@ -229,9 +231,29 @@ def intersect_w_triangle_batch(ray, triangle):
     normal, distance = intersect_w_surface_batch(ray, triangle)
 
     check = is_it_on_triangle_batch(normal[:, :, 0], triangle)
-    intersect_ray = ray[check.any(dim=0) == True]
-    intersect_normal = normal[:, check.any(dim=0) ==  True]
-    return normal, distance, intersect_ray, intersect_normal, check
+
+    flat_check = check.flatten()
+    flat_normal = normal.view(-1, normal.size(-2), normal.size(-1))
+    flat_ray = ray.repeat(normal.size(0), 1, 1)
+    flat_distance = distance.flatten()
+
+    filtered_normal = torch.masked_select(flat_normal, flat_check.unsqueeze(-1).unsqueeze(-1).repeat(1, 2, 3))
+    filtered_ray = torch.masked_select(flat_ray, flat_check.unsqueeze(-1).unsqueeze(-1).repeat(1, 2, 3))
+    filtered_distnace = torch.masked_select(flat_distance, flat_check)
+
+    check_count = check.sum(dim=1).tolist()
+    split_size_ray_and_normal = [count * 2 * 3 for count in check_count]
+    split_size_distance = [count for count in check_count]
+
+    normal_grouped = torch.split(filtered_normal, split_size_ray_and_normal)
+    ray_grouped = torch.split(filtered_ray, split_size_ray_and_normal)
+    distance_grouped = torch.split(filtered_distnace, split_size_distance)
+
+    intersecting_normal = [g.view(-1, 2, 3) for g in normal_grouped if g.numel() > 0]
+    intersecting_ray = [g.view(-1, 2, 3) for g in ray_grouped if g.numel() > 0]
+    new_distance = [g for g in distance_grouped if g.numel() > 0]
+
+    return normal, new_distance, intersecting_ray, intersecting_normal, check
 
 
 def intersect_w_surface(ray, points):
@@ -291,7 +313,7 @@ def intersect_w_surface_batch(ray, triangle):
     Returns
     ----------
     normal       : torch.tensor
-                   Surface normal at the point of intersection (m x n x 3 x 3).
+                   Surface normal at the point of intersection (m x n x 2 x 3).
     distance     : torch.tensor
                    Distance in between starting point of a ray with it's intersection with a planar surface (m x n).
     """
