@@ -1,5 +1,4 @@
 import torch
-import numpy as np
 from ..tools import rotate_points
 
 
@@ -153,8 +152,8 @@ def create_ray_from_grid_w_luminous_angle(center, size, no, tilt, num_ray_per_li
     samples, *_ = rotate_points(samples, angles=tilt)
 
     samples = samples + center
-
-    cos_alpha = np.cos(angle_limit*np.pi/180)
+    angle_limit = torch.as_tensor(angle_limit)
+    cos_alpha = torch.cos(angle_limit * torch.pi / 180)
     tilt = tilt * torch.pi / 180
 
     theta = torch.acos(1 - 2 * torch.rand(num_ray_per_light*samples.size(0)) * (1-cos_alpha))
@@ -218,8 +217,8 @@ def create_ray_from_point_w_luminous_angle(origin, num_ray, tilt, angle_limit):
     rays : torch.tensor
            Array that contains starting points and cosines of a created ray(s). Size of [n x 2 x 3]
     """
-    
-    cos_alpha = np.cos(angle_limit*np.pi/180)
+    angle_limit = torch.as_tensor(angle_limit) 
+    cos_alpha = torch.cos(angle_limit * torch.pi / 180)
     tilt = tilt * torch.pi / 180
 
     theta = torch.acos(1 - 2 * torch.rand(num_ray) * (1-cos_alpha))

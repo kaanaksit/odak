@@ -1,4 +1,3 @@
-import numpy as np
 import torch
 import torch.fft
 import logging
@@ -297,7 +296,7 @@ def get_angular_spectrum_kernel(nu, nv, dx = 8e-6, wavelength = 515e-9, distance
     fx = torch.linspace(-1. /2. / dx, 1. / 2. / dx, nu, dtype = torch.float32, device = device)
     fy = torch.linspace(-1. /2. / dx, 1. / 2. / dx, nv, dtype = torch.float32, device = device)
     FY, FX = torch.meshgrid(fx, fy, indexing='ij')
-    H = torch.exp(1j  * distance * (2 * (np.pi * (1 / wavelength) * torch.sqrt(1. - (wavelength * FX) ** 2 - (wavelength * FY) ** 2))))
+    H = torch.exp(1j  * distance * (2 * (torch.pi * (1 / wavelength) * torch.sqrt(1. - (wavelength * FX) ** 2 - (wavelength * FY) ** 2))))
     H = H.to(device)
     return H
 
@@ -385,7 +384,7 @@ def get_band_limited_angular_spectrum_kernel(nu, nv, dx = 8e-6, wavelength = 515
                         device = device
                        )
     FY, FX = torch.meshgrid(fx, fy, indexing='ij')
-    HH_exp = 2 * np.pi * torch.sqrt(1 / wavelength ** 2 - (FX ** 2 + FY ** 2))
+    HH_exp = 2 * torch.pi * torch.sqrt(1 / wavelength ** 2 - (FX ** 2 + FY ** 2))
     distance = torch.tensor([distance], device = device)
     H_exp = torch.mul(HH_exp, distance)
     fx_max = 1 / torch.sqrt((2 * distance * (1 / x))**2 + 1) / wavelength
@@ -630,7 +629,7 @@ def shift_w_double_phase(phase, depth_shift, pixel_pitch, wavelength, propagatio
                                           propagation_type
                                          )
     shifted_field = crop_center(shifted_field_padded)
-    phase_shift = torch.exp(torch.tensor([-2 * np.pi * depth_shift / wavelength]).to(phase.device))
+    phase_shift = torch.exp(torch.tensor([-2 * torch.pi * depth_shift / wavelength]).to(phase.device))
     shift = torch.cos(phase_shift) + 1j * torch.sin(phase_shift)
     shifted_complex_hologram = shifted_field * shift
 
