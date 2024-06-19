@@ -4,20 +4,22 @@ import logging
 from .util import set_amplitude, generate_complex_field, calculate_amplitude, calculate_phase
 from .lens import quadratic_phase_function
 from .util import wavenumber
-from ..tools import zero_pad, crop_center, generate_2d_gaussian
+from ..tools import zero_pad, crop_center, generate_2d_gaussian, circular_binary_mask
 from tqdm import tqdm
 
 
 def propagate_beam(
-                   field, 
-                   k, 
-                   distance, 
-                   dx, 
-                   wavelength, 
-                   propagation_type='Bandlimited Angular Spectrum', 
-                   kernel = None, 
+                   field,
+                   k,
+                   distance,
+                   dx,
+                   wavelength,
+                   propagation_type='Bandlimited Angular Spectrum',
+                   kernel = None,
                    zero_padding = [True, False, True],
-                   aperture = 1.
+                   aperture = 1.,
+                   scale = 1,
+                   samples = [20, 20, 5, 5]
                   ):
     """
     Definitions for various beam propagation methods mostly in accordence with "Computational Fourier Optics" by David Vuelz.
@@ -36,14 +38,21 @@ def propagate_beam(
                        Wavelength of the electric field.
     propagation_type : str
                        Type of the propagation.
-                       The options are Transfer Function Fresnel, Angular Spectrum, Bandlimited Angular Spectrum, Fraunhofer.
+                       The options are Impulse Response Fresnel, Transfer Function Fresnel, Angular Spectrum, Bandlimited Angular Spectrum, Fraunhofer.
     kernel           : torch.complex
                        Custom complex kernel.
     zero_padding     : list
                        Zero padding the input field if the first item in the list set True.
                        Zero padding in the Fourier domain if the second item in the list set to True.
-                       Cropping the result with half resolution if the third item in the list is set to true. 
+                       Cropping the result with half resolution if the third item in the list is set to true.
                        Note that in Fraunhofer propagation, setting the second item True or False will have no effect.
+    aperture         : torch.tensor
+                       Aperture at Fourier domain default:[2m x 2n], otherwise depends on `zero_padding`.
+                       If provided as a floating point 1, there will be no aperture in Fourier domain.
+    scale            : int
+                       Resolution factor to scale generated kernel.
+    samples          : list
+                       When using `Impulse Response Fresnel` propagation, these sample counts along X and Y will be used to represent a rectangular aperture. First two is for a hologram pixel and second two is for an image plane pixel.
 
     Returns
     -------
@@ -56,6 +65,8 @@ def propagate_beam(
         result = angular_spectrum(field, k, distance, dx, wavelength, zero_padding[1], aperture = aperture)
     elif propagation_type == 'Bandlimited Angular Spectrum':
         result = band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_padding[1], aperture = aperture)
+    elif propagation_type == 'Impulse Response Fresnel':
+        result = impulse_response_fresnel(field, k, distance, dx, wavelength, zero_padding[1], aperture = aperture, scale = scale, samples = samples)
     elif propagation_type == 'Transfer Function Fresnel':
         result = transfer_function_fresnel(field, k, distance, dx, wavelength, zero_padding[1], aperture = aperture)
     elif propagation_type == 'custom':
@@ -78,7 +89,8 @@ def get_propagation_kernel(
                            distance = 0., 
                            device = torch.device('cpu'), 
                            propagation_type = 'Bandlimited Angular Spectrum', 
-                           scale = 1
+                           scale = 1,
+                           samples = [20, 20, 5, 5]
                           ):
     """
     Get propagation kernel for the propagation type.
@@ -102,7 +114,9 @@ def get_propagation_kernel(
                          The options are `Angular Spectrum`, `Bandlimited Angular Spectrum` and `Transfer Function Fresnel`.
     scale              : int
                          Scale factor for scaled beam propagation.
-   
+    samples            : list
+                         When using `Impulse Response Fresnel` propagation, these sample counts along X and Y will be used to represent a rectangular aperture. First two is for a hologram pixel and second two is for an image plane pixel.
+
 
     Returns
     -------
@@ -115,6 +129,8 @@ def get_propagation_kernel(
         kernel = get_angular_spectrum_kernel(nu, nv, dx, wavelength, distance, device)
     elif propagation_type == 'Transfer Function Fresnel':
         kernel = get_transfer_function_fresnel_kernel(nu, nv, dx, wavelength, distance, device)
+    elif propagation_type == 'Impulse Response Fresnel':
+        kernel = get_impulse_response_fresnel_kernel(nu, nv, dx, wavelength, distance, device, scale = scale, aperture_samples = samples)
     else:
         logging.warning('Propagation type not recognized')
         assert True == False
@@ -149,11 +165,9 @@ def fraunhofer(field, k, distance, dx, wavelength):
     y = torch.linspace(-nu*dx/2, nu*dx/2, nu, dtype=torch.float32)
     Y, X = torch.meshgrid(y, x, indexing='ij')
     Z = torch.pow(X, 2) + torch.pow(Y, 2)
-    c = 1./(1j*wavelength*distance)*torch.exp(1j*k*0.5/distance*Z)
+    c = 1. / (1j * wavelength * distance) * torch.exp(1j * k * 0.5 / distance * Z)
     c = c.to(field.device)
-    result = c * \
-             torch.fft.ifftshift(torch.fft.fft2(
-             torch.fft.fftshift(field)))*pow(dx, 2)
+    result = c * torch.fft.ifftshift(torch.fft.fft2(torch.fft.fftshift(field))) * dx ** 2
     return result
 
 
@@ -180,7 +194,7 @@ def custom(field, kernel, zero_padding = False, aperture = 1.):
 
     """
     if type(kernel) == type(None):
-        H = torch.zeros(field.shape).to(field.device)
+        H = torch.ones(field.shape).to(field.device)
     else:
         H = kernel * aperture
     U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field))) * aperture
@@ -189,6 +203,113 @@ def custom(field, kernel, zero_padding = False, aperture = 1.):
     elif zero_padding == True:
         U2 = zero_pad(H * U1)
     result = torch.fft.ifftshift(torch.fft.ifft2(torch.fft.ifftshift(U2)))
+    return result
+
+
+def get_impulse_response_fresnel_kernel(nu, nv, dx = 8e-6, wavelength = 515e-9, distance = 0., device = torch.device('cpu'), scale = 1, aperture_samples = [20, 20, 5, 5]):
+    """
+    Helper function for odak.learn.wave.impulse_response_fresnel.
+
+    Parameters
+    ----------
+    nu                 : int
+                         Resolution at X axis in pixels.
+    nv                 : int
+                         Resolution at Y axis in pixels.
+    dx                 : float
+                         Pixel pitch in meters.
+    wavelength         : float
+                         Wavelength in meters.
+    distance           : float
+                         Distance in meters.
+    device             : torch.device
+                         Device, for more see torch.device().
+    scale              : int
+                         Scale with respect to nu and nv (e.g., scale = 2 leads to  2 x nu and 2 x nv resolution for H).
+    aperture_samples   : list
+                         Number of samples to represent a rectangular pixel. First two is for XY of hologram plane pixels, and second two is for image plane pixels.
+
+    Returns
+    -------
+    H                  : float
+                         Complex kernel in Fourier domain.
+    """
+    k = wavenumber(wavelength)
+    distance = torch.as_tensor(distance, device = device)
+    length_x, length_y = (torch.tensor(dx * nu, device = device), torch.tensor(dx * nv, device = device))
+    x = torch.linspace(- length_x / 2., length_x / 2., nu * scale, device = device)
+    y = torch.linspace(- length_y / 2., length_y / 2., nv * scale, device = device)
+    X, Y = torch.meshgrid(x, y, indexing = 'ij')
+    wxs = torch.linspace(- dx / 2., dx / 2., aperture_samples[0], device = device)
+    wys = torch.linspace(- dx / 2., dx / 2., aperture_samples[1], device = device)
+    h = torch.zeros(nu * scale, nv * scale, dtype = torch.complex64, device = device)
+    deltax = torch.abs(wxs[0] - wxs[1])
+    deltay = torch.abs(wys[0] - wys[1])
+    pxs = torch.linspace(- dx / 2., dx / 2., 5, device = device)
+    pys = torch.linspace(- dx / 2., dx / 2., 5, device = device)
+    for wx in tqdm(wxs):
+        for wy in wys:
+            for px in pxs:
+                for py in pys:
+                    r = (X + px - wx) ** 2 + (Y + py - wy) ** 2
+                    h += 1. / (1j * wavelength * distance) * torch.exp(1j * k / (2 * distance) * r)
+    H = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(h))) * dx ** 2 / aperture_samples[0] / aperture_samples[1] / aperture_samples[2] / aperture_samples[3]
+    return H
+
+
+def impulse_response_fresnel(field, k, distance, dx, wavelength, zero_padding = False, aperture = 1., scale = 1, samples = [20, 20, 5, 5]):
+    """
+    A definition to calculate convolution based Fresnel approximation for beam propagation.
+
+    Parameters
+    ----------
+    field            : torch.complex
+                       Complex field (MxN).
+    k                : odak.wave.wavenumber
+                       Wave number of a wave, see odak.wave.wavenumber for more.
+    distance         : float
+                       Propagation distance.
+    dx               : float
+                       Size of one single pixel in the field grid (in meters).
+    wavelength       : float
+                       Wavelength of the electric field.
+    zero_padding     : bool
+                       Zero pad in Fourier domain.
+    aperture         : torch.tensor
+                       Fourier domain aperture (e.g., pinhole in a typical holographic display).
+                       The default is one, but an aperture could be as large as input field [m x n].
+    scale            : int
+                       Resolution factor to scale generated kernel.
+    samples          : list
+                       When using `Impulse Response Fresnel` propagation, these sample counts along X and Y will be used to represent a rectangular aperture. First two is for hologram plane pixel and the last two is for image plane pixel.
+
+    Returns
+    -------
+    result           : torch.complex
+                       Final complex field (MxN).
+
+    """
+    H = get_impulse_response_fresnel_kernel(
+                                            field.shape[-2], 
+                                            field.shape[-1], 
+                                            dx = dx, 
+                                            wavelength = wavelength, 
+                                            distance = distance, 
+                                            device = field.device,
+                                            scale = scale,
+                                            aperture_samples = samples
+                                           )
+    if scale > 1:
+        field_amplitude = calculate_amplitude(field)
+        field_phase = calculate_phase(field)
+        field_scale_amplitude = torch.zeros(field.shape[-2] * scale, field.shape[-1] * scale, device = field.device)
+        field_scale_phase = torch.zeros_like(field_scale_amplitude)
+        field_scale_amplitude[::scale, ::scale] = field_amplitude
+        field_scale_phase[::scale, ::scale] = field_phase
+        field_scale = generate_complex_field(field_scale_amplitude, field_scale_phase)
+    else:
+        field_scale = field
+    result = custom(field_scale, H, zero_padding = zero_padding, aperture = aperture)
     return result
 
 
@@ -222,7 +343,7 @@ def get_transfer_function_fresnel_kernel(nu, nv, dx = 8e-6, wavelength = 515e-9,
     fy = torch.linspace(-1. / 2. /dx, 1. / 2. /dx, nv, dtype = torch.float32, device = device)
     FY, FX = torch.meshgrid(fx, fy, indexing = 'ij')
     k = wavenumber(wavelength)
-    H = torch.exp(1j * distance * (k - torch.pi * wavelength * (FX ** 2 + FY ** 2)))
+    H = torch.exp(-1j * distance * (k - np.pi * wavelength * (FX ** 2 + FY ** 2)))
     return H
 
 
@@ -293,8 +414,8 @@ def get_angular_spectrum_kernel(nu, nv, dx = 8e-6, wavelength = 515e-9, distance
                          Complex kernel in Fourier domain.
     """
     distance = torch.tensor([distance]).to(device)
-    fx = torch.linspace(-1. /2. / dx, 1. / 2. / dx, nu, dtype = torch.float32, device = device)
-    fy = torch.linspace(-1. /2. / dx, 1. / 2. / dx, nv, dtype = torch.float32, device = device)
+    fx = torch.linspace(-1. / 2. / dx, 1. / 2. / dx, nu, dtype = torch.float32, device = device)
+    fy = torch.linspace(-1. / 2. / dx, 1. / 2. / dx, nv, dtype = torch.float32, device = device)
     FY, FX = torch.meshgrid(fx, fy, indexing='ij')
     H = torch.exp(1j  * distance * (2 * (torch.pi * (1 / wavelength) * torch.sqrt(1. - (wavelength * FX) ** 2 - (wavelength * FY) ** 2))))
     H = H.to(device)
