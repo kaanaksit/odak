@@ -2,7 +2,6 @@ import sys
 import odak # (1)
 import torch
 from tqdm import tqdm
-from matplotlib import pyplot as plt
 
 
 def main(): # (2)
@@ -52,6 +51,7 @@ def huygens_fresnel_principle(x, y, X, Y, z, k, wavelength): # (12)
 
 
 def save_results(h, output_directory, fresnel_number, length, pixel_pitch, distance, image_samples, device):
+    from matplotlib import pyplot as plt
     odak.tools.check_directory(output_directory)
     output_intensity = odak.learn.wave.calculate_amplitude(h) ** 2
     odak.learn.tools.save_image(
