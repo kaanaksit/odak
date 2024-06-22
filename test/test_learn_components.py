@@ -16,7 +16,7 @@ def test():
     # test normalization layer
     normalization_inference = components.normalization()
     y = normalization_inference(x)
-    # test attention layerf
+    # test attention layer
     residual_attention_layer_inference = components.residual_attention_layer()
     y = residual_attention_layer_inference(x , x)
     # test self-attention layer
