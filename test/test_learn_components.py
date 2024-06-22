@@ -5,7 +5,7 @@ import sys
 def test():
     # test residual block
     x = torch.randn(1, 2, 32, 32)
-    residual_inference= components.residual_layer()
+    residual_inference = components.residual_layer()
     y = residual_inference(x)
     # test convolution layer
     convolution_inference = components.convolution_layer()
@@ -16,7 +16,7 @@ def test():
     # test normalization layer
     normalization_inference = components.normalization()
     y = normalization_inference(x)
-    # test attention layer
+    # test attention layerf
     residual_attention_layer_inference = components.residual_attention_layer()
     y = residual_attention_layer_inference(x , x)
     # test self-attention layer

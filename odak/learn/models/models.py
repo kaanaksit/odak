@@ -1,6 +1,6 @@
 import torch
 from .components import double_convolution, downsample_layer, upsample_layer, swish, gaussian
-
+import segmentation_models_pytorch as smp
 
 class multi_layer_perceptron(torch.nn.Module):
     """
@@ -140,8 +140,8 @@ class unet(torch.nn.Module):
                                       kernel_size = kernel_size,
                                       bias = bias,
                                       activation = activation
-                                     )
-        factor = 2 if bilinear else 1        
+                                     )      
+        
         self.downsampling_layers = torch.nn.ModuleList()
         self.upsampling_layers = torch.nn.ModuleList()
         for i in range(depth): # downsampling layers
