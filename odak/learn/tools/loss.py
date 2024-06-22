@@ -121,18 +121,28 @@ def histogram_loss(frame, ground_truth, bins = 32, limits = [0., 1.]):
                        Loss from evaluation.
     """
     if len(frame.shape) == 2:
+        frame = frame.unsqueeze(0).unsqueeze(0)
+    elif len(frame.shape) == 3:
         frame = frame.unsqueeze(0)
-    if len(frame.shape) == 3:
-        frame = frame.unsqueeze(0)
+    
+    if len(ground_truth.shape) == 2:
+        ground_truth = ground_truth.unsqueeze(0).unsqueeze(0)
+    elif len(ground_truth.shape) == 3:
+        ground_truth = ground_truth.unsqueeze(0)
+    
     histogram_frame = torch.zeros(frame.shape[1], bins).to(frame.device)
     histogram_ground_truth = torch.zeros(ground_truth.shape[1], bins).to(frame.device)
-    l2 = torch.nn.MSELoss()
-    for i in range(frame.shape[1]):
-        histogram_frame[i] = torch.histc(frame[:, i].flatten(), bins = bins, min = limits[0], max = limits[1])
-        histogram_ground_truth[i] = torch.histc(frame[:, i].flatten(), bins = bins, min = limits[0], max = limits[1])
-    loss = l2(histogram_frame, histogram_ground_truth)
-    return loss
     
+    l2 = torch.nn.MSELoss()
+    
+    for i in range(frame.shape[1]):
+        histogram_frame[i] = torch.histc(frame[:, i].flatten(), bins=bins, min=limits[0], max=limits[1])
+        histogram_ground_truth[i] = torch.histc(ground_truth[:, i].flatten(), bins=bins, min=limits[0], max=limits[1])
+    
+    loss = l2(histogram_frame, histogram_ground_truth)
+    
+    return loss
+
     
 def weber_contrast(image, roi_high, roi_low):
     """
