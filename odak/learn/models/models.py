@@ -1,6 +1,6 @@
 import torch
 from .components import double_convolution, downsample_layer, upsample_layer, swish, gaussian
-import segmentation_models_pytorch as smp
+
 
 class multi_layer_perceptron(torch.nn.Module):
     """
