@@ -289,16 +289,17 @@ def impulse_response_fresnel(field, k, distance, dx, wavelength, zero_padding = 
                        Final complex field (MxN).
 
     """
-    H = get_impulse_response_fresnel_kernel(
-                                            field.shape[-2], 
-                                            field.shape[-1], 
-                                            dx = dx, 
-                                            wavelength = wavelength, 
-                                            distance = distance, 
-                                            device = field.device,
-                                            scale = scale,
-                                            aperture_samples = samples
-                                           )
+    H = get_propagation_kernel(
+                               nu = field.shape[-2], 
+                               nv = field.shape[-1], 
+                               dx = dx, 
+                               wavelength = wavelength, 
+                               distance = distance, 
+                               propagation_type = 'Impulse Response Fresnel',
+                               device = field.device,
+                               scale = scale,
+                               samples = samples
+                              )
     if scale > 1:
         field_amplitude = calculate_amplitude(field)
         field_phase = calculate_phase(field)
@@ -376,14 +377,15 @@ def transfer_function_fresnel(field, k, distance, dx, wavelength, zero_padding =
                        Final complex field (MxN).
 
     """
-    H = get_transfer_function_fresnel_kernel(
-                                             field.shape[-2], 
-                                             field.shape[-1], 
-                                             dx = dx, 
-                                             wavelength = wavelength, 
-                                             distance = distance, 
-                                             device = field.device
-                                            )
+    H = get_propagation_kernel(
+                               nu = field.shape[-2], 
+                               nv = field.shape[-1], 
+                               dx = dx, 
+                               wavelength = wavelength, 
+                               distance = distance, 
+                               propagation_type = 'Transfer Function Fresnel',
+                               device = field.device
+                              )
     result = custom(field, H, zero_padding = zero_padding, aperture = aperture)
     return result
 
@@ -451,14 +453,15 @@ def angular_spectrum(field, k, distance, dx, wavelength, zero_padding = False, a
                        Final complex field (MxN).
 
     """
-    H = get_angular_spectrum_kernel(
-                                    field.shape[-2], 
-                                    field.shape[-1], 
-                                    dx = dx, 
-                                    wavelength = wavelength, 
-                                    distance = distance, 
-                                    device = field.device
-                                   )
+    H = get_propagation_kernel(
+                               nu = field.shape[-2], 
+                               nv = field.shape[-1], 
+                               dx = dx, 
+                               wavelength = wavelength, 
+                               distance = distance, 
+                               propagation_type = 'Angular Spectrum',
+                               device = field.device
+                              )
     result = custom(field, H, zero_padding = zero_padding, aperture = aperture)
     return result
 
@@ -545,14 +548,15 @@ def band_limited_angular_spectrum(field, k, distance, dx, wavelength, zero_paddi
     result           : torch.complex
                        Final complex field [m x n].
     """
-    H = get_band_limited_angular_spectrum_kernel(
-                                                 field.shape[-2], 
-                                                 field.shape[-1], 
-                                                 dx = dx, 
-                                                 wavelength = wavelength, 
-                                                 distance = distance, 
-                                                 device = field.device
-                                                )
+    H = get_propagation_kernel(
+                               nu = field.shape[-2], 
+                               nv = field.shape[-1], 
+                               dx = dx, 
+                               wavelength = wavelength, 
+                               distance = distance, 
+                               propagation_type = 'Bandlimited Angular Spectrum',
+                               device = field.device
+                              )
     result = custom(field, H, zero_padding = zero_padding, aperture = aperture)
     return result
 
