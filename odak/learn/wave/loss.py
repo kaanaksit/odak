@@ -1,6 +1,7 @@
 import torch
 import torch.nn.functional as F
 import torch.nn as nn
+import logging
 from torch.autograd import Variable
 from ..tools import blur_gaussian, generate_2d_gaussian, zero_pad, crop_center
 
@@ -204,6 +205,11 @@ class multiplane_loss():
         if scheme == 'defocus':
             self.add_defocus_blur()
         self.loss_function = torch.nn.MSELoss(reduction = self.reduction)
+        try:
+            import pycvvdp
+            self.cvvdp = pycvvdp.cvvdp(display_name='standard_4k')
+        except:
+            logging.warning('ColorVideoVDP is missing, consider installing by visiting: https://github.com/gfxdisp/ColorVideoVDP')
 
 
     def get_targets(self):
@@ -303,4 +309,9 @@ class multiplane_loss():
         l2_mask = self.weights[1] * self.loss_function(image * mask, target * mask)
         l2_cor = self.weights[2] * self.loss_function(image * target, target * target)
         loss = l2 + l2_mask + l2_cor
+        try:
+            l_perceptual = self.weights[3] * self.cvvdp.loss(image.unsqueeze(0), target.unsqueeze(0), dim_order = 'CHW')
+            loss += l_perceptual
+        except:
+            logging.warning('ColorVideoVDP loss failed for some reason. Could ColorVideoVDP missing? If so, visit GitHub:gfxdisp/ColorVideoVDP')
         return loss

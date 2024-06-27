@@ -39,7 +39,7 @@ def test(
                              temp_padding = display_temp_padding,
                              device = device
                             )
-    loss = colorvdp.predict(image_noisy, image, dim_order = 'CHW')
+    loss = colorvdp.loss(image_noisy, image, dim_order = 'CHW')
     loss_value, dictionary = loss
     print(loss_value)
     assert True == True
