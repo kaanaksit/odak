@@ -1,6 +1,6 @@
 import torch
-import torch.fft
 import logging
+import itertools
 from .util import set_amplitude, generate_complex_field, calculate_amplitude, calculate_phase
 from .lens import quadratic_phase_function
 from .util import wavenumber
@@ -136,6 +136,96 @@ def get_propagation_kernel(
         assert True == False
     return kernel
 
+
+def get_light_kernels(
+                      wavelengths,
+                      distances,
+                      pixel_pitches,
+                      resolution = [1080, 1920],
+                      resolution_factor = 1,
+                      samples = [50, 50, 5, 5],
+                      propagation_type = 'Bandlimited Angular Spectrum',
+                      kernel_type = 'spatial',
+                      device = torch.device('cpu')
+                     ):
+    """
+    Utility function to request a tensor filled with light transport kernels according to the given optical configurations.
+
+    Parameters
+    ----------
+    wavelengths        : list
+                         A list of wavelengths.
+    distances          : list
+                         A list of propagation distances.
+    pixel_pitches      : list
+                         A list of pixel_pitches.
+    resolution         : list
+                         Resolution of the light transport kernel.
+    resolution_factor  : int
+                         If `Impulse Response Fresnel` propagation is used, this resolution factor could be set larger than one leading to higher resolution light transport kernels than the provided native `resolution`. For more, see odak.learn.wave.get_impulse_response_kernel().
+    samples            : list
+                         If `Impulse Response Fresnel` propagation is used, these sample counts will be used to calculate the light transport kernel. For more, see odak.learn.wave.get_impulse_response_kernel().
+    propagation_type   : str
+                         Propagation type. For more, see odak.learn.wave.propagate_beam().
+    kernel_type        : str
+                         If set to `spatial`, light transport kernels will be provided in space. But if set to `fourier`, these kernels will be provided in the Fourier domain.
+    device             : torch.device
+                         Device used for computation (i.e., cpu, cuda).
+
+    Returns
+    -------
+    light_kernels_amplitude : torch.tensor
+                              Amplitudes of the light kernels generated [w x d x p x m x n].
+    light_kernels_phase     : torch.tensor
+                              Phases of the light kernels generated [w x d x p x m x n].
+    light_kernel_complex    : torch.tensor
+                              Complex light kernels generated [w x d x p x m x n].
+    """
+    if propagation_type != 'Impulse Response Fresnel':
+        resolution_factor = 1
+    light_kernels_amplitude = torch.zeros(
+                                          len(wavelengths),
+                                          len(distances),
+                                          len(pixel_pitches),
+                                          resolution[0] * resolution_factor,
+                                          resolution[1] * resolution_factor,
+                                          dtype = torch.float32,
+                                          device = device
+                                         )
+    light_kernels_phase = torch.zeros_like(light_kernels_amplitude)
+    light_kernels_complex = torch.zeros_like(light_kernels_amplitude).type(torch.complex64)
+    for wavelength_id, distance_id, pixel_pitch_id in itertools.product(
+                                                                        range(len(wavelengths)),
+                                                                        range(len(distances)),
+                                                                        range(len(pixel_pitches)),
+                                                                       ):
+        pixel_pitch = pixel_pitches[pixel_pitch_id]
+        wavelength = wavelengths[wavelength_id]
+        distance = distances[distance_id]
+        kernel_fourier = get_propagation_kernel(
+                                                nu = resolution[0],
+                                                nv = resolution[1],
+                                                dx = pixel_pitch,
+                                                wavelength = wavelength,
+                                                distance = distance,
+                                                device = device,
+                                                propagation_type = propagation_type,
+                                                scale = resolution_factor,
+                                                samples = samples
+                                               )
+        if kernel_type == 'spatial':
+            kernel = torch.fft.ifftshift(torch.fft.ifft2(torch.fft.ifftshift(kernel_fourier)))
+        elif kernel_type == 'fourier':
+            kernel = kernel_fourier
+        else:
+            logging.warning('Unknown kernel type requested.')
+            raise ValueError('Unknown kernel type requested.')
+        kernel_amplitude = calculate_amplitude(kernel)
+        kernel_phase = calculate_phase(kernel) % (2 * torch.pi)
+        light_kernels_complex[wavelength_id, distance_id, pixel_pitch_id] = kernel
+        light_kernels_amplitude[wavelength_id, distance_id, pixel_pitch_id] = kernel_amplitude
+        light_kernels_phase[wavelength_id, distance_id, pixel_pitch_id] = kernel_phase
+    return light_kernels_amplitude, light_kernels_phase, light_kernels_complex
 
 
 def fraunhofer(field, k, distance, dx, wavelength):
