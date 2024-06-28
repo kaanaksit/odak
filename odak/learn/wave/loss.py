@@ -310,8 +310,10 @@ class multiplane_loss():
         l2_cor = self.weights[2] * self.loss_function(image * target, target * target)
         loss = l2 + l2_mask + l2_cor
         try:
-            l_perceptual = self.weights[3] * self.cvvdp.loss(image.unsqueeze(0), target.unsqueeze(0), dim_order = 'CHW')
-            loss += l_perceptual
+            if self.weights[3] > 0.:
+                image = torch.clamp(image, min = 0., max = 1.)
+                l_ColorVideoVDP = self.weights[3] * self.cvvdp.loss(image.unsqueeze(0), target.unsqueeze(0), dim_order = 'CHW')
+                loss += l_ColorVideoVDP
         except:
             logging.warning('ColorVideoVDP loss failed for some reason. Could ColorVideoVDP missing? If so, visit GitHub:gfxdisp/ColorVideoVDP')
         return loss
