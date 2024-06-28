@@ -42,18 +42,17 @@ def test(output_directory = 'test_output'):
         print('Model weights loaded: {}'.format(weights_filename))
     try:
         for epoch_id in epochs:
-            estimation = trial(test_batches, model, test_resolution)
             train_loss = train(image, train_batches, optimizer, loss_function, model)
             description = 'train loss: {:.5f}'.format(train_loss)
             epochs.set_description(description)
             if epoch_id % save_at_every == 0: 
+                estimation = trial(test_batches, model, test_resolution)
                 odak.learn.tools.save_image(test_filename, estimation, cmin = 0., cmax = 1.)
         estimation = trial(test_batches, model, test_resolution)
         odak.learn.tools.save_image(test_filename, estimation, cmin = 0., cmax = 1.)
         print(description)
         torch.save(model.state_dict(), weights_filename)
         print('Model weights save: {}'.format(weights_filename))
-        odak.learn.tools.save_image(test_filename, estimation, cmin = 0., cmax = 1.)
     except KeyboardInterrupt:
         print(description)
         torch.save(model.state_dict(), weights_filename)
