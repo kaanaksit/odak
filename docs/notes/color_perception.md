@@ -24,31 +24,20 @@ The interplay between rods and cones is a healthy balance between light sensitiv
 Here are useful resources behind this topic:
 * `B. P. Schmidt, M. Neitz, and J. Neitz, "Neurobiological hypothesis of color appearance and hue perception," J. Opt. Soc. Am. A 31(4), A195–207 (2014)`
 
-## Intersection of Color Perception and Display Technologies
+## Display Realism (What does it mean to be realistic)
 
-There are several different display technologies trying to accurately replicate the spectrum of colors that our eyes percieve. Such displays include Light-Emitting Diodes (LEDs), Liquid Crystal Displays (LCDs), Organic LEDs (OLEDs), and much more. Their spectra can be analyzed using the principles of the RGB color model to stimulate our cones similar to natural light. This can be graphically represented with spectral power distribution (SPD) graphs, showing relationships between what colors we can perceive (wavelengths) versus the power of the light source. This could be used to analyze color characteristics of different displays.
+When considering the realism of displays, it is important to define what realism entails in the context of color perception. If we were to have a display, disregarding all cost and engineering challenges, just solely built to be "lifelike", what would we need to achieve? To answer this question, we would need to be able to apply the complex principles of human color perception and display technologies. 
 
-### Light Emitting Diode Displays: 
-|  |
-|:--:| 
-| *Placeholder for SPD of LED*|
+1. Accurate Reproduction of Colors (or at least perceptible)
+The most important characteristic of a realistic display is to accurately reproduce color. Current display technologies combine three color primaries (Red, Green, Blue) in different intensities attempting to recreate large ranges of color called a color space. It is possible to choose different primary colors, or even the number of primaries to represent one's color space, but its efficacy can be expressed by how vast the resulting color space is. The human color gamut is a collection of all visible human lights, and is currently impossible to represent with only three primaries. Because the gamut is continuous and infinite, you would need an infinite amount of primaries to represent all colors.
 
-LED (Light Emitting Diode) displays use individual LEDs as pixels or as a backlight for LCD panels. LED displays produce colors by adjusting the intensity of red, green, and blue LEDs, closely aligning with the way human eyes perceive color through trichromatic vision.
+Fortunately, one promising solution is the use of **metamers**— applying different combinations of wavelengths that produce the same color perception in the human eye. This means two separate colors can ellicit the same LMS cone response as each other. This allows displays to recreate a vast range of colors on a limited set of primaries. 
+!! TODO: talk about generating the color space with primaries 
 
-### Liquid Crystal Displays (LCDs)
-|  |
-|:--:| 
-| *Placeholder for SPD of LCD*|
+2. Accounting for Photopic vs Scotopic vision
+Human perception is extremely context dependent, where we need to adapt to various lighting conditions like low-light (scotopic) and lit (photopic) scenes. Displays must be able to figure out how to preserve the rod and cone functionality under all these different environments.
 
-LCD has a backlight to illuminate pixels, with liquid crystals controlling the passage of light through RGB filters.
-
-
-### Organic Light-Emitting Diodes (OLEDs)
-|  |
-|:--:| 
-| *Placeholder for SPD of OLEDs*|
-OLED displays have each pixel produce their own light, allowing for a broader color spectrum.
-
+3. Chromaticity + Brightness
 
 
 ## Conclusion
