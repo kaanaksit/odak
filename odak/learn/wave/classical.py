@@ -197,12 +197,12 @@ def custom(field, kernel, zero_padding = False, aperture = 1.):
         H = torch.ones(field.shape).to(field.device)
     else:
         H = kernel * aperture
-    U1 = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(field))) * aperture
+    U1 = torch.fft.fftshift(torch.fft.fft2(field)) * aperture
     if zero_padding == False:
         U2 = H * U1
     elif zero_padding == True:
         U2 = zero_pad(H * U1)
-    result = torch.fft.ifftshift(torch.fft.ifft2(torch.fft.ifftshift(U2)))
+    result = torch.fft.ifft2(torch.fft.ifftshift(U2))
     return result
 
 
