@@ -178,22 +178,32 @@ def get_light_kernels(
                               Amplitudes of the light kernels generated [w x d x p x m x n].
     light_kernels_phase     : torch.tensor
                               Phases of the light kernels generated [w x d x p x m x n].
-    light_kernel_complex    : torch.tensor
+    light_kernels_complex   : torch.tensor
                               Complex light kernels generated [w x d x p x m x n].
+    light_parameters        : torch.tensor
+                              Parameters of each pixel in light_kernels* [w x d x p x m x n x 5].  Last dimension contains, wavelengths, distances, pixel pitches, X and Y locations in order.
     """
     if propagation_type != 'Impulse Response Fresnel':
         resolution_factor = 1
-    light_kernels_amplitude = torch.zeros(
-                                          len(wavelengths),
-                                          len(distances),
-                                          len(pixel_pitches),
-                                          resolution[0] * resolution_factor,
-                                          resolution[1] * resolution_factor,
-                                          dtype = torch.float32,
-                                          device = device
-                                         )
-    light_kernels_phase = torch.zeros_like(light_kernels_amplitude)
-    light_kernels_complex = torch.zeros_like(light_kernels_amplitude).type(torch.complex64)
+    light_kernels_complex = torch.zeros(            
+                                        len(wavelengths),
+                                        len(distances),
+                                        len(pixel_pitches),
+                                        resolution[0] * resolution_factor,
+                                        resolution[1] * resolution_factor,
+                                        dtype = torch.complex64,
+                                        device = device
+                                       )
+    light_parameters = torch.zeros(
+                                   len(wavelengths),
+                                   len(distances),
+                                   len(pixel_pitches),
+                                   resolution[0] * resolution_factor,
+                                   resolution[1] * resolution_factor,
+                                   5,
+                                   dtype = torch.float32,
+                                   device = device
+                                  )
     for wavelength_id, distance_id, pixel_pitch_id in itertools.product(
                                                                         range(len(wavelengths)),
                                                                         range(len(distances)),
@@ -223,9 +233,17 @@ def get_light_kernels(
         kernel_amplitude = calculate_amplitude(kernel)
         kernel_phase = calculate_phase(kernel) % (2 * torch.pi)
         light_kernels_complex[wavelength_id, distance_id, pixel_pitch_id] = kernel
-        light_kernels_amplitude[wavelength_id, distance_id, pixel_pitch_id] = kernel_amplitude
-        light_kernels_phase[wavelength_id, distance_id, pixel_pitch_id] = kernel_phase
-    return light_kernels_amplitude, light_kernels_phase, light_kernels_complex
+        light_parameters[wavelength_id, distance_id, pixel_pitch_id, :, :, 0] = wavelength
+        light_parameters[wavelength_id, distance_id, pixel_pitch_id, :, :, 1] = distance
+        light_parameters[wavelength_id, distance_id, pixel_pitch_id, :, :, 2] = pixel_pitch
+        x = torch.linspace(-1., 1., resolution[0] * resolution_factor, device = device) * pixel_pitch / 2. * resolution[0]
+        y = torch.linspace(-1., 1., resolution[1] * resolution_factor, device = device) * pixel_pitch / 2. * resolution[1]
+        X, Y = torch.meshgrid(x, y, indexing = 'ij')
+        light_parameters[wavelength_id, distance_id, pixel_pitch_id, :, :, 3] = X
+        light_parameters[wavelength_id, distance_id, pixel_pitch_id, :, :, 4] = Y
+    light_kernels_amplitude = calculate_amplitude(light_kernels_complex)
+    light_kernels_phase = calculate_phase(light_kernels_complex) % (2. * torch.pi)
+    return light_kernels_amplitude, light_kernels_phase, light_kernels_complex, light_parameters
 
 
 def fraunhofer(field, k, distance, dx, wavelength):
