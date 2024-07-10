@@ -5,14 +5,18 @@ import torch
 def test():
     try:
         import pycvvdp
-        print('ColorVideoVDP is imported.')
-        main()
-    except:
+    except ImportError:
         print('ColorVideoVDP is missing, consider installing by visiting: https://github.com/gfxdisp/ColorVideoVDP')
         assert True == True
+    if 'pycvvdp' in sys.modules:
+        import pycvvdp
+        print('ColorVideoVDP is imported.')
+        main(pycvvdp)
+    assert True == True
 
 
 def main(
+         pycvvdp,
          output_directory = 'test_output', 
          device = torch.device('cpu'),
          pixels_per_degree = 60,
@@ -43,8 +47,7 @@ def main(
                              device = device
                             )
     loss = colorvdp.loss(image_noisy, image, dim_order = 'CHW')
-    loss_value, dictionary = loss
-    print(loss_value)
+    print(loss)
     assert True == True
 
 
