@@ -2,8 +2,17 @@ import sys
 import odak
 import torch
 
+def test():
+    try:
+        import pycvvdp
+        print('ColorVideoVDP is imported.')
+        main()
+    except:
+        print('ColorVideoVDP is missing, consider installing by visiting: https://github.com/gfxdisp/ColorVideoVDP')
+        assert True == True
 
-def test(
+
+def main(
          output_directory = 'test_output', 
          device = torch.device('cpu'),
          pixels_per_degree = 60,
@@ -12,12 +21,6 @@ def test(
          display_temp_padding = 'replicate',
         ):
     odak.tools.check_directory(output_directory)
-    try:
-        import pycvvdp
-        print('ColorVideoVDP is imported.')
-    except:
-        print('ColorVideoVDP is missing, consider installing by visiting: https://github.com/gfxdisp/ColorVideoVDP')
-        assert True == True
     image = odak.learn.tools.load_image(
                                         './test/data/fruit_lady.png',
                                         normalizeby = 255.,
