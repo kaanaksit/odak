@@ -412,5 +412,4 @@ class multiplane_loss():
         if self.return_components:
             return loss, components
         else:
-            print('Components: ', components)
             return loss
