@@ -347,68 +347,86 @@ class multiplane_loss():
         loss = base_loss + base_loss_mask + base_loss_cor
         components['base_loss'] = base_loss
         if 'cvvdp' in self.additional_loss_terms:
-            image_clamped = torch.clamp(image, 0., 1.)
-            l_ColorVideoVDP = self.cvvdp.loss(image_clamped, target, dim_order = 'CHW')
-            if 'cvvdp' in self.additional_loss_weights.keys():
-                l_ColorVideoVDP = l_ColorVideoVDP * self.additional_loss_weights['cvvdp']
-                loss += l_ColorVideoVDP
-            else:
-                loss += l_ColorVideoVDP
-            components['cvvdp'] = l_ColorVideoVDP
+            try:
+                image_clamped = torch.clamp(image, 0., 1.)
+                l_ColorVideoVDP = self.cvvdp.loss(image_clamped, target, dim_order = 'CHW')
+                if 'cvvdp' in self.additional_loss_weights.keys():
+                    l_ColorVideoVDP = l_ColorVideoVDP * self.additional_loss_weights['cvvdp']
+                    loss += l_ColorVideoVDP
+                else:
+                    loss += l_ColorVideoVDP
+                components['cvvdp'] = l_ColorVideoVDP
+            except:
+                logging.warning('ColorVideoVDP failed to compute.')
         if 'fvvdp' in self.additional_loss_terms:
-            image_clamped = torch.clamp(image, 0., 1.)
-            l_FovVideoVDP = self.fvvdp.predict(image_clamped, target, dim_order = 'CHW')[0]
-            if 'fvvdp' in self.additional_loss_weights.keys():
-                l_FovVideoVDP = l_FovVideoVDP * self.additional_loss_weights['fvvdp']
-                loss += l_FovVideoVDP
-            else:
-                loss += l_FovVideoVDP
-            components['fvvdp'] = l_FovVideoVDP
+            try:
+                image_clamped = torch.clamp(image, 0., 1.)
+                l_FovVideoVDP = self.fvvdp.predict(image_clamped, target, dim_order = 'CHW')[0]
+                if 'fvvdp' in self.additional_loss_weights.keys():
+                    l_FovVideoVDP = l_FovVideoVDP * self.additional_loss_weights['fvvdp']
+                    loss += l_FovVideoVDP
+                else:
+                    loss += l_FovVideoVDP
+                components['fvvdp'] = l_FovVideoVDP
+            except:
+                logging.warning('FovVideoVDP failed to compute.')
         if 'psnr' in self.additional_loss_terms:
-            from torchmetrics.functional.image import peak_signal_noise_ratio
-            l_PSNR = peak_signal_noise_ratio(image, target)
-            if 'psnr' in self.additional_loss_weights.keys():
-                l_PSNR = l_PSNR * self.additional_loss_weights['psnr']
-                loss += l_PSNR
-            else:
-                loss += l_PSNR
-            components['psnr'] = l_PSNR
+            try:
+                from torchmetrics.functional.image import peak_signal_noise_ratio
+                l_PSNR = peak_signal_noise_ratio(image, target)
+                if 'psnr' in self.additional_loss_weights.keys():
+                    l_PSNR = l_PSNR * self.additional_loss_weights['psnr']
+                    loss += l_PSNR
+                else:
+                    loss += l_PSNR
+                components['psnr'] = l_PSNR
+            except:
+                logging.warning('PSNR failed to compute.')
         if 'ssim' in self.additional_loss_terms:
-            from torchmetrics.functional.image import structural_similarity_index_measure
-            l_SSIM = structural_similarity_index_measure(image.unsqueeze(0), target.unsqueeze(0))
-            if 'ssim' in self.additional_loss_weights.keys():
-                l_SSIM = l_SSIM * self.additional_loss_weights['ssim']
-                loss += l_SSIM
-            else:
-                loss += l_SSIM
-            components['ssim'] = l_SSIM
+            try:
+                from torchmetrics.functional.image import structural_similarity_index_measure
+                l_SSIM = structural_similarity_index_measure(image.unsqueeze(0), target.unsqueeze(0))
+                if 'ssim' in self.additional_loss_weights.keys():
+                    l_SSIM = l_SSIM * self.additional_loss_weights['ssim']
+                    loss += l_SSIM
+                else:
+                    loss += l_SSIM
+                components['ssim'] = l_SSIM
+            except:
+                logging.warning('SSIM failed to compute.')
         if 'ms-ssim' in self.additional_loss_terms:
-            from torchmetrics.functional.image import multiscale_structural_similarity_index_measure
-            l_MSSSIM = multiscale_structural_similarity_index_measure(image.unsqueeze(0), target.unsqueeze(0), data_range=1.0)
-            if 'ms-ssim' in self.additional_loss_weights.keys():
-                l_MSSSIM = l_MSSSIM * self.additional_loss_weights['ms-ssim']
-                loss += l_MSSSIM
-            else:
-                loss += l_MSSSIM
-            components['ms-ssim'] = l_MSSSIM
+            try:
+                from torchmetrics.functional.image import multiscale_structural_similarity_index_measure
+                l_MSSSIM = multiscale_structural_similarity_index_measure(image.unsqueeze(0), target.unsqueeze(0), data_range=1.0)
+                if 'ms-ssim' in self.additional_loss_weights.keys():
+                    l_MSSSIM = l_MSSSIM * self.additional_loss_weights['ms-ssim']
+                    loss += l_MSSSIM
+                else:
+                    loss += l_MSSSIM
+                components['ms-ssim'] = l_MSSSIM
+            except:
+                logging.warning('MS-SSIM failed to compute.')
         if 'lpips' in self.additional_loss_terms:
-            lpips_image = image
-            lpips_target = target
-            if lpips_image.shape[0] == 1:
-                lpips_image = lpips_image.repeat(3, 1, 1)
-                lpips_target = lpips_target.repeat(3, 1, 1)
-            if len(lpips_image.shape) == 3:
-                lpips_image = lpips_image.unsqueeze(0)
-                lpips_target = lpips_target.unsqueeze(0)
-            lpips_image = (lpips_image * 2 - 1).clamp(-1, 1)
-            lpips_target = (lpips_target * 2 - 1).clamp(-1, 1)
-            l_LPIPS = self.lpips(lpips_image, lpips_target)
-            if 'lpips' in self.additional_loss_weights.keys():
-                l_LPIPS = l_LPIPS * self.additional_loss_weights['lpips']
-                loss += l_LPIPS
-            else:
-                loss += l_LPIPS
-            components['lpips'] = l_LPIPS
+            try:
+                lpips_image = image
+                lpips_target = target
+                if lpips_image.shape[0] == 1:
+                    lpips_image = lpips_image.repeat(3, 1, 1)
+                    lpips_target = lpips_target.repeat(3, 1, 1)
+                if len(lpips_image.shape) == 3:
+                    lpips_image = lpips_image.unsqueeze(0)
+                    lpips_target = lpips_target.unsqueeze(0)
+                lpips_image = (lpips_image * 2 - 1).clamp(-1, 1)
+                lpips_target = (lpips_target * 2 - 1).clamp(-1, 1)
+                l_LPIPS = self.lpips(lpips_image, lpips_target)
+                if 'lpips' in self.additional_loss_weights.keys():
+                    l_LPIPS = l_LPIPS * self.additional_loss_weights['lpips']
+                    loss += l_LPIPS
+                else:
+                    loss += l_LPIPS
+                components['lpips'] = l_LPIPS
+            except:
+                logging.warning('LPIPS failed to compute.')
         if self.return_components:
             return loss, components
         else:
