@@ -1,6 +1,6 @@
 import sys
 import torch
-from odak.learn.wave import multiplane_hologram_optimizer, multiplane_loss
+from odak.learn.wave import multiplane_hologram_optimizer, perceptual_multiplane_loss
 
 
 def test():
@@ -8,14 +8,15 @@ def test():
     target = torch.zeros(resolution[0], resolution[1])
     target[500::600, :] = 1
     depth = target
-    loss_function = multiplane_loss(
+    loss_function = perceptual_multiplane_loss(
                                     target_image = target.unsqueeze(0),
                                     target_depth = depth,
                                     target_blur_size = 20,
                                     number_of_planes = 8,
                                     multiplier = 1.0,
                                     blur_ratio = 3,
-                                    weights = [1.0, 1.0, 1.0],
+                                    base_loss_weights = {'base_l2_loss': 1., 'loss_l2_mask': 1., 'loss_l2_cor': 1., 'base_l1_loss': 1., 'loss_l1_mask': 1., 'loss_l1_cor': 1.},
+                                    additional_loss_weights={'cvvdp': 1., 'fvvdp': 1., 'lpips': 1., 'ssim': 1., 'msssim': 1., 'psnr': 1.},
                                     scheme = "defocus",
                                     reduction = 'mean'
                                    )

@@ -9,7 +9,6 @@ def test():
     ground_truth = [torch.randn(1, 3, 32, 32), torch.randn(1, 32, 32), torch.randn(32, 32), torch.randn(3, 32, 32)]
     for idx, (img, pred) in enumerate(zip(image, ground_truth)):
         print(f'Running test {idx}, input shape: {img.size()}...')
-        y = loss.psnr(img, pred, peak_value = 2.0)
         y = loss.multi_scale_total_variation_loss(img, levels = 4)
         y = loss.total_variation_loss(img)
         y = loss.histogram_loss(img, pred, bins = 16, limits = [0., 1.])
