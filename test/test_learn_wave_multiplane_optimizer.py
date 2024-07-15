@@ -16,9 +16,7 @@ def test():
                                     multiplier = 1.0,
                                     blur_ratio = 3,
                                     base_loss_fn='l2',
-                                    additional_loss_terms = ['cvvdp', 'fvvdp', 'psnr', 'ssim', 'ms-ssim', 'lpips'],
                                     base_loss_weights = {'base_loss': 1., 'loss_mask': 1., 'loss_cor': 1.},
-                                    additional_loss_weights={'cvvdp': 1., 'fvvdp': 1., 'psnr': 1., 'ssim': 1., 'ms-ssim': 1., 'lpips': 1.},
                                     scheme = "defocus",
                                     reduction = 'mean'
                                    )
