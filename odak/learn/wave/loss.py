@@ -507,7 +507,7 @@ class perceptual_multiplane_loss():
                 loss_msssim = self.additional_loss_weights['msssim'] * self.msssim(image, target)
                 loss_components['msssim'] = loss_msssim
 
-        loss = torch.sum(torch.stack(list(loss_components.values())), dim=0)
+        loss = torch.sum(torch.stack(list(loss_components.values())), dim = 0)
 
         if self.return_components:
             return loss, loss_components

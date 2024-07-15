@@ -29,7 +29,7 @@ class PSNR(nn.Module):
         result        : torch.tensor
                         Peak-signal-to-noise ratio.
         """
-        mse = torch.mean((targets - predictions)**2)
+        mse = torch.mean((targets - predictions) ** 2)
         result = 20 * torch.log10(peak_value / torch.sqrt(mse))
         return result
     
@@ -94,7 +94,7 @@ class MSSSIM(nn.Module):
             if len(predictions.shape) == 3:
                 predictions = predictions.unsqueeze(0)
                 targets = targets.unsqueeze(0)
-            l_MSSSIM = multiscale_structural_similarity_index_measure(predictions, targets, data_range=1.0)
+            l_MSSSIM = multiscale_structural_similarity_index_measure(predictions, targets, data_range = 1.0)
             return l_MSSSIM  
         except Exception as e:
             logging.warning('MS-SSIM failed to compute.')
