@@ -43,7 +43,7 @@ class CVVDP(nn.Module):
         except Exception as e:
             logging.warning('ColorVideoVDP failed to compute.')
             logging.warning(e)
-            return 0.0
+            return torch.tensor(0.0)
         
 class FVVDP(nn.Module):
     def __init__(self, device=torch.device('cpu')):
@@ -85,7 +85,7 @@ class FVVDP(nn.Module):
         except Exception as e:
             logging.warning('FovVideoVDP failed to compute.')
             logging.warning(e)
-            return 0.0
+            return torch.tensor(0.0)
     
 class LPIPS(nn.Module):
     def __init__(self):
@@ -131,5 +131,5 @@ class LPIPS(nn.Module):
         except Exception as e:
             logging.warning('LPIPS failed to compute.')
             logging.warning(e)
-            return 0.0
+            return torch.tensor(0.0)
            

@@ -65,13 +65,13 @@ class SSIM(nn.Module):
         except Exception as e:
             logging.warning('SSIM failed to compute.')
             logging.warning(e)
-            return 0.0
+            return torch.tensor(0.0)
 
 class MSSSIM(nn.Module):
     '''
     A class to calculate multi-scale structural similarity index of an image with respect to a ground truth image.
     '''
-    
+
     def __init__(self):
         super(MSSSIM, self).__init__()
 
@@ -99,4 +99,4 @@ class MSSSIM(nn.Module):
         except Exception as e:
             logging.warning('MS-SSIM failed to compute.')
             logging.warning(e)
-            return 0.0
+            return torch.tensor(0.0)
