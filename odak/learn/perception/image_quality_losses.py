@@ -1,41 +1,59 @@
 import logging
+import torch
 import torch.nn as nn
 
 
 class PSNR(nn.Module):
+    '''
+    A class to calculate peak-signal-to-noise ratio of an image with respect to a ground truth image.
+    '''
+
     def __init__(self):
         super(PSNR, self).__init__()
  
-    def forward(self, predictions, targets):
+    def forward(self, predictions, targets, peak_value = 1.0):
         """
-        Args:
-            predictions (Tensor): The predicted images.
-            targets (Tensor): The ground truth images.
+        A function to calculate peak-signal-to-noise ratio of an image with respect to a ground truth image.
 
-        Returns:
-            float: The computed PSNR value if successful, otherwise 0.0.
+        Parameters
+        ----------
+        image         : torch.tensor
+                        Image to be tested.
+        ground_truth  : torch.tensor
+                        Ground truth image.
+        peak_value    : float
+                        Peak value that given tensors could have.
+
+        Returns
+        -------
+        result        : torch.tensor
+                        Peak-signal-to-noise ratio.
         """
-        try:
-            from torchmetrics.functional.image import peak_signal_noise_ratio
-            l_PSNR = peak_signal_noise_ratio(predictions, targets)
-            return l_PSNR
-        except Exception as e:
-            logging.warning('PSNR failed to compute.')
-            logging.warning(e)
-            return 0.0
+        mse = torch.mean((targets - predictions)**2)
+        result = 20 * torch.log10(peak_value / torch.sqrt(mse))
+        return result
     
 class SSIM(nn.Module):
+    '''
+    A class to calculate structural similarity index of an image with respect to a ground truth image.
+    '''
+
     def __init__(self):
         super(SSIM, self).__init__()
 
     def forward(self, predictions, targets):
         """
-        Args:
-            predictions (Tensor): The predicted images.
-            targets (Tensor): The ground truth images.
+        Parameters
+        ----------
+        predictions : torch.tensor
+                      The predicted images.
+        targets     : torch.tensor
+                      The ground truth images.
 
-        Returns:
-            float: The computed SSIM value if successful, otherwise 0.0.
+        Returns
+        -------
+        result      : torch.tensor 
+                      The computed SSIM value if successful, otherwise 0.0.
         """
         try:
             from torchmetrics.functional.image import structural_similarity_index_measure
@@ -50,17 +68,26 @@ class SSIM(nn.Module):
             return 0.0
 
 class MSSSIM(nn.Module):
+    '''
+    A class to calculate multi-scale structural similarity index of an image with respect to a ground truth image.
+    '''
+    
     def __init__(self):
         super(MSSSIM, self).__init__()
 
     def forward(self, predictions, targets):
         """
-        Args:
-            predictions (Tensor): The predicted images.
-            targets (Tensor): The ground truth images.
+        Parameters
+        ----------
+        predictions : torch.tensor
+                      The predicted images.
+        targets     : torch.tensor
+                      The ground truth images.
 
-        Returns:
-            float: The computed MS-SSIM value if successful, otherwise 0.0.
+        Returns
+        -------
+        result      : torch.tensor 
+                      The computed MS-SSIM value if successful, otherwise 0.0.
         """
         try:
             from torchmetrics.functional.image import multiscale_structural_similarity_index_measure

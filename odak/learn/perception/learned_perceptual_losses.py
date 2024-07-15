@@ -8,8 +8,10 @@ class CVVDP(nn.Module):
         """
         Initializes the CVVDP model with a specified device.
 
-        Args:
-            device (torch.device): The device (CPU/GPU) on which the computations will be performed. Defaults to CPU.
+        Parameters
+        ----------
+        device   : torch.device
+                    The device (CPU/GPU) on which the computations will be performed. Defaults to CPU.
         """
         super(CVVDP, self).__init__()
         try:
@@ -21,13 +23,19 @@ class CVVDP(nn.Module):
     
     def forward(self, predictions, targets, dim_order='CHW'):
         """
-        Args:
-            predictions (Tensor): The predicted images.
-            targets (Tensor): The ground truth images.
-            dim_order (str): The dimension order of the input images. Defaults to 'CHW' (channels, height, width).
+        Parameters
+        ----------
+        image         : torch.tensor
+                         The predicted images.
+        ground_truth  : torch.tensor
+                         The ground truth images.
+        dim_order     : str
+                         The dimension order of the input images. Defaults to 'CHW' (channels, height, width).
 
-        Returns:
-            float: The computed loss if successful, otherwise 0.0.
+        Returns
+        -------
+        result        : torch.tensor
+                          The computed loss if successful, otherwise 0.0.
         """
         try:
             l_ColorVideoVDP = self.cvvdp.loss(predictions, targets, dim_order=dim_order)
@@ -42,8 +50,10 @@ class FVVDP(nn.Module):
         """
         Initializes the FVVDP model with a specified device.
 
-        Args:
-            device (torch.device): The device (CPU/GPU) on which the computations will be performed. Defaults to CPU.
+        Parameters
+        ----------
+        device   : torch.device
+                    The device (CPU/GPU) on which the computations will be performed. Defaults to CPU.
         """
         super(FVVDP, self).__init__()
         try:
@@ -55,13 +65,19 @@ class FVVDP(nn.Module):
 
     def forward(self, predictions, targets, dim_order='CHW'):
         """
-        Args:
-            predictions (Tensor): The predicted images.
-            targets (Tensor): The ground truth images.
-            dim_order (str): The dimension order of the input images. Defaults to 'CHW' (channels, height, width).
+        Parameters
+        ----------
+        image         : torch.tensor
+                         The predicted images.
+        ground_truth  : torch.tensor
+                         The ground truth images.
+        dim_order     : str
+                         The dimension order of the input images. Defaults to 'CHW' (channels, height, width).
 
-        Returns:
-            float: The computed loss if successful, otherwise 0.0.
+        Returns
+        -------
+        result        : torch.tensor
+                          The computed loss if successful, otherwise 0.0.
         """
         try:
             l_FovVideoVDP = self.fvvdp.predict(predictions, targets, dim_order=dim_order)[0]
@@ -87,12 +103,17 @@ class LPIPS(nn.Module):
 
     def forward(self, predictions, targets):
         """
-        Args:
-            predictions (Tensor): The predicted images.
-            targets (Tensor): The ground truth images.
-
-        Returns:
-            Tensor: The computed LPIPS metric value. Returns 0.0 if the computation fails.
+        Parameters
+        ----------
+        image         : torch.tensor
+                         The predicted images.
+        ground_truth  : torch.tensor
+                         The ground truth images.
+       
+        Returns
+        -------
+        result        : torch.tensor
+                          The computed loss if successful, otherwise 0.0.
         """
         try:
             lpips_image = predictions
