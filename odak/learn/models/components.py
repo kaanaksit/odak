@@ -22,6 +22,7 @@ def gaussian(x, multiplier = 1.):
     result = torch.exp(- (multiplier * x) ** 2)
     return result
 
+
 def swish(x):
     """
     A swish non-linear activation.
