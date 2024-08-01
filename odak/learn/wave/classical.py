@@ -351,8 +351,6 @@ def get_impulse_response_fresnel_kernel(nu, nv, dx = 8e-6, wavelength = 515e-9, 
     wxs = torch.linspace(- dx / 2., dx / 2., aperture_samples[0], device = device)
     wys = torch.linspace(- dx / 2., dx / 2., aperture_samples[1], device = device)
     h = torch.zeros(nu * scale, nv * scale, dtype = torch.complex64, device = device)
-    deltax = torch.abs(wxs[0] - wxs[1])
-    deltay = torch.abs(wys[0] - wys[1])
     pxs = torch.linspace(- dx / 2., dx / 2., 5, device = device)
     pys = torch.linspace(- dx / 2., dx / 2., 5, device = device)
     for wx in tqdm(wxs):
