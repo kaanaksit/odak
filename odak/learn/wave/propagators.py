@@ -77,10 +77,9 @@ class propagator():
         self.wavelengths = wavelengths
         self.resolution = resolution
         self.propagation_type = propagation_type
-        if self.propagation_type == 'Impulse Response Fresnel':
-            self.resolution_factor = resolution_factor
-        else:
-            self.resolution_factor = 1
+        if self.propagation_type != 'Impulse Response Fresnel':
+            resolution_factor = 1
+        self.resolution_factor = resolution_factor
         self.number_of_frames = number_of_frames
         self.number_of_depth_layers = number_of_depth_layers
         self.number_of_channels = len(self.wavelengths)
@@ -251,8 +250,8 @@ class propagator():
         if not self.generated_kernels[depth_id, channel_id]:
             if self.propagator_type == 'forward':
                 H = get_propagation_kernel(
-                                           nu = input_field.shape[-2] * 2,
-                                           nv = input_field.shape[-1] * 2,
+                                           nu = self.resolution[0] * 2,
+                                           nv = self.resolution[1] * 2,
                                            dx = self.pixel_pitch,
                                            wavelength = self.wavelengths[channel_id],
                                            distance = distance,
@@ -263,8 +262,8 @@ class propagator():
                                           )
             elif self.propagator_type == 'back and forth':
                 H_forward = get_propagation_kernel(
-                                                   nu = input_field.shape[-2] * 2,
-                                                   nv = input_field.shape[-1] * 2,
+                                                   nu = self.resolution[0] * 2,
+                                                   nv = self.resolution[1] * 2,
                                                    dx = self.pixel_pitch,
                                                    wavelength = self.wavelengths[channel_id],
                                                    distance = self.zero_mode_distance,
@@ -275,8 +274,8 @@ class propagator():
                                                   )
                 distance_back = -(self.zero_mode_distance + self.image_location_offset - distance)
                 H_back = get_propagation_kernel(
-                                                nu = input_field.shape[-2] * 2,
-                                                nv = input_field.shape[-1] * 2,
+                                                nu = self.resolution[0] * 2,
+                                                nv = self.resolution[1] * 2,
                                                 dx = self.pixel_pitch,
                                                 wavelength = self.wavelengths[channel_id],
                                                 distance = distance_back,
@@ -290,20 +289,7 @@ class propagator():
             self.generated_kernels[depth_id, channel_id] = True
         else:
             H = self.kernels[depth_id, channel_id].detach().clone()
-        if self.resolution_factor > 1:
-            field_amplitude = calculate_amplitude(input_field)
-            field_phase = calculate_phase(input_field)
-            field_scale_amplitude = torch.zeros(
-                                                input_field.shape[-2] * self.resolution_factor, 
-                                                input_field.shape[-1] * self.resolution_factor, 
-                                                device = input_field.device
-                                               )
-            field_scale_phase = torch.zeros_like(field_scale_amplitude)
-            field_scale_amplitude[::self.resolution_factor, ::self.resolution_factor] = field_amplitude
-            field_scale_phase[::self.resolution_factor, ::self.resolution_factor] = field_phase
-            field_scale = generate_complex_field(field_scale_amplitude, field_scale_phase)
-        else:
-            field_scale = input_field
+        field_scale = input_field
         field_scale_padded = zero_pad(field_scale)
         output_field_padded = custom(field_scale_padded, H, aperture = self.aperture)
         output_field = crop_center(output_field_padded)
@@ -349,17 +335,27 @@ class propagator():
                                       device = self.device
                                      )
         if isinstance(amplitude, type(None)):
-            amplitude = torch.ones(
-                                   self.number_of_channels,
-                                   self.resolution[0],
-                                   self.resolution[1],
-                                   device = self.device
-                                  )
+            amplitude = torch.zeros(
+                                    self.number_of_channels,
+                                    self.resolution[0] * self.resolution_factor,
+                                    self.resolution[1] * self.resolution_factor,
+                                    device = self.device
+                                   )
+            amplitude[:, ::self.resolution_factor, ::self.resolution_factor] = 1.
+        if self.resolution_factor != 1:
+            hologram_phases_scaled = torch.zeros_like(amplitude)
+            hologram_phases_scaled[
+                                   :,
+                                   ::self.resolution_factor,
+                                   ::self.resolution_factor
+                                  ] = hologram_phases
+        else:
+            hologram_phases_scaled = hologram_phases
         for frame_id in range(self.number_of_frames):
             for depth_id in range(self.number_of_depth_layers):
                 for channel_id in range(self.number_of_channels):
                     laser_power = self.get_laser_powers()[frame_id][channel_id]
-                    phase = hologram_phases[frame_id]
+                    phase = hologram_phases_scaled[frame_id]
                     hologram = generate_complex_field(
                                                       laser_power * amplitude[channel_id],
                                                       phase * self.phase_scale[channel_id]
