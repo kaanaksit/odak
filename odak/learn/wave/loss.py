@@ -259,8 +259,6 @@ class multiplane_loss():
             targets_cache = self.targets[:, ch].detach().clone()
             target = torch.sum(targets_cache, axis = 0)
             for i in range(self.number_of_planes):
-                sigmas = torch.linspace(start = 0, end = self.target_blur_size, steps = self.number_of_planes)
-                sigmas = sigmas - i * self.target_blur_size / (self.number_of_planes - 1 + 1e-10)
                 defocus = torch.zeros_like(targets_cache[i])
                 for j in range(self.number_of_planes):
                     nsigma = [int(abs(i - j) * self.blur_ratio), int(abs(i -j) * self.blur_ratio)]
@@ -431,8 +429,6 @@ class perceptual_multiplane_loss():
             targets_cache = self.targets[:, ch].detach().clone()
             target = torch.sum(targets_cache, axis = 0)
             for i in range(self.number_of_planes):
-                sigmas = torch.linspace(start = 0, end = self.target_blur_size, steps = self.number_of_planes)
-                sigmas = sigmas - i * self.target_blur_size / (self.number_of_planes - 1 + 1e-10)
                 defocus = torch.zeros_like(targets_cache[i])
                 for j in range(self.number_of_planes):
                     nsigma = [int(abs(i - j) * self.blur_ratio), int(abs(i -j) * self.blur_ratio)]
