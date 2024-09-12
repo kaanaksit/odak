@@ -27,6 +27,7 @@ class propagator():
                  laser_channel_power = None,
                  aperture = None,
                  aperture_size = None,
+                 distances = None,
                  aperture_samples = [20, 20, 5, 5],
                  method = 'conventional',
                  device = torch.device('cpu')
@@ -46,7 +47,7 @@ class propagator():
                                   Number of hologram frames.
                                   Typically, there are three frames, each one for a single color primary.
         number_of_depth_layers  : int
-                                  Equ-distance number of depth layers within the desired volume.
+                                  Equ-distance number of depth layers within the desired volume. If `distances` parameter is passed, this value will be automatically set to the length of the `distances` verson provided.
         volume_depth            : float
                                   Width of the volume along the propagation direction.
         image_location_offset   : float
@@ -67,6 +68,8 @@ class propagator():
                                   Aperture width for a circular aperture.
         aperture_samples        : list
                                   When using `Impulse Response Fresnel` propagation, these sample counts along X and Y will be used to represent a rectangular aperture. First two is for hologram plane pixel and the last two is for image plane pixel.
+        distances               : torch.tensor
+                                  Propagation distances in meters.
         method                  : str
                                   Hologram type conventional or multi-color.
         device                  : torch.device
@@ -90,18 +93,27 @@ class propagator():
         self.zero_mode_distance = torch.tensor(back_and_forth_distance, device = device)
         self.method = method
         self.aperture = aperture
-        self.init_distances()
+        self.init_distances(distances)
         self.init_kernels()
         self.init_channel_power(laser_channel_power)
         self.init_phase_scale()
         self.set_aperture(aperture, aperture_size)
 
 
-    def init_distances(self):
+    def init_distances(self, distances):
         """
         Internal function to initialize distances.
+
+        Parameters
+        ----------
+        distances               : torch.tensor
+                                  Propagation distances.
         """
-        self.distances = torch.linspace(-self.volume_depth / 2., self.volume_depth / 2., self.number_of_depth_layers) + self.image_location_offset
+        if isinstance(distances, type(None)):
+            self.distances = torch.linspace(-self.volume_depth / 2., self.volume_depth / 2., self.number_of_depth_layers) + self.image_location_offset
+        else:
+            self.distances = torch.as_tensor(distances)
+            self.number_of_depth_layers = self.distances.shape[0]
         logging.warning('Distances: {}'.format(self.distances))
 
 
