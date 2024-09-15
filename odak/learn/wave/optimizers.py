@@ -40,6 +40,8 @@ class multi_color_hologram_optimizer():
         self.wavelengths = wavelengths
         self.resolution = resolution
         self.targets = targets
+        if propagator.propagation_type != 'Impulse Response Fresnel':
+            scale_factor = 1
         self.scale_factor = scale_factor
         self.propagator = propagator
         self.learning_rate = learning_rate
@@ -50,7 +52,6 @@ class multi_color_hologram_optimizer():
         self.double_phase = double_phase
         self.channel_power_filename = channel_power_filename
         self.method = method
-        self.upsample = torch.nn.Upsample(scale_factor = self.scale_factor, mode = 'nearest')
         if self.method != 'conventional' and self.method != 'multi-color':
            logging.warning('Unknown optimization method. Options are conventional or multi-color.')
            import sys
@@ -109,12 +110,13 @@ class multi_color_hologram_optimizer():
         """
         Internal function to set the amplitude of the illumination source.
         """
-        self.amplitude = torch.ones(
-                                    self.resolution[0],
-                                    self.resolution[1],
-                                    requires_grad = False,
-                                    device = self.device
-                                   )
+        self.amplitude = torch.zeros(
+                                     self.resolution[0] * self.scale_factor,
+                                     self.resolution[1] * self.scale_factor,
+                                     requires_grad = False,
+                                     device = self.device
+                                    )
+        self.amplitude[::self.scale_factor, ::self.scale_factor] = 1.
 
 
     def init_phase(self):
@@ -321,12 +323,8 @@ class multi_color_hologram_optimizer():
                                                                        )
                     loss_variation_hologram += loss_phase
                     for channel_id in range(self.number_of_channels):
-                        if self.scale_factor != 1:
-                            phase_scaled = torch.zeros_like(self.amplitude)
-                            phase_scaled[::self.scale_factor, ::self.scale_factor] = phase
-                            self.amplitude[1::self.scale_factor, 1::self.scale_factor] = 0.
-                        else:
-                            phase_scaled = phase
+                        phase_scaled = torch.zeros_like(self.amplitude)
+                        phase_scaled[::self.scale_factor, ::self.scale_factor] = phase
                         laser_power = laser_powers[frame_id][channel_id]
                         hologram = generate_complex_field(
                                                           laser_power * self.amplitude,

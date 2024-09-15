@@ -1,11 +1,10 @@
-#!/usr/bin/env python
 import sys
 import odak
 import torch
 from tqdm import tqdm
 
-
-def test():
+def test(output_directory = 'test_output'):
+    odak.tools.check_directory(output_directory)
     final_surface_point = torch.tensor([0., 0., 10.])
     final_surface = odak.learn.raytracing.define_plane(point = final_surface_point)
     no = [500, 500]
@@ -39,7 +38,7 @@ def test():
         image[check == True] = color[check == True] * check[check == True]
     image[image == [0., 0., 0]] = background_color
     image = image.view(no[0], no[1], 3)
-    odak.learn.tools.save_image('image.png', image, cmin = 0., cmax = 1.)
+    odak.learn.tools.save_image('{}/image.png'.format(output_directory), image, cmin = 0., cmax = 1.)
     assert True == True
       
 

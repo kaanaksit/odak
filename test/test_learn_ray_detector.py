@@ -1,13 +1,11 @@
-#!/usr/bin/env python
-
-
 import sys
 import odak
 import torch
 from tqdm import tqdm
 
 
-def test():
+def test(output_directory = 'test_output'):
+    odak.tools.check_directory(output_directory)
     device = torch.device('cpu')
     detector_size = torch.tensor([0.1, 0.1], device = device)
     detector_resolution = torch.tensor([100, 100], device = device)
@@ -61,7 +59,7 @@ def test():
     target_binary_inverted = torch.abs(1. - target_binary) * 1e6
     optimizer = torch.optim.AdamW([mesh.heights,], lr = learning_rate)
     t = tqdm(range(number_of_steps), leave = False, dynamic_ncols = True)
-    odak.learn.tools.save_image('target.png', target, cmin = 0., cmax = 1.)
+    odak.learn.tools.save_image('{}/ray_target.png'.format(output_directory), target, cmin = 0., cmax = 1.)
     loss_function = torch.nn.MSELoss(reduction = 'sum')
     mu = 1e-6
     for step in t:
@@ -79,10 +77,10 @@ def test():
         description = 'Loss: {}'.format(loss.item())
         t.set_description(description)
         if step % save_at_every == 0:
-            odak.learn.tools.save_image('image_{:04d}.png'.format(step), image, cmin = 0., cmax = image.max())
-            odak.learn.tools.save_image('targets_{:04d}.png'.format(step), target_locations, cmin = 0., cmax = image.max())
-            mesh.save_heights(filename = 'test/heights.pt')
-            mesh.save_heights_as_PLY(filename = 'heights.ply')
+            odak.learn.tools.save_image('{}/image_{:04d}.png'.format(output_directory, step), image, cmin = 0., cmax = image.max())
+            odak.learn.tools.save_image('{}/targets_{:04d}.png'.format(output_directory, step), target_locations, cmin = 0., cmax = image.max())
+            mesh.save_heights(filename = '{}/heights.pt'.format(output_directory))
+            mesh.save_heights_as_PLY(filename = '{}/heights.ply'.format(output_directory))
     print(description)
 
     visualize = False

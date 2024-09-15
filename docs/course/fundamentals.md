@@ -795,10 +795,10 @@ Thus, SGD requires less memory for each update.
      If you want to learn more about odak's built-in functions on the matter, visit the below unit test script:
      
      
-    === ":octicons-file-code-16: `test_gradient_descent_1d.py`"
+    === ":octicons-file-code-16: `test_fit_gradient_descent_1d.py`"
 
-        ``` python title="test_gradient_descent_1d.py" 
-        --8<-- "test/test_gradient_descent_1d.py"
+        ``` python title="test_fit_gradient_descent_1d.py" 
+        --8<-- "test/test_fit_gradient_descent_1d.py"
         ```
 
 Torch is a blessing for people that optimizes or trains with their algorithm.
@@ -868,7 +868,7 @@ Please note that we will use this information in this course's following section
     This section of our course gave you a quick overview.
     But you may want to go beyond and learn more about many more basic aspects of Computer Science such as using shell tools, editors, metaprogramming or security.
     [The missing semester of your CS education](https://missing.csail.mit.edu/) offers an online resource for you to follow up and learn more.
-    The content of the mentioned course is mostly developed by instructors from [Massachusetts Institute of Technology].
+    The content of the mentioned course is mostly developed by instructors from Massachusetts Institute of Technology.
 
 !!! warning end "Reminder"
     We host a Slack group with more than 300 members.

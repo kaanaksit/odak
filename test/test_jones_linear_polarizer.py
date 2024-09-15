@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
 import sys
+import odak.jones as jones
 
 
 def test():
-    import odak.jones as jones
     u_in = jones.electricfield(0.5, 0.)
     u_out = jones.linearpolarizer(u_in, rotation=0)
-    print(u_out)
     assert True == True
 
 

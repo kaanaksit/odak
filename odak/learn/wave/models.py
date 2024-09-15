@@ -1,6 +1,5 @@
 import torch
 import os
-import numpy as np
 from tqdm import tqdm
 from ..models import unet
 from .util import generate_complex_field, wavenumber

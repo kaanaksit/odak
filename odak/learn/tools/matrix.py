@@ -1,4 +1,3 @@
-import numpy as np
 import torch
 import torch.nn
 
@@ -182,7 +181,7 @@ def generate_2d_gaussian(kernel_length = [21, 21], nsigma = [3, 3], mu = [0, 0],
         nsigma[0] = 1e-5
     if nsigma[1] == 0:
         nsigma[1] = 1e-5
-    kernel_2d = 1. / (2. * np.pi * nsigma[0] * nsigma[1]) * torch.exp(-((X - mu[0])**2. / (2. * nsigma[0]**2.) + (Y - mu[1])**2. / (2. * nsigma[1]**2.)))
+    kernel_2d = 1. / (2. * torch.pi * nsigma[0] * nsigma[1]) * torch.exp(-((X - mu[0])**2. / (2. * nsigma[0]**2.) + (Y - mu[1])**2. / (2. * nsigma[1]**2.)))
     if normalize:
         kernel_2d = kernel_2d / kernel_2d.max()
     return kernel_2d
@@ -222,9 +221,10 @@ def generate_2d_dirac_delta(
     X, Y = torch.meshgrid(x, y, indexing='ij')
     X = X - mu[0]
     Y = Y - mu[1]
-    X_rot = X * np.cos(theta) - Y * np.sin(theta)
-    Y_rot = X * np.sin(theta) + Y * np.cos(theta)
-    kernel_2d = (1 / (abs(a[0] * a[1]) * np.pi)) * np.exp(-((X_rot / a[0]) ** 2 + (Y_rot / a[1]) ** 2))
+    theta = torch.as_tensor(theta)
+    X_rot = X * torch.cos(theta) - Y * torch.sin(theta)
+    Y_rot = X * torch.sin(theta) + Y * torch.cos(theta)
+    kernel_2d = (1 / (abs(a[0] * a[1]) * torch.pi)) * torch.exp(-((X_rot / a[0]) ** 2 + (Y_rot / a[1]) ** 2))
     if normalize:
         kernel_2d = kernel_2d / kernel_2d.max()
     return kernel_2d

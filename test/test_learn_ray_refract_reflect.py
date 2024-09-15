@@ -1,12 +1,9 @@
-#!/usr/bin/env python
-
-
 import sys
 import odak
 import torch
 
-
-def test():
+def test(output_directory = 'test_output'):
+    odak.tools.check_directory(output_directory)
     starting_points, _, _, _ = odak.learn.tools.grid_sample(
                                                             no = [5, 5],
                                                             size = [15., 15.],
@@ -72,7 +69,7 @@ def test():
         ray_diagram.add_point(normals[:, 0], column = 1, color = colors)
         ray_diagram.add_point(normals[:, 0], column = 2, color = colors)
         html = ray_diagram.save_offline()
-        markdown_file = open('ray.txt', 'w')
+        markdown_file = open('{}/ray.txt'.format(output_directory), 'w')
         markdown_file.write(html)
         markdown_file.close()
     assert True == True

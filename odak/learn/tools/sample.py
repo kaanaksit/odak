@@ -36,7 +36,6 @@ def grid_sample(
     angles = torch.tensor(angles)
     size = torch.tensor(size)
     samples = torch.zeros((no[0], no[1], 3))
-    step = [size[0] / (no[0] - 1), size[1] / (no[1] - 1)]
     x = torch.linspace(-size[0] / 2., size[0] / 2., no[0])
     y = torch.linspace(-size[1] / 2., size[1] / 2., no[1])
     X, Y = torch.meshgrid(x, y, indexing='ij')

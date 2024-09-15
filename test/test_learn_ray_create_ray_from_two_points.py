@@ -1,11 +1,10 @@
-#!/usr/bin/env python
-
 import sys
 import odak
 import torch # (1)
 
 
-def test():
+def test(directory = 'test_output'):
+    odak.tools.check_directory(directory)
     starting_point = torch.tensor([[5., 5., 0.]]) # (2)
     end_points, _, _, _ = odak.learn.tools.grid_sample(
                                                        no = [2, 2], 
@@ -58,7 +57,7 @@ def test():
         ray_diagram.add_point(z_axis, color = 'black')
         ray_diagram.add_line(starting_point, z_axis, color = 'black', dash = 'dash')
         html = ray_diagram.save_offline()
-        markdown_file = open('ray.txt', 'w')
+        markdown_file = open('{}/ray.txt'.format(directory), 'w')
         markdown_file.write(html)
         markdown_file.close()
     assert True == True
