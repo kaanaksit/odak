@@ -31,10 +31,54 @@ The photoreceptors where color perception originates are called [rods and cones]
 However, the story of color perception deepens with the concept of [color opponency](https://pubmed.ncbi.nlm.nih.gov/1303712/). This theory reveals that our perception of color is not just a matter of additive combinations of primary colors but also involves a dynamic interplay of opposing colors: red versus green, blue versus yellow. This phenomenon is rooted in the neural pathways of the eye and brain, where certain cells are excited or inhibited by specific wavelengths, enhancing our ability to distinguish between subtle shades and contrasts.
 <!-- TODO: convert image to LMS graph + explaination -->
 
-The interplay between rods and cones is a healthy balance between light sensitivity and color detection. The transition between these modes is seamless but so complex, demonstrating the versatility of our visual system.
 
-Here are useful resources behind this topic:
-* `B. P. Schmidt, M. Neitz, and J. Neitz, "Neurobiological hypothesis of color appearance and hue perception," J. Opt. Soc. Am. A 31(4), A195–207 (2014)`
+The utility function we will review is `odak.learn.perception.color_conversion.primaries_to_lms()`:
+
+
+=== ":octicons-file-code-16: `odak.learn.perception.color_conversion.primaries_to_lms`"
+
+    ::: odak.learn.perception.primaries_to_lms
+
+
+Let us use this utility function to expand our previous code snippet and show how we can obtain LMS sensation from the color primaries of an image using that:
+
+```python
+import odak # (1)
+import torch
+import sys
+from odak.learn.perception.color_conversion import display_color_hvs
+from odak.learn.tools import load_image, save_image, resize 
+
+num_primaries = 3
+image_primaries = torch.rand(1,
+                             num_primaries,
+                             8,
+                             8
+                             ) # (2)
+
+multi_spectrum = torch.rand(num_primaries,
+                            301
+                           ) # (3)
+device_ = torch.device('cpu')
+display_color = display_color_hvs(read_spectrum ='tensor',
+                                  primaries_spectrum=multi_spectrum,
+                                  device = device_)
+lms_color = display_color.primaries_to_lms(image_primaries)  # (4)
+```
+
+1. Adding `odak` to our imports.
+2. Generating arbitrary target primaries (the sample image).
+3. Generate arbitrary primaries spectrum
+4. Obtain LMS cone sensation using  `odak.learn.perception.color_conversion.primaries_to_lms`
+
+| <img src="../course/media/lms_image_example.png" width="640" alt/> |
+|:--:| 
+| *Sample Generated Image Primaries*|
+
+| <img src="../course/media/lms_sensation_example.png" width="640" alt/> |
+|:--:| 
+| *LMS Sensation of Image Primaries*|
+>>>>>>> 56ec924 (add images and code example for LMS sensation generation)
 
 ## Display Realism (What does it mean to be realistic)
 
@@ -50,7 +94,12 @@ Fortunately, one promising solution is the use of **metamers**— applying diffe
 Human perception is extremely context dependent, where we need to adapt to various lighting conditions like low-light (scotopic) and lit (photopic) scenes. Displays must be able to figure out how to preserve the rod and cone functionality under all these different environments.
 >>>>>>> b72dd53 (add notes to docs)
 
+<<<<<<< HEAD
 3. Chromaticity + Brightness
+=======
+
+### Chromaticity + Brightness
+<!-- TODO: add some more stuff here -->
 
 
 ## Conclusion
