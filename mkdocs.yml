@@ -47,6 +47,7 @@ nav:
   - Visual perception:
     - Introduction: 
        - Getting Started: 'perception.md'
+       - Color Perception: 'notes/color_perception.md'
        - Using metameric loss: 'notes/using_metameric_loss.md'
     - odak.learn.perception: 'odak/learn_perception.md'
 
