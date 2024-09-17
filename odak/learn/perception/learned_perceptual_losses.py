@@ -20,22 +20,23 @@ class CVVDP(nn.Module):
         except Exception as e:
             logging.warning('ColorVideoVDP is missing, consider installing by running "pip install -U git+https://github.com/gfxdisp/ColorVideoVDP"')
             logging.warning(e)
-    
+
+
     def forward(self, predictions, targets, dim_order = 'CHW'):
         """
         Parameters
         ----------
-        image         : torch.tensor
-                         The predicted images.
-        ground_truth  : torch.tensor
-                         The ground truth images.
+        predictions   : torch.tensor
+                        The predicted images.
+        targets    h  : torch.tensor
+                        The ground truth images.
         dim_order     : str
-                         The dimension order of the input images. Defaults to 'CHW' (channels, height, width).
+                        The dimension order of the input images. Defaults to 'CHW' (channels, height, width).
 
         Returns
         -------
         result        : torch.tensor
-                          The computed loss if successful, otherwise 0.0.
+                        The computed loss if successful, otherwise 0.0.
         """
         try:
             l_ColorVideoVDP = self.cvvdp.loss(predictions, targets, dim_order = dim_order)
@@ -63,16 +64,17 @@ class FVVDP(nn.Module):
             logging.warning('FovVideoVDP is missing, consider installing by running "pip install pyfvvdp"')
             logging.warning(e)
 
+
     def forward(self, predictions, targets, dim_order = 'CHW'):
         """
         Parameters
         ----------
-        image         : torch.tensor
-                         The predicted images.
-        ground_truth  : torch.tensor
-                         The ground truth images.
+        predictions   : torch.tensor
+                        The predicted images.
+        targets       : torch.tensor
+                        The ground truth images.
         dim_order     : str
-                         The dimension order of the input images. Defaults to 'CHW' (channels, height, width).
+                        The dimension order of the input images. Defaults to 'CHW' (channels, height, width).
 
         Returns
         -------
@@ -86,8 +88,10 @@ class FVVDP(nn.Module):
             logging.warning('FovVideoVDP failed to compute.')
             logging.warning(e)
             return torch.tensor(0.0)
-    
+
+
 class LPIPS(nn.Module):
+
     def __init__(self):
         """
         Initializes the LPIPS (Learned Perceptual Image Patch Similarity) model.
@@ -101,19 +105,20 @@ class LPIPS(nn.Module):
             logging.warning('torchmetrics is missing, consider installing by running "pip install torchmetrics"')
             logging.warning(e)
 
+
     def forward(self, predictions, targets):
         """
         Parameters
         ----------
-        image         : torch.tensor
-                         The predicted images.
-        ground_truth  : torch.tensor
-                         The ground truth images.
+        predictions   : torch.tensor
+                        The predicted images.
+        targets       : torch.tensor
+                        The ground truth images.
        
         Returns
         -------
         result        : torch.tensor
-                          The computed loss if successful, otherwise 0.0.
+                        The computed loss if successful, otherwise 0.0.
         """
         try:
             lpips_image = predictions

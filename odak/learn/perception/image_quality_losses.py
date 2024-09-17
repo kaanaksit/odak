@@ -17,9 +17,9 @@ class PSNR(nn.Module):
 
         Parameters
         ----------
-        image         : torch.tensor
+        predictions   : torch.tensor
                         Image to be tested.
-        ground_truth  : torch.tensor
+        targets       : torch.tensor
                         Ground truth image.
         peak_value    : float
                         Peak value that given tensors could have.
@@ -32,7 +32,8 @@ class PSNR(nn.Module):
         mse = torch.mean((targets - predictions) ** 2)
         result = 20 * torch.log10(peak_value / torch.sqrt(mse))
         return result
-    
+
+
 class SSIM(nn.Module):
     '''
     A class to calculate structural similarity index of an image with respect to a ground truth image.
