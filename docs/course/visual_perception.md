@@ -12,7 +12,7 @@ Color can be explained in a physical and perceptual capacity. In the physical se
 As a result, color can also be interpreted as a perceptual phenomenon arising from the human visual system's interaction with light. Color is essentially a "side effect" created by our brain when specific wavelengths of light are emitted, reflected, or transmitted by objects.
 
 ??? tip end "Did you know this source?"
-    For more in depth discussion about the physical interpretation of light, please consult [this computational light note](course/computational_light.md) for more.
+    For more in depth discussion about the physical interpretation of light, please consult [this computational light note](computational_light.md) for more.
 
 The common understanding among the physics and computer science community is that different wavelength frequencies do not constructively or destructively interfere, so it is interesting to see how our brain can process multiple frequencies of light simultaneously.
 
