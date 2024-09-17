@@ -29,8 +29,6 @@ The photoreceptors where color perception originates are called [rods and cones]
 | *Spectral Sensitivities of LMS cones*|
 
 However, the story of color perception deepens with the concept of [color opponency](https://pubmed.ncbi.nlm.nih.gov/1303712/). This theory reveals that our perception of color is not just a matter of additive combinations of primary colors but also involves a dynamic interplay of opposing colors: red versus green, blue versus yellow. This phenomenon is rooted in the neural pathways of the eye and brain, where certain cells are excited or inhibited by specific wavelengths, enhancing our ability to distinguish between subtle shades and contrasts.
-<!-- TODO: convert image to LMS graph + explaination -->
-
 
 The utility function we will review is `odak.learn.perception.color_conversion.primaries_to_lms()`:
 
