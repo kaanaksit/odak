@@ -8,15 +8,14 @@ def test():
     start1 = np.array([0., -5., 0.])
     intersection = np.array([0., 0., 100.])
     ray0 = raytracer.create_ray_from_two_points(
-        start0,
-        intersection
-    )
+                                                start0,
+                                                intersection
+                                               )
     ray1 = raytracer.create_ray_from_two_points(
-        start1,
-        intersection
-    )
+                                                start1,
+                                                intersection
+                                               )
     c0, c1 = raytracer.find_nearest_points(ray0, ray1)
-    print(c0, c1)
     assert True == True
 
 

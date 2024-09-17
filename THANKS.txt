@@ -1,6 +1,7 @@
 Ahmet Hamdi Güzel
 Ahmet Serdar Karadeniz
 David Robert Walton
+David Santiago Morales Norato
 Doğa Yılmaz
 Jeanne Beyazian
 Jialun Wu
@@ -8,6 +9,7 @@ Koray Kavaklı
 Liang Shi
 Praneeth Chakravarthula
 Runze Zhu
+Weijie Xie
 Yujie Wang
 Yuta Itoh
 Ziyang Chen

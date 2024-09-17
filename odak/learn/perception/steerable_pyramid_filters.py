@@ -15,7 +15,7 @@ def crop_steerable_pyramid_filters(filters, size):
                     Size to crop to. For example, an input of 3 will crop the filters to a size of 3x3.
 
     Returns
-    =======
+    -------
     filters     : dict of torch.tensor
                     The cropped filters.
     """
@@ -60,8 +60,7 @@ def get_steerable_pyramid_filters(size, n_orientations, filter_type):
                         trained: Same as reduced, but the oriented kernels are replaced by learned 5x5 kernels.
 
     Returns
-    =======
-
+    -------
     filters         : dict of torch.tensor
                         The steerable pyramid filters. Returned as a dict with the following keys:
                         "l" The lowpass downsampling filter

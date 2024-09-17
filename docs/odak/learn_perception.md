@@ -2,6 +2,8 @@
 ::: odak.learn.perception.blur_loss
 ::: odak.learn.perception.color_conversion
 ::: odak.learn.perception.foveation
+::: odak.learn.perception.image_quality_losses
+::: odak.learn.perception.learned_perceptual_losses
 ::: odak.learn.perception.metameric_loss
 ::: odak.learn.perception.metameric_loss_uniform
 ::: odak.learn.perception.metamer_mse_loss

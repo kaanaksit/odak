@@ -54,11 +54,11 @@ def create_ray_from_two_points(x0y0z0, x1y1z1):
         x0y0z0 = x0y0z0.reshape((1, 3))
     if len(x1y1z1.shape) == 1:
         x1y1z1 = x1y1z1.reshape((1, 3))
-    xdiff = x1y1z1[:, 0]-x0y0z0[:, 0]
-    ydiff = x1y1z1[:, 1]-x0y0z0[:, 1]
-    zdiff = x1y1z1[:, 2]-x0y0z0[:, 2]
-    s = np.sqrt(xdiff**2+ydiff**2+zdiff**2)
-    s[s == 0] = np.NaN
+    xdiff = x1y1z1[:, 0] - x0y0z0[:, 0]
+    ydiff = x1y1z1[:, 1] - x0y0z0[:, 1]
+    zdiff = x1y1z1[:, 2] - x0y0z0[:, 2]
+    s = np.sqrt(xdiff ** 2 + ydiff ** 2 + zdiff ** 2)
+    s[s == 0] = np.nan
     cosines = np.zeros((xdiff.shape[0], 3))
     cosines[:, 0] = xdiff/s
     cosines[:, 1] = ydiff/s

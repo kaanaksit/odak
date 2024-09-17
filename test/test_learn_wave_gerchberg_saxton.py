@@ -1,10 +1,10 @@
 import sys
+import torch
+import odak
+from odak.learn.wave import gerchberg_saxton
 
 
 def test():
-    import torch
-    import odak
-    from odak.learn.wave import gerchberg_saxton
     wavelength = 532e-9
     dx = 6.4e-6
     distance = 0.2
