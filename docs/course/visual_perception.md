@@ -15,6 +15,7 @@ Color is a perceptual phenomenon arising from the human visual system's interact
 In the next sections, we will continue to discuss further information on the perceptual and physical interpretations of color.
 
 
+
 ### Biological Foundations of Perceiving Color
 The perception of color originates from the absorption of light by photoreceptors in the eye, converting the light into electrical signals to be interpreted by the brain. This note will only discuss the role of our eyes; for more information about how brain percieves light, please refer to [this paper](https://pubmed.ncbi.nlm.nih.gov/21841776/)
 
