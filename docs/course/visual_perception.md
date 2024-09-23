@@ -2,19 +2,17 @@
 [Biomimetic Eye Modeling & Deep Neuromuscular Oculomotor Control](https://www.andrew.cmu.edu/user/aslakshm/pdfs/siggraph19_eye.pdf)
 ## Color Perception
 
-This section is focused on human color perception and its relation to display and graphics technologies.
+We can establish an understanding on color through studying its physical and perceptual meaning, so we can understand motivations behind display, computer graphic and camera technologies.
 
-### What is Color
+### What is Color?
 
-Color can be explained in a physical and perceptual capacity. In the physical sense, color is a physical quantity, measured by a wavelength of light. However, humans can only percieve color within a certain range of the electromagnetic spectrum, from around 300 to 700 nanometers. 
+:octicons-info-24: Informative
 
+Color can be explained in a physical and perceptual capacity. In the physical sense, color is a quantity typically described using a wavelength of light. Humans can only percieve color within a certain range of the electromagnetic spectrum, from around 300 to 700 nanometers. For greater details on the electromagnetic spectrum and concept of wavelength, we recommend revisiting [Light, Computation, and Computational Light](course/computational_light.md) section of our course.
 
-As a result, color can also be interpreted as a perceptual phenomenon arising from the human visual system's interaction with light. Color is essentially a "side effect" created by our brain when specific wavelengths of light are emitted, reflected, or transmitted by objects.
+Color is a perceptual phenomenon arising from the human visual system's interaction with light. Color is essentially a "side effect" created by our brain when specific wavelengths of light are emitted, reflected, or transmitted by objects.
 
-??? tip end "Did you know this source?"
-    For more in depth discussion about the physical interpretation of light, please consult [this computational light note](course/computational_light.md) for more.
-
-The common understanding among the physics and computer science community is that different wavelength frequencies do not constructively or destructively interfere, so it is interesting to see how our brain can process multiple frequencies of light simultaneously.
+In the next sections, we will continue to discuss further information on the perceptual and physical interpretations of color.
 
 
 ### Biological Foundations of Perceiving Color
