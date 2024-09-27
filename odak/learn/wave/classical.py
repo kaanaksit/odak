@@ -4,7 +4,7 @@ import itertools
 from .util import set_amplitude, generate_complex_field, calculate_amplitude, calculate_phase
 from .lens import quadratic_phase_function
 from .util import wavenumber
-from ..tools import zero_pad, crop_center, generate_2d_gaussian, circular_binary_mask
+from ..tools import zero_pad, crop_center, generate_2d_gaussian, circular_binary_mask, correlation_2d
 from tqdm import tqdm
 
 
@@ -73,6 +73,8 @@ def propagate_beam(
         result = custom(field, kernel, zero_padding[1], aperture = aperture)
     elif propagation_type == 'Fraunhofer':
         result = fraunhofer(field, k, distance, dx, wavelength)
+    elif propagation_type == 'Incoherent Angular Spectrum':
+        result = incoherent_angular_spectrum(field, k, distance, dx, wavelength, zero_padding[1], aperture = aperture)
     else:
         logging.warning('Propagation type not recognized')
         assert True == False
@@ -530,6 +532,41 @@ def get_angular_spectrum_kernel(nu, nv, dx = 8e-6, wavelength = 515e-9, distance
     return H
 
 
+def get_incoherent_angular_spectrum_kernel(nu, nv, dx = 8e-6, wavelength = 515e-9, distance = 0., device = torch.device('cpu')):
+    """
+    Helper function for odak.learn.wave.angular_spectrum.
+
+    Parameters
+    ----------
+    nu                 : int
+                         Resolution at X axis in pixels.
+    nv                 : int
+                         Resolution at Y axis in pixels.
+    dx                 : float
+                         Pixel pitch in meters.
+    wavelength         : float
+                         Wavelength in meters.
+    distance           : float
+                         Distance in meters.
+    device             : torch.device
+                         Device, for more see torch.device().
+
+
+    Returns
+    -------
+    H                  : float
+                         Complex kernel in Fourier domain.
+    """
+    distance = torch.tensor([distance]).to(device)
+    fx = torch.linspace(-1. / 2. / dx, 1. / 2. / dx, nu, dtype = torch.float32, device = device)
+    fy = torch.linspace(-1. / 2. / dx, 1. / 2. / dx, nv, dtype = torch.float32, device = device)
+    FY, FX = torch.meshgrid(fx, fy, indexing='ij')
+    H = torch.exp(1j  * distance * (2 * (torch.pi * (1 / wavelength) * torch.sqrt(1. - (wavelength * FX) ** 2 - (wavelength * FY) ** 2))))
+    H_ptime = correlation_2d(H, H)
+    H = H_ptime.to(device)
+    return H
+
+
 def angular_spectrum(field, k, distance, dx, wavelength, zero_padding = False, aperture = 1.):
     """
     A definition to calculate convolution with Angular Spectrum method for beam propagation.
@@ -566,6 +603,47 @@ def angular_spectrum(field, k, distance, dx, wavelength, zero_padding = False, a
                                wavelength = wavelength, 
                                distance = distance, 
                                propagation_type = 'Angular Spectrum',
+                               device = field.device
+                              )
+    result = custom(field, H, zero_padding = zero_padding, aperture = aperture)
+    return result
+
+
+def incoherent_angular_spectrum(field, k, distance, dx, wavelength, zero_padding = False, aperture = 1.):
+    """
+    A definition to calculate incoherent beam propagation with Angular Spectrum method.
+
+    Parameters
+    ----------
+    field            : torch.complex
+                       Complex field [m x n].
+    k                : odak.wave.wavenumber
+                       Wave number of a wave, see odak.wave.wavenumber for more.
+    distance         : float
+                       Propagation distance.
+    dx               : float
+                       Size of one single pixel in the field grid (in meters).
+    wavelength       : float
+                       Wavelength of the electric field.
+    zero_padding     : bool
+                       Zero pad in Fourier domain.
+    aperture         : torch.tensor
+                       Fourier domain aperture (e.g., pinhole in a typical holographic display).
+                       The default is one, but an aperture could be as large as input field [m x n].
+
+
+    Returns
+    -------
+    result           : torch.complex
+                       Final complex field [m x n].
+    """
+    H = get_propagation_kernel(
+                               nu = field.shape[-2], 
+                               nv = field.shape[-1], 
+                               dx = dx, 
+                               wavelength = wavelength, 
+                               distance = distance, 
+                               propagation_type = 'Incoherent Angular Spectrum',
                                device = field.device
                               )
     result = custom(field, H, zero_padding = zero_padding, aperture = aperture)
