@@ -10,8 +10,9 @@ def test(device = torch.device('cpu'), output_directory = 'test_output'):
     wavelength = 532e-9
     pixel_pitch = 3.74e-6
     distance = 1e-3
-    aperture_samples = [35, 35, 1, 1] # Replace it with this: [50, 50, 5, 5]
+    aperture_samples = [50, 50, 1, 1]
     propagation_types = [
+                         'Seperable Impulse Response Fresnel',
                          'Impulse Response Fresnel',
                          'Transfer Function Fresnel',
                          'Angular Spectrum',
