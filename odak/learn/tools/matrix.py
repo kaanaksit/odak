@@ -261,3 +261,27 @@ def blur_gaussian(field, kernel_length = [21, 21], nsigma = [3, 3], padding = 's
                                            blurred_field.shape[-1]
                                           )
     return blurred_field
+
+
+def correlation_2d(first_tensor, second_tensor):
+    """
+    Definition to calculate the correlation between two tensors.
+
+    Parameters
+    ----------
+    first_tensor  : torch.tensor
+                    First tensor.
+    second_tensor : torch.tensor
+                    Second tensor.
+
+    Returns
+    ----------
+    correlation   : torch.tensor
+                    Correlation between the two tensors.
+    """
+    fft_first_tensor = (torch.fft.fft2(first_tensor))
+    fft_second_tensor = (torch.fft.fft2(second_tensor))
+    conjugate_second_tensor = torch.conj(fft_second_tensor)
+    result = torch.fft.ifftshift(torch.fft.ifft2(fft_first_tensor * conjugate_second_tensor))
+    return result
+
