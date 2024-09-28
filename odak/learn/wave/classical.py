@@ -126,13 +126,52 @@ def get_propagation_kernel(
                          Complex kernel for the given propagation type.
     """
     if propagation_type == 'Bandlimited Angular Spectrum':
-        kernel = get_band_limited_angular_spectrum_kernel(nu, nv, dx, wavelength, distance, device)
+        kernel = get_band_limited_angular_spectrum_kernel(
+                                                          nu = nu,
+                                                          nv = nv,
+                                                          dx = dx,
+                                                          wavelength = wavelength,
+                                                          distance = distance,
+                                                          device = device
+                                                         )
     elif propagation_type == 'Angular Spectrum':
-        kernel = get_angular_spectrum_kernel(nu, nv, dx, wavelength, distance, device)
+        kernel = get_angular_spectrum_kernel(
+                                             nu = nu,
+                                             nv = nv,
+                                             dx = dx,
+                                             wavelength = wavelength,
+                                             distance = distance,
+                                             device = device
+                                            )
     elif propagation_type == 'Transfer Function Fresnel':
-        kernel = get_transfer_function_fresnel_kernel(nu, nv, dx, wavelength, distance, device)
+        kernel = get_transfer_function_fresnel_kernel(
+                                                      nu = nu,
+                                                      nv = nv,
+                                                      dx = dx,
+                                                      wavelength = wavelength,
+                                                      distance = distance,
+                                                      device = device
+                                                     )
     elif propagation_type == 'Impulse Response Fresnel':
-        kernel = get_impulse_response_fresnel_kernel(nu, nv, dx, wavelength, distance, device, scale = scale, aperture_samples = samples)
+        kernel = get_impulse_response_fresnel_kernel(
+                                                     nu = nu, 
+                                                     nv = nv, 
+                                                     dx = dx, 
+                                                     wavelength = wavelength,
+                                                     distance = distance,
+                                                     device =  device,
+                                                     scale = scale,
+                                                     aperture_samples = samples
+                                                    )
+    elif propagation_type == 'Incoherent Angular Spectrum':
+        kernel = get_incoherent_angular_spectrum_kernel(
+                                                        nu = nu,
+                                                        nv = nv, 
+                                                        dx = dx, 
+                                                        wavelength = wavelength, 
+                                                        distance = distance,
+                                                        device = device
+                                                       )
     else:
         logging.warning('Propagation type not recognized')
         assert True == False
