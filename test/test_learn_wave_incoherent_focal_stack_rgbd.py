@@ -8,6 +8,7 @@ from odak.learn.perception.util import slice_rgbd_targets
 from odak.learn.wave import incoherent_focal_stack_rgbd
 from odak.learn.perception import rgb_to_linear_rgb, linear_rgb_to_rgb
 
+
 def test(device = torch.device('cpu'), output_directory = 'test_output'):
     check_directory(output_directory)
     
