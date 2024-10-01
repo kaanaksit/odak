@@ -14,3 +14,4 @@ from .models import *
 from .optimizers import * 
 from .propagators import *
 from .util import *
+from .incoherent_propagation import *
