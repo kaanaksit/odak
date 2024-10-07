@@ -1,5 +1,6 @@
 ## Color Perception
-
+:octicons-info-24: Informative 
+m
 We can establish an understanding on color perception through studying its physical and perceptual meaning.
 This way, we can gather more information on its relation to technologies and devices including displays, cameras, sensors, communication, computing and computer graphics.
 
@@ -16,8 +17,10 @@ Here, you can see a close-up photograph of these photoreceptor cells found in th
 
 <figure markdown>
   ![Image title](media/rods_and_cones_closeup.jpg){ width="600" }
-  <figcaption>Live Capture of Photoreceptor Cells (CC PDM 1.0 by NIH).</figcaption>
+  <figcaption>Micrograph of retinal photoreceptor cells, with rods and cones highlighted in green (top row). Image courtesy of NIH, licensed under CC PDM 1.0. <a href="https://www.flickr.com/photos/nihgov/20495442268" target="_blank">View original image</a>.</figcaption>
 </figure>
+
+
 
 The photoreceptors, where color perception originates, are called [rods and cones](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4763127/)[^3]. 
 Here, we provide a sketch showing where these rods and cones are located inside the eye.
@@ -25,7 +28,7 @@ By closely observing this sketch, you can also understand the basic average geom
 
 <figure markdown>
   ![Image title](media/photoreceptors_rods_and_cones.png){ width="600" }
-  <figcaption>Anatomy of an Eye (Designed with BioRender).</figcaption>
+  <figcaption>Anatomy of an Eye (Designed with <a href="https://app.biorender.com/citation/6702e9cd8e56383950107e6d" target="_blank">BioRender.com</a>).</figcaption>
 </figure>
 
 Rods, which are relatively more common in the periphery, help people see in low-light (scotopic) conditions, but can only interpret in a greyscale manner. Cones, which are more dense in the fovea, are pivotal in color perception in brighter (photopic) environments. 
