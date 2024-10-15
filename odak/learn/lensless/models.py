@@ -9,10 +9,7 @@ from collections import OrderedDict
 
 class spec_track(nn.Module):
     """
-    The spec_track model for spectral tracking.
-
-    This model uses a series of convolutional and fully connected layers
-    to process input data and output 3D coordinates.
+    The learned holography model used in the paper, Ziyang Chen and Mustafa Dogan and Josef Spjut and Kaan Akşit. "SpecTrack: Learned Multi-Rotation Tracking via Speckle Imaging." In SIGGRAPH Asia 2024 Posters (SA Posters '24).
 
     Parameters
     ----------
