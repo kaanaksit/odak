@@ -32,6 +32,10 @@ nav:
        - Hologram Optimization: 'notes/optimizing_holograms_using_odak.md'
     - odak.wave: 'odak/wave.md'
     - odak.learn.wave: 'odak/learn_wave.md'
+  - Lensless Imaging:
+    - Introduction:
+       - Getting Started: 'lensless.md' 
+    - odak.learn.lensless: 'odak/learn_lensless.md'
   - General toolkit:
     - Introduction: 'toolkit.md'
     - odak.tools: 'odak/tools.md'

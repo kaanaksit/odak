@@ -31,7 +31,8 @@ class spec_track(nn.Module):
         self.l1 = torch.nn.L1Loss(reduction = self.reduction)
         self.train_history = []
         self.validation_history = []
-        
+
+
     def init_layers(self):
         """
         Initialize the layers of the network.
@@ -73,7 +74,8 @@ class spec_track(nn.Module):
 
             ('fc5', nn.Linear(128, 3))
         ])).to(self.device)
-        
+
+
     def forward(self, x):
         """
         Forward pass of the network.
@@ -89,7 +91,8 @@ class spec_track(nn.Module):
             Output tensor.
         """
         return self.network(x)
-    
+
+
     def evaluate(self, input_data, ground_truth, weights = [100., 1.]):
         """
         Evaluate the model's performance.
@@ -110,7 +113,8 @@ class spec_track(nn.Module):
         """
         loss = weights[0] * self.l2(input_data, ground_truth) + weights[1] * self.l1(input_data, ground_truth)
         return loss
-    
+
+
     def fit(self, trainloader, testloader, number_of_epochs=100, learning_rate=1e-5, weight_decay=1e-5, directory='./output'):
         """
         Train the model.
@@ -202,6 +206,7 @@ class spec_track(nn.Module):
                    Path to save the weights. Default is './weights.pt'.
         """
         torch.save(self.network.state_dict(), os.path.expanduser(filename))
+
 
     def load_weights(self, filename = './weights.pt'):
         """
