@@ -35,6 +35,7 @@ setup(
                   'odak/learn/tools',
                   'odak/learn/perception',
                   'odak/learn/raytracing',
+                  'odak/learn/lensless',
                   'odak/visualize',
                   'odak/visualize/blender',
                   'odak/manager',
