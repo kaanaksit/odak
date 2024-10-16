@@ -1,6 +1,5 @@
 import sys
 import torch
-import numpy as np
 from odak.learn.lensless import spec_track
 
 
