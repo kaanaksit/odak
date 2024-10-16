@@ -1,7 +1,5 @@
 import sys
-sys.path.append("./")
 import torch
-import odak
 import numpy as np
 from odak.learn.lensless import spec_track
 
