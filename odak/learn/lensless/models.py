@@ -2,10 +2,10 @@ import os
 from tqdm import tqdm
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from os.path import join
-from odak.learn.models.components import convolution_layer
+from os import makedirs
 from collections import OrderedDict
+
 
 class spec_track(nn.Module):
     """
@@ -111,7 +111,7 @@ class spec_track(nn.Module):
         loss = weights[0] * self.l2(input_data, ground_truth) + weights[1] * self.l1(input_data, ground_truth)
         return loss
     
-    def fit(self, trainloader, testloader, number_of_epochs = 100, learning_rate = 1e-5, weight_decay = 1e-5, directory = './output'):
+    def fit(self, trainloader, testloader, number_of_epochs=100, learning_rate=1e-5, weight_decay=1e-5, directory='./output'):
         """
         Train the model.
 
@@ -130,52 +130,68 @@ class spec_track(nn.Module):
         directory        : str
                            Directory to save the model weights. Default is './output'.
         """
-        t_epoch = tqdm(range(number_of_epochs), leave=False, dynamic_ncols = True)
-        prev_validation_loss = float('inf')
+        makedirs(directory, exist_ok=True)
+        makedirs(join(directory, "log"), exist_ok=True)
+        
         self.optimizer = torch.optim.Adam(self.parameters(), lr=learning_rate, weight_decay=weight_decay)
-        for epoch in t_epoch:
+        best_val_loss = float('inf')
+        
+        for epoch in range(number_of_epochs):
+            # Training phase
             self.train()
-            with tqdm(trainloader, unit="batch", ncols=0) as tepoch:
-                epoch_loss = []
-                for batch_idx, (batch, labels) in enumerate(tepoch):
-                    self.optimizer.zero_grad()
-
-                    tepoch.set_description(f"Epoch {epoch}")
-                    batch = batch.to(self.device)
-                    labels = labels.to(self.device)
-                    predicts = torch.squeeze(self.forward(batch))
-                    loss = self.evaluate(predicts, labels)
-                    loss.backward()
-                    epoch_loss.append(loss.item())
-                    self.optimizer.step()
-                    description = f"Loss: {loss.item():.4f}"
-                    t_epoch.set_description(description)
-                epoch_avg_loss = sum(epoch_loss)/len(epoch_loss)
-                description = f"Avg Epoch loss: {epoch_avg_loss.item():.4f}"
-                t_epoch.set_description(description)
-                self.train_history.append(epoch_avg_loss)
+            train_loss = 0.0
+            train_batches = 0
+            train_pbar = tqdm(trainloader, desc=f"Epoch {epoch+1}/{number_of_epochs} [Train]", leave=False, dynamic_ncols=True)
+            
+            for batch, labels in train_pbar:
+                self.optimizer.zero_grad()
+                batch, labels = batch.to(self.device), labels.to(self.device)
+                predicts = torch.squeeze(self.forward(batch))
+                loss = self.evaluate(predicts, labels)
+                loss.backward()
+                self.optimizer.step()
                 
+                train_loss += loss.item()
+                train_batches += 1
+                train_pbar.set_postfix({'Loss': f"{loss.item():.4f}"})
+            
+            avg_train_loss = train_loss / train_batches
+            self.train_history.append(avg_train_loss)
+            
+            # Validation phase
             self.eval()
+            val_loss = 0.0
+            val_batches = 0
+            val_pbar = tqdm(testloader, desc=f"Epoch {epoch+1}/{number_of_epochs} [Val]", leave=False, dynamic_ncols=True)
+            
             with torch.no_grad():
-                with tqdm(testloader, unit="batch", ncols=0) as tepoch:
-                    val_epoch_loss = []
-                    for batch_idx, (batch, labels) in enumerate(tepoch):
-                        tepoch.set_description(f"Validation {epoch}")
-                        batch = batch.to(self.device)
-                        labels = labels.to(self.device)
-                        predicts = torch.squeeze(self.forward(batch), dim=1)
-                        loss = self.evaluate(predicts, labels)
-                        val_epoch_loss.append(loss.item())
-                val_epoch_avg_loss = sum(val_epoch_loss)/len(val_epoch_loss)
-                description = f"Avg val loss: {val_epoch_avg_loss:.4f}"
-                t_epoch.set_description(description)
-                self.validation_history.append(val_epoch_avg_loss)
-
-                if  val_epoch_avg_loss < prev_validation_loss:
-                    print(f"Model save at EPOCH: {epoch}")
-                    self.save_weights(directory  + "_" + str(epoch) + ".pt")
-                    prev_validation_loss = val_epoch_avg_loss
-
+                for batch, labels in val_pbar:
+                    batch, labels = batch.to(self.device), labels.to(self.device)
+                    predicts = torch.squeeze(self.forward(batch), dim=1)
+                    loss = self.evaluate(predicts, labels)
+                    
+                    val_loss += loss.item()
+                    val_batches += 1
+                    val_pbar.set_postfix({'Loss': f"{loss.item():.4f}"})
+            
+            avg_val_loss = val_loss / val_batches
+            self.validation_history.append(avg_val_loss)
+            
+            # Print epoch summary
+            print(f"Epoch {epoch+1}/{number_of_epochs} - Train Loss: {avg_train_loss:.4f}, Val Loss: {avg_val_loss:.4f}")
+            
+            # Save best model
+            if avg_val_loss < best_val_loss:
+                best_val_loss = avg_val_loss
+                self.save_weights(join(directory, f"best_model_epoch_{epoch+1}.pt"))
+                print(f"Best model saved at epoch {epoch+1}")
+        
+        # Save training history
+        torch.save(self.train_history, join(directory, "log", "train_log.pt"))
+        torch.save(self.validation_history, join(directory, "log", "validation_log.pt"))
+        print("Training completed. History saved.")
+    
+    
     def save_weights(self, filename = './weights.pt'):
         """
         Save the current weights of the network to a file.
