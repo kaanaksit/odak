@@ -66,7 +66,11 @@ authors:
 
   - family-names: Xie
     given-names: Weijie
-    
+
+  - family-names: Zhan
+    given-names: Yicheng
+    orcid:  https://orcid.org/0009-0006-5936-1929
+
  
 title: "Odak"
 version: 0.2.6
