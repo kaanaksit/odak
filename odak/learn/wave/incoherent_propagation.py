@@ -3,9 +3,10 @@ from odak.learn.wave import calculate_amplitude, wavenumber, propagate_beam
 from odak.learn.perception.color_conversion import rgb_to_linear_rgb, linear_rgb_to_rgb
 
 
-def incoherent_focal_stack_rgbd(targets, masks, distances, dx, wavelengths, zero_padding = [True, False, True], aperture = 1., alpha = 0.5):
+def incoherent_focal_stack_rgbd(targets, masks, distances, dx, wavelengths, zero_padding = [True, False, True], apertures = [1., 1., 1.], alpha = 0.5):
     """
     Generate incoherent focal stack using RGB-D images. 
+    Please note that the targets and masks should follow the order from the furthest to the closest.
     The occlusion mechanism is inspired from https://github.com/dongyeon93/holographic-parallax/blob/main/Incoherent_focal_stack.py
     
     Parameters
@@ -22,9 +23,8 @@ def incoherent_focal_stack_rgbd(targets, masks, distances, dx, wavelengths, zero
                          A list of wavelengths.
     zero_padding       : bool
                          Zero pad in Fourier domain.
-    aperture           : torch.tensor
-                         Fourier domain aperture (e.g., pinhole in a typical holographic display).
-                         The default is one, but an aperture could be as large as input field [m x n].
+    apertures           : torch.tensor
+                         Fourier domain apertures (e.g., pinhole in a typical holographic display) for each color channel.
     alpha              : float
                          Parameter to control how much the occlusion mask from the previous layer contributes to the current layer's occlusion when computing the focal stack.
     """
@@ -49,7 +49,7 @@ def incoherent_focal_stack_rgbd(targets, masks, distances, dx, wavelengths, zero
                                                  wavelength = wavelength,
                                                  propagation_type = 'Incoherent Angular Spectrum',
                                                  zero_padding = zero_padding,
-                                                 aperture = aperture
+                                                 aperture = apertures[ch]
                                                 )
                 propagated_mask = calculate_amplitude(propagated_mask)
                 propagated_mask = torch.mean(propagated_mask, dim = 0)
@@ -64,7 +64,7 @@ def incoherent_focal_stack_rgbd(targets, masks, distances, dx, wavelengths, zero
                                                    wavelength = wavelength,
                                                    propagation_type = 'Incoherent Angular Spectrum',
                                                    zero_padding = zero_padding,
-                                                   aperture = aperture
+                                                   aperture = apertures[ch]
                                                   )
                 propagated_target = calculate_amplitude(propagated_target)
                 if k == 0:

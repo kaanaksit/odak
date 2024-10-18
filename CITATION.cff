@@ -15,6 +15,7 @@ authors:
  
   - family-names: Chen
     given-names: Ziyang
+    orcid: https://orcid.org/0000-0003-4721-2433
 
   - family-names: Güzel
     given-names: Ahmet Hamdi
@@ -39,6 +40,10 @@ authors:
   - family-names: Shi
     given-names: Liang
     orcid:  https://orcid.org/0000-0002-4442-4679
+
+  - family-names: Spjut
+    given-names: Josef
+    orcid:  https://orcid.org/0000-0001-5483-7867
   
   - family-names: Walton
     given-names: David Robert
@@ -53,6 +58,7 @@ authors:
 
   - family-names: Yujie
     given-names: Wang
+    orcid: https://orcid.org/0000-0001-6620-3327
  
   - family-names: Zhu
     given-names: Runze
