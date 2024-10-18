@@ -53,7 +53,7 @@ authors:
 
   - family-names: Yujie
     given-names: Wang
-    orcid: 0000-0001-6620-3327
+    orcid: https://orcid.org/0000-0001-6620-3327
  
   - family-names: Zhu
     given-names: Runze
