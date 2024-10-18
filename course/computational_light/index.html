@@ -1,0 +1,2126 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="The fundamental library for scientific computing in optical and visual perception sciences.">
+      
+      
+        <meta name="author" content="Kaan Akşit">
+      
+      
+        <link rel="canonical" href="https://kaanaksit.github.io/odak/course/computational_light/">
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../fundamentals/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.41">
+    
+    
+      
+        <title>Light, Computation, and Computational Light - Odak</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.0253249f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="odak" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#light-computation-and-computational-light" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+            
+For updates follow 
+<a href="https://twitter.com/kaanaksit" style="color:#1da1f2;">
+<strong>@kaanaksit</strong> 
+</a>
+on
+<a href="https://twitter.com/kaanaksit" style="color:#1da1f2;">
+<span class="twemoji twitter"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path></svg> </span>
+</a>
+<strong>
+Twitter
+</strong>
+
+          </div>
+          
+        </aside>
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Odak" class="md-header__button md-logo" aria-label="Odak" data-md-component="logo">
+      
+  <img src="../../odak.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Odak
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Light, Computation, and Computational Light
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="odak" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/kaanaksit/odak" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    kaanaksit/odak
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Odak" class="md-nav__button md-logo" aria-label="Odak" data-md-component="logo">
+      
+  <img src="../../odak.png" alt="logo">
+
+    </a>
+    Odak
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/kaanaksit/odak" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    kaanaksit/odak
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../.." class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Getting started
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1" id="__nav_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Getting started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../beginning/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    What is Odak?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Contributing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Computational Light Course
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Computational Light Course
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Light, Computation, and Computational Light
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Light, Computation, and Computational Light
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-light" class="md-nav__link">
+    <span class="md-ellipsis">
+      What is light?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-computational-light" class="md-nav__link">
+    <span class="md-ellipsis">
+      What is Computational Light?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#applications-of-computational-light" class="md-nav__link">
+    <span class="md-ellipsis">
+      Applications of Computational Light
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fundamentals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fundamentals in optimizing and learning light
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../geometric_optics/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Modeling light with rays
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../computer_generated_holography/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Computer-Generated Holography
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../visual_perception/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Visual Perception
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../computational_displays/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Computational Displays
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../computational_imaging/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Computational Imaging and Sensing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../photonic_computers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    All-optical Machine Learning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Computer-Generated Holography
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Computer-Generated Holography
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Introduction
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cgh/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Getting Started
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notes/holographic_light_transport/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Holographic Light Transport
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notes/optimizing_holograms_using_odak/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hologram Optimization
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../odak/wave/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    odak.wave
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../odak/learn_wave/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    odak.learn.wave
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Lensless Imaging
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Lensless Imaging
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1" id="__nav_4_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            Introduction
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../lensless/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Getting Started
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../odak/learn_lensless/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    odak.learn.lensless
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    General toolkit
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            General toolkit
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../toolkit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../odak/tools/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    odak.tools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../odak/learn_tools/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    odak.learn.tools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Machine learning
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Machine learning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../machine_learning/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../odak/fit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    odak.fit
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../odak/learn_models/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    odak.learn.models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Raytracing
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Raytracing
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../raytracing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../odak/raytracing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    odak.raytracing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../odak/learn_raytracing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    odak.learn.raytracing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Visual perception
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            Visual perception
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_8_1" id="__nav_8_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_1">
+            <span class="md-nav__icon md-icon"></span>
+            Introduction
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../perception/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Getting Started
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notes/color_perception/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Color Perception
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notes/using_metameric_loss/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Using metameric loss
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../odak/learn_perception/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    odak.learn.perception
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-light" class="md-nav__link">
+    <span class="md-ellipsis">
+      What is light?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-computational-light" class="md-nav__link">
+    <span class="md-ellipsis">
+      What is Computational Light?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#applications-of-computational-light" class="md-nav__link">
+    <span class="md-ellipsis">
+      Applications of Computational Light
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<details class="quote end">
+<summary>Narrate section</summary>
+<p><audio controls="controls">
+     <source type="audio/mp3" src="../media/computational_light.mp3"></source>
+</audio></p>
+</details>
+<h1 id="light-computation-and-computational-light">Light, Computation, and Computational Light<a class="headerlink" href="#light-computation-and-computational-light" title="Permanent link">&para;</a></h1>
+<p>We can establish an understanding of the term <code>Computational Light</code> as we explore the term <code>light</code> and its relation to <code>computation.</code></p>
+<h2 id="what-is-light">What is light?<a class="headerlink" href="#what-is-light" title="Permanent link">&para;</a></h2>
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 7.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0m-3 3.75a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 .75.75v4.25h.75a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1 0-1.5h.75V12h-.75a.75.75 0 0 1-.75-.75"/><path d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1M2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12"/></svg></span> Informative</p>
+<p>Light surrounds us; we see the light and swim in the sea of light.
+It is indeed a daily matter that we interact by looking out of our window to see what is outside, turning on the lights of a room, looking at our displays, taking pictures of our loved ones, walking in a night lit by moonlight, or downloading media from the internet.
+Light is an eye-catching festival, reflecting, diffracting, interfering, and refracting.
+Is light a wave, a ray, or a quantum-related phenomenon?
+Is light heavy, or weightless?
+Is light the fastest thing in this universe?
+Which way does the light go?
+In a more general sense, how can we use light to trigger more innovations, positively impact our lives, and unlock the mysteries of life?
+We all experience light, but we must dig deep to describe it clearly.</p>
+<p>In this introduction, my first intention here is to establish some basic scientific knowledge about light, which will help us understand why it is essential for the future of technology, especially computing.
+Note that we will cover more details of light as we make progress through different chapters of this course.
+But let's get this starting with the following statement.
+Light is electromagnetic radiation, often described as a bundle of photons, a term first coined by Gilbert Lewis in 1926.</p>
+<details class="question end">
+<summary>Where can I learn more about electric and magnetic fields?</summary>
+<p>Beware that the topic of electric and magnetic fields deserves a stand-alone course and has many details to explore.
+As an undergraduate student, back in the day, I learned about electric and magnetic fields by following a dedicated class and reading this book: <a href="https://www.amazon.com/Fundamentals-Engineering-Electromagnetics-David-Cheng/dp/0201566117/ref=sr_1_2?qid=1685483168&amp;refinements=p_28%3AFundamentals+of+Engineering+Electromagnetics&amp;s=books&amp;sr=1-2"><code>Cheng, David Keun. "Fundamentals of engineering electromagnetics." (1993).</code></a> <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup></p>
+</details>
+<details class="question end">
+<summary>What is a photon?</summary>
+<p>Let me adjust this question a bit: <code>What model is good for describing a photon?</code>
+There is literature describing a photon as a single particle, and works show photons as a pack of particles.
+ Suppose you want a more profound understanding than stating that it is a particle.
+In that case, you may want to dive deep into existing models in relation to the relativity concept: <a href="https://www.amazon.com/Nature-Light-Optical-Science-Engineering/dp/1420044249"><code>Roychoudhuri, C., Kracklauer, A. F., &amp; Creath, K. (Eds.). (2017). The nature of light: What is a photon?. CRC Press.</code></a> <sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup></p>
+</details>
+<details class="question end">
+<summary>Where can I learn more about history of research on light?</summary>
+<p>There is a website showing noticeable people researching on light since ancient times and their contributions to the research on light.
+To reach out to this website to get a crash course, click <a href="https://photonterrace.net/en/photon/history/">here</a>.</p>
+</details>
+<p>Let me highlight that for anything to be electromagnetic, it must have electric and magnetic fields.
+Let us start with this simple drawing to explain the characteristics of this electromagnetic radiation, light.
+Note that this figure depicts a photon at the origin of XYZ axes.
+But bear in mind that a photon's shape, weight, and characteristics are yet to be fully discovered and remain an open research question.
+Beware that the figure depicts a photon as a sphere to provide ease of understanding.
+<em>It does not mean that photons are spheres.</em></p>
+<figure>
+<p><a class="glightbox" href="../media/photonintro.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img alt="Image title" src="../media/photonintro.png" width="300" /></a>
+  </p>
+<figcaption>A sketch showing XYZ axes and a photon depicted as a sphere.</figcaption>
+</figure>
+<p>Let us imagine that our photon is traveling in the direction of the Z axes (notice <span class="arithmatex">\(\vec{r}\)</span>, the direction vector).
+Let us also imagine that this photon has an electric field, <span class="arithmatex">\(\vec{E}(r,t)\)</span> oscillating along the Y axes.
+Typically this electric field is a sinusoidal oscillation following the equation, </p>
+<div class="arithmatex">\[
+\vec{E}(r,t) = A cos(wt),
+\]</div>
+<p>where <span class="arithmatex">\(A\)</span> is the amplitude of light, <span class="arithmatex">\(t\)</span> is the time, <span class="arithmatex">\(\vec{r}\)</span> is the propagation direction, <span class="arithmatex">\(w\)</span> is equal to <span class="arithmatex">\(2\pi f\)</span> and <span class="arithmatex">\(f\)</span> represents the frequency of light.</p>
+<figure>
+<p><a class="glightbox" href="../media/photonebalone.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img alt="Image title" src="../media/photonebalone.png" width="300" /></a>
+  </p>
+<figcaption>A sketch highligting electric and magnetic fields of light.</figcaption>
+</figure>
+<p>A period of this sinusoidal oscillation, <span class="arithmatex">\(\vec{E}(r, t)\)</span>, describes <strong>wavelength of light</strong>, <span class="arithmatex">\(\lambda\)</span>.
+In the most simple terms, <span class="arithmatex">\(\lambda\)</span> is also known as the <strong>color of light</strong>.
+As light is electromagnetic, there is one more component than <span class="arithmatex">\(\vec{E}(r,t)\)</span> describing light.
+The next component is the magnetic field, <span class="arithmatex">\(\vec{B}(r, t)\)</span>.
+The magnetic field of light, <span class="arithmatex">\(\vec{B}(r, t)\)</span>, is always perpendicular to the electric field of light, <span class="arithmatex">\(\vec{E}(r, t)\)</span> (90 degrees along XY plane).
+Since only one <span class="arithmatex">\(\lambda\)</span> is involved in our example, we call our light monochromatic.
+This light would have been polychromatic if many other <span class="arithmatex">\(\lambda\)</span>s were superimposed to create <span class="arithmatex">\(\vec{E}(r, t)\)</span>.
+In other words, monochromatic light is a single-color light, whereas polychromatic light contains many colors.
+The concept of color originated from how we sense various <span class="arithmatex">\(\lambda\)</span>s in nature.</p>
+<figure>
+<p><a class="glightbox" href="../media/emspectrum.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img alt="Image title" src="../media/emspectrum.png" width="600" /></a>
+  </p>
+<figcaption>A sketch showing electromagnetic spectrum with waves labelled in terms of their frequencies and temperatures.</figcaption>
+</figure>
+<p><em>But are all electromagnetic waves with various <span class="arithmatex">\(\lambda\)</span>s considered as light?</em>
+The short answer is that we can not call all the electromagnetic radiation light.
+When we refer to light, we mainly talk about visible light, <span class="arithmatex">\(\lambda\)</span>s that our eyes could sense.
+These <span class="arithmatex">\(\lambda\)</span>s defining visible light fall into a tiny portion of the electromagnetic spectrum shown in the above sketch.
+Mainly, visible light falls into the spectrum covering wavelengths between 380 nm and 750 nm.
+The tails of visible light in the electromagnetic spectrum, such as near-infrared or ultraviolet regions, could also be referred to as light in some cases (e.g., for camera designers).
+In this course, although we will talk about visible light, we will also discuss the applications of these regions. </p>
+<figure>
+<p><a class="glightbox" href="../media/photoneb.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img alt="Image title" src="../media/photoneb.png" width="600" /></a>
+  </p>
+<figcaption>A sketch showing (left) electric and magnetic fields of light, and (right) polarization state of light.</figcaption>
+</figure>
+<p>Let us revisit our photon and its electromagnetic field one more time.
+As depicted in the above figure, the electric field, <span class="arithmatex">\(\vec{E}(r, t)\)</span>, oscillates along only one axis: the Y axes.
+The direction of oscillation in <span class="arithmatex">\(\vec{E}(r, t)\)</span> is known as <strong>polarization</strong> of light.
+In the above example, the polarization of light is linear.
+In other words, the light is linearly polarized in the vertical axis.
+Note that when people talk about polarization of light, they always refer to the oscillation direction of the electric field, <span class="arithmatex">\(\vec{E}(r, t)\)</span>.
+<em>But are there any other polarization states of light?</em>
+The light could be polarized in different directions along the X-axis, which would make the light polarized linearly in the horizontal axis, as depicted in the figure below on the left-hand side.
+If the light has a tilted electric field, <span class="arithmatex">\(\vec{E}(r, t)\)</span>, with components both in the X and Y axes, light could still be linearly polarized but with some angle.
+However, if these two components have delays, <span class="arithmatex">\(\phi\)</span>, in between in terms of oscillation, say one component is  <span class="arithmatex">\(\vec{E_x}(r, t) = A_x cos(wt)\)</span> and the other component is <span class="arithmatex">\(\vec{E_y}(r, t) = A_y cos(wt + \phi)\)</span>, light could have a circular polarization if <span class="arithmatex">\(A_x = A_y\)</span>.
+But the light will be elliptically polarized if there is a delay, <span class="arithmatex">\(\phi\)</span>, and <span class="arithmatex">\(A_x \neq A_y\)</span>.
+Although we do not discuss this here in detail, note that the delay of <span class="arithmatex">\(\phi\)</span> will help steer the light's direction in the Computer-Generated Holography chapter.</p>
+<figure>
+<p><a class="glightbox" href="../media/photonpol.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img alt="Image title" src="../media/photonpol.png" width="600" /></a>
+  </p>
+<figcaption>A sketch showing (left) various components of polarization, and (right) a right-handed circular polarization as a sample case.</figcaption>
+</figure>
+<p>There are means to filter light with a specific polarization as well.
+Here, we provide a conceptual example. 
+The below sketch depicts a polarization filter like a grid of lines letting the output light oscillate only in a specific direction.</p>
+<figure>
+<p><a class="glightbox" href="../media/polfilter.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img alt="Image title" src="../media/polfilter.png" width="600" /></a>
+  </p>
+<figcaption>A sketch showing a conceptual example of linear polarization filters.</figcaption>
+</figure>
+<p>We should also highlight that light could bounce off surfaces by reflecting or diffusing.
+If the material is proper (e.g., dielectric mirror), the light will perfectly reflect as depicted in the sketch below on the left-hand side.
+The light will perfectly diffuse at every angle if the material is proper (e.g., Lambertian diffuser), as depicted in the sketch below on the right-hand side.
+Though we will discuss these features of light in the Geometric Light chapter in detail, we should also highlight that light could refract through various mediums or diffract through a tiny hole or around a corner.</p>
+<figure>
+<p><a class="glightbox" href="../media/reflection.png" data-type="image" data-width="100%" data-height="auto" data-desc-position="bottom"><img alt="Image title" src="../media/reflection.png" width="600" /></a>
+  </p>
+<figcaption>A sketch showing (left) light's reflection off a dielectric mirror (right) light's diffusion off a Lambertian's surface.</figcaption>
+</figure>
+<p>Existing knowledge on our understanding of our universe also states that light is the fastest thing in the universe, and no other material, thing or being could exceed lightspeed (<span class="arithmatex">\(c = 299,792,458\)</span> metres per second).</p>
+<div class="arithmatex">\[
+c = \lambda n f,
+\]</div>
+<p>where <span class="arithmatex">\(n\)</span> represents refractive index of a medium that light travels.</p>
+<details class="question end">
+<summary>Where can I find more basic information about optics and light?</summary>
+<p>As a graduate student, back in the day, I learned the basics of optics by reading this book without following any course: <a href="https://www.amazon.com/Optics-4th-Eugene-Hecht/dp/0805385665/ref=sr_1_1?crid=25E08OXE7Q1AE&amp;keywords=Hecht%2C+E.+Optics.&amp;qid=1685483348&amp;s=books&amp;sprefix=hecht%2C+e.+optics.%2Cstripbooks-intl-ship%2C166&amp;sr=1-1"><code>Hecht, E. (2012). Optics. Pearson Education India.</code></a> <sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup></p>
+</details>
+<p>We have identified a bunch of different qualities of light so far.
+Let us summarize what we have identified in a nutshell.</p>
+<ul>
+<li>Light is electromagnetic radiation.</li>
+<li>Light has electric, <span class="arithmatex">\(\vec{E}(r,t) = A cos(wt)\)</span>, and magnetic fields, <span class="arithmatex">\(\vec{B}(r,t)\)</span>, that are always perpendicular to each other.</li>
+<li>Light has color, also known as wavelength, <span class="arithmatex">\(\lambda\)</span>.</li>
+<li>When we say light, we typically refer to the color we can see, visible light (390 - 750 nm).</li>
+<li>The oscillation axis of light's electric field is light's polarization.</li>
+<li>Light could have various brightness levels, the so-called amplitude of light, <span class="arithmatex">\(A\)</span>.</li>
+<li>Light's polarization could be at various states with different <span class="arithmatex">\(A\)</span>s and <span class="arithmatex">\(\phi\)</span>s.</li>
+<li>Light could interfere by accumulating delays, <span class="arithmatex">\(\phi\)</span>, and this could help change the direction of light.</li>
+<li>Light could reflect off the surfaces.</li>
+<li>Light could refract as it changes the medium.</li>
+<li>Light could diffract around the corners.</li>
+<li>Light is the fastest thing in our universe.</li>
+</ul>
+<p>Remember that the description of light provided in this chapter is simplistic, missing many important details.
+The reason is to provide an entry and a crash course at first glance is obvious.
+We will deep dive into focused topics in the following chapters.
+This way, you will be ready with a conceptual understanding of light.</p>
+<details class="example end">
+<summary>Lab work: Are there any other light-related phenomena?</summary>
+<p>Please find more light-related phenomena not discussed in this chapter using your favorite search engine.
+Report back your findings.</p>
+</details>
+<details class="tip end">
+<summary>Did you know?</summary>
+<p>Did you know there is an international light day every 16th of May recognized by the United Nations Educational, Scientific and Cultural Organization (UNESCO)? 
+For more details, click <a href="https://www.unesco.org/en/days/light">here</a></p>
+</details>
+<h2 id="what-is-computational-light">What is Computational Light?<a class="headerlink" href="#what-is-computational-light" title="Permanent link">&para;</a></h2>
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 7.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0m-3 3.75a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 .75.75v4.25h.75a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1 0-1.5h.75V12h-.75a.75.75 0 0 1-.75-.75"/><path d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1M2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12"/></svg></span> Informative</p>
+<p>Computational light is a term that brings the concepts in computational methods with the characteristics of light.
+In other words, wherever we can program the qualities of light, this will get us into the topics of computational light.
+Programming light may sound unconventional, but I invite you to consider how we program current computers.
+These conventional computers interpret voltage levels in an electric signal as ones and zeros.
+Color, <span class="arithmatex">\(\lambda\)</span>, propagation direction, <span class="arithmatex">\(\vec{r}\)</span>, amplitude, <span class="arithmatex">\(A\)</span>, phase, <span class="arithmatex">\(\phi\)</span>, polarization, diffraction, and interference are all qualities that could help us program light to achieve tasks for specific applications.</p>
+<h2 id="applications-of-computational-light">Applications of Computational Light<a class="headerlink" href="#applications-of-computational-light" title="Permanent link">&para;</a></h2>
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 7.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0m-3 3.75a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 .75.75v4.25h.75a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1 0-1.5h.75V12h-.75a.75.75 0 0 1-.75-.75"/><path d="M12 1c6.075 0 11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12 5.925 1 12 1M2.5 12a9.5 9.5 0 0 0 9.5 9.5 9.5 9.5 0 0 0 9.5-9.5A9.5 9.5 0 0 0 12 2.5 9.5 9.5 0 0 0 2.5 12"/></svg></span> Informative ·
+<span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.5 12a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0"/><path d="M12 3.5c3.432 0 6.124 1.534 8.054 3.241 1.926 1.703 3.132 3.61 3.616 4.46a1.6 1.6 0 0 1 0 1.598c-.484.85-1.69 2.757-3.616 4.461-1.929 1.706-4.622 3.24-8.054 3.24s-6.124-1.534-8.054-3.24C2.02 15.558.814 13.65.33 12.8a1.6 1.6 0 0 1 0-1.598c.484-.85 1.69-2.757 3.616-4.462C5.875 5.034 8.568 3.5 12 3.5M1.633 11.945a.1.1 0 0 0-.017.055q.001.03.017.056c.441.774 1.551 2.527 3.307 4.08C6.691 17.685 9.045 19 12 19s5.31-1.315 7.06-2.864c1.756-1.553 2.866-3.306 3.307-4.08a.1.1 0 0 0 .017-.056.1.1 0 0 0-.017-.056c-.441-.773-1.551-2.527-3.307-4.08C17.309 6.315 14.955 5 12 5S6.69 6.314 4.94 7.865c-1.756 1.552-2.866 3.306-3.307 4.08"/></svg></span> Media</p>
+<p>There are enormous amounts of applications of light.
+Let us glance at some of the important ones to get a sense of possibilities for people studying the topics of computational light.
+For each topic highlighted below, please click on the box to discover more about that specific subfield of computational light.</p>
+<details class="success end">
+<summary>Computer Graphics</summary>
+<p>Computer Graphics deals with generating synthetic images using computers and simulations of light.
+Common examples of Computer Graphics are the video games we all play and are familiar with.
+In today's world, you can often find Computer Graphics as a tool to simulate and synthesize scenes for developing a trending topic, artificial intelligence.</p>
+<ul>
+<li><strong>Noticeable profiles.</strong> Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of modern Computer Graphics.
+Here are some people I would encourage you to explore their websites: <a href="https://www.petershirley.com/">Peter Shirley</a>, and <a href="https://casual-effects.com/">Morgan Mcguire</a>.</li>
+<li><strong>Successful products.</strong> Here are a few examples of successful outcomes from the field of Computer Graphics: <a href="https://www.roblox.com/">Roblox</a>, <a href="https://www.nvidia.com/en-gb/geforce/technologies/dlss/">NVIDIA's DLSS</a>, <a href="https://developer.apple.com/metal/">Apple's Metal</a>, <a href="https://www.opengl.org/">OpenGL</a> and <a href="https://www.vulkan.org/">Vulkan</a>.</li>
+<li><strong>Did you know?</strong> The lecturer of the Computational Light Course, <a href="https://kaanaksit.com">Kaan Akşit</a>, is actively researching topics of Computer Graphics (e.g., <a href="https://kaanaksit.com/assets/pdf/WaltonEtAl_SIGGRAPH2021_Beyond_blur_real_time_ventral_metamers_for_foveated_rendering.pdf">Beyond blur: Real-time ventral metamers for foveated rendering</a><sup id="fnref:4"><a class="footnote-ref" href="#fn:4">4</a></sup>).</li>
+<li><strong>Want to learn more?</strong> Although we will cover a great deal of Computer Graphics in this course, you may want to dig deeper with a dedicated course, which you can follow online:
+<center><iframe width="560" height="315" src="https://www.youtube.com/embed/-LqUu61oRdk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></center></li>
+</ul>
+</details>
+<details class="success end">
+<summary>Computational Displays</summary>
+<p>Computational Displays topic deals with inventing next-generation display technology for the future of human-computer interaction.
+Common examples of emerging Computational Displays are near-eye displays such as Virtual Reality headsets and Augmented Reality Glasses.
+Today, we all use displays as a core component for any visual task, such as working, entertainment, education, and many more.</p>
+<ul>
+<li><strong>Noticeable profiles.</strong> Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of Computational Displays.
+Here are some examples of such people; I would encourage you to explore their websites: <a href="https://www.cl.cam.ac.uk/~rkm38/">Rafał Mantiuk</a>, and <a href="https://www.cs.unc.edu/~maimone/">Andrew Maimone</a>.</li>
+<li><strong>Successful products.</strong> Here are a few examples of successful outcomes from the field of Computational Displays: <a href="https://www.nreal.ai/">Nreal Augmented Reality glasses</a> and <a href="https://www.oculus.com/experiences/quest/">Meta Quest Virtual Reality headsets</a>.</li>
+<li><strong>Did you know?</strong> The lecturer of the Computational Light Course, <a href="https://kaanaksit.com">Kaan Akşit</a>, is actively researching topics of Computational Displays (e.g., <a href="https://kaanaksit.com/assets/pdf/AksitEtAl_SiggraphAsia2017_Near_eye_varifocal_augmented_reality_display_using_see_through_screens.pdf">Near-Eye Varifocal Augmented Reality Display using See-Through Screens</a> <sup id="fnref:5"><a class="footnote-ref" href="#fn:5">5</a></sup>).
+Kaan has made noticeable contributions to three-dimensional displays, virtual reality headsets, and augmented reality glasses.</li>
+<li><strong>Want to learn more?</strong> Although we will cover a great deal of Computational Displays in this course, you may want to dig deeper with a dedicated course, which you can follow online <sup id="fnref:6"><a class="footnote-ref" href="#fn:6">6</a></sup>:
+<center> <iframe width="560" height="315" src="https://www.youtube.com/embed/z_AtSgct6_I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center></li>
+</ul>
+</details>
+<details class="success end">
+<summary>Computational Photography</summary>
+<p>Computational Photography topic deals with digital image capture based on optical hardware such as cameras.
+Common examples of emerging Computational Photography are smartphone applications such as shooting in the dark or capturing selfies.
+Today, we all use products of Computational Photography to capture glimpses from our daily lives and store them as memories.</p>
+<ul>
+<li><strong>Noticeable profiles.</strong> Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of Computational Displays.
+Here are some examples of such people; I would encourage you to explore their websites: <a href="http://giga.cps.unizar.es/~diegog/">Diego Gutierrez</a> and <a href="http://www.gujinwei.org/">Jinwei Gu</a>.</li>
+<li><strong>Successful products.</strong> Here are a few examples of successful outcomes from the field of Computational Displays: <a href="https://support.google.com/googlecamera/answer/9708795?hl=en">Google's Night Sight</a> and <a href="https://www.samsung.com/uk/support/mobile-devices/what-is-panorama-mode-and-how-do-i-use-it/">Samsung Camera modes</a>.</li>
+<li><strong>Want to learn more?</strong> Although we will cover relevant information for Computational Photography in this course, you may want to dig deeper with a dedicated course, which you can follow online:
+<center> <iframe width="560" height="315" src="https://www.youtube.com/embed/y7HrM-fk_Rc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center></li>
+</ul>
+</details>
+<details class="success end">
+<summary>Computational Imaging and Sensing</summary>
+<p>Computational Imaging and Sensing topic deal with imaging and sensing certain scene qualities.
+Common examples of Computational Imaging and Sensing can be found in the two other domains of Computational Light: Computational Astronomy and Computational Microscopy.
+Today, medical diagnoses of biological samples in hospitals or imaging stars and beyond or sensing vital signals are all products of Computational Imaging and Sensing.</p>
+<ul>
+<li><strong>Noticeable profiles.</strong> Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of Computational Imaging and Sensing.
+Here are some examples of such people; I would encourage you to explore their websites: <a href="http://www.laurawaller.com/">Laura Waller</a> and <a href="http://nickantipa.com/">Nick Antipa</a>.</li>
+<li><strong>Successful products.</strong> Here are a few examples of successful outcomes from the field of Computational Imaging and Sensing: <a href="https://www.zeiss.com/microscopy/en/products/light-microscopes.html">Zeiss Microscopes</a> and <a href="https://support.apple.com/guide/watch/heart-rate-apda88aefe4c/watchos">Heart rate sensors on Apple's Smartwatch</a>.</li>
+<li><strong>Did you know?</strong> The lecturer of the Computational Light Course, <a href="https://kaanaksit.com">Kaan Akşit</a>, is actively researching topics of Computational Imaging and Displays (e.g., <a href="https://kaanaksit.com/assets/pdf/KingshottEtAl_OpticsExpress2022_Unrolled_primal_dual_networks_for_lensless_cameras.pdf">Unrolled Primal-Dual Networks for Lensless Cameras</a> <sup id="fnref:7"><a class="footnote-ref" href="#fn:7">7</a></sup>).</li>
+<li><strong>Want to learn more?</strong> Although we will cover a great deal of Computational Imaging and Sensing in this course, you may want to dig deeper with a dedicated course, which you can follow online:
+<center> <iframe width="560" height="315" src="https://www.youtube.com/embed/5AWx_FLVpmk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center></li>
+</ul>
+</details>
+<details class="success end">
+<summary>Computational Optics and Fabrication</summary>
+<p>The Computational Optics and Fabrication topic deals with designing and fabricating optical components such as lenses, mirrors, diffraction gratings, holographic optical elements, and metasurfaces.
+ There is a little bit of Computational Optics and Fabrication in every sector of Computational Light, especially when there is a need for custom optical design.</p>
+<ul>
+<li><strong>Noticeable profiles.</strong> Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of Computational Optics and Fabrication.
+Here are some examples of such people; I would encourage you to explore their websites: <a href="https://www.odalab-spectrum.org/Rochester/Technologies.html">Jannick Rolland</a> and <a href="https://www.epfl.ch/labs/gcm/research-projects/computational-caustics/">Mark Pauly</a>.</li>
+<li><strong>Did you know?</strong> The lecturer of the Computational Light Course, <a href="https://kaanaksit.com">Kaan Akşit</a>, is actively researching topics of Computational Optics and Fabrication (e.g., <a href="https://kaanaksit.com/assets/pdf/AksitEtAl_IEEEVR2019_manufacturing_application_driven_foveated_near_eye_displays.pdf">Manufacturing application-driven foveated near-eye displays</a> <sup id="fnref:8"><a class="footnote-ref" href="#fn:8">8</a></sup>).</li>
+<li><strong>Want to learn more?</strong> Although we will cover a great deal of Computational Imaging and Sensing in this course, you may want to dig deeper with a dedicated course, which you can follow online:
+<center> <iframe width="560" height="315" src="https://www.youtube.com/embed/cEzVhisjFn0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center></li>
+</ul>
+</details>
+<details class="success end">
+<summary>Optical Communication</summary>
+<p>Optical Communication deals with using light as a medium for telecommunication applications.
+Common examples of Optical Communication are the fiber cables and satellites equipped with optical links in space running our Internet.
+In today's world, Optical Communication runs our entire modern life by making the Internet a reality.</p>
+<ul>
+<li><strong>Noticeable profiles.</strong> Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of modern Optical Communication.
+Here are some people I would encourage you to explore their websites: <a href="https://www.lifi.eng.ed.ac.uk/">Harald Haas</a> and <a href="http://comlab.uniroma3.it">Anna Maria Vegni</a>.</li>
+<li><strong>Did you know?</strong> The lecturer of the Computational Light Course, <a href="https://kaanaksit.com">Kaan Akşit</a>, was researching topics of Optical Communication (e.g., <a href="https://kaanaksit.com/assets/pdf/SchmidEtAl_WoOWC2014_From_sound_to_sight_using_audio_processing_to_enable_visible_light_communication.pdf">From sound to sight: Using audio processing to enable visible light communication</a> <sup id="fnref:9"><a class="footnote-ref" href="#fn:9">9</a></sup>).</li>
+<li><strong>Want to learn more?</strong> Although we will cover relevant information for Optical Communication in this course, you may want to dig deeper and could start with this online video:
+<center><iframe width="560" height="315" src="https://www.youtube.com/embed/6-0fhUMaZ5I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></center></li>
+</ul>
+</details>
+<details class="success end">
+<summary>All-optical Machine Learning</summary>
+<p>All-optical Machine Learning deals with building neural networks and computers running solely based on light.
+As this is an emerging field, there are yet to be products in this field that we use in our daily lives.
+But this also means there are opportunities for newcomers and investors in this space.</p>
+<ul>
+<li><strong>Noticeable profiles.</strong> Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of All-optical Machine Learning.
+Here are some people I would encourage you to explore their websites: <a href="https://research.seas.ucla.edu/ozcan/">Aydogan Ozcan</a> and <a href="https://www.ugurtegin.net/">Ugur Tegin</a>.</li>
+<li><strong>Want to learn more?</strong> Although we will cover a great deal of All-optical Machine Learning in this course, you may want to dig deeper with a dedicated course, which you can follow online:
+<center><iframe width="560" height="315" src="https://www.youtube.com/embed/pjy860nZypU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></center></li>
+</ul>
+</details>
+<details class="example end">
+<summary>Lab work: What are the other fields and interesting profiles out there?</summary>
+<p>Please explore other relevant fields to Computational Light, and explore interesting profiles out there.
+Please make a list of relevant fields and interesting profiles and report your top three.</p>
+</details>
+<p>Indeed, there are more topics related to computational light than the ones highlighted here.
+If you are up to a challenge for the next phase of your life, you could help the field identify new opportunities with light-based sciences.
+In addition, there are indeed more topics, more noticeable profiles, successful product examples, and dedicated courses that focus on every one of these topics.
+Examples are not limited to the ones that I have provided above.
+Your favorite search engine is your friend to find out more in this case.</p>
+<details class="example end">
+<summary>Lab work: Where do we find good resources?</summary>
+<p>Please explore software projects on GitHub and papers on Google Scholar to find out about works that are relevant to the theme of Computational Light.
+Please make a list of these projects and report the top three projects that you feel most exciting and interesting.</p>
+</details>
+<div class="admonition warning end">
+<p class="admonition-title">Reminder</p>
+<p>We host a Slack group with more than 300 members.
+This Slack group focuses on the topics of rendering, perception, displays and cameras.
+The group is open to public and you can become a member by following <a href="https://complightlab.com/outreach/">this link</a>.
+Readers can get in-touch with the wider community using this public group.</p>
+</div>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>David Keun Cheng and others. <em>Fundamentals of engineering electromagnetics</em>. Addison-Wesley Reading, MA, 1993.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>Chandra Roychoudhuri, Al F Kracklauer, and Kathy Creath. <em>The nature of light: What is a photon?</em> CRC Press, 2017.&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>Eugene Hecht. <em>Optics</em>. Pearson Education India, 2012.&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:4">
+<p>David R Walton, Rafael Kuffner Dos Anjos, Sebastian Friston, David Swapp, Kaan Akşit, Anthony Steed, and Tobias Ritschel. Beyond blur: real-time ventral metamers for foveated rendering. <em>ACM Transactions on Graphics</em>, 40(4):1–14, 2021.&#160;<a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+<li id="fn:5">
+<p>Kaan Akşit, Ward Lopes, Jonghyun Kim, Peter Shirley, and David Luebke. Near-eye varifocal augmented reality display using see-through screens. <em>ACM Transactions on Graphics (TOG)</em>, 36(6):1–13, 2017.&#160;<a class="footnote-backref" href="#fnref:5" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+</li>
+<li id="fn:6">
+<p>Koray Kavakli, David Robert Walton, Nick Antipa, Rafał Mantiuk, Douglas Lanman, and Kaan Akşit. Optimizing vision and visuals: lectures on cameras, displays and perception. In <em>ACM SIGGRAPH 2022 Courses</em>, pages 1–66. 2022.&#160;<a class="footnote-backref" href="#fnref:6" title="Jump back to footnote 6 in the text">&#8617;</a></p>
+</li>
+<li id="fn:7">
+<p>Oliver Kingshott, Nick Antipa, Emrah Bostan, and Kaan Akşit. Unrolled primal-dual networks for lensless cameras. <em>Optics Express</em>, 30(26):46324–46335, 2022.&#160;<a class="footnote-backref" href="#fnref:7" title="Jump back to footnote 7 in the text">&#8617;</a></p>
+</li>
+<li id="fn:8">
+<p>Kaan Akşit, Praneeth Chakravarthula, Kishore Rathinavel, Youngmo Jeong, Rachel Albert, Henry Fuchs, and David Luebke. Manufacturing application-driven foveated near-eye displays. <em>IEEE transactions on visualization and computer graphics</em>, 25(5):1928–1939, 2019.&#160;<a class="footnote-backref" href="#fnref:8" title="Jump back to footnote 8 in the text">&#8617;</a></p>
+</li>
+<li id="fn:9">
+<p>Stefan Schmid, Daniel Schwyn, Kaan Akşit, Giorgio Corbellini, Thomas R Gross, and Stefan Mangold. From sound to sight: using audio processing to enable visible light communication. In <em>2014 IEEE Globecom Workshops (GC Wkshps)</em>, 518–523. IEEE, 2014.&#160;<a class="footnote-backref" href="#fnref:9" title="Jump back to footnote 9 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Prerequisites and general information">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Prerequisites and general information
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../fundamentals/" class="md-footer__link md-footer__link--next" aria-label="Next: Fundamentals in optimizing and learning light">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Fundamentals in optimizing and learning light
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2023
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://twitter.com/kaanaksit" target="_blank" rel="noopener" title="twitter.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://join.slack.com/t/rpcdrendering-m4b9370/shared_invite/zt-13b5caruu-o7Ra99nEXkntnJqVYJTVdg" target="_blank" rel="noopener" title="join.slack.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M94.12 315.1c0 25.9-21.16 47.06-47.06 47.06S0 341 0 315.1s21.16-47.06 47.06-47.06h47.06zm23.72 0c0-25.9 21.16-47.06 47.06-47.06s47.06 21.16 47.06 47.06v117.84c0 25.9-21.16 47.06-47.06 47.06s-47.06-21.16-47.06-47.06zm47.06-188.98c-25.9 0-47.06-21.16-47.06-47.06S139 32 164.9 32s47.06 21.16 47.06 47.06v47.06zm0 23.72c25.9 0 47.06 21.16 47.06 47.06s-21.16 47.06-47.06 47.06H47.06C21.16 243.96 0 222.8 0 196.9s21.16-47.06 47.06-47.06zm188.98 47.06c0-25.9 21.16-47.06 47.06-47.06S448 171 448 196.9s-21.16 47.06-47.06 47.06h-47.06zm-23.72 0c0 25.9-21.16 47.06-47.06 47.06s-47.06-21.16-47.06-47.06V79.06c0-25.9 21.16-47.06 47.06-47.06s47.06 21.16 47.06 47.06zM283.1 385.88c25.9 0 47.06 21.16 47.06 47.06S309 480 283.1 480s-47.06-21.16-47.06-47.06v-47.06zm0-23.72c-25.9 0-47.06-21.16-47.06-47.06s21.16-47.06 47.06-47.06h117.84c25.9 0 47.06 21.16 47.06 47.06s-21.16 47.06-47.06 47.06z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.tooltips", "content.code.copy", "content.code.select", "content.code.annotate", "content.tabs.link", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "navigation.instant", "navigation.indexes", "navigation.footer", "search.share", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.83f73b43.min.js"></script>
+      
+        <script src="../../javascripts/config.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>
