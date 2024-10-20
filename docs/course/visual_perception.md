@@ -2,7 +2,7 @@
 :octicons-info-24: Informative 
 
 We can establish an understanding on color perception through studying its physical and perceptual meaning.
-This way, we can gather more information on its relation to technologies and devices including displays, cameras, sensors, communication, computing and computer graphics.
+This way, we can gather more information on its relation to technologies and devices including displays, cameras, sensors, communication devices, computers and computer graphics.
 
 ### What is Color?
 :octicons-info-24: Informative 
@@ -12,15 +12,14 @@ In the physical sense, color is a quantity representing the response to waveleng
 The human visual system can perceive colors within a certain range of the electromagnetic spectrum, from around 400 nanometers to 700 nanometers.
 For greater details on the electromagnetic spectrum and concept of wavelength, we recommend revisiting [Light, Computation, and Computational Light](computational_light.md) section of our course.
 For the human visual system, color is a perceptual phenomenon created by our brain when specific wavelengths of light are emitted, reflected, or transmitted by objects.
-The perception of color originates from the absorption of light by photoreceptors in the eye, converting the light into electrical signals to be interpreted by the brain[@freeman2011metamers].
+The perception of color originates from the absorption of light by photoreceptors in the eye.
+These photoreceptor cells convert the light into electrical signals to be interpreted by the brain[@freeman2011metamers].
 Here, you can see a close-up photograph of these photoreceptor cells found in the eye.
 
 <figure markdown>
   ![Image title](media/rods_and_cones_closeup.jpg){ width="600" }
   <figcaption>Micrograph of retinal photoreceptor cells, with rods and cones highlighted in green (top row). Image courtesy of NIH, licensed under CC PDM 1.0. <a href="https://www.nih.gov/" target="_blank">View source</a>.</figcaption>
 </figure>
-
-
 
 The photoreceptors, where color perception originates, are called [rods and cones](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4763127/)[@lamb2015why]. 
 Here, we provide a sketch showing where these rods and cones are located inside the eye.
@@ -31,14 +30,24 @@ By closely observing this sketch, you can also understand the basic average geom
   <figcaption>Anatomy of an Eye (Designed with <a href="https://app.biorender.com/citation/6702e9cd8e56383950107e6d" target="_blank">BioRender.com</a>).</figcaption>
 </figure>
 
-Rods, which are relatively more common in the periphery, help people see in low-light (scotopic) conditions, but can only interpret in a greyscale manner. Cones, which are more dense in the fovea, are pivotal in color perception in brighter (photopic) environments. 
+Rods, which are relatively more common in the periphery, help people see in low-light (scotopic) conditions.
+The current understanding is that the roids can only interpret in a greyscale manner.
+Cones, which are more dense in the fovea, are pivotal in color perception in brighter (photopic) environments. 
 We highlight the distribution of these photoreceptor cells, rods and cones with changing eccentricities in the eye.
+Here, the word `eccentricities` refer to angles with respect to our gaze direction.
+For instance, if a person is not directly gazing at a location or an object in a given scene, that location or the object would have some angle to the gaze of that person.
+Thus, there would be at some angles, some eccentricity between the gaze of that person and that location or object in that scene.
+
 <figure markdown>
   ![Image title](media/retinal_photoreceptor_distribution.png){ width="600" }
   <figcaption>Retinal Photoreceptor Distribution, adapted from the work by Goldstein et al [3].</figcaption>
 </figure>
-In the above sketch, we introduced various parts on the retina, including fovea, parafovea, perifovea and peripheral vision. Visual acuity and contrast sensitivity decreases progressively across these regions, with the most detail in the fovea, diminishing toward the periphery.
 
+In the above sketch, we introduced various parts on the retina, including fovea, parafovea, perifovea and peripheral vision.
+Note that these regions are defined by the angles, in other words eccentricities.
+Please also note that there is a region on our retina where there are no rods and cones are available.
+This region could be found in every human eye and known as the blind spot on the retina.
+Visual acuity and contrast sensitivity decreases progressively across these identified regions, with the most detail in the fovea, diminishing toward the periphery.
 
 <figure markdown>
   ![Image title](media/lms_graph.png){ width="600" }
@@ -54,9 +63,9 @@ The cones are categorized into three types based on their sensitivity to specifi
 
 The story of color perception only deepens with the concept of [color opponency](http://dx.doi.org/10.1364/JOSAA.34.001099)[@shevell2017color]. This theory reveals that our perception of color is not just a matter of additive combinations of primary colors but also involves a dynamic interplay of opposing colors: red versus green, blue versus yellow. This phenomenon is rooted in the neural pathways of the eye and brain, where certain cells are excited or inhibited by specific wavelengths, enhancing our ability to distinguish between subtle shades and contrasts.
 
-### How can I find the LMS response of an image using odak?
-  The utility function we will review is [`odak.learn.perception.color_conversion.primaries_to_lms()`](https://github.com/kaanaksit/odak/blob/321760f2f2f3e2639301ecb32535cc801f53dd64/odak/learn/perception/color_conversion.py#L292) from [`odak.learn.perception`](../odak/learn_perception.md): <br /> <br />
-  Let us use this test to demonstrate how we can obtain LMS sensation from the color primaries of an image.
+We could exercise on our understanding of trichromat sensation with LMS cones and the concept of color oppenency by vising the functions available in our toolkit, `odak`.
+The utility function we will review is [`odak.learn.perception.color_conversion.primaries_to_lms()`](https://github.com/kaanaksit/odak/blob/321760f2f2f3e2639301ecb32535cc801f53dd64/odak/learn/perception/color_conversion.py#L292) from [`odak.learn.perception`](../odak/learn_perception.md).
+Let us use this test to demonstrate how we can obtain LMS sensation from the color primaries of an image.
 
 === ":octicons-file-code-16: `test_learn_perception_display_color_hvs.py`"
   ```python 
@@ -81,7 +90,7 @@ The story of color perception only deepens with the concept of [color opponency]
 </figure>
 
 
-
+<!--
 ### Display Realism (What does it mean to be realistic)
 
 When considering the realism of displays, it is important to define what realism entails in the context of color perception. If we were to have a display, disregarding all cost and engineering challenges, just solely built to be "lifelike", what would we need to achieve? 
@@ -101,11 +110,11 @@ Human perception is extremely context dependent, where we need to adapt to vario
 
 
 #### Chromaticity + Brightness
-<!-- TODO: add some more stuff here -->
+TODO: add some more stuff here
 
 
 
 ### Conclusion
 As we dive deeper into light and color perception, it becomes evident that the task of replicating the natural spectrum of colors in technology is still an evolving journey. This exploration into the nature of color sets the stage for a deeper examination of how our biological systems perceive color and how technology strives to emulate that perception.
 
-
+-->
