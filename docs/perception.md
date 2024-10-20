@@ -13,7 +13,5 @@ This loss function is based on previous work on [fast metamer generation](https:
 | Note          | Description   |
 | ------------- |:-------------:|
 | [`Using metameric loss in Odak`](notes/using_metameric_loss.md) | This engineering note will give you an idea about how to use the metameric perceptual loss in Odak. |
-| [`Find LMS cone sensation in Odak`](notes/color_perception.md) | This engineering note will give you an idea about how to use the metameric perceptual loss in Odak. |
-
 
 
