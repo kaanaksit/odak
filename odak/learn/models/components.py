@@ -816,3 +816,664 @@ class positional_encoder(torch.nn.Module):
         results = results.permute(0, 2, 1)
         results = results.reshape(B, -1)
         return results 
+
+
+
+class single_convolution_layer(torch.nn.Module):
+    """
+    A convolution layer with optional activation function and batch normalization.
+    """
+
+    def __init__(
+            self,
+            input_channels=2,
+            output_channels=2,
+            kernel_size=3,
+            stride=1,
+            bias=False,
+            normalization=None,
+            activation=torch.nn.ReLU()
+
+    ):
+        """
+        A convolutional layer class.
+
+
+        Parameters
+        ----------
+        input_channels  : int
+                          Number of input channels.
+        output_channels : int
+                          Number of output channels.
+        kernel_size     : int
+                          Kernel size.
+        bias            : bool
+                          Set to True to let convolutional layers have bias term.
+        activation      : torch.nn
+                          Nonlinear activation layer to be used. If None, uses torch.nn.ReLU().
+        """
+        super().__init__()
+        layers = [
+            torch.nn.Conv2d(
+                input_channels,
+                output_channels,
+                kernel_size=kernel_size,
+                stride=stride,
+                padding=kernel_size // 2,
+                bias=bias
+            )
+        ]
+        if activation is not None:
+            layers.append(activation)
+
+        if normalization is not None:
+            layers.append(normalization)
+
+        self.model = torch.nn.Sequential(*layers)
+
+    def forward(self, x):
+        """
+        Forward model.
+
+        Parameters
+        ----------
+        x             : torch.tensor
+                        Input data.
+
+
+        Returns
+        ----------
+        result        : torch.tensor
+                        Estimated output.
+        """
+        result = self.model(x)
+        return result
+
+
+class double_convolution_layer(torch.nn.Module):
+    """
+    A double convolution layer with optional batch normalization .
+    """
+
+    def __init__(
+            self,
+            input_channels=2,
+            mid_channels=None,
+            output_channels=2,
+            kernel_size=3,
+            bias=False,
+            normalization=None,
+            activation=torch.nn.ReLU()
+    ):
+        """
+        Double convolution model.
+
+
+        Parameters
+        ----------
+        input_channels  : int
+                          Number of input channels.
+        mid_channels    : int
+                          Number of channels in the hidden layer between two convolutions.
+        output_channels : int
+                          Number of output channels.
+        kernel_size     : int
+                          Kernel size.
+        bias            : bool
+                          Set to True to let convolutional layers have bias term.
+        activation      : torch.nn
+                          Nonlinear activation layer to be used. If None, uses torch.nn.ReLU().
+        """
+        super().__init__()
+        if isinstance(mid_channels, type(None)):
+            mid_channels = output_channels
+        self.activation = activation
+        self.model = torch.nn.Sequential(
+            single_convolution_layer(
+                input_channels=input_channels,
+                output_channels=mid_channels,
+                kernel_size=kernel_size,
+                bias=bias,
+                normalization=normalization,
+                activation=self.activation
+            ),
+            single_convolution_layer(
+                input_channels=mid_channels,
+                output_channels=output_channels,
+                kernel_size=kernel_size,
+                bias=bias,
+                normalization=normalization,
+                activation=self.activation
+            )
+        )
+
+    def forward(self, x):
+        """
+        Forward model.
+
+        Parameters
+        ----------
+        x             : torch.tensor
+                        Input data.
+
+
+        Returns
+        ----------
+        result        : torch.tensor
+                        Estimated output.
+        """
+        result = self.model(x)
+        return result
+
+
+class upsample_convtranspose2d_layer(torch.nn.Module):
+    """
+    An upsampling convtranspose2d layer.
+    """
+
+    def __init__(
+            self,
+            input_channels,
+            output_channels,
+            kernel_size=2,
+            stride=2,
+            bias=False,
+    ):
+        """
+        A downscaling component with a double convolution.
+
+        Parameters
+        ----------
+        input_channels  : int
+                          Number of input channels.
+        output_channels : int
+                          Number of output channels.
+        kernel_size     : int
+                          Kernel size.
+        bias            : bool
+                          Set to True to let convolutional layers have bias term.
+        activation      : torch.nn
+                          Nonlinear activation layer to be used. If None, uses torch.nn.ReLU().
+        bilinear        : bool
+                          If set to True, bilinear sampling is used.
+        """
+        super().__init__()
+
+        self.up = torch.nn.ConvTranspose2d(input_channels, output_channels, bias=bias,
+                                           kernel_size=kernel_size,
+                                           stride=stride)
+
+    def forward(self, x1, x2):
+        """
+        Forward model.
+
+        Parameters
+        ----------
+        x1             : torch.tensor
+                         First input data.
+        x2             : torch.tensor
+                         Second input data.
+
+
+        Returns
+        ----------
+        result        : torch.tensor
+                        Result of the forward operation
+        """
+        x1 = self.up(x1)
+        diffY = x2.size()[2] - x1.size()[2]
+        diffX = x2.size()[3] - x1.size()[3]
+        x1 = torch.nn.functional.pad(x1, [diffX // 2, diffX - diffX // 2,
+                                          diffY // 2, diffY - diffY // 2])
+
+        result = x1 + x2
+
+        return result
+
+
+class global_transformations(torch.nn.Module):
+    """
+    A global feature layer that processes global features from input channels and
+    applies learned transformations to another input tensor.
+
+    This implementation is adapted from RSGUnet:
+    https://github.com/MTLab/rsgunet_image_enhance.
+
+    Reference:
+    J. Huang, P. Zhu, M. Geng et al. "Range Scaling Global U-Net for Perceptual Image Enhancement on Mobile Devices."
+    """
+
+    def __init__(
+            self,
+            input_channels,
+            output_channels
+    ):
+        """
+        A global feature layer.
+
+
+        Parameters
+        ----------
+        input_channels  : int
+                          Number of input channels.
+        output_channels : int
+                          Number of output channels.
+        """
+        super().__init__()
+
+        self.global_feature_1 = torch.nn.Sequential(
+            torch.nn.Linear(input_channels, output_channels),
+            torch.nn.LeakyReLU(0.2, inplace=True),
+        )
+        self.global_feature_2 = torch.nn.Sequential(
+            torch.nn.Linear(output_channels, output_channels),
+            torch.nn.LeakyReLU(0.2, inplace=True))
+
+    def forward(self, x1, x2):
+        """
+        Forward model.
+
+        Parameters
+        ----------
+        x1             : torch.tensor
+                         First input data.
+        x2             : torch.tensor
+                         Second input data.
+
+
+        Returns
+        ----------
+        result        : torch.tensor
+                        Estimated output.
+        """
+        y = torch.mean(x2, dim=(2, 3))
+        y1 = self.global_feature_1(y)
+        y2 = self.global_feature_2(y1)
+        y1 = y1.unsqueeze(2).unsqueeze(3)
+        y2 = y2.unsqueeze(2).unsqueeze(3)
+        result = x1 * y1 + y2
+        return result
+
+
+class global_feature_module(torch.nn.Module):
+    """
+    A global feature layer that processes global features from input channels and
+    applies them to another input tensor via learned transformations.
+    """
+
+    def __init__(
+            self,
+            input_channels,
+            mid_channels,
+            output_channels,
+            kernel_size,
+            bias=False,
+            activation=torch.nn.ReLU()
+    ):
+        """
+        A global feature layer.
+
+
+        Parameters
+        ----------
+        input_channels  : int
+                          Number of input channels.
+        mid_channels  : int
+                          Number of mid channels.
+        output_channels : int
+                          Number of output channels.
+        kernel_size     : int
+                          Kernel size.
+        bias            : bool
+                          Set to True to let convolutional layers have bias term.
+        activation      : torch.nn
+                          Nonlinear activation layer to be used. If None, uses torch.nn.ReLU().
+        """
+        super().__init__()
+
+        self.transformations_1 = global_transformations(input_channels, output_channels)
+        self.global_features_1 = double_convolution_layer(
+            input_channels=input_channels,
+            mid_channels=mid_channels,
+            output_channels=output_channels,
+            kernel_size=kernel_size,
+            bias=bias,
+            activation=activation
+        )
+        self.global_features_2 = double_convolution_layer(
+            input_channels=input_channels,
+            mid_channels=mid_channels,
+            output_channels=output_channels,
+            kernel_size=kernel_size,
+            bias=bias,
+            activation=activation
+        )
+        self.transformations_2 = global_transformations(input_channels, output_channels)
+
+    def forward(self, x1, x2):
+        """
+        Forward model.
+
+        Parameters
+        ----------
+        x1             : torch.tensor
+                         First input data.
+        x2             : torch.tensor
+                         Second input data.
+
+
+        Returns
+        ----------
+        result        : torch.tensor
+                        Estimated output.
+        """
+        global_tensor_1 = self.transformations_1(x1, x2)
+        y1 = self.global_features_1(global_tensor_1)
+        y2 = self.global_features_2(y1)
+        global_tensor_2 = self.transformations_2(y1, y2)
+        return global_tensor_2
+
+
+class spatially_adaptive_convolution(torch.nn.Module):
+    """
+    A spatially adaptive convolution layer.
+
+    References
+    ----------
+    C. Zheng et al. "Focal Surface Holographic Light Transport using Learned Spatially Adaptive Convolutions."
+    C, Xu et al. "Squeezesegv3: Spatially-adaptive Convolution for Efficient Point-Cloud Segmentation."
+    C. Zheng et al. "Windowing Decomposition Convolutional Neural Network for Image Enhancement."
+    """
+
+    def __init__(
+            self,
+            input_channels=2,
+            output_channels=2,
+            kernel_size=3,
+            stride=1,
+            padding=1,
+            bias=False,
+            activation=torch.nn.LeakyReLU(0.2, inplace=True)
+    ):
+        """
+        Initializes a spatially adaptive convolution layer.
+
+        Parameters
+        ----------
+        input_channels  : int
+                          Number of input channels.
+        output_channels : int
+                          Number of output channels.
+        kernel_size     : int
+                          Size of the convolution kernel.
+        stride          : int
+                          Stride of the convolution.
+        padding         : int
+                          Padding added to both sides of the input.
+        bias            : bool
+                          If True, includes a bias term in the convolution.
+        activation      : torch.nn.Module
+                          Activation function to apply. If None, no activation is applied.
+        """
+        super(spatially_adaptive_convolution, self).__init__()
+        self.kernel_size = kernel_size
+        self.input_channels = input_channels
+        self.output_channels = output_channels
+        self.stride = stride
+        self.padding = padding
+
+        # Standard convolution layer
+        self.standard_convolution = torch.nn.Conv2d(
+            in_channels=input_channels,
+            out_channels=self.output_channels,
+            kernel_size=kernel_size,
+            stride=stride,
+            padding=padding,
+            bias=bias
+        )
+
+        self.weight = torch.nn.Parameter(data=self.standard_convolution.weight, requires_grad=True)
+        self.activation = activation
+
+    def forward(self, x, sv_kernel_feature):
+        """
+        Forward pass for the spatially adaptive convolution layer.
+
+        Parameters
+        ----------
+        x                  : torch.tensor
+                            Input data tensor.
+                            Dimension: (1, C, H, W)
+        sv_kernel_feature   : torch.tensor
+                            Spatially varying kernel features.
+                            Dimension: (1, C_i * kernel_size * kernel_size, H, W)
+
+        Returns
+        -------
+        sa_output          : torch.tensor
+                            Estimated output tensor.
+                            Dimension: (1, output_channels, H_out, W_out)
+        """
+        # Pad input and sv_kernel_feature if necessary
+        if sv_kernel_feature.size(-1) * self.stride != x.size(-1) or sv_kernel_feature.size(
+                -2) * self.stride != x.size(-2):
+            diffY = sv_kernel_feature.size(-2) % self.stride
+            diffX = sv_kernel_feature.size(-1) % self.stride
+            sv_kernel_feature = torch.nn.functional.pad(sv_kernel_feature, (diffX // 2, diffX - diffX // 2,
+                                                                            diffY // 2, diffY - diffY // 2))
+            diffY = x.size(-2) % self.stride
+            diffX = x.size(-1) % self.stride
+            x = torch.nn.functional.pad(x, (diffX // 2, diffX - diffX // 2,
+                                            diffY // 2, diffY - diffY // 2))
+
+        # Unfold the input tensor for matrix multiplication
+        input_feature = torch.nn.functional.unfold(x, kernel_size=(self.kernel_size, self.kernel_size),
+                                                   stride=self.stride,
+                                                   padding=self.padding)
+
+        # Resize sv_kernel_feature to match the input feature
+        sv_kernel = sv_kernel_feature.reshape(1, self.input_channels * self.kernel_size * self.kernel_size,
+                                              (x.size(-2) // self.stride) * (x.size(-1) // self.stride))
+
+        # Resize weight to match the input channels and kernel size
+        si_kernel = self.weight.reshape(self.weight_output_channels,
+                                        self.input_channels * self.kernel_size * self.kernel_size)
+
+        # Apply spatially varying kernels
+        sv_feature = input_feature * sv_kernel
+
+        # Perform matrix multiplication
+        sa_output = torch.matmul(si_kernel, sv_feature).reshape(1, self.weight_output_channels,
+                                                                (x.size(-2) // self.stride),
+                                                                (x.size(-1) // self.stride))
+        return sa_output
+
+
+class spatially_adaptive_module(torch.nn.Module):
+    """
+    A spatially adaptive module that combines learned spatially adaptive convolutions.
+
+    References
+    ----------
+    C. Zheng et al. "Focal Surface Holographic Light Transport using Learned Spatially Adaptive Convolutions."
+    """
+
+    def __init__(
+            self,
+            input_channels=2,
+            output_channels=2,
+            kernel_size=3,
+            stride=1,
+            padding=1,
+            bias=False,
+            activation=torch.nn.LeakyReLU(0.2, inplace=True)
+    ):
+        """
+        Initializes a spatially adaptive module.
+
+        Parameters
+        ----------
+        input_channels  : int
+                          Number of input channels.
+        output_channels : int
+                          Number of output channels.
+        kernel_size     : int
+                          Size of the convolution kernel.
+        stride          : int
+                          Stride of the convolution.
+        padding         : int
+                          Padding added to both sides of the input.
+        bias            : bool
+                          If True, includes a bias term in the convolution.
+        activation      : torch.nn
+                          Nonlinear activation layer to be used. If None, uses torch.nn.ReLU().
+        """
+        super(spatially_adaptive_module, self).__init__()
+        self.kernel_size = kernel_size
+        self.input_channels = input_channels
+        self.output_channels = output_channels
+        self.stride = stride
+        self.padding = padding
+        self.weight_output_channels = self.output_channels - 1
+
+        # Standard convolution layer
+        self.standard_convolution = torch.nn.Conv2d(
+            in_channels=input_channels,
+            out_channels=self.weight_output_channels,
+            kernel_size=kernel_size,
+            stride=stride,
+            padding=padding,
+            bias=bias
+        )
+
+        self.weight = torch.nn.Parameter(data=self.standard_convolution.weight, requires_grad=True)
+        self.activation = activation
+
+    def forward(self, x, sv_kernel_feature):
+        """
+        Forward pass for the spatially adaptive module.
+
+        Parameters
+        ----------
+        x                  : torch.tensor
+                            Input data tensor.
+                            Dimension: (1, C, H, W)
+        sv_kernel_feature   : torch.tensor
+                            Spatially varying kernel features.
+                            Dimension: (1, C_i * kernel_size * kernel_size, H, W)
+
+        Returns
+        -------
+        output             : torch.tensor
+                            Combined output tensor from standard and spatially adaptive convolutions.
+                            Dimension: (1, output_channels, H_out, W_out)
+        """
+
+        # Pad input and sv_kernel_feature if necessary
+        if sv_kernel_feature.size(-1) * self.stride != x.size(-1) or sv_kernel_feature.size(
+                -2) * self.stride != x.size(-2):
+            diffY = sv_kernel_feature.size(-2) % self.stride
+            diffX = sv_kernel_feature.size(-1) % self.stride
+
+            sv_kernel_feature = torch.nn.functional.pad(sv_kernel_feature, (diffX // 2, diffX - diffX // 2,
+                                                                            diffY // 2, diffY - diffY // 2))
+            diffY = x.size(-2) % self.stride
+            diffX = x.size(-1) % self.stride
+            x = torch.nn.functional.pad(x, (diffX // 2, diffX - diffX // 2,
+                                            diffY // 2, diffY - diffY // 2))
+
+        # Unfold the input tensor for matrix multiplication
+        input_feature = torch.nn.functional.unfold(x, kernel_size=(self.kernel_size, self.kernel_size),
+                                                   stride=self.stride,
+                                                   padding=self.padding)
+
+        # Resize sv_kernel_feature to match the input feature
+        sv_kernel = sv_kernel_feature.reshape(1, self.input_channels * self.kernel_size * self.kernel_size,
+                                              (x.size(-2) // self.stride) * (x.size(-1) // self.stride))
+
+        # Apply sv_kernel to the input_feature
+        sv_feature = input_feature * sv_kernel
+
+        # Original spatially varying convolution output
+        sv_output = torch.sum(sv_feature, dim=1).reshape(1, 1, (x.size(-2) // self.stride),
+                                                         (x.size(-1) // self.stride))
+
+        # Reshape weight for spatially adaptive convolution
+        si_kernel = self.weight.reshape(self.weight_output_channels,
+                                        self.input_channels * self.kernel_size * self.kernel_size)
+
+        # Apply si_kernel on sv convolution output
+        sa_output = torch.matmul(si_kernel, sv_feature).reshape(1, self.weight_output_channels,
+                                                                (x.size(-2) // self.stride),
+                                                                (x.size(-1) // self.stride))
+
+        # Combine the outputs and apply activation function
+        output = self.activation(torch.cat((sv_output, sa_output), dim=1))
+        return output
+
+
+class triple_convolution(torch.nn.Module):
+    """
+    A triple convolution layer.
+    """
+
+    def __init__(
+            self,
+            input_channels=2,
+            mid_channels=2,
+            output_channels=2,
+            kernel_size=3,
+            bias=False,
+            stride=1,
+            activation=torch.nn.ReLU()
+    ):
+        """
+        Double convolution model.
+
+
+        Parameters
+        ----------
+        input_channels  : int
+                          Number of input channels.
+        mid_channels    : int
+                          Number of channels in the hidden layer between two convolutions.
+        output_channels : int
+                          Number of output channels.
+        kernel_size     : int
+                          Kernel size.
+        bias            : bool
+                          Set to True to let convolutional layers have bias term.
+        activation      : torch.nn
+                          Nonlinear activation layer to be used. If None, uses torch.nn.ReLU().
+        """
+        super().__init__()
+        self.model = torch.nn.Sequential(
+            torch.nn.Conv2d(in_channels=input_channels, out_channels=mid_channels, kernel_size=kernel_size,
+                            stride=stride, padding=kernel_size // 2, bias=bias),
+            activation,
+            torch.nn.Conv2d(in_channels=mid_channels, out_channels=mid_channels, kernel_size=kernel_size,
+                            stride=stride,
+                            padding=kernel_size // 2, bias=bias),
+            activation,
+            torch.nn.Conv2d(in_channels=mid_channels, out_channels=output_channels, kernel_size=kernel_size,
+                            stride=stride, padding=kernel_size // 2, bias=bias),
+        )
+
+    def forward(self, x):
+        """
+        Forward model.
+
+        Parameters
+        ----------
+        x             : torch.tensor
+                        Input data.
+
+
+        Returns
+        ----------
+        result        : torch.tensor
+                        Estimated output.
+        """
+        result = self.model(x)
+        return result
+

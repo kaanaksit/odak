@@ -1,8 +1,9 @@
 import torch
 import os
 from tqdm import tqdm
-from ..models import unet
-from .util import generate_complex_field, wavenumber
+import json
+from ..models import *
+from .util import generate_complex_field, wavenumber, calculate_amplitude
 
 
 class holobeam_multiholo(torch.nn.Module):
@@ -133,3 +134,164 @@ class holobeam_multiholo(torch.nn.Module):
         """
         self.network.load_state_dict(torch.load(os.path.expanduser(filename)))
         self.network.eval()
+
+
+
+
+
+
+
+class focal_surface_light_propagation(torch.nn.Module):
+    """
+    focal_surface_light_propagation model.
+
+    References
+    ----------
+    C. Zheng et al. "Focal Surface Holographic Light Transport using Learned Spatially Adaptive Convolutions."
+    """
+
+    def __init__(self,
+                 depth=3,
+                 dimensions=8,
+                 input_channels=6,
+                 out_channels=6,
+                 kernel_size=3,
+                 bias=True,
+                 device=torch.device('cuda'),
+                 activation=torch.nn.LeakyReLU(0.2, inplace=True)):
+        """
+        Initializes the focal surface light propagation model.
+
+        Parameters
+        ----------
+        depth             : int
+                            Number of downsampling and upsampling layers.
+        dimensions        : int
+                            Number of dimensions/features in the model.
+        input_channels    : int
+                            Number of input channels.
+        out_channels      : int
+                            Number of output channels.
+        kernel_size       : int
+                            Size of the convolution kernel.
+        bias              : bool
+                            If True, allows convolutional layers to learn a bias term.
+        device            : torch.device
+                        Default device is CPU.
+        activation        : torch.nn.Module
+                            Activation function (e.g., torch.nn.ReLU(), torch.nn.Sigmoid()).
+        """
+        super().__init__()
+        self.depth = depth
+        self.device=device
+
+        self.sv_kernel_generation = spatially_varying_kernel_generation_model(
+            depth=depth,
+            dimensions=dimensions,
+            input_channels=input_channels + 1,  # +1 to account for an extra channel
+            kernel_size=kernel_size,
+            bias=bias,
+            activation=activation
+        )
+
+        self.light_propagation = spatially_adaptive_unet(
+            depth=depth,
+            dimensions=dimensions,
+            input_channels=input_channels,
+            out_channels=out_channels,
+            kernel_size=kernel_size,
+            bias=bias,
+            activation=activation
+        )
+
+    def forward(self, focal_surface, phase_only_hologram):
+        """
+        Forward pass through the model.
+
+        Parameters
+        ----------
+        focal_surface         : torch.Tensor
+                                Input focal surface.
+        phase_only_hologram   : torch.Tensor
+                                Input phase-only hologram.
+
+        Returns
+        ----------
+        result                : torch.Tensor
+                                Output tensor after light propagation.
+        """
+        input_field = self.generate_input_field(phase_only_hologram)
+        sv_kernel = self.sv_kernel_generation(focal_surface, input_field)
+        output_field = self.light_propagation(sv_kernel, input_field)
+        final = (output_field[:, 0:3, :, :] + 1j * output_field[:, 3:6, :, :])
+        result = calculate_amplitude(final) ** 2
+        return result
+
+    def generate_input_field(self, phase_only_hologram):
+        """
+        Generates an input field by combining the real and imaginary parts.
+
+        Parameters
+        ----------
+        phase_only_hologram   : torch.Tensor
+                                Input phase-only hologram.
+
+        Returns
+        ----------
+        input_field           : torch.Tensor
+                                Concatenated real and imaginary parts of the complex field.
+        """
+        [b, c, h, w] = phase_only_hologram.size()
+        input_phase = phase_only_hologram * 2 * np.pi
+        hologram_amplitude = torch.ones(b, c, h, w, requires_grad=False)
+        field = generate_complex_field(hologram_amplitude, input_phase)
+        input_field = torch.cat((field.real, field.imag), dim=1)
+        return input_field
+
+    def load_weights(self,weight_filename, key_mapping_filename):
+        """
+        Function to load weights for this multi-layer perceptron from a file.
+
+        Parameters
+        ----------
+        weight_filename      : str
+                               Path to the old model's weight file.
+        key_mapping_filename : str
+                               Path to the JSON file containing the key mappings.
+        """
+        # Load old model weights
+        old_model_weights = torch.load(weight_filename, map_location=self.device)
+
+        # Load key mappings from JSON file
+        with open(key_mapping_filename, 'r') as json_file:
+            key_mappings = json.load(json_file)
+
+        # Extract the key mappings for sv_kernel_generation and light_prop
+        sv_kernel_generation_key_mapping = key_mappings['sv_kernel_generation_key_mapping']
+        light_prop_key_mapping = key_mappings['light_prop_key_mapping']
+
+        # Initialize new state dicts
+        sv_kernel_generation_new_state_dict = {}
+        light_prop_new_state_dict = {}
+
+        # Map and load sv_kernel_generation_model weights
+        for old_key, value in old_model_weights.items():
+            if old_key in sv_kernel_generation_key_mapping:
+                # Map the old key to the new key
+                new_key = sv_kernel_generation_key_mapping[old_key]
+                sv_kernel_generation_new_state_dict[new_key] = value
+
+        self.sv_kernel_generation.to(self.device)
+        self.sv_kernel_generation.load_state_dict(sv_kernel_generation_new_state_dict)
+
+        # Map and load light_prop model weights
+        for old_key, value in old_model_weights.items():
+            if old_key in light_prop_key_mapping:
+                # Map the old key to the new key
+                new_key = light_prop_key_mapping[old_key]
+                light_prop_new_state_dict[new_key] = value
+
+        self.light_propagation.to(self.device)
+        self.light_propagation.load_state_dict(light_prop_new_state_dict)
+        print("Weights loaded successfully into the new model.")
+

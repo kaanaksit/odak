@@ -1,5 +1,5 @@
 import torch
-from .components import double_convolution, downsample_layer, upsample_layer, swish, gaussian
+from .components import *
 
 
 class multi_layer_perceptron(torch.nn.Module):
@@ -194,3 +194,397 @@ class unet(torch.nn.Module):
         result = self.outc(x_up)
         return result
 
+
+
+
+class spatially_varying_kernel_generation_model(torch.nn.Module):
+    """
+    Spatially_varying_kernel_generation_model revised from RSGUnet:
+    https://github.com/MTLab/rsgunet_image_enhance.
+    Refer to:
+    J. Huang, P. Zhu, M. Geng et al. Range Scaling Global U-Net for Perceptual Image Enhancement on Mobile Devices.
+    """
+
+    def __init__(
+            self,
+            depth=3,
+            dimensions=8,
+            input_channels=7,
+            kernel_size=3,
+            bias=True,
+            activation=torch.nn.LeakyReLU(0.2, inplace=True)
+    ):
+        """
+        U-Net model.
+
+        Parameters
+        ----------
+        depth          : int
+                         Number of upsampling and downsampling layers.
+
+        dimensions     : int
+                         Number of dimensions.
+
+        input_channels : int
+                         Number of input channels.
+
+        bias           : bool
+                         Set to True to let convolutional layers learn a bias term.
+
+        activation     : torch.nn
+                         Non-linear activation layer (e.g., torch.nn.ReLU(), torch.nn.Sigmoid()).
+        """
+
+        super().__init__()
+        self.depth = depth
+        self.inc = single_convolution_layer(
+            input_channels=input_channels,
+            output_channels=dimensions,
+            kernel_size=kernel_size,
+            bias=bias,
+            activation=activation
+        )
+
+        self.encoder = torch.nn.ModuleList()
+        for i in range(depth + 1):  # downsampling layers
+            if i == 0:
+                in_channels = dimensions * (2 ** i)
+                out_channels = dimensions * (2 ** i)
+            elif i == depth:
+                in_channels = dimensions * (2 ** (i - 1))
+                out_channels = dimensions * (2 ** (i - 1))
+            else:
+                in_channels = dimensions * (2 ** (i - 1))
+                out_channels = 2 * in_channels
+
+            pooling_layer = torch.nn.AvgPool2d(2)
+            convolution_layer = double_convolution_layer(
+                input_channels=in_channels,
+                mid_channels=in_channels,
+                output_channels=out_channels,
+                kernel_size=kernel_size,
+                bias=bias,
+                activation=activation
+            )
+            self.encoder.append(pooling_layer)
+            self.encoder.append(convolution_layer)
+
+        self.spatially_varying_feature = torch.nn.ModuleList()  # for kernel generation
+        for i in range(depth, -1, -1):
+            if i == 1:
+                svf_in_channels = dimensions + 2 ** (self.depth + i) + 1
+            else:
+                svf_in_channels = 2 ** (self.depth + i) + 1
+
+            svf_out_channels = (2 ** (self.depth + i)) * (kernel_size * kernel_size)
+            svf_min_channels = dimensions * (2 ** (self.depth - 1))
+
+            spatially_varying_kernel_generation = torch.nn.ModuleList()
+            for j in range(i, -1, -1):
+                pooling_layer = torch.nn.AvgPool2d(2 ** (j + 1))
+                spatially_varying_kernel_generation.append(pooling_layer)
+
+            kernel_generation_block = triple_convolution(
+                input_channels=svf_in_channels,
+                mid_channels=svf_min_channels,
+                output_channels=svf_out_channels,
+                kernel_size=kernel_size,
+                bias=bias,
+                activation=activation
+            )
+            spatially_varying_kernel_generation.append(kernel_generation_block)
+            self.spatially_varying_feature.append(spatially_varying_kernel_generation)
+
+        self.decoder = torch.nn.ModuleList()
+        global_feature_layer = global_feature_module(  # global feature layer
+            input_channels=dimensions * (2 ** (depth - 1)),
+            mid_channels=dimensions * (2 ** (depth - 1)),
+            output_channels=dimensions * (2 ** (depth - 1)),
+            kernel_size=kernel_size,
+            bias=bias,
+            activation=torch.nn.LeakyReLU(0.2, inplace=True)
+        )
+        self.decoder.append(global_feature_layer)
+
+        for i in range(depth, 0, -1):
+            if i == 2:
+                up_in_channels = (dimensions // 2) * (2 ** i)
+                up_out_channels = up_in_channels
+                up_mid_channels = up_in_channels
+            elif i == 1:
+                up_in_channels = dimensions * 2
+                up_out_channels = dimensions
+                up_mid_channels = up_out_channels
+            else:
+                up_in_channels = (dimensions // 2) * (2 ** i)
+                up_out_channels = up_in_channels // 2
+                up_mid_channels = up_in_channels
+
+            upsample_layer = upsample_convtranspose2d_layer(
+                input_channels=up_in_channels,
+                output_channels=up_mid_channels,
+                kernel_size=2,
+                stride=2,
+                bias=bias,
+            )
+            conv_layer = double_convolution_layer(
+                input_channels=up_mid_channels,
+                output_channels=up_out_channels,
+                kernel_size=kernel_size,
+                bias=bias,
+                activation=activation,
+            )
+            self.decoder.append(torch.nn.ModuleList([upsample_layer, conv_layer]))
+
+    def forward(self, focal_surface, field):
+        """
+        Forward model.
+
+        Parameters
+        ----------
+        focal_surface : torch.tensor
+                        Input focal surface data.
+                        Dimension: (1, 1, H, W)
+
+        field         : torch.tensor
+                        Input field data.
+                        Dimension: (1, 6, H, W)
+
+        Returns
+        -------
+        sv_kernel : list of torch.tensor
+                    Learned spatially varying kernels.
+                    Dimension of each element in the list: (1, C_i * kernel_size * kernel_size, H_i, W_i),
+                    where C_i, H_i, and W_i represent the channel, height, and width
+                    of each feature at a certain scale.
+        """
+        x = self.inc(torch.cat((focal_surface, field), dim=1))
+        downsampling_outputs = [focal_surface]
+        downsampling_outputs.append(x)
+
+        for i, down_layer in enumerate(self.encoder):
+            x_down = down_layer(downsampling_outputs[-1])
+            downsampling_outputs.append(x_down)
+
+        sv_kernels = []
+        for i, (up_layer, svf_layer) in enumerate(zip(self.decoder, self.spatially_varying_feature)):
+            if i == 0:
+                global_feature = up_layer(downsampling_outputs[-2], downsampling_outputs[-1])
+                downsampling_outputs[-1] = global_feature
+                sv_feature = [global_feature, downsampling_outputs[0]]
+                for j in range(self.depth - i + 1):
+                    sv_feature[1] = svf_layer[self.depth - i](sv_feature[1])
+                    if j > 0:
+                        sv_feature.append(svf_layer[j](downsampling_outputs[2 * j]))
+
+                sv_feature = [sv_feature[0], sv_feature[1], sv_feature[4], sv_feature[2],
+                              sv_feature[3]]
+                sv_kernel = svf_layer[-1](torch.cat(sv_feature, dim=1))
+                sv_kernels.append(sv_kernel)
+            else:
+                x_up = up_layer[0](downsampling_outputs[-1],
+                                   downsampling_outputs[2 * (self.depth + 1 - i) + 1])
+                x_up = up_layer[1](x_up)
+                downsampling_outputs[-1] = x_up
+
+                sv_feature = [x_up, downsampling_outputs[0]]
+                for j in range(self.depth - i + 1):
+                    sv_feature[1] = svf_layer[self.depth - i](sv_feature[1])
+                    if j > 0:
+                        sv_feature.append(svf_layer[j](downsampling_outputs[2 * j]))
+
+                if i == 1:
+                    sv_feature = [sv_feature[0], sv_feature[1], sv_feature[3], sv_feature[2]]
+
+                sv_kernel = svf_layer[-1](torch.cat(sv_feature, dim=1))
+                sv_kernels.append(sv_kernel)
+
+        return sv_kernels
+
+
+class spatially_adaptive_unet(torch.nn.Module):
+    """
+    Spatially varying U-Net model based on spatially adaptive convolution.
+
+    References
+    ----------
+    C. Zheng et al. "Focal Surface Holographic Light Transport using Learned Spatially Adaptive Convolutions."
+    """
+
+    def __init__(
+            self,
+            depth=3,
+            dimensions=8,
+            input_channels=6,
+            out_channels=6,
+            kernel_size=3,
+            bias=True,
+            activation=torch.nn.LeakyReLU(0.2, inplace=True)
+    ):
+        """
+        U-Net model.
+
+        Parameters
+        ----------
+        depth          : int
+                         Number of upsampling and downsampling layers.
+
+        dimensions     : int
+                         Number of dimensions.
+
+        input_channels : int
+                         Number of input channels.
+
+        out_channels   : int
+                         Number of output channels.
+
+        bias           : bool
+                         Set to True to let convolutional layers learn a bias term.
+
+        activation     : torch.nn
+                         Non-linear activation layer (e.g., torch.nn.ReLU(), torch.nn.Sigmoid()).
+        """
+        super().__init__()
+        self.depth = depth
+        self.out_channels = out_channels
+        self.inc = single_convolution_layer(
+            input_channels=input_channels,
+            output_channels=dimensions,
+            kernel_size=kernel_size,
+            bias=bias,
+            activation=activation
+        )
+
+        self.encoder = torch.nn.ModuleList()
+        for i in range(self.depth + 1):  # Downsampling layers
+            down_in_channels = dimensions * (2 ** i)
+            down_out_channels = 2 * down_in_channels
+            pooling_layer = torch.nn.AvgPool2d(2)
+            convolution_layer = double_convolution_layer(
+                input_channels=down_in_channels,
+                mid_channels=down_in_channels,
+                output_channels=down_in_channels,
+                kernel_size=kernel_size,
+                bias=bias,
+                activation=activation
+            )
+            sam = spatially_adaptive_module(
+                input_channels=down_in_channels,
+                output_channels=down_out_channels,
+                kernel_size=kernel_size,
+                bias=bias,
+                activation=activation
+            )
+            self.encoder.append(torch.nn.ModuleList([pooling_layer, convolution_layer, sam]))
+
+        self.global_feature_module = torch.nn.ModuleList()
+        convolution_layer = double_convolution_layer(
+            input_channels=dimensions * (2 ** (depth + 1)),
+            mid_channels=dimensions * (2 ** (depth + 1)),
+            output_channels=dimensions * (2 ** (depth + 1)),
+            kernel_size=kernel_size,
+            bias=bias,
+            activation=activation
+        )
+        global_feature_layer = global_feature_module(
+            input_channels=dimensions * (2 ** (depth + 1)),
+            mid_channels=dimensions * (2 ** (depth + 1)),
+            output_channels=dimensions * (2 ** (depth + 1)),
+            kernel_size=kernel_size,
+            bias=bias,
+            activation=torch.nn.LeakyReLU(0.2, inplace=True)
+        )
+        self.global_feature_module.append(torch.nn.ModuleList([convolution_layer, global_feature_layer]))
+
+        self.decoder = torch.nn.ModuleList()
+        for i in range(depth, -1, -1):
+            up_in_channels = dimensions * (2 ** (i + 1))
+            up_mid_channels = up_in_channels // 2
+            if i == 0:
+                up_out_channels = self.out_channels
+                upsample_layer = upsample_convtranspose2d_layer(
+                    input_channels=up_in_channels,
+                    output_channels=up_mid_channels,
+                    kernel_size=2,
+                    stride=2,
+                    bias=bias,
+                )
+                conv_layer = torch.nn.Sequential(
+                    single_convolution_layer(
+                        input_channels=up_mid_channels,
+                        output_channels=up_mid_channels,
+                        kernel_size=kernel_size,
+                        bias=bias,
+                        activation=activation,
+                    ),
+                    single_convolution_layer(
+                        input_channels=up_mid_channels,
+                        output_channels=up_out_channels,
+                        kernel_size=1,
+                        bias=bias,
+                        activation=None,
+                    )
+                )
+                self.decoder.append(torch.nn.ModuleList([upsample_layer, conv_layer]))
+            else:
+                up_out_channels = up_in_channels // 2
+                upsample_layer = upsample_convtranspose2d_layer(
+                    input_channels=up_in_channels,
+                    output_channels=up_mid_channels,
+                    kernel_size=2,
+                    stride=2,
+                    bias=bias,
+                )
+                conv_layer = double_convolution_layer(
+                    input_channels=up_mid_channels,
+                    mid_channels=up_mid_channels,
+                    output_channels=up_out_channels,
+                    kernel_size=kernel_size,
+                    bias=bias,
+                    activation=activation,
+                )
+                self.decoder.append(torch.nn.ModuleList([upsample_layer, conv_layer]))
+
+    def forward(self, sv_kernel, field):
+        """
+        Forward model.
+
+        Parameters
+        ----------
+        sv_kernel : list of torch.tensor
+                    Learned spatially varying kernels.
+                    Dimension of each element in the list: (1, C_i * kernel_size * kernel_size, H_i, W_i),
+                    where C_i, H_i, and W_i represent the channel, height, and width
+                    of each feature at a certain scale.
+
+        field     : torch.tensor
+                    Input field data.
+                    Dimension: (1, 6, H, W)
+
+        Returns
+        -------
+        target_field : torch.tensor
+                       Estimated output.
+                       Dimension: (1, 6, H, W)
+        """
+        x = self.inc(field)
+        downsampling_outputs = [x]
+        for i, down_layer in enumerate(self.encoder):
+            x_down = down_layer[0](downsampling_outputs[-1])
+            downsampling_outputs.append(x_down)
+            sam_output = down_layer[2](x_down + down_layer[1](x_down), sv_kernel[self.depth - i])
+            downsampling_outputs.append(sam_output)
+
+        global_feature = self.global_feature_module[0][0](downsampling_outputs[-1])
+        global_feature = self.global_feature_module[0][1](downsampling_outputs[-1], global_feature)
+        downsampling_outputs.append(global_feature)
+
+        x_up = downsampling_outputs[-1]
+        for i, up_layer in enumerate(self.decoder):
+            x_up = up_layer[0](x_up, downsampling_outputs[2 * (self.depth - i)])
+            x_up = up_layer[1](x_up)
+
+        result = x_up
+        return result
+
+#
