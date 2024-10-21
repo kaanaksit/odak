@@ -1,11 +1,9 @@
-## Color Perception
-:octicons-info-24: Informative 
+## Color Perception :material-alert-decagram:{ .mdx-pulse title="Too important!" }
+:octicons-info-24: Informative ·
+:octicons-beaker-24: Practical
 
 We can establish an understanding on color perception through studying its physical and perceptual meaning.
 This way, we can gather more information on its relation to technologies and devices including displays, cameras, sensors, communication devices, computers and computer graphics.
-
-### What is Color?
-:octicons-info-24: Informative 
 
 Color, a perceptual phenomenon, can be explained in a physical and visual perception capacity.
 In the physical sense, color is a quantity representing the response to wavelength of light.
@@ -118,3 +116,13 @@ TODO: add some more stuff here
 As we dive deeper into light and color perception, it becomes evident that the task of replicating the natural spectrum of colors in technology is still an evolving journey. This exploration into the nature of color sets the stage for a deeper examination of how our biological systems perceive color and how technology strives to emulate that perception.
 
 -->
+
+??? tip end "Consider revisiting this chapter"
+    Remember that you can always revisit this chapter as you progress with the course and as you need it.
+    This chapter is vital for establishing a means to complete your assignments and could help formulate a suitable base to collaborate and work with [my research group](https://complightlab.com) in the future or other experts in the field.
+
+!!! warning end "Reminder"
+    We host a Slack group with more than 300 members.
+    This Slack group focuses on the topics of rendering, perception, displays and cameras.
+    The group is open to public and you can become a member by following [this link](https://complightlab.com/outreach/).
+    Readers can get in-touch with the wider community using this public group.
