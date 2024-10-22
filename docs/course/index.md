@@ -135,7 +135,7 @@ Here are some questions and answers related to the course that readers may ask:
     ```bibtex
     @book{aksit2024computationallight,
       title = {Computational Light},
-      author = {Ak{\c{s}}it, Kaan},
+      author = {Ak{\c{s}}it, Kaan and Kam, Henry},
       booktitle = {Computational Light Course Notes},
       year = {2024}
     }
