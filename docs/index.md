@@ -10,7 +10,7 @@ If you think you need a refresher or are a beginner willing to learn more about 
 :octicons-info-24: Informative ·
 :octicons-beaker-24: Practical
 
-[Learn Odak and Physics of Light: Computational Light Course](course/index.md){ .md-button .md-button--primary }
+[Computational Light Course: Learn Odak and Physics of Light](course/index.md){ .md-button .md-button--primary }
 
 ## New Users
 :octicons-info-24: Informative
