@@ -155,6 +155,18 @@ Instructor
 :material-email: [E-mail](mailto:k.aksit@ucl.ac.uk)
 <br clear="left"/>
 
+
+<div style="float: left; height:120px;" class="boxed">
+<img align='left' src="https://complightlab.com/people/henry_kam.png" width="120" alt/>
+</div>
+[Henry Kam](http://gulpinhenry.github.io/)
+
+Contributor
+
+:material-email: [E-mail](mailto:h3nrykam@gmail.com)
+<br clear="left"/>
+
+
 !!! Warning end "Contact Us"
     The preferred way of communication is through the [discussions section of odak](https://github.com/kaanaksit/odak/discussions).
     Please only reach us through email if the thing you want to achieve, establish, or ask is not possible through the suggested route.
