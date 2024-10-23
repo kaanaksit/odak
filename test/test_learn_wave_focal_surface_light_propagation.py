@@ -67,11 +67,11 @@ def test(output_directory = 'test_output'):
 def download_file(url, filename):
     try:
         print(f"Starting download: {url}")
-        response = requests.get(url, stream=True)
+        response = requests.get(url, stream = True)
         response.raise_for_status()
-        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        os.makedirs(os.path.dirname(filename), exist_ok = True)
         with open(filename, 'wb') as file:
-            for chunk in response.iter_content(chunk_size=8192):
+            for chunk in response.iter_content(chunk_size = 8192):
                 file.write(chunk)
         print(f"Downloaded: {filename}")
     except requests.exceptions.RequestException as e:
