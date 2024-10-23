@@ -5,7 +5,7 @@ import torch
 import requests
 
 
-def test(output_directory = 'data'):
+def test(output_directory = 'test_output'):
     number_of_planes = 6
     location_offset = 0.
     volume_depth = 5e-3
