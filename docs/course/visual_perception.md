@@ -52,7 +52,21 @@ Visual acuity and contrast sensitivity decreases progressively across these iden
   <figcaption>Spectral Sensitivities of LMS cones</figcaption>
 </figure>
 
-The cones are categorized into three types based on their sensitivity to specific wavelengths of light, corresponding to long (L), medium (M), and short (S) wavelength cones. These [three types of cones](https://opg.optica.org/josaa/fulltext.cfm?uri=josaa-31-4-A195&id=279354)[@schmidt2014neurobiological] allow us to better understand the [trichromatic theory](https://www.jstor.org/stable/82365)[@rspb1942trichromatic], suggesting that human color perception stems from combining stimulations of the LMS cones. Scientists have tried to graphically represent how sensitive each type of cone is to different wavelengths of light, which is known as the spectral sensitivity function[@stockman2000spectral].
+The cones are categorized into three types based on their sensitivity to specific wavelengths of light, corresponding to long (L), medium (M), and short (S) wavelength cones. These [three types of cones](https://opg.optica.org/josaa/fulltext.cfm?uri=josaa-31-4-A195&id=279354)[@schmidt2014neurobiological] allow us to better understand the [trichromatic theory](https://www.jstor.org/stable/82365)[@rspb1942trichromatic], suggesting that human color perception stems from combining stimulations of the LMS cones. Scientists have tried to graphically represent how sensitive each type of cone is to different wavelengths of light, which is known as the spectral sensitivity function[@stockman2000spectral]. In practical applications such as display technologies and computational imaging, the LMS cone response can be replicated with the following formula:
+
+
+$$
+LMS = \sum_{i=1}^{3} \text{RGB}_i \cdot \text{Spectrum}_i \cdot \text{Sensitivity}_i 
+$$
+
+Where:
+
+- \(RGB_i\): The i-th color channel (Red, Green, or Blue) of the image.  
+- \(Spectrum_i\): The spectral distribution of the corresponding primary 
+- \(Sensitivity_i\): The sensitivity of the L, M, and S cones for each wavelength.
+
+This formula gives us more insight on how we percieve colors from different digital and physical inputs.
+
 ??? question end "Looking for more reading to expand your understanding on human visual system?"
        We recommend these papers, which we find it insightful:
        <br />- [ B. P. Schmidt, M. Neitz, and J. Neitz, "Neurobiological hypothesis of color appearance and hue perception," J. Opt. Soc. Am. A 31(4), A195–207 (2014)](https://doi.org/10.1364/josaa.31.00a195)
@@ -60,6 +74,23 @@ The cones are categorized into three types based on their sensitivity to specifi
 
 
 The story of color perception only deepens with the concept of [color opponency](http://dx.doi.org/10.1364/JOSAA.34.001099)[@shevell2017color]. This theory reveals that our perception of color is not just a matter of additive combinations of primary colors but also involves a dynamic interplay of opposing colors: red versus green, blue versus yellow. This phenomenon is rooted in the neural pathways of the eye and brain, where certain cells are excited or inhibited by specific wavelengths, enhancing our ability to distinguish between subtle shades and contrasts.
+
+Below is a mathematical formulation for the color opponency model proposed by [Schmidt et al.](https://opg.optica.org/josaa/fulltext.cfm?uri=josaa-31-4-A195&id=279354)[@schmidt2014neurobiological]
+
+\begin{bmatrix}
+I_{(M+S)-L} \\
+I_{(L+S)-M} \\
+I_{(L+M+S)}
+\end{bmatrix}
+=
+\begin{bmatrix}
+(I_M + I_S) - I_L \\
+(I_L + I_S) - I_M \\
+(I_L, I_M, I_S)
+\end{bmatrix}
+
+In this equation, \(I_L\), \(I_M\), and \(I_S\) represent the intensities received by the long, medium, and short cone cells, respectively. Opponent signals are represented by the differences between combinations of cone responses.
+
 
 We could exercise on our understanding of trichromat sensation with LMS cones and the concept of color oppenency by vising the functions available in our toolkit, `odak`.
 The utility function we will review is [`odak.learn.perception.color_conversion.primaries_to_lms()`](https://github.com/kaanaksit/odak/blob/321760f2f2f3e2639301ecb32535cc801f53dd64/odak/learn/perception/color_conversion.py#L292) from [`odak.learn.perception`](../odak/learn_perception.md).
