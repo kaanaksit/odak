@@ -855,10 +855,6 @@ class upsample_convtranspose2d_layer(torch.nn.Module):
                           Kernel size.
         bias            : bool
                           Set to True to let convolutional layers have bias term.
-        activation      : torch.nn
-                          Nonlinear activation layer to be used. If None, uses torch.nn.ReLU().
-        bilinear        : bool
-                          If set to True, bilinear sampling is used.
         """
         super().__init__()
         self.up = torch.nn.ConvTranspose2d(

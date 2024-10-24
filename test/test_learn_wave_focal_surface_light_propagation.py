@@ -2,7 +2,6 @@ import sys
 import os
 import odak
 import torch
-import requests
 
 
 def test(output_directory = 'test_output'):
