@@ -144,7 +144,7 @@ class focal_surface_light_propagation(torch.nn.Module):
     References
     ----------
 
-    Chuanjun Zheng, Yicheng Zhan, Liang Shi, Ozan Cakmakci, and Kaan Ak{\c{s}}it}. "Focal Surface Holographic Light Transport using Learned Spatially Adaptive Convolutions." SIGGRAPH Asia 2024 Technical Communications (SA Technical Communications '24),December,2024.
+    Chuanjun Zheng, Yicheng Zhan, Liang Shi, Ozan Cakmakci, and Kaan Akşit}. "Focal Surface Holographic Light Transport using Learned Spatially Adaptive Convolutions." SIGGRAPH Asia 2024 Technical Communications (SA Technical Communications '24),December,2024.
     """
     def __init__(
                  self,
@@ -291,4 +291,3 @@ class focal_surface_light_propagation(torch.nn.Module):
                 light_prop_new_state_dict[new_key] = value
         self.light_propagation.to(self.device)
         self.light_propagation.load_state_dict(light_prop_new_state_dict)
-        print("Weights loaded successfully into the new model.")
