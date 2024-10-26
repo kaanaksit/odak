@@ -92,7 +92,7 @@ I_{(L+M+S)}
 In this equation, \(I_L\), \(I_M\), and \(I_S\) represent the intensities received by the long, medium, and short cone cells, respectively. Opponent signals are represented by the differences between combinations of cone responses.
 
 
-We could exercise on our understanding of trichromat sensation with LMS cones and the concept of color oppenency by vising the functions available in our toolkit, `odak`.
+We could exercise on our understanding of trichromat sensation with LMS cones and the concept of color opponency by vising the functions available in our toolkit, `odak`.
 The utility function we will review is [`odak.learn.perception.color_conversion.primaries_to_lms()`](https://github.com/kaanaksit/odak/blob/321760f2f2f3e2639301ecb32535cc801f53dd64/odak/learn/perception/color_conversion.py#L292) from [`odak.learn.perception`](../odak/learn_perception.md).
 Let us use this test to demonstrate how we can obtain LMS sensation from the color primaries of an image.
 
