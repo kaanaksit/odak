@@ -1,10 +1,10 @@
 import torch
 import os
 import json
-import  numpy as np
+import numpy as np
 from tqdm import tqdm
 from ..models import *
-from .util import generate_complex_field, wavenumber,calculate_amplitude
+from .util import generate_complex_field, wavenumber, calculate_amplitude
 
 
 class holobeam_multiholo(torch.nn.Module):
@@ -241,7 +241,7 @@ class focal_surface_light_propagation(torch.nn.Module):
         """
         [b, c, h, w] = phase_only_hologram.size()
         input_phase = phase_only_hologram * 2 * np.pi
-        hologram_amplitude = torch.ones(b, c, h, w, requires_grad = False)
+        hologram_amplitude = torch.ones(b, c, h, w, requires_grad = False).to(self.device)
         field = generate_complex_field(hologram_amplitude, input_phase)
         input_field = torch.cat((field.real, field.imag), dim = 1)
         return input_field
