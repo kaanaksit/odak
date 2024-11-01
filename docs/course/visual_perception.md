@@ -73,8 +73,9 @@ This formula gives us more insight on how we percieve colors from different digi
        <br />- [Biomimetic Eye Modeling & Deep Neuromuscular Oculomotor Control](https://www.andrew.cmu.edu/user/aslakshm/pdfs/siggraph19_eye.pdf)
 
 
-The story of color perception only deepens with the concept of [color opponency](http://dx.doi.org/10.1364/JOSAA.34.001099)[@shevell2017color]. This theory reveals that our perception of color is not just a matter of additive combinations of primary colors but also involves a dynamic interplay of opposing colors: red versus green, blue versus yellow. This phenomenon is rooted in the neural pathways of the eye and brain, where certain cells are excited or inhibited by specific wavelengths, enhancing our ability to distinguish between subtle shades and contrasts.
-
+The story of color perception only deepens with the concept of [color opponency](http://dx.doi.org/10.1364/JOSAA.34.001099)[@shevell2017color].
+This theory reveals that our perception of color is not just a matter of additive combinations of primary colors but also involves a dynamic interplay of opposing colors: red versus green, blue versus yellow. 
+This phenomenon is rooted in the neural pathways of the eye and brain, where certain cells are excited or inhibited by specific wavelengths, enhancing our ability to distinguish between subtle shades and contrasts.
 Below is a mathematical formulation for the color opponency model proposed by [Schmidt et al.](https://opg.optica.org/josaa/fulltext.cfm?uri=josaa-31-4-A195&id=279354)[@schmidt2014neurobiological]
 
 \begin{bmatrix}
@@ -102,9 +103,13 @@ Let us use this test to demonstrate how we can obtain LMS sensation from the col
   ```
 
   1. Adding `odak` to our imports.
-  2. Generating arbitrary target primaries (the sample image).
-  3. Generate arbitrary primaries spectrum
-  4. Obtain LMS cone sensation
+  2. Loading an existing RGB image.
+  3. Defining the spectrum of our primaries of our imaginary display.
+  4. Obtain LMS cone sensations for our primaries of our imaginary display.
+  5. Calculating the LMS sensation of our input RGB image at the second stage of color perception using our imaginary display.
+  6. Calculating the LMS sensation of our input RGB image at the third stage of color perception using our imaginary display.
+  7. We are intentionally adding some noise to the input RGB image here.
+  8. We calculate the perceptual loss/difference between the two input image (original RGB vs noisy RGB).
   <br />
   This a visualization of a randomly generated image and its' LMS cone sensation.
 

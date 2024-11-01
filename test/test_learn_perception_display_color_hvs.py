@@ -15,24 +15,25 @@ def test(
                                             'test/data/fruit_lady.png',
                                             normalizeby = 255.,
                                             torch_style = True
-                                           ).unsqueeze(0).to(device) # (1)
+                                           ).unsqueeze(0).to(device) # (2)
 
     the_number_of_primaries = 3
     multi_spectrum = torch.zeros(
                                  the_number_of_primaries,
                                  301
-                                ) # (2)
+                                ) # (3)
     multi_spectrum[0, 200:250] = 1.
     multi_spectrum[1, 130:145] = 1.
     multi_spectrum[2, 0:50] = 1.
+
     display_color = display_color_hvs(
                                       read_spectrum ='tensor',
                                       primaries_spectrum=multi_spectrum,
                                       device = device
-                                     ) # (3)
+                                     ) # (4)
 
-    image_lms_second_stage = display_color.primaries_to_lms(image_rgb) # (4)
-    image_lms_third_stage = display_color.second_to_third_stage(image_lms_second_stage) # (5)
+    image_lms_second_stage = display_color.primaries_to_lms(image_rgb) # (5)
+    image_lms_third_stage = display_color.second_to_third_stage(image_lms_second_stage) # (6)
 
 
     odak.learn.tools.save_image(
@@ -58,8 +59,8 @@ def test(
                                )
 
 
-    image_rgb_noisy = image_rgb * 0.6 + torch.rand_like(image_rgb) * 0.4 # (6)
-    loss_lms = display_color(image_rgb, image_rgb_noisy) # (7)
+    image_rgb_noisy = image_rgb * 0.6 + torch.rand_like(image_rgb) * 0.4 # (7)
+    loss_lms = display_color(image_rgb, image_rgb_noisy) # (8)
     print('The third stage LMS sensation difference between two input images is {:.10f}.'.format(loss_lms))
     assert True == True
 

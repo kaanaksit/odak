@@ -321,7 +321,7 @@ class display_color_hvs():
  
     def second_to_third_stage(self, lms_image):
         '''
-        This function turns second stage [L,M,S] values into third stage [(S+L)-M, M-(S+L), (S+M)-L], 
+        This function turns second stage [L,M,S] values into third stage [(M+S)-L, (L+S)-M, L+M+S], 
         See table 1 from Schmidt et al. "Neurobiological hypothesis of color appearance and hue perception," Optics Express 2014.
 
         Parameters
@@ -336,9 +336,9 @@ class display_color_hvs():
 
         '''
         third_stage = torch.zeros_like(lms_image)
-        third_stage[:, 0] = (lms_image[:, 2] + lms_image[:, 0]) - lms_image[:, 1]
-        third_stage[:, 1] = lms_image[:, 1] - (lms_image[:, 2] + lms_image[:, 0])
-        third_stage[:, 2] = (lms_image[:, 2] + lms_image[:, 1]) - lms_image[:, 0]
+        third_stage[:, 0] = (lms_image[:, 1] + lms_image[:, 2]) - lms_image[:, 1]
+        third_stage[:, 1] = (lms_image[:, 0] + lms_image[:, 2]) - lms_image[:, 1]
+        third_stage[:, 2] = lms_image[:, 0] + lms_image[:, 1]  + lms_image[:, 2]
         return third_stage
 
 
