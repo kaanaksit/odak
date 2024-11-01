@@ -26,6 +26,7 @@ class multiplane_hologram_optimizer():
                  zero_mode_distance = 0.15,
                  device = torch.device('cpu')
                 ):
+        logging.warning('odak.learn.wave.multiplane_hologram_optimizer module will be removed in the next releases. Please consider using odak.learn.wave.multi_color_hologram_optimizer instead.')
         self.device = device
         torch.cuda.empty_cache()
         torch.random.seed()

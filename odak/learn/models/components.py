@@ -1042,7 +1042,7 @@ class spatially_adaptive_convolution(torch.nn.Module):
     ----------
 
     C. Zheng et al. "Focal Surface Holographic Light Transport using Learned Spatially Adaptive Convolutions."
-    C, Xu et al. "Squeezesegv3: Spatially-adaptive Convolution for Efficient Point-Cloud Segmentation."
+    C. Xu et al. "Squeezesegv3: Spatially-adaptive Convolution for Efficient Point-Cloud Segmentation."
     C. Zheng et al. "Windowing Decomposition Convolutional Neural Network for Image Enhancement."
     """
     def __init__(
@@ -1164,7 +1164,7 @@ class spatially_adaptive_module(torch.nn.Module):
     References
     ----------
 
-    Chuanjun Zheng, Yicheng Zhan, Liang Shi, Ozan Cakmakci, and Kaan Ak{\c{s}}it}. "Focal Surface Holographic Light Transport using Learned Spatially Adaptive Convolutions." SIGGRAPH Asia 2024 Technical Communications (SA Technical Communications '24),December,2024.
+    Chuanjun Zheng, Yicheng Zhan, Liang Shi, Ozan Cakmakci, and Kaan Akşit, "Focal Surface Holographic Light Transport using Learned Spatially Adaptive Convolutions," SIGGRAPH Asia 2024 Technical Communications (SA Technical Communications '24), December, 2024.
     """
     def __init__(
                  self,

@@ -55,7 +55,7 @@ def test(output_directory = 'test_output'):
                                 cmin = 0.,
                                 cmax = 1.
                                )
-    return True
+    assert True == True
 
 
 if __name__ == '__main__':
