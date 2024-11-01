@@ -110,7 +110,7 @@ class display_color_hvs():
         green_spectrum = green_spectrum / green_spectrum.max()
         blue_spectrum = blue_spectrum / blue_spectrum.max()
 
-        return red_spectru, green_spectrum, blue_spectrum
+        return red_spectrum, green_spectrum, blue_spectrum
 
     
     def initialize_random_spectrum_normalized(self, dataset):
