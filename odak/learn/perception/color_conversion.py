@@ -9,7 +9,9 @@ import logging
 
 class display_color_hvs():
 
-    def __init__(self, resolution = [1920, 1080],
+    def __init__(
+                 self,
+                 resolution = [1920, 1080],
                  distance_from_screen = 800,
                  pixel_pitch = 0.311,
                  read_spectrum = 'tensor',
@@ -36,17 +38,17 @@ class display_color_hvs():
         self.resolution = resolution
         self.distance_from_screen = distance_from_screen
         self.pixel_pitch = pixel_pitch
-        self.l_normalised, self.m_normalised, self.s_normalised = self.initialize_cones_normalised()
+        self.l_normalized, self.m_normalized, self.s_normalized = self.initialize_cones_normalized()
         self.lms_tensor = self.construct_matrix_lms(
-                                                    self.l_normalised,
-                                                    self.m_normalised,
-                                                    self.s_normalised
+                                                    self.l_normalized,
+                                                    self.m_normalized,
+                                                    self.s_normalized
                                                    )   
         self.primaries_tensor = self.construct_matrix_primaries(
-                                                    self.l_normalised,
-                                                    self.m_normalised,
-                                                    self.s_normalised
-                                                   )   
+                                                                self.l_normalized,
+                                                                self.m_normalized,
+                                                                self.s_normalized
+                                                               )   
         return
     
 
@@ -62,9 +64,9 @@ class display_color_hvs():
         return loss_metamer_color
     
     
-    def initialize_cones_normalised(self):
+    def initialize_cones_normalized(self):
         """
-        Internal function to initialize normalised L,M,S cones as normal distribution with given sigma, and mu values. 
+        Internal function to initialize normalized L,M,S cones as normal distribution with given sigma, and mu values. 
 
         Returns
         -------
@@ -75,18 +77,15 @@ class display_color_hvs():
         s_cone_n                     : torch.tensor
                                        Normalised S cone distribution.
         """
-        wavelength_range = np_cpu.linspace(400, 700, num=301)
-        dist_l = [1 / (32.5 * np_cpu.sqrt(2 * np_cpu.pi)) * np_cpu.exp(-0.5 * (wavelength_range[i] -
-                                                                               567.5)**2 / (2 * 32.5**2)) for i in range(len(wavelength_range))]
-        dist_m = [1 / (27.5 * np_cpu.sqrt(2 * np_cpu.pi)) * np_cpu.exp(-0.5 * (wavelength_range[i] -
-                                                                               545.0)**2 / (2 * 27.5**2)) for i in range(len(wavelength_range))]
-        dist_s = [1 / (17.0 * np_cpu.sqrt(2 * np_cpu.pi)) * np_cpu.exp(-0.5 * (wavelength_range[i] -
-                                                                               447.5)**2 / (2 * 17.0**2)) for i in range(len(wavelength_range))]
+        wavelength_range = torch.linspace(400, 700, steps = 301, device = self.device)
+        dist_l = 1 / (32.5 * (2 * torch.pi) ** 0.5) * torch.exp(-0.5 * (wavelength_range - 567.5) ** 2 / (2 * 32.5 ** 2))
+        dist_m = 1 / (27.5 * (2 * torch.pi) ** 0.5) * torch.exp(-0.5 * (wavelength_range - 545.0) ** 2 / (2 * 27.5 ** 2))
+        dist_s = 1 / (17.0 * (2 * torch.pi) ** 0.5) * torch.exp(-0.5 * (wavelength_range - 447.5) ** 2 / (2 * 17.0 ** 2))
 
-        l_cone_n = torch.from_numpy(dist_l/max(dist_l))
-        m_cone_n = torch.from_numpy(dist_m/max(dist_m))
-        s_cone_n = torch.from_numpy(dist_s/max(dist_s))
-        return l_cone_n.to(self.device), m_cone_n.to(self.device), s_cone_n.to(self.device)
+        l_cone_n = dist_l / dist_l.max()
+        m_cone_n = dist_m / dist_m.max()
+        s_cone_n = dist_s / dist_s.max()
+        return l_cone_n, m_cone_n, s_cone_n
 
     
     def initialize_rgb_backlight_spectrum(self):
@@ -102,53 +101,41 @@ class display_color_hvs():
         blue_spectrum                : torch.tensor
                                        Normalised backlight spectrum for blue color primary.
         """
-        wavelength_range = np_cpu.linspace(400, 700, num=301)
-        red_spectrum = [1 / (14.5 * np_cpu.sqrt(2 * np_cpu.pi)) * np_cpu.exp(-0.5 * (
-            wavelength_range[i] - 650)**2 / (2 * 14.5**2)) for i in range(len(wavelength_range))]
-        green_spectrum = [1 / (12 * np_cpu.sqrt(2 * np_cpu.pi)) * np_cpu.exp(-0.5 * (
-            wavelength_range[i] - 550)**2 / (2 * 12.0**2)) for i in range(len(wavelength_range))]
-        blue_spectrum = [1 / (12 * np_cpu.sqrt(2 * np_cpu.pi)) * np_cpu.exp(-0.5 * (
-            wavelength_range[i] - 450)**2 / (2 * 12.0**2)) for i in range(len(wavelength_range))]
+        wavelength_range = torch.linspace(400, 700, steps = 301, device = self.device)
+        red_spectrum = 1 / (14.5 * (2 * torch.pi) ** 0.5) * torch.exp(-0.5 * (wavelength_range - 650) ** 2 / (2 * 14.5 ** 2))
+        green_spectrum = 1 / (12 * (2 * torch.pi) ** 0.5) * torch.exp(-0.5 * (wavelength_range - 550) ** 2 / (2 * 12.0 ** 2))
+        blue_spectrum = 1 / (12 * (2 * torch.pi) ** 0.5) * torch.exp(-0.5 * (wavelength_range - 450) ** 2 / (2 * 12.0 ** 2))
 
-        red_spectrum = torch.from_numpy(
-            red_spectrum / max(red_spectrum)) * 1.0
-        green_spectrum = torch.from_numpy(
-            green_spectrum / max(green_spectrum)) * 1.0
-        blue_spectrum = torch.from_numpy(
-            blue_spectrum / max(blue_spectrum)) * 1.0
+        red_spectrum = red_spectrum / red_spectrum.max()
+        green_spectrum = green_spectrum / green_spectrum.max()
+        blue_spectrum = blue_spectrum / blue_spectrum.max()
 
-        return red_spectrum.to(self.device), green_spectrum.to(self.device), blue_spectrum.to(self.device)
+        return red_spectru, green_spectrum, blue_spectrum
 
     
-    def initialize_random_spectrum_normalised(self, dataset):
+    def initialize_random_spectrum_normalized(self, dataset):
         """
-        Initialize normalised light spectrum via combination of 3 gaussian distribution curve fitting [L-BFGS]. 
+        Initialize normalized light spectrum via combination of 3 gaussian distribution curve fitting [L-BFGS]. 
 
         Parameters
         ----------
         dataset                                : torch.tensor 
                                                  spectrum value against wavelength 
         """
-        if (type(dataset).__module__) == "torch":
-            dataset = dataset.numpy()
-        if dataset.shape[0] > dataset.shape[1]:
-            dataset = np_cpu.swapaxes(dataset, 0, 1)
-        x_spectrum = np_cpu.linspace(400, 700, num=301)
-        y_spectrum = np_cpu.interp(x_spectrum, dataset[0], dataset[1])
-        x_spectrum = torch.from_numpy(x_spectrum) - 550
-        y_spectrum = torch.from_numpy(y_spectrum)
+        dataset = torch.swapaxes(dataset, 0, 1)
+        x_spectrum = torch.linspace(400, 700, steps = 301) - 550
+        y_spectrum = torch.from_numpy(np_cpu.interp(x_spectrum, dataset[0].numpy(), dataset[1].numpy()))
         max_spectrum = torch.max(y_spectrum)
         y_spectrum /= max_spectrum
 
         def gaussian(x, A = 1, sigma = 1, centre = 0): return A * \
             torch.exp(-(x - centre) ** 2 / (2 * sigma ** 2))
 
-        def function(x, weights): return gaussian(
-            x, *weights[:3]) + gaussian(x, *weights[3:6]) + gaussian(x, *weights[6:9])
-        weights = torch.tensor(
-            [1.0, 1.0, -0.2, 1.0, 1.0, 0.0, 1.0, 1.0, 0.2], requires_grad=True)
-        optimizer = torch.optim.LBFGS(
-            [weights], max_iter = 1000, lr = 0.1, line_search_fn=None)
+        def function(x, weights): 
+            return gaussian(x, *weights[:3]) + gaussian(x, *weights[3:6]) + gaussian(x, *weights[6:9])
+
+        weights = torch.tensor([1.0, 1.0, -0.2, 1.0, 1.0, 0.0, 1.0, 1.0, 0.2], requires_grad = True)
+        optimizer = torch.optim.LBFGS([weights], max_iter = 1000, lr = 0.1, line_search_fn = None)
 
         def closure():
             optimizer.zero_grad()
@@ -215,11 +202,11 @@ class display_color_hvs():
         Parameters
         ----------
         l_response                             : torch.tensor
-                                                 Cone response spectrum tensor (normalised response vs wavelength)
+                                                 Cone response spectrum tensor (normalized response vs wavelength)
         m_response                             : torch.tensor
-                                                 Cone response spectrum tensor (normalised response vs wavelength)
+                                                 Cone response spectrum tensor (normalized response vs wavelength)
         s_response                             : torch.tensor
-                                                 Cone response spectrum tensor (normalised response vs wavelength)
+                                                 Cone response spectrum tensor (normalized response vs wavelength)
 
 
 
@@ -237,17 +224,12 @@ class display_color_hvs():
         
         self.lms_tensor = torch.zeros(self.primaries_spectrum.shape[0], 3).to(self.device)
         for i in range(self.primaries_spectrum.shape[0]):
-            self.lms_tensor[i, 0] = self.cone_response_to_spectrum(l_response,
-                                                                   self.primaries_spectrum[i]
-                                                                   )
-            self.lms_tensor[i, 1] = self.cone_response_to_spectrum(m_response,
-                                                                   self.primaries_spectrum[i]
-                                                                   )
-            self.lms_tensor[i, 2] = self.cone_response_to_spectrum(s_response,
-                                                                   self.primaries_spectrum[i]
-                                                                   ) 
+            self.lms_tensor[i, 0] = self.cone_response_to_spectrum(l_response, self.primaries_spectrum[i])
+            self.lms_tensor[i, 1] = self.cone_response_to_spectrum(m_response, self.primaries_spectrum[i])
+            self.lms_tensor[i, 2] = self.cone_response_to_spectrum(s_response, self.primaries_spectrum[i]) 
         return self.lms_tensor    
-    
+
+
     def construct_matrix_primaries(self, l_response, m_response, s_response):
         '''
         Internal function to calculate cone  response at particular light spectrum. 
@@ -255,11 +237,11 @@ class display_color_hvs():
         Parameters
         ----------
         l_response                             : torch.tensor
-                                                 Cone response spectrum tensor (normalised response vs wavelength)
+                                                 Cone response spectrum tensor (normalized response vs wavelength)
         m_response                             : torch.tensor
-                                                 Cone response spectrum tensor (normalised response vs wavelength)
+                                                 Cone response spectrum tensor (normalized response vs wavelength)
         s_response                             : torch.tensor
-                                                 Cone response spectrum tensor (normalised response vs wavelength)
+                                                 Cone response spectrum tensor (normalized response vs wavelength)
 
 
 
@@ -277,17 +259,20 @@ class display_color_hvs():
         
         self.primaries_tensor = torch.zeros(3, self.primaries_spectrum.shape[0]).to(self.device)
         for i in range(self.primaries_spectrum.shape[0]):
-            self.primaries_tensor[0, i] = self.cone_response_to_spectrum(l_response,
-                                                                   self.primaries_spectrum[i]
-                                                                   )
-            self.primaries_tensor[1, i] = self.cone_response_to_spectrum(m_response,
-                                                                   self.primaries_spectrum[i]
-                                                                   )
-            self.primaries_tensor[2, i] = self.cone_response_to_spectrum(s_response,
-                                                                   self.primaries_spectrum[i]
-                                                                   ) 
+            self.primaries_tensor[0, i] = self.cone_response_to_spectrum(
+                                                                         l_response,
+                                                                         self.primaries_spectrum[i]
+                                                                        )
+            self.primaries_tensor[1, i] = self.cone_response_to_spectrum(
+                                                                         m_response,
+                                                                         self.primaries_spectrum[i]
+                                                                        )
+            self.primaries_tensor[2, i] = self.cone_response_to_spectrum(
+                                                                         s_response,
+                                                                         self.primaries_spectrum[i]
+                                                                        ) 
         return self.primaries_tensor    
-    
+
 
     def primaries_to_lms(self, primaries):
         """
@@ -304,15 +289,12 @@ class display_color_hvs():
         lms_color                              : torch.tensor
                                                  LMS data transformed from Primaries space [BxPxHxW]
         """                
-        primaries = primaries.permute(0, 2, 3, 1).to(self.device)
-        primaries_flatten = torch.flatten(primaries, start_dim = 1, end_dim = 2)
-        unflatten = torch.nn.Unflatten(1, (primaries.size(1), primaries.size(2)))
-        converted_unflatten = torch.matmul(primaries_flatten.double(), self.lms_tensor.double())
-        lms_color = unflatten(converted_unflatten)        
-        lms_color = lms_color.permute(0, 3, 1, 2)
+        primaries_flatten = primaries.reshape(primaries.shape[0], primaries.shape[1], 1, -1)
+        lms = self.lms_tensor.unsqueeze(0).unsqueeze(-1)
+        lms_color = torch.sum(primaries_flatten * lms, axis = 1).reshape(primaries.shape)
         return lms_color
 
-    
+
     def lms_to_primaries(self, lms_color_tensor):
         """
         Internal function to convert LMS image to primaries space
@@ -330,10 +312,8 @@ class display_color_hvs():
         """
         lms_color_tensor = lms_color_tensor.permute(0, 2, 3, 1).to(self.device)
         lms_color_flatten = torch.flatten(lms_color_tensor, start_dim=0, end_dim=1)
-        unflatten = torch.nn.Unflatten(
-            0, (lms_color_tensor.size(0), lms_color_tensor.size(1)))
-        converted_unflatten = torch.matmul(
-            lms_color_flatten.double(), self.lms_tensor.pinverse().double())
+        unflatten = torch.nn.Unflatten(0, (lms_color_tensor.size(0), lms_color_tensor.size(1)))
+        converted_unflatten = torch.matmul(lms_color_flatten.double(), self.lms_tensor.pinverse().double())
         primaries = unflatten(converted_unflatten)     
         primaries = primaries.permute(0, 3, 1, 2)   
         return primaries
@@ -341,8 +321,8 @@ class display_color_hvs():
  
     def second_to_third_stage(self, lms_image):
         '''
-        This function turns second stage [L,M,S] values into third stage [(L+S)-M, M-(L+S), (M+S)-L]
-        Equations are taken from Schmidt et al "Neurobiological hypothesis of color appearance and hue perception" 2014
+        This function turns second stage [L,M,S] values into third stage [(S+L)-M, M-(S+L), (S+M)-L], 
+        See table 1 from Schmidt et al. "Neurobiological hypothesis of color appearance and hue perception," Optics Express 2014.
 
         Parameters
         ----------
@@ -355,28 +335,11 @@ class display_color_hvs():
                                                  Image data at LMS space (third stage)
 
         '''
-        lms_image = lms_image.permute(0,2,3,1)
-        third_stage = torch.zeros(lms_image.shape[0],
-            lms_image.shape[1], lms_image.shape[2], 3).to(self.device)
-        third_stage[:, :, :, 0] = (lms_image[:, :, :, 1] +
-                                lms_image[:, :, :, 2]) - lms_image[:, :, :, 0]
-        third_stage[:, :, :, 1] = (lms_image[:, :, :, 0] +
-                                lms_image[:, :, :, 2]) - lms_image[:, :, :, 1]
-        third_stage[:, :, :, 2] = torch.sum(lms_image, dim=3) / 3.
-        third_stage = third_stage.permute(0, 3, 1, 2)
+        third_stage = torch.zeros_like(lms_image)
+        third_stage[:, 0] = (lms_image[:, 2] + lms_image[:, 0]) - lms_image[:, 1]
+        third_stage[:, 1] = lms_image[:, 1] - (lms_image[:, 2] + lms_image[:, 0])
+        third_stage[:, 2] = (lms_image[:, 2] + lms_image[:, 1]) - lms_image[:, 0]
         return third_stage
-
-
-    def to(self, device):
-        """
-        Utilization function for setting the device.
-        Parameters
-        ----------
-        device       : torch.device
-                       Device to be used (e.g., CPU, Cuda, OpenCL).
-        """
-        self.device = device
-        return self
 
 
 def rgb_2_ycrcb(image):
@@ -664,6 +627,7 @@ def srgb_to_lab(image):
 
     image_lab = torch.cat((l, a, b), 0)
     return image_lab    
+
 
 def lab_to_srgb(image):
     """

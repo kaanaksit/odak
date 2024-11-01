@@ -104,8 +104,7 @@ Let us use this test to demonstrate how we can obtain LMS sensation from the col
   1. Adding `odak` to our imports.
   2. Generating arbitrary target primaries (the sample image).
   3. Generate arbitrary primaries spectrum
-  4. Select your device where tensors will be allocated
-  5. Obtain LMS cone sensation
+  4. Obtain LMS cone sensation
   <br />
   This a visualization of a randomly generated image and its' LMS cone sensation.
 
