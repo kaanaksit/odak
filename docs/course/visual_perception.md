@@ -94,7 +94,7 @@ In this equation, \(I_L\), \(I_M\), and \(I_S\) represent the intensities receiv
 
 
 We could exercise on our understanding of trichromat sensation with LMS cones and the concept of color opponency by vising the functions available in our toolkit, `odak`.
-The utility function we will review is [`odak.learn.perception.color_conversion.primaries_to_lms()`](https://github.com/kaanaksit/odak/blob/321760f2f2f3e2639301ecb32535cc801f53dd64/odak/learn/perception/color_conversion.py#L292) from [`odak.learn.perception`](../odak/learn_perception.md).
+The utility function we will review is [`odak.learn.perception.display_color_hvs.primarier_to_lms()`](https://github.com/kaanaksit/odak/blob/321760f2f2f3e2639301ecb32535cc801f53dd64/odak/learn/perception/color_conversion.py#L292) from [`odak.learn.perception`](../odak/learn_perception.md).
 Let us use this test to demonstrate how we can obtain LMS sensation from the color primaries of an image.
 
 === ":octicons-file-code-16: `test_learn_perception_display_color_hvs.py`"
@@ -104,7 +104,7 @@ Let us use this test to demonstrate how we can obtain LMS sensation from the col
 
   1. Adding `odak` to our imports.
   2. Loading an existing RGB image.
-  3. Defining the spectrum of our primaries of our imaginary display.
+  3. Defining the spectrum of our primaries of our imaginary display. These values are defined for each primary from 400 nm to 701 nm (301 elements).
   4. Obtain LMS cone sensations for our primaries of our imaginary display.
   5. Calculating the LMS sensation of our input RGB image at the second stage of color perception using our imaginary display.
   6. Calculating the LMS sensation of our input RGB image at the third stage of color perception using our imaginary display.
@@ -113,16 +113,40 @@ Let us use this test to demonstrate how we can obtain LMS sensation from the col
   <br />
   This a visualization of a randomly generated image and its' LMS cone sensation.
 
+Our code above saves three different images.
+The very first saved image is the ground truth RGB image as depicted below.
+
 <figure markdown>
-  ![Image title](media/lms_image_example.png){ width="600" }
-  <figcaption>Sample Generated Image Primaries</figcaption>
-</figure>
-<figure markdown>
-  ![Image title](media/lms_sensation_example.png){ width="600" }
-  <figcaption>LMS Sensation of Image Primaries</figcaption>
+  ![Image title](media/image_lms_rgb.png){ width="300" }
+  <figcaption>Original ground truth image.</figcaption>
 </figure>
 
+We process this ground truth image by accounting human visual system's cones and display backlight spectrum.
+This way, we can calculate how our ground truth image is sensed by LMS cones.
+The LMS sensation, in other words, ground truth image in LMS color space is provided below.
+Note that each color here represent a different cone, for instance, green color channel of below image represents medium cone and blue channel represents short cones.
+Keep in mind that LMS sensation is also known as trichromat sensation in the literature.
 
+<figure markdown>
+  ![Image title](media/image_lms_second_stage.png){ width="300" }
+  <figcaption>Image in LMS cones trichromat space.</figcaption>
+</figure>
+
+Earlier, we discussed about the color oppenency theory.
+We follow this theory, and with our code, we utilize trichromat values to derive an image representation below.
+
+<figure markdown>
+  ![Image title](media/image_lms_third_stage.png){ width="300" }
+  <figcaption>Image representation of color opponency.</figcaption>
+</figure>
+
+??? example end "Lab work: Observing the effect of display spectrum"
+    We introduce our unit test, `test_learn_perception_display_color_hvs.py`, to provide an example on how to convert an RGB image to trichromat values as sensed by the retinal cone cells.
+    Note that during this exercise, we define a variable named `multi_spectrum` to represent the wavelengths of our each color primary.
+    These wavelength values are stored in a vector for each primary and provided the intensity of a corresponding wavelength from 400 nm to 701 nm.
+    The trichromat values that we have derived from our original ground truth RGB image is highly correlated with these spectrum values.
+    To observe this correlation, we encourage you to find spectrums of actual display types (e.g., OLEDs, LEDs, LCDs) and map the `multi_spectrum` to their spectrum to observe the difference in color perception in various display technologies.
+    In addition, we believe that this will also give you a practical sandbox to examine the correlation between wavelengths and trichromat values.
 <!--
 ### Display Realism (What does it mean to be realistic)
 
@@ -145,12 +169,13 @@ Human perception is extremely context dependent, where we need to adapt to vario
 #### Chromaticity + Brightness
 TODO: add some more stuff here
 
-
-
-### Conclusion
-As we dive deeper into light and color perception, it becomes evident that the task of replicating the natural spectrum of colors in technology is still an evolving journey. This exploration into the nature of color sets the stage for a deeper examination of how our biological systems perceive color and how technology strives to emulate that perception.
-
 -->
+
+
+### Closing remarks
+As we dive deeper into light and color perception, it becomes evident that the task of replicating the natural spectrum of colors in technology is still an evolving journey.
+This exploration into the nature of color sets the stage for a deeper examination of how our biological systems perceive color and how technology strives to emulate that perception.
+
 
 ??? tip end "Consider revisiting this chapter"
     Remember that you can always revisit this chapter as you progress with the course and as you need it.
