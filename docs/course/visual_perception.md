@@ -114,12 +114,16 @@ Let us use this test to demonstrate how we can obtain LMS sensation from the col
   This a visualization of a randomly generated image and its' LMS cone sensation.
 
 <figure markdown>
-  ![Image title](media/lms_image_example.png){ width="600" }
-  <figcaption>Sample Generated Image Primaries</figcaption>
+  ![Image title](media/image_lms_rgb.png){ width="400" }
+  <figcaption>Original Image</figcaption>
 </figure>
 <figure markdown>
-  ![Image title](media/lms_sensation_example.png){ width="600" }
-  <figcaption>LMS Sensation of Image Primaries</figcaption>
+  ![Image title](media/image_lms_second_stage.png){ width="400" }
+  <figcaption>Image in LMS Color Space</figcaption>
+</figure>
+<figure markdown>
+  ![Image title](media/image_lms_third_stage.png){ width="400" }
+  <figcaption>Image Representation of Color Opponency</figcaption>
 </figure>
 
 
