@@ -285,7 +285,7 @@ def impulse_response_fresnel(field, k, distance, dx, wavelength):
     U1 = np.fft.fft2(np.fft.fftshift(field))
     U2 = H * U1
     result = np.fft.ifftshift(np.fft.ifft2(U2))
-    result = np.roll(result, shift = (1, 1), axis = (0, 1))
+
     return result
 
 
