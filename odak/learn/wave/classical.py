@@ -413,7 +413,7 @@ def get_impulse_response_fresnel_kernel(nu, nv, dx = 8e-6, wavelength = 515e-9, 
             for px in pxs:
                 for py in pys:
                     r = (X + px - wx) ** 2 + (Y + py - wy) ** 2
-                    h += 1. / (1j * wavelength * distance) * torch.exp(1j * k / (2 * distance) * r) 
+                    h += torch.exp(1j * k * distance) / (1j * wavelength * distance) * torch.exp(1j * k / (2 * distance) * r) 
     H = torch.fft.fftshift(torch.fft.fft2(torch.fft.fftshift(h))) * dx ** 2 / aperture_samples[0] / aperture_samples[1] / aperture_samples[2] / aperture_samples[3]
     return H
 
