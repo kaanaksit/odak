@@ -244,7 +244,7 @@ def transfer_function_fresnel(field, k, distance, dx, wavelength):
     fx = np.linspace(-1. / 2. /dx, 1. /2. /dx, nu)
     fy = np.linspace(-1. / 2. /dx, 1. /2. /dx, nv)
     FX, FY = np.meshgrid(fx, fy)
-    H = np.exp(1j * k * distance * (-1j * np.pi * wavelength * distance * (FX**2 + FY**2) ))
+    H = np.exp(-1j * distance * (k - np.pi * wavelength * (FX**2 + FY**2) ))
     U1 = np.fft.fft2(np.fft.fftshift(field))
     U2 = H*U1
     result = np.fft.ifftshift(np.fft.ifft2(U2))
@@ -280,7 +280,7 @@ def impulse_response_fresnel(field, k, distance, dx, wavelength):
     x = np.linspace(-nu / 2 * dx, nu / 2 * dx, nu)
     y = np.linspace(-nv / 2 * dx, nv / 2 * dx, nv)
     X, Y = np.meshgrid(x, y)
-    h = np.exp(1j*k*distance) / (1j * wavelength * distance) * np.exp(1j * k / (2 * distance) * (X ** 2 + Y ** 2))
+    h = 1. / (1j * wavelength * distance) * np.exp(1j * k / (2 * distance) * (X ** 2 + Y ** 2))
     H = np.fft.fft2(np.fft.fftshift(h))*dx**2
     U1 = np.fft.fft2(np.fft.fftshift(field))
     U2 = H * U1
