@@ -244,7 +244,7 @@ def transfer_function_fresnel(field, k, distance, dx, wavelength):
     fx = np.linspace(-1. / 2. /dx, 1. /2. /dx, nu)
     fy = np.linspace(-1. / 2. /dx, 1. /2. /dx, nv)
     FX, FY = np.meshgrid(fx, fy)
-    H = np.exp(-1j * distance * (k - np.pi * wavelength * (FX**2 + FY**2) ))
+    H = np.exp(1j * distance * (k - np.pi * wavelength * (FX**2 + FY**2) ))
     U1 = np.fft.fft2(np.fft.fftshift(field))
     U2 = H*U1
     result = np.fft.ifftshift(np.fft.ifft2(U2))
