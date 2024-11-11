@@ -241,13 +241,14 @@ def transfer_function_fresnel(field, k, distance, dx, wavelength):
 
     """
     nv, nu = field.shape
+    L = nu*dx
     fx = np.linspace(-1. / 2. /dx, 1. /2. /dx, nu)
     fy = np.linspace(-1. / 2. /dx, 1. /2. /dx, nv)
     FX, FY = np.meshgrid(fx, fy)
-    H = np.exp(1j * distance * (k - np.pi * wavelength * (FX**2 + FY**2) ))
-    U1 = np.fft.fft2(np.fft.fftshift(field))
-    U2 = H*U1
-    result = np.fft.ifftshift(np.fft.ifft2(U2))
+    H = np.exp(-1j * distance * (k - np.pi * wavelength * (FX**2 + FY**2) ))
+    U1 = np.fft.fft2(np.fft.fftshift(field)) * ((1/L)**2)
+    U2 = np.fft.fftshift(H)*U1
+    result = np.fft.ifftshift(np.fft.ifft2(U2)) / ((1/L)**2)
     return result
 
 
@@ -284,7 +285,7 @@ def impulse_response_fresnel(field, k, distance, dx, wavelength):
     H = np.fft.fft2(np.fft.fftshift(h))*dx**2
     U1 = np.fft.fft2(np.fft.fftshift(field))
     U2 = H * U1
-    result = np.fft.ifftshift(np.fft.ifft2(U2))
+    result = np.fft.ifftshift(np.fft.ifft2(U2)) /(dx**2)
 
     return result
 
@@ -355,7 +356,7 @@ def band_limited_angular_spectrum(field, k, distance, dx, wavelength):
     fx_max = 1 / np.sqrt((2 * distance * (1 / x))**2 + 1) / wavelength
     fy_max = 1 / np.sqrt((2 * distance * (1 / y))**2 + 1) / wavelength
     H_filter = ((np.abs(FX) < fx_max) & (np.abs(FY) < fy_max))
-    H = generate_complex_field(H_filter, H_exp)
+    H = H_filter * H_exp
 
     U1 = np.fft.fftshift(np.fft.fft2(field))
     U2 = H * U1
