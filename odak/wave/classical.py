@@ -216,9 +216,10 @@ def fraunhofer_inverse(field, k, distance, dx, wavelength):
     return result
 
 
-def band_limited_angular_spectrum(field, k, distance, dx, wavelength):
+
+def transfer_function_fresnel(field, k, distance, dx, wavelength):
     """
-    A definition to calculate bandlimited angular spectrum based beam propagation. For more Matsushima, Kyoji, and Tomoyoshi Shimobaba. "Band-limited angular spectrum method for numerical simulation of free-space propagation in far and near fields." Optics express 17.22 (2009): 19662-19673.
+    A definition to calculate convolution based Fresnel approximation for beam propagation.
 
     Parameters
     ----------
@@ -237,58 +238,20 @@ def band_limited_angular_spectrum(field, k, distance, dx, wavelength):
     -------
     result           : np.complex
                        Final complex field (MxN).
+
     """
     nv, nu = field.shape
-    x = np.linspace(-nu/2*dx, nu/2*dx, nu)
-    y = np.linspace(-nv/2*dx, nv/2*dx, nv)
-    X, Y = np.meshgrid(x, y)
-    Z = X**2+Y**2
-    h = 1./(1j*wavelength*distance)*np.exp(1j*k*(distance+Z/2/distance))
-    h = np.fft.fft2(np.fft.fftshift(h))*dx**2
-    flimx = np.ceil(1/(((2*distance*(1./(nu)))**2+1)**0.5*wavelength))
-    flimy = np.ceil(1/(((2*distance*(1./(nv)))**2+1)**0.5*wavelength))
-    mask = np.zeros((nu, nv), dtype=np.complex64)
-    mask = (np.abs(X) < flimx) & (np.abs(Y) < flimy)
-    mask = set_amplitude(h, mask)
-    U1 = np.fft.fft2(np.fft.fftshift(field))
-    U2 = mask*U1
-    result = np.fft.ifftshift(np.fft.ifft2(U2))
+    L = nu*dx
+    fx = np.linspace(-1. / 2. /dx, 1. /2. /dx, nu)
+    fy = np.linspace(-1. / 2. /dx, 1. /2. /dx, nv)
+    FX, FY = np.meshgrid(fx, fy)
+    H = np.exp(-1j * distance * (k - np.pi * wavelength * (FX**2 + FY**2) ))
+    U1 = np.fft.fft2(np.fft.fftshift(field)) * ((1/L)**2)
+    U2 = np.fft.fftshift(H)*U1
+    result = np.fft.ifftshift(np.fft.ifft2(U2)) / ((1/L)**2)
     return result
 
 
-def angular_spectrum(field, k, distance, dx, wavelength):
-    """
-    A definition to calculate angular spectrum based beam propagation.
-
-    Parameters
-    ----------
-    field            : np.complex
-                       Complex field (MxN).
-    k                : odak.wave.wavenumber
-                       Wave number of a wave, see odak.wave.wavenumber for more.
-    distance         : float
-                       Propagation distance.
-    dx               : float
-                       Size of one single pixel in the field grid (in meters).
-    wavelength       : float
-                       Wavelength of the electric field.
-
-    Returns
-    -------
-    result           : np.complex
-                       Final complex field (MxN).
-    """
-    nv, nu = field.shape
-    x = np.linspace(-nu/2*dx, nu/2*dx, nu)
-    y = np.linspace(-nv/2*dx, nv/2*dx, nv)
-    X, Y = np.meshgrid(x, y)
-    Z = X**2+Y**2
-    h = 1./(1j*wavelength*distance)*np.exp(1j*k*(distance+Z/2/distance))
-    h = np.fft.fft2(np.fft.fftshift(h))*dx**2
-    U1 = np.fft.fft2(np.fft.fftshift(field))
-    U2 = h*U1
-    result = np.fft.ifftshift(np.fft.ifft2(U2))
-    return result
 
 
 def impulse_response_fresnel(field, k, distance, dx, wavelength):
@@ -319,17 +282,17 @@ def impulse_response_fresnel(field, k, distance, dx, wavelength):
     y = np.linspace(-nv / 2 * dx, nv / 2 * dx, nv)
     X, Y = np.meshgrid(x, y)
     h = 1. / (1j * wavelength * distance) * np.exp(1j * k / (2 * distance) * (X ** 2 + Y ** 2))
-    H = np.fft.fft2(np.fft.fftshift(h))
+    H = np.fft.fft2(np.fft.fftshift(h))*dx**2
     U1 = np.fft.fft2(np.fft.fftshift(field))
     U2 = H * U1
-    result = np.fft.ifftshift(np.fft.ifft2(U2))
-    result = np.roll(result, shift = (1, 1), axis = (0, 1))
+    result = np.fft.ifftshift(np.fft.ifft2(U2)) /(dx**2)
+
     return result
 
 
-def transfer_function_fresnel(field, k, distance, dx, wavelength):
+def angular_spectrum(field, k, distance, dx, wavelength):
     """
-    A definition to calculate convolution based Fresnel approximation for beam propagation.
+    A definition to calculate angular spectrum based beam propagation.
 
     Parameters
     ----------
@@ -348,16 +311,56 @@ def transfer_function_fresnel(field, k, distance, dx, wavelength):
     -------
     result           : np.complex
                        Final complex field (MxN).
-
     """
     nv, nu = field.shape
     fx = np.linspace(-1. / 2. /dx, 1. /2. /dx, nu)
     fy = np.linspace(-1. / 2. /dx, 1. /2. /dx, nv)
     FX, FY = np.meshgrid(fx, fy)
     H = np.exp(1j * k * distance * (1 - (FX * wavelength) ** 2 - (FY * wavelength) ** 2) ** 0.5)
-    U1 = np.fft.fftshift(np.fft.fft2(np.fft.fftshift(field)))
+    U1 = np.fft.fftshift(np.fft.fft2(field))
     U2 = H * U1
-    result = np.fft.ifftshift(np.fft.ifft2(np.fft.ifftshift(U2)))
+    result = np.fft.ifft2(np.fft.ifftshift(U2))
+    return result
+
+
+def band_limited_angular_spectrum(field, k, distance, dx, wavelength):
+    """
+    A definition to calculate bandlimited angular spectrum based beam propagation. For more Matsushima, Kyoji, and Tomoyoshi Shimobaba. "Band-limited angular spectrum method for numerical simulation of free-space propagation in far and near fields." Optics express 17.22 (2009): 19662-19673.
+
+    Parameters
+    ----------
+    field            : np.complex
+                       Complex field (MxN).
+    k                : odak.wave.wavenumber
+                       Wave number of a wave, see odak.wave.wavenumber for more.
+    distance         : float
+                       Propagation distance.
+    dx               : float
+                       Size of one single pixel in the field grid (in meters).
+    wavelength       : float
+                       Wavelength of the electric field.
+
+    Returns
+    -------
+    result           : np.complex
+                       Final complex field (MxN).
+    """
+    nv, nu = field.shape
+    fx = np.linspace(-1. / 2. /dx, 1. /2. /dx, nu)
+    fy = np.linspace(-1. / 2. /dx, 1. /2. /dx, nv)
+    FX, FY = np.meshgrid(fx, fy)
+    H_exp = np.exp(1j * k * distance * (1 - (FX * wavelength) ** 2 - (FY * wavelength) ** 2) ** 0.5)
+
+    x = dx * float(nu)
+    y = dx * float(nv)
+    fx_max = 1 / np.sqrt((2 * distance * (1 / x))**2 + 1) / wavelength
+    fy_max = 1 / np.sqrt((2 * distance * (1 / y))**2 + 1) / wavelength
+    H_filter = ((np.abs(FX) < fx_max) & (np.abs(FY) < fy_max))
+    H = H_filter * H_exp
+
+    U1 = np.fft.fftshift(np.fft.fft2(field))
+    U2 = H * U1
+    result = np.fft.ifft2(np.fft.ifftshift(U2))
     return result
 
 
