@@ -11,7 +11,7 @@ def test(output_directory = 'test_output'):
     pixeltom = 3.74e-6
     distance = 5e-3
     resolution = [250, 250]
-    propagation_types = ['Transfer Function Fresnel', 'Impulse Response Fresnel', 'Bandlimited Angular Spectrum', 'Angular Spectrum']
+    propagation_types = ['Transfer Function Fresnel', 'Impulse Response Fresnel', 'Bandlimited Angular Spectrum', 'Angular Spectrum', 'Rayleigh-Sommerfeld']
 
     k = wavenumber(wavelength)
     sample_field = np.zeros((resolution[0], resolution[1]), dtype=np.complex64)
