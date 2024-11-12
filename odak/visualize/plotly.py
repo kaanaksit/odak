@@ -11,6 +11,7 @@ except Exception as e:
     logging.warning(e)
 import numpy as np
 from ..wave import calculate_phase, calculate_amplitude, calculate_intensity
+from PIL import Image
 
 
 class surfaceshow():
@@ -72,6 +73,7 @@ class surfaceshow():
             ],
         )
 
+
     def save_image(self, filename):
         """
         Definition to save the figure.
@@ -82,6 +84,7 @@ class surfaceshow():
                       Filename.
         """
         self.fig.write_image(filename)
+
 
     def show(self):
         """
@@ -119,6 +122,7 @@ class surfaceshow():
         )
         self.fig.show()
 
+
     def add_surface(self, data_x, data_y, data_z, label='', mode='lines+markers', opacity=1., contour=False):
         """
         Definition to add data to the plot.
@@ -135,30 +139,36 @@ class surfaceshow():
                       Mode for the plot, it can be either lines+markers, lines or markers.
         opacity     : float
                       Opacity of the plot. The value must be between one to zero. Zero is fully trasnparent, while one is opaque.
-        """
+        """ 
+        if isinstance(data_x, type(torch.tensor([]))):
+            data_x = data_x.detach().cpu()
+        if isinstance(data_y, type(torch.tensor([]))):
+            data_y = data_y.detach().cpu()
+        if isinstance(data_z, type(torch.tensor([]))):
+            data_z = data_z.detach().cpu()
         self.fig.add_trace(
-            go.Surface(
-                x=data_x,
-                y=data_y,
-                z=data_z,
-                surfacecolor=data_z,
-                colorscale=self.settings['color scale'],
-                opacity=opacity,
-                colorbar=dict(len=self.settings['colorbar length']),
-                contours={
-                    'z': {
-                        'show': contour,
-                    },
-                }
-            ),
-            row=1,
-            col=1,
-        )
+                           go.Surface(
+                                      x = data_x,
+                                      y = data_y,
+                                      z = data_z,
+                                      surfacecolor = data_z,
+                                      colorscale = self.settings['color scale'],
+                                      opacity = opacity,
+                                      colorbar = dict(len = self.settings['colorbar length']),
+                                      contours = {
+                                                  'z': {
+                                                        'show': contour,
+                                                       },
+                                                 }
+                                     ),
+                           row = 1,
+                           col = 1,
+                          )
 
 
 class plotshow():
     """
-    A class for general purpose 1D plotting using plotly.
+    A class for general purpose 1D or 2D plotting using plotly.
     """
 
     def __init__(self, subplot_titles=['plot'], shape=[1000, 1000], font_size=16, labels=['x', 'y'], margin=[65, 50, 65, 90], colorbarlength=0.75, rows=1, cols=1):
@@ -180,16 +190,16 @@ class plotshow():
                          Length of the colorbar.                         
         """
         self.settings = {
-            'subplot titles': subplot_titles,
-            'color scale': 'Portland',
-                           'font size': font_size,
-                           'x label': labels[0],
-                           'y label': labels[1],
-                           'margin': margin,
-                           'colorbar length': colorbarlength,
-                           'width': shape[0],
-                           'height': shape[1],
-        }
+                         'subplot titles': subplot_titles,
+                         'color scale': 'Portland',
+                                        'font size': font_size,
+                                        'x label': labels[0],
+                                        'y label': labels[1],
+                                        'margin': margin,
+                                        'colorbar length': colorbarlength,
+                                        'width': shape[0],
+                                        'height': shape[1],
+                        }
         specs = []
         new_row = []
         for row in range(rows):
@@ -198,40 +208,41 @@ class plotshow():
                 new_col.append({"type": "xy"})
             specs.append(new_col)
         self.fig = make_subplots(
-            rows=rows,
-            cols=cols,
-            specs=specs,
-            subplot_titles=subplot_titles
-        )
+                                 rows = rows,
+                                 cols = cols,
+                                 specs = specs,
+                                 subplot_titles = subplot_titles
+                                )
+
 
     def show(self):
         """
         Definition to show the plot.
         """
         self.fig.layout = go.Layout(
-            xaxis=dict(title=self.settings['x label']),
-            yaxis=dict(title=self.settings['y label'])
-        )
+                                    xaxis = dict(title=self.settings['x label']),
+                                    yaxis = dict(title=self.settings['y label'])
+                                   )
         self.fig.update_layout(
-            autosize=False,
-            width=self.settings['width'],
-            height=self.settings['height'],
-            scene=dict(
-                aspectmode='manual',
-                aspectratio=dict(x=1., y=1., z=1.),
-            ),
-            font=dict(
-                size=self.settings['font size'],
-            ),
-            margin=dict(
-                l=self.settings['margin'][0],
-                r=self.settings['margin'][1],
-                b=self.settings['margin'][2],
-                t=self.settings['margin'][3]
-            ),
-
-        )
+                               autosize = False,
+                               width = self.settings['width'],
+                               height = self.settings['height'],
+                               scene = dict(
+                                            aspectmode = 'manual',
+                                            aspectratio = dict(x=1., y=1., z=1.),
+                                           ),
+                               font = dict(
+                                           size = self.settings['font size'],
+                                          ),
+                               margin = dict(
+                                             l = self.settings['margin'][0],
+                                             r = self.settings['margin'][1],
+                                            b = self.settings['margin'][2],
+                                             t = self.settings['margin'][3]
+                                            ),
+                             )
         self.fig.show()
+
 
     def save_image(self, filename):
         """
@@ -244,9 +255,18 @@ class plotshow():
         """
         self.fig.write_image(filename)
 
-    def add_plot(self, data_x, data_y=None, label='', mode='lines+markers', row=1, col=1):
+
+    def add_plot(
+                 self,
+                 data_x,
+                 data_y = None,
+                 label = '',
+                 mode = 'lines+markers',
+                 row = 1,
+                 col = 1
+                ):
         """
-        Definition to add data to the plot.
+        Definition to add 1D data to the plot.
 
         Parameters
         ----------
@@ -271,6 +291,274 @@ class plotshow():
             row=row,
             col=col
         )
+
+
+    def add_2d_plot(
+                    self,
+                    image,
+                    label = '',
+                    row = 1,
+                    col = 1,
+                    showscale = False
+                   ):
+        """
+        Definition to add 2D data to the plot.
+
+        Parameters
+        ----------
+        data_x      : ndarray
+                      X axis data to be plotted.
+        data_y      : ndarray
+                      Y axis data to be plotted.
+        label       : str
+                      Label of the plot.  
+        mode        : str
+                      Mode for the plot, it can be either lines+markers, lines or markers.
+        """
+        if isinstance(image, type(torch.tensor([]))):
+            image = image.detach().cpu().numpy()
+        self.fig.add_trace(
+                           go.Heatmap(
+                                      z = image,
+                                      colorscale = self.settings['color scale'],
+                                      showscale = showscale
+                                     ),                
+                           row = row,
+                           col = col
+                          )
+
+
+class plot2dshow():
+    """
+    A class for visualizing 2D images using plotly.
+    """
+
+    def __init__(
+                 self,
+                 row_titles = ['Sample 1'],
+                 subplot_titles = ['Sample 2'],
+                 title = 'test',
+                 rows = 1,
+                 cols = 1,
+                 font_settings = {'size' : 48},
+                 xaxis_settings = {
+                                   'visible' : True,
+                                   'showticklabels' : False,
+                                   'showgrid' : False,
+                                   'zeroline' : False,
+                                   'showline' : True,
+                                   'linecolor' : 'black',
+                                   'linewidth' : 8,
+                                   'mirror' : True
+                                  },
+                 yaxis_settings = {
+                                   'visible' : True,
+                                   'showticklabels' : False,
+                                   'showgrid' : False,
+                                   'zeroline' : False,
+                                   'showline' : True,
+                                   'linecolor' : 'black',
+                                   'linewidth' : 8,
+                                   'mirror' : True
+                                  },
+                 color_scale = 'Inferno',
+                 shape = [1000, 1000],
+                 margin = [65, 50, 65, 90]
+                ):
+        """
+        Class for plotting detectors.
+
+        Parameters
+        ----------
+        row_titles      : list
+                          Row titles.
+        subplot_titles  : str
+                          Subplot titles.
+        title           : str
+                          Plot title.
+        rows            : int
+                          Number of rows.
+        cols            : int
+                          Number of columns.
+        font_size       : int
+                          Font size.
+        shape           : list
+                          Shape of the plot, width and height.
+        margin          : list
+                          Margins.
+        """
+        self.settings = {
+                         'title': title,
+                         'subplot titles': subplot_titles,
+                         'row titles': row_titles,
+                         'color scale': color_scale,
+                         'column number': cols,
+                         'row number': rows,
+                         'font': font_settings,
+                         'width': shape[0],
+                         'height': shape[1],
+                         'margin': margin,
+                         'xaxis' : xaxis_settings,
+                         'yaxis' : yaxis_settings
+                        }
+        specs = []
+        for i in range(0, self.settings["row number"]):
+            new_row = []
+            for j in range(0, self.settings["column number"]):
+                new_row.append({"type": "heatmap"})
+            specs.append(new_row)
+        self.fig = make_subplots(
+                                 rows = self.settings["row number"],
+                                 cols = self.settings["column number"],
+                                 specs = specs,
+                                 subplot_titles = self.settings["subplot titles"],
+                                 row_titles = self.settings["row titles"],
+                                )
+
+
+    def update_layout(self):
+        """
+        Definition to set the layout according to the settings.
+        """
+        self.fig.update_annotations(
+                                    font = self.settings['font'],
+                                   )
+        self.fig.update_layout(
+                               autosize = True,
+                               width = self.settings['width'],
+                               height = self.settings['height'],
+                               scene = dict(
+                                            aspectmode = 'manual',
+                                            aspectratio = dict(x=1., y=1., z=1.),
+                                           ),
+                               margin = dict(
+                                             l = self.settings['margin'][0],
+                                             r = self.settings['margin'][1],
+                                             b = self.settings['margin'][2],
+                                             t = self.settings['margin'][3]
+                                            ),
+                               font = self.settings['font'],
+                               xaxis = self.settings['xaxis'],
+                               xaxis2 = self.settings['xaxis'],
+                               xaxis3 = self.settings['xaxis'],
+                               xaxis4 = self.settings['xaxis'],
+                               yaxis = self.settings['yaxis'],
+                               yaxis2 = self.settings['yaxis'],
+                               yaxis3 = self.settings['yaxis'],
+                               yaxis4 = self.settings['yaxis'],
+                              )
+
+
+    def save_html(self, filename = 'plot.html'):
+        """
+        Definition to save the plot as HTML to a file.
+
+        Parameters
+        ----------
+        filename        : str
+                          Filename (*.html).
+
+        Returns
+        -------
+        result          : str
+                          Results as HTML div.
+        """
+        plotly.offline.plot(self.fig, filename = filename)
+        result = plotly.offline.plot(self.fig, include_plotlyjs = False, output_type = 'div')
+        return result
+
+
+    def save_markdown(self, filename = 'plot.md'):
+        """
+        Definition to save the plot as Markdown to a file.
+
+        Parameters
+        ----------
+        filename        : str
+                          Filename (*.md).
+
+        Returns
+        -------
+        result          : str
+                          Results as a markdown.
+        """
+        html = plotly.offline.plot(self.fig, include_plotlyjs = False, output_type = 'div')
+        markdown_file = open(filename, 'w')
+        markdown_file.write(html)
+        markdown_file.close()
+
+
+    def show(self):
+        """
+        Definition to show the plot.
+        """
+        self.update_layout()
+        self.fig.show()
+
+
+    def save_image(self, filename):
+        """
+        Definition to save the figure. Always first show then save.
+
+        Parameters
+        ----------
+        filename    : str
+                      Filename.
+        """
+        self.update_layout()
+        self.fig.write_image(filename)
+
+
+    def add_field(
+                  self,
+                  field,
+                  zoomed_inset = None,
+                  zoomed_inset_settings = {'x' : 0, 'y' : 150, 'sizex' : 150, 'sizey' : 150},
+                  row = 1,
+                  col = 1,
+                  showscale = False
+                 ):
+        """
+        Definition to add a point to the figure.
+
+        Parameters
+        ----------
+        field                 : ndarray
+                                Field to be displayed.
+        zoomed_inset          : str
+                                The path of the zoomed inset image. If provided, it will be shown in the bottom right of the field.
+        zoomed_inset_settings : dict
+                                Settings for the zoomed inset image (if provided).
+        row                   : int
+                                Row number.
+        col                   : int
+                                Column number.
+        showscale             : bool
+                                Set True to show color bar.
+        """
+        if isinstance(field, type(torch.tensor([]))):
+            field = field.detach().cpu().numpy()
+        self.fig.add_trace(
+                           go.Heatmap(
+                                      z = field,
+                                      colorscale = self.settings['color scale'],
+                                      showscale = showscale
+                                     ),
+                           row = row,
+                           col = col,
+                          )
+        if not isinstance(zoomed_inset, type(None)):
+            zoomed_inset = Image.open(zoomed_inset)
+            self.fig.add_layout_image(
+                                      source = zoomed_inset,
+                                      x = zoomed_inset_settings['x'],
+                                      y = zoomed_inset_settings['y'],
+                                      sizex = zoomed_inset_settings['sizex'],
+                                      sizey = zoomed_inset_settings['sizey'],
+                                      row = row,
+                                      col = col
+                                     )
+
 
 
 class detectorshow():
@@ -355,6 +643,7 @@ class detectorshow():
         )
         self.fig.show()
 
+
     def save_image(self, filename):
         """
         Definition to save the figure. Always first show then save.
@@ -365,6 +654,7 @@ class detectorshow():
                       Filename.
         """
         self.fig.write_image(filename)
+
 
     def add_field(self, field, row=1, col=1, showscale=False):
         """
@@ -400,9 +690,9 @@ class detectorshow():
         if self.settings["show phase"] == True:
             self.fig.add_trace(
                 go.Heatmap(
-                    z=phase,
-                    colorscale=self.settings['color scale'],
-                    showscale=showscale
+                    z = phase,
+                    colorscale = self.settings['color scale'],
+                    showscale = showscale
                 ),
                 row=row,
                 col=col
@@ -411,14 +701,14 @@ class detectorshow():
 
         if self.settings["show intensity"] == True:
             self.fig.add_trace(
-                go.Heatmap(
-                    z=intensity,
-                    colorscale=self.settings['color scale'],
-                    showscale=showscale
-                ),
-                row=row,
-                col=col
-            )
+                               go.Heatmap(
+                                          z = intensity,
+                                          colorscale = self.settings['color scale'],
+                                          showscale = showscale
+                                         ),
+                               row = row,
+                               col = col
+                              )
             col += 1
 
 
