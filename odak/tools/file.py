@@ -9,6 +9,30 @@ import sys
 import shutil
 
 
+def get_base_filename(filename):
+    """
+    Definition to retrieve the base filename and extension type.
+
+
+    Parameters
+    ----------
+    filename       : str
+                     Input filename.
+
+
+    Returns
+    -------
+    basename       : str
+                     Basename extracted from the filename.
+    extension      : str
+                     Extension extracted from the filename.
+    """
+    cache = os.path.basename(filename)
+    basename = os.path.splitext(cache)[0]
+    extension = os.path.splitext(cache)[1]
+    return basename, extension
+
+
 def resize_image(img, target_size):
     """
     Definition to resize a given image to a target shape.
