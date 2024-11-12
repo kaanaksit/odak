@@ -5,13 +5,13 @@ try:
     import plotly
     import plotly.graph_objects as go
     from plotly.subplots import make_subplots
+    from PIL import Image
 except Exception as e:
-    warning = 'odak.visualize.plotly requires certain packages: pip install plotly kaleido'
+    warning = 'odak.visualize.plotly requires certain packages: pip install plotly kaleido PIL'
     logging.warning(warning)
     logging.warning(e)
 import numpy as np
 from ..wave import calculate_phase, calculate_amplitude, calculate_intensity
-from PIL import Image
 
 
 class surfaceshow():
