@@ -259,7 +259,7 @@ class focal_surface_light_propagation(torch.nn.Module):
                                Path to the JSON file containing the key mappings.
         """
         # Load old model weights
-        old_model_weights = torch.load(weight_filename, map_location = self.device)
+        old_model_weights = torch.load(weight_filename, map_location = self.device,weights_only=True)
 
         # Load key mappings from JSON file
         with open(key_mapping_filename, 'r') as json_file:
