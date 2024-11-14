@@ -363,7 +363,9 @@ class plot2dshow():
                                   },
                  color_scale = 'Inferno',
                  shape = [1000, 1000],
-                 margin = [65, 50, 65, 90]
+                 margin = [65, 50, 65, 90],
+                 horizontal_spacing = 0.05,
+                 vertical_spacing = 0.05,
                 ):
         """
         Class for plotting detectors.
@@ -399,7 +401,9 @@ class plot2dshow():
                          'height': shape[1],
                          'margin': margin,
                          'xaxis' : xaxis_settings,
-                         'yaxis' : yaxis_settings
+                         'yaxis' : yaxis_settings,
+                         'horizontal spacing' : horizontal_spacing,
+                         'vertical spacing' : vertical_spacing,
                         }
         specs = []
         for i in range(0, self.settings["row number"]):
@@ -413,6 +417,8 @@ class plot2dshow():
                                  specs = specs,
                                  subplot_titles = self.settings["subplot titles"],
                                  row_titles = self.settings["row titles"],
+                                 horizontal_spacing = self.settings["horizontal spacing"],
+                                 vertical_spacing = self.settings["vertical spacing"],
                                 )
 
 
