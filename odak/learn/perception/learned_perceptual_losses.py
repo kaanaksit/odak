@@ -39,6 +39,9 @@ class CVVDP(nn.Module):
                         The computed loss if successful, otherwise 0.0.
         """
         try:
+            if len(predictions.shape) == 3:
+                predictions = predictions.unsqueeze(0)
+                targets = targets.unsqueeze(0)
             l_ColorVideoVDP = self.cvvdp.loss(predictions, targets, dim_order = dim_order)
             return l_ColorVideoVDP
         except Exception as e:
@@ -82,6 +85,9 @@ class FVVDP(nn.Module):
                           The computed loss if successful, otherwise 0.0.
         """
         try:
+            if len(predictions.shape) == 3:
+                predictions = predictions.unsqueeze(0)
+                targets = targets.unsqueeze(0)
             l_FovVideoVDP = self.fvvdp.predict(predictions, targets, dim_order = dim_order)[0]
             return l_FovVideoVDP
         except Exception as e:
@@ -121,6 +127,9 @@ class LPIPS(nn.Module):
                         The computed loss if successful, otherwise 0.0.
         """
         try:
+            if len(predictions.shape) == 3:
+                predictions = predictions.unsqueeze(0)
+                targets = targets.unsqueeze(0)
             lpips_image = predictions
             lpips_target = targets
             if len(lpips_image.shape) == 3:
