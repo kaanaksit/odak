@@ -1,0 +1,73 @@
+{
+
+
+    "general"                 : {
+                                 "device"                  : "cuda",
+                                 "iterations"              : 100,
+                                 "output directory"        : "./output/ours/DragonBunny",
+                                 "learning rate"           : 5e-3,
+                                 "learning rate floor"     : 5e-3,
+                                 "loss weights"            : [1.0, 0.0, 0.0],
+                                 "double phase constrain"  : 0,
+                                 "method"                  : "conventional",
+                                 "reduction"               : "mean",
+                                 "reverse depth"           : true
+                                },
+
+
+    "target"                  : {
+                                 "image filename"          : "test/data/DragonBunny_rgb.png",
+                                 "depth filename"          : "test/data/DragonBunny_depthmap.png",
+                                 "channel power filename"  : "",
+                                 "number of frames"        : 12,
+                                 "color depth"             : 8,
+                                 "peak amplitude"          : 1.0,
+                                 "number of depth layers"  : 9,
+                                 "volume depth"            : 0.01107,
+                                 "location offset"         : 0.005,
+                                 "defocus blur size"       : 20,
+                                 "blur ratio"              : 3,
+                                 "target scheme"           : "naive",
+                                 "margin"                  : 0.1,
+                                 "scheme"                  : "incoherent",
+                                 "weights"                 : [1.0, 0.0, 0.0, 0.0],
+                                 "optimize peak amplitude" : 0,
+                                 "eye aperture size"       : 1080,
+                                 "img loss threshold"      : 1.0e-2,
+                                 "roi resolution"         : [900, 1600]
+                                },  
+
+    "targeting prameters"     : {
+                                 "learning rate"           : 1.0e-1,
+                                 "epochs"                  : 100,
+                                 "patience"                : 1000,
+                                 "Tmax"                    : 10
+                                },
+
+    "incoherent propagation"     : {
+                                 "sideband"                : true,
+                                 "alpha"                   : 0.5,
+                                 "apertures"                : [0.7053291536050157, 0.8653846153846154, 1.0],
+                                 "propagation distance"    : 0.12,
+                                 "eyepiece"                : 0.04
+                                },
+
+    "spatial light modulator" : {
+                                 "model"                   : "Holoeye Pluto 1.3.3",
+                                 "pixel pitch"             : 8.2e-06,
+                                 "resolution"              : [1080, 1920],
+                                 "slm type"                : "amplitude"
+                                }, 
+
+
+    "beam"                    : {
+                                 "wavelengths"             : [638e-9, 520e-9, 450e-9],
+                                 "pinhole size"            : 900,
+                                 "beam profile"            : "",
+                                 "save at every"           : 100,
+                                 "propagation type"        : "Bandlimited Angular Spectrum",
+                                 "propagator type"         : "forward"
+                                }
+
+
+}

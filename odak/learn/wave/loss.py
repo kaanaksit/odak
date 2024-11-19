@@ -515,3 +515,89 @@ class perceptual_multiplane_loss():
         if self.return_components:
             return loss, loss_components
         return loss
+
+class content_adaptive_loss():
+    """
+    """
+
+    def __init__(self, saliency, number_of_planes, loss_weights = {'contrast_loss': 1e-2, 'slicing_loss': 1e-7, 'order_loss': 1e3, 'range_loss': 1e3, 'loss_l1_mask': 1., 'loss_l1_cor': 1.}, device = torch.device('cpu')):
+       self.saliency = saliency
+       self.loss_weights = loss_weights
+       self.device = device
+       self.number_of_planes = number_of_planes
+       
+    def get_slicing_loss(self, masks, saliency_map=None):
+        """
+        Compute overall slicing loss for a batch of masks using gradient interfaces, weighted by saliency
+        
+        Args:
+            masks: tensor of shape (n, h, w) where n is number of masks
+            saliency_map: tensor of shape (h, w) containing saliency values between 0 and 1
+        
+        Returns:
+            total_loss: scalar tensor representing the saliency-weighted slicing loss
+            grad_mags: tensor containing the gradient magnitudes for each mask
+        """
+        device = masks.device
+        n, h, w = masks.shape
+        eps = 1e-6  # Small constant for numerical stability
+        
+        if isinstance(saliency_map, type(None)):
+            flag = False
+        else:
+            flag = True
+        if flag:
+            saliency_map = saliency_map.to(device)
+            if saliency_map.dim() == 2:
+                saliency_map = saliency_map.unsqueeze(0)  # Add batch dimension
+            
+            saliency_map = (saliency_map - saliency_map.min()) / (saliency_map.max() - saliency_map.min() + eps)
+        
+        # Define Sobel filters
+        sobel_x = torch.tensor([[-1, 0, 1], 
+                            [-2, 0, 2], 
+                            [-1, 0, 1]], device=device).float().view(1, 1, 3, 3)
+        
+        sobel_y = torch.tensor([[-1, -2, -1], 
+                            [0, 0, 0], 
+                            [1, 2, 1]], device=device).float().view(1, 1, 3, 3)
+        
+        # Reshape masks for conv2d: (n, 1, h, w)
+        masks_4d = masks.view(n, 1, h, w)
+        
+        # Compute gradients for all masks at once
+        grad_x = F.conv2d(masks_4d, sobel_x, padding=1)
+        grad_y = F.conv2d(masks_4d, sobel_y, padding=1)
+        
+        # Compute gradient magnitudes with smooth sqrt (n, h, w)
+        grad_mags = torch.sqrt(grad_x.squeeze(1)**2 + grad_y.squeeze(1)**2 + eps)
+        
+        # Create weighted gradients instead of modifying in place
+        if flag:
+            saliency_weight = 10.0 * saliency_map  # Scale factor: areas with high saliency get 4x penalty
+            weighted_grad_mags = grad_mags * saliency_weight
+        else:
+            weighted_grad_mags = grad_mags
+        
+        # Compute weighted loss between adjacent pairs
+        total_loss = sum((weighted_grad_mags[i] * weighted_grad_mags[i+1]).sum() for i in range(n-1))
+        
+        return total_loss
+      
+    def __call__(self, masks, contrast_sum, opt_depths):
+        order_loss = torch.sum(torch.relu(opt_depths[:-1] - opt_depths[1:]))
+        range_loss = torch.sum(torch.relu(opt_depths - 1) 
+                                      + torch.relu(0-opt_depths)).to(self.device)
+        
+        slicing_loss =  self.get_slicing_loss(masks, self.saliency)
+        contrast_loss = contrast_sum / self.number_of_planes
+        
+        loss = (
+                contrast_loss * self.loss_weights["contrast_loss"] + 
+                order_loss * self.loss_weights["order_loss"] +
+                range_loss * self.loss_weights["range_loss"] +
+                slicing_loss * self.loss_weights["slicing_loss"]
+               )
+        range_order_check = ((range_loss + order_loss).item() == 0)
+        return loss, range_order_check
+    
