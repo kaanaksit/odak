@@ -70,7 +70,7 @@ Here are some questions and answers related to the course that readers may ask:
 
 
 ??? question end "How do I install odak?"
-      Odak's [installation page](http://127.0.0.1:8000/odak/installation/) and [README](https://github.com/kaanaksit/odak) provide the most up-to-date information on installing odak.
+      Odak's [installation page](https://kaanaksit.com/odak/installation/) and [README](https://github.com/kaanaksit/odak) provide the most up-to-date information on installing odak.
       But in a nutshell, all you need is to use the following command in a terminal `pip3 install odak` for the latest version, or if you want to install the latest code from the source, use `pip3 install git+https://github.com/kaanaksit/odak`.
 
 ??? question end "Which Python environment and operating system should I use?"
