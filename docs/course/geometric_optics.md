@@ -287,10 +287,12 @@ Using the provided utility functions above, let us build an example below that h
 ??? question end "Why should we be interested in ray and triangle intersections?"
     Modern Computer Graphics uses various representations for defining three-dimensional objects and scenes.
     These representations include:
+
     * Point Clouds: a series of XYZ coordinates from the surface of a three-dimensional object,
     * Meshes: a soup of triangles that represents a surface of a three-dimensional object,
     * Signed Distance Functions: a function informing about the distance between an XYZ point and a surface of a three-dimensional object,
     * Neural Radiance Fields: A machine learning approach to learning ray patterns from various perspectives.
+
     Historically, meshes have been mainly used to represent three-dimensional objects.
     Thus, intersecting rays and triangles are important for most Computer Graphics.
 
