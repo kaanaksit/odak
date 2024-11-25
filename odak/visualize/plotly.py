@@ -519,8 +519,12 @@ class plot2dshow():
                   self,
                   field,
                   zoomed_inset = None,
-                  zoomed_inset_scale = 1,
-                  zoomed_inset_settings = {'x' : 0, 'y' : 150, 'sizex' : 150, 'sizey' : 150},
+                  zoomed_inset_settings = {
+                                           'x' : 0,
+                                           'y' : 150,
+                                           'sizex' : 150,
+                                           'sizey' : 150
+                                          },
                   row = 1,
                   col = 1,
                   showscale = False
@@ -556,12 +560,6 @@ class plot2dshow():
                           )
         if not isinstance(zoomed_inset, type(None)):
             zoomed_inset = Image.open(zoomed_inset)
-            zoomed_inset = zoomed_inset.resize(
-                                               [
-                                                zoomed_inset.size[0] * zoomed_inset_scale,
-                                                zoomed_inset.size[1] * zoomed_inset_scale
-                                               ]
-                                              )
             self.fig.add_layout_image(
                                       source = zoomed_inset,
                                       x = zoomed_inset_settings['x'],
