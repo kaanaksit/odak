@@ -519,6 +519,7 @@ class plot2dshow():
                   self,
                   field,
                   zoomed_inset = None,
+                  zoomed_inset_scale = 1,
                   zoomed_inset_settings = {'x' : 0, 'y' : 150, 'sizex' : 150, 'sizey' : 150},
                   row = 1,
                   col = 1,
@@ -555,6 +556,12 @@ class plot2dshow():
                           )
         if not isinstance(zoomed_inset, type(None)):
             zoomed_inset = Image.open(zoomed_inset)
+            zoomed_inset = zoomed_inset.resize(
+                                               [
+                                                zoomed_inset.size[0] * zoomed_inset_scale,
+                                                zoomed_inset.size[1] * zoomed_inset_scale
+                                               ]
+                                              )
             self.fig.add_layout_image(
                                       source = zoomed_inset,
                                       x = zoomed_inset_settings['x'],
@@ -572,7 +579,19 @@ class detectorshow():
     A class for visualizing detectors using plotly.
     """
 
-    def __init__(self, row_titles=['Field 1'], subplot_titles=['Amplitude', 'Phase', 'Intensity'], title='detector', rows=1, cols=1, show_intensity=False, show_amplitude=True, show_phase=True, shape=[1000, 1000], margin=[65, 50, 65, 90]):
+    def __init__(
+                 self,
+                 row_titles = ['Field 1'],
+                 subplot_titles = ['Amplitude', 'Phase', 'Intensity'],
+                 title = 'detector',
+                 rows = 1,
+                 cols = 1,
+                 show_intensity = False,
+                 show_amplitude = True,
+                 show_phase = True,
+                 shape = [1000, 1000],
+                 margin = [65, 50, 65, 90]
+                ):
         """
         Class for plotting detectors.
 
