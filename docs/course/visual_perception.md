@@ -29,7 +29,7 @@ By closely observing this sketch, you can also understand the basic average geom
 </figure>
 
 Rods, which are relatively more common in the periphery, help people see in low-light (scotopic) conditions.
-The current understanding is that the roids can only interpret in a greyscale manner.
+The current understanding is that the rods can only interpret in a greyscale manner.
 Cones, which are more dense in the fovea, are pivotal in color perception in brighter (photopic) environments. 
 We highlight the distribution of these photoreceptor cells, rods and cones with changing eccentricities in the eye.
 Here, the word `eccentricities` refer to angles with respect to our gaze direction.
