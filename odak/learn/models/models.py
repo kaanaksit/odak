@@ -85,7 +85,7 @@ class multi_layer_perceptron(torch.nn.Module):
             if self.model_type == 'conventional':
                 result = self.activation(result)
             elif self.model_type == 'swish':
-                resutl = swish(result)
+                result = swish(result)
             elif self.model_type == 'SIREN':
                 result = torch.sin(result * self.siren_multiplier)
             elif self.model_type == 'FILM SIREN':
