@@ -108,7 +108,7 @@ def save_torch_tensor(fn, tensor):
     torch.save(tensor, expanduser(fn))
 
 
-def torch_load(fn):
+def torch_load(fn, weights_only = True):
     """
     Definition to load a torch files (*.pt).
 
@@ -116,11 +116,16 @@ def torch_load(fn):
     ----------
     fn           : str
                    Filename.
+    weights_only : bool
+                   See torch.load() for details.
     
     Returns
     -------
     data         : any
                    See torch.load() for more.
     """  
-    data = torch.load(expanduser(fn))
+    data = torch.load(
+                      expanduser(fn),
+                      weights_only = weights_only
+                     )
     return data
