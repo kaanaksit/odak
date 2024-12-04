@@ -1,7 +1,7 @@
 # Odak
 Odak (pronounced "O-dac") is the fundamental library for scientific computing in optical sciences, computer graphics, and visual perception.
 Odak is also the toolkit for the research conducted in [Computational Light Laboratory](https://complightlab.com).
-To learn more about what Odak can do to help your design, experimentation, and development, consult our [documentation](https://kaanaksit.github.io/odak/)!
+To learn more about what Odak can do to help your design, experimentation, and development, consult our [documentation](https://kaanaksit.com/odak/)!
 
 
 ## Getting Started
@@ -20,7 +20,7 @@ Once activated, in the first usage, you can install odak using the previous inst
 To deactivate the virtual environemnt, you can always use `deactivate` command in your terminal.
 Once you have an activated virtual environment, please consider following any of the highlighted installation methods below.
 
-For the most recent guidance on installing Odak, please consult [installation documentation](https://kaanaksit.github.io/odak/odak/installation/).
+For the most recent guidance on installing Odak, please consult [installation documentation](https://kaanaksit.com/odak/installation/).
 Odak can be installed using [pip](https://pypi.org/project/pip):
 
 ```bash
