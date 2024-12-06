@@ -186,3 +186,7 @@ This exploration into the nature of color sets the stage for a deeper examinatio
     This Slack group focuses on the topics of rendering, perception, displays and cameras.
     The group is open to public and you can become a member by following [this link](https://complightlab.com/outreach/).
     Readers can get in-touch with the wider community using this public group.
+
+
+# Future improvements
+- Figure 1 of [this paper](https://royalsocietypublishing.org/doi/full/10.1098/rstb.2021.0280) provides sensitivity curves of various animals.
