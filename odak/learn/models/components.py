@@ -1,5 +1,4 @@
 import torch
-import math
 
 
 def gaussian(x, multiplier = 1.):
@@ -819,7 +818,7 @@ class positional_encoder(torch.nn.Module):
         x = x.view(B, C, 1)
         results = [x]
         for i in range(1, self.L + 1):
-            freq = (2 ** i) * math.pi
+            freq = (2 ** i) * torch.pi
             cos_x = torch.cos(freq * x)
             sin_x = torch.sin(freq * x)
             results.append(cos_x)
