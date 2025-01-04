@@ -1,7 +1,6 @@
 import sys
 import os
 import odak
-import numpy as np
 import torch
 
 
