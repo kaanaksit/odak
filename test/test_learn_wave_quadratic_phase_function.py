@@ -6,19 +6,21 @@ import torch
 
 
 def test(
-         resolution = [1000, 1000],
+         resolution = [250, 250],
          wavelengths = [639e-9, 515e-9, 473e-9],
          pixel_pitch = 3.74e-6,
-         number_of_frames = 1,
+         number_of_frames = 3,
          number_of_depth_layers = 10,
          volume_depth = 10e-3,
-         image_location_offset = 5e-2,
+         image_location_offset = 3e-2,
          propagation_type = 'Bandlimited Angular Spectrum',
          propagator_type = 'forward',
          laser_channel_power = torch.tensor([
+                                             [1., 0., 0.],
                                              [0., 1., 0.],
+                                             [0., 0., 1.],
                                             ]),
-         lens_focus = 5e-2,
+         lens_focus = 3e-2,
          aperture = None,
          aperture_size = None,
          method = 'conventional',
@@ -26,15 +28,19 @@ def test(
          output_directory = 'test_output'
         ):
     odak.tools.check_directory(output_directory)
-    k = odak.learn.wave.wavenumber(wavelengths[1])
-    lens_complex =  odak.learn.wave.quadratic_phase_function(
-                                                             nx = resolution[0],
-                                                             ny = resolution[1],
-                                                             k = k,
-                                                             focal = lens_focus,
-                                                             dx = pixel_pitch
-                                                            )
-    hologram_phases = odak.learn.wave.calculate_phase(lens_complex).to(device).unsqueeze(0) % (2. * torch.pi) 
+    hologram_phases = torch.ones(number_of_frames, resolution[0], resolution[1], device = device)
+    for frame_id in range(number_of_frames):
+        wavelength = wavelengths[frame_id]
+        k = odak.learn.wave.wavenumber(wavelength)
+        lens_complex =  odak.learn.wave.quadratic_phase_function(
+                                                                 nx = resolution[0],
+                                                                 ny = resolution[1],
+                                                                 k = k,
+                                                                 focal = lens_focus,
+                                                                 dx = pixel_pitch
+                                                                )
+        lens_phase = odak.learn.wave.calculate_phase(lens_complex).to(device).unsqueeze(0) % (2. * torch.pi) 
+        hologram_phases[frame_id] = lens_phase
     odak.learn.tools.save_image(
                                 '{}/lens_phase.png'.format(output_directory),
                                 hologram_phases,
