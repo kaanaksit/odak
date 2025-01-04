@@ -190,7 +190,7 @@ def get_propagation_kernel(
     kernel             : torch.tensor
                          Complex kernel for the given propagation type.
     """                                                      
-    logging.warning('Requested propagation kernel size for %s method with %s m distance, %s m pixel pitch, %s m wavelength, %s x %s resolutions, x%s scale and %s samples.'.format(propagation_type, distance, dx, nu, nv, scale, samples))
+    logging.warning('Requested propagation kernel size for {} method with {} m distance, {} m pixel pitch, {} m wavelength, {} x {} resolutions, x{} scale and {} samples.'.format(propagation_type, distance, dx, wavelength, nu, nv, scale, samples))
     if propagation_type == 'Bandlimited Angular Spectrum':
         kernel = get_band_limited_angular_spectrum_kernel(
                                                           nu = nu,

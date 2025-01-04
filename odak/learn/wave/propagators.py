@@ -337,6 +337,8 @@ class propagator():
             reconstruction_type = torch.complex64
         else:
             reconstruction_type = torch.float32
+        if hologram_phases.shape[0] != self.number_of_frames:
+            logging.warning('Provided hologram frame count is {} but the configured number of frames is {}.'.format(hologram_phases.shape[0], self.number_of_frames))
         reconstructions = torch.zeros(
                                       self.number_of_frames,
                                       self.number_of_depth_layers,
