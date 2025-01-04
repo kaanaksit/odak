@@ -58,7 +58,6 @@ def test(
                                             device = device
                                            )
     reconstruction_intensities = propagator.reconstruct(hologram_phases, amplitude = None)
-    import sys; sys.exit()
     for frame_id in range(reconstruction_intensities.shape[0]):
         for depth_id in range(reconstruction_intensities.shape[1]):
             reconstruction_intensity = reconstruction_intensities[frame_id, depth_id]
