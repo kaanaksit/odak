@@ -5,8 +5,8 @@ import odak
 
 def check_parameters_gradient(model):
     print(model.parameters)
-    for parameter_id, parameter in enumerate(model.parameters()):
-        print('ID: {}, Name: {}, Requires grad: {}'.format(parameter_id, parameter.name, parameter.requires_grad))
+    for (fullname, parameter) in model.named_parameters():
+        print('Name: {}, Requires grad: {}'.format(fullname, parameter.requires_grad))
 
 
 def test(
