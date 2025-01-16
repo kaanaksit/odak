@@ -31,8 +31,8 @@ def quadratic_phase_function(nx, ny, k, focal=0.4, dx=0.001, offset=[0, 0]):
     size = [nx, ny]
     x = torch.linspace(-size[0] * dx / 2, size[0] * dx / 2, size[0]) - offset[1] * dx
     y = torch.linspace(-size[1] * dx / 2, size[1] * dx / 2, size[1]) - offset[0] * dx
-    X, Y = torch.meshgrid(x, y, indexing='ij')
-    Z = X**2 + Y**2
+    X, Y = torch.meshgrid(x, y, indexing = 'ij')
+    Z = X ** 2 + Y ** 2
     qwf = torch.exp(-0.5j * k / focal * Z)
     return qwf
 
