@@ -25,7 +25,7 @@ def quadratic_phase_function(nx, ny, k, focal=0.4, dx=0.001, offset=[0, 0]):
 
     Returns
     -------
-    function   : torch.tensor
+    qpf        : torch.tensor
                  Generated quadratic phase function.
     """
     size = [nx, ny]
@@ -33,8 +33,8 @@ def quadratic_phase_function(nx, ny, k, focal=0.4, dx=0.001, offset=[0, 0]):
     y = torch.linspace(-size[1] * dx / 2, size[1] * dx / 2, size[1]) - offset[0] * dx
     X, Y = torch.meshgrid(x, y, indexing = 'ij')
     Z = X ** 2 + Y ** 2
-    qwf = torch.exp(-0.5j * k / focal * Z)
-    return qwf
+    qpf = torch.exp(-0.5j * k / focal * Z)
+    return qpf
 
 
 def prism_grating(nx, ny, k, angle, dx = 0.001, axis = 'x', phase_offset = 0.):
