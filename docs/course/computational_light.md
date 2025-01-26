@@ -309,7 +309,7 @@ For each topic highlighted below, please click on the box to discover more about
     But this also means there are opportunities for newcomers and investors in this space.
 
     * **Noticeable profiles.** Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of All-optical Machine Learning.
-    Here are some people I would encourage you to explore their websites: [Aydogan Ozcan](https://research.seas.ucla.edu/ozcan/) and [Ugur Tegin](https://www.ugurtegin.net/).
+    Here are some people I would encourage you to explore their websites: [Aydogan Ozcan](https://research.seas.ucla.edu/ozcan/).
     * **Want to learn more?** Although we will cover a great deal of All-optical Machine Learning in this course, you may want to dig deeper with a dedicated course, which you can follow online:
     <center><iframe width="560" height="315" src="https://www.youtube.com/embed/pjy860nZypU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></center>
 
