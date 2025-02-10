@@ -1,4 +1,3 @@
-import numpy as np
 import torch
 
 
@@ -16,7 +15,7 @@ def wavenumber(wavelength):
     k            : float
                    Wave number for a given wavelength.
     """
-    k = 2 * np.pi / wavelength
+    k = 2 * torch.pi / wavelength
     return k
 
 
@@ -38,7 +37,7 @@ def calculate_phase(field, deg = False):
     """
     phase = field.imag.atan2(field.real)
     if deg:
-        phase *= 180. / np.pi
+        phase *= 180. / torch.pi
     return phase
 
 
