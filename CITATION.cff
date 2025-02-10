@@ -80,7 +80,11 @@ authors:
     given-names: Yiyang
     orcid:  https://orcid.org/0009-0008-7232-3059
 
- 
+  - family-names: Yang
+    given-names: Xinge
+    orcid:  https://orcid.org/0000-0002-4936-1347
+
+
 title: "Odak"
 version: 0.2.6
 doi: 10.5281/zenodo.5136406
