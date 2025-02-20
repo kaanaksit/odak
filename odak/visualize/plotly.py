@@ -7,7 +7,7 @@ try:
     from plotly.subplots import make_subplots
     from PIL import Image
 except Exception as e:
-    warning = 'odak.visualize.plotly requires certain packages: pip install plotly kaleido PIL'
+    warning = 'odak.visualize.plotly requires certain packages: pip install plotly kaleido pillow'
     logging.warning(warning)
     logging.warning(e)
 import numpy as np
