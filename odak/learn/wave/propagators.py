@@ -379,9 +379,14 @@ class propagator():
                         result = reconstruction_field
                     else:
                         result = calculate_amplitude(reconstruction_field) ** 2
+                        
+                    if no_grad: 
+                        result = result.detach().clone()
+                        
                     reconstructions[
                                     frame_id,
                                     depth_id,
                                     channel_id
-                                   ] = result.detach().clone()
+                                   ] = result
+        
         return reconstructions
