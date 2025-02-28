@@ -9,6 +9,7 @@ import logging
 
 class display_color_hvs():
 
+
     def __init__(
                  self,
                  resolution = [1920, 1080],
@@ -16,7 +17,8 @@ class display_color_hvs():
                  pixel_pitch = 0.311,
                  read_spectrum = 'tensor',
                  primaries_spectrum = torch.rand(3, 301),
-                 device = torch.device('cpu')):
+                 device = torch.device('cpu')
+                ):
         '''
         Parameters
         ----------
@@ -27,7 +29,7 @@ class display_color_hvs():
         pixel_pitch                 : float
                                       Pixel pitch of the display in mm.
         read_spectrum               : str
-                                      Spectrum of the display. Default is 'default' which is the spectrum of the Dell U2415 display.
+                                      Spectrum of the display. Default is 'default' which is the spectrum of the Dell U2415 display [3 x 301].
         device                      : torch.device
                                       Device to run the code on. Default is None which means the code will run on CPU.
 
@@ -77,7 +79,7 @@ class display_color_hvs():
         s_cone_n                     : torch.tensor
                                        Normalised S cone distribution.
         """
-        wavelength_range = torch.linspace(400, 700, steps = 301, device = self.device)
+        wavelength_range = torch.linspace(400, 700, steps = self.primaries_spectrum.shape[-1], device = self.device)
         dist_l = 1 / (32.5 * (2 * torch.pi) ** 0.5) * torch.exp(-0.5 * (wavelength_range - 567.5) ** 2 / (2 * 32.5 ** 2))
         dist_m = 1 / (27.5 * (2 * torch.pi) ** 0.5) * torch.exp(-0.5 * (wavelength_range - 545.0) ** 2 / (2 * 27.5 ** 2))
         dist_s = 1 / (17.0 * (2 * torch.pi) ** 0.5) * torch.exp(-0.5 * (wavelength_range - 447.5) ** 2 / (2 * 17.0 ** 2))
@@ -101,7 +103,7 @@ class display_color_hvs():
         blue_spectrum                : torch.tensor
                                        Normalised backlight spectrum for blue color primary.
         """
-        wavelength_range = torch.linspace(400, 700, steps = 301, device = self.device)
+        wavelength_range = torch.linspace(400, 700, steps = self.primaries_spectrum.shape[-1], device = self.device)
         red_spectrum = 1 / (14.5 * (2 * torch.pi) ** 0.5) * torch.exp(-0.5 * (wavelength_range - 650) ** 2 / (2 * 14.5 ** 2))
         green_spectrum = 1 / (12 * (2 * torch.pi) ** 0.5) * torch.exp(-0.5 * (wavelength_range - 550) ** 2 / (2 * 12.0 ** 2))
         blue_spectrum = 1 / (12 * (2 * torch.pi) ** 0.5) * torch.exp(-0.5 * (wavelength_range - 450) ** 2 / (2 * 12.0 ** 2))
