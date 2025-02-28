@@ -29,14 +29,15 @@ def test(
         optimizer.step()
         description = 'Loss: {}'.format(loss.item())
         t.set_description(description)
+        if step % 10 == 0:
+            odak.tools.check_directory(output_directory)
+            odak.learn.tools.save_image(
+                                        '{}/metameric_foveation.png'.format(output_directory),
+                                        estimate,
+                                        cmin = 0.,
+                                        cmax = 1.
+                                       )
     print(description)
-    odak.tools.check_directory(output_directory)
-    odak.learn.tools.save_image(
-                                '{}/metameric_foveation.png'.format(output_directory),
-                                estimate,
-                                cmin = 0.,
-                                cmax = 1.
-                               )
     assert True == True
 
 
