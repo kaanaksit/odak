@@ -53,11 +53,11 @@ class multi_layer_perceptron(torch.nn.Module):
             self.input_multiplier.append(torch.nn.Parameter(torch.ones(1, self.dimensions[0]) * input_multiplier))
         if self.model_type == 'FILM SIREN':
             self.alpha = torch.nn.ParameterList()
-            for j in self.dimensions[1:-1]:
+            for j in self.dimensions[1::]:
                 self.alpha.append(torch.nn.Parameter(torch.randn(2, 1, j)))
         if self.model_type == 'Gaussian':
             self.alpha = torch.nn.ParameterList()
-            for j in self.dimensions[1:-1]:
+            for j in self.dimensions[1::]:
                 self.alpha.append(torch.nn.Parameter(torch.randn(1, 1, j)))
 
 
@@ -80,19 +80,18 @@ class multi_layer_perceptron(torch.nn.Module):
             result = x * self.input_multiplier[0]
         else:
             result = x
-        for layer_id, layer in enumerate(self.layers[:-1]):
+        for layer_id, layer in enumerate(self.layers):
             result = layer(result)
-            if self.model_type == 'conventional':
+            if self.model_type == 'conventional' and layer_id != len(self.layers) -1:
                 result = self.activation(result)
-            elif self.model_type == 'swish':
+            elif self.model_type == 'swish' and layer_id != len(self.layers) - 1:
                 result = swish(result)
             elif self.model_type == 'SIREN':
                 result = torch.sin(result * self.siren_multiplier)
             elif self.model_type == 'FILM SIREN':
                 result = torch.sin(self.alpha[layer_id][0] * result + self.alpha[layer_id][1])
-            elif self.model_type == 'Gaussian': 
+            elif self.model_type == 'Gaussian' and layer_id != len(self.layers) - 1: 
                 result = gaussian(result, self.alpha[layer_id][0])
-        result = self.layers[-1](result)
         return result
 
 
