@@ -801,32 +801,26 @@ class positional_encoder(torch.nn.Module):
         self.L = L
 
 
+
     def forward(self, x):
         """
         Forward model.
-        
+
         Parameters
         ----------
         x               : torch.tensor
-                          Input data.
+                          Input data [b x n], where `b` is batch size, `n` is the feature size.
 
         Returns
         ----------
         result          : torch.tensor
-                          Result of the forward operation
+                          Result of the forward operation.
         """
-        B, C = x.shape
-        x = x.view(B, C, 1)
-        results = [x]
-        for i in range(1, self.L + 1):
-            freq = (2 ** i) * torch.pi
-            cos_x = torch.cos(freq * x)
-            sin_x = torch.sin(freq * x)
-            results.append(cos_x)
-            results.append(sin_x)
-        results = torch.cat(results, dim=2)
-        results = results.permute(0, 2, 1)
-        results = results.reshape(B, -1)
+        freqs = 2 ** torch.arange(self.L, device = x.device)
+        freqs = freqs.view(1, 1, -1)
+        results_cos = torch.cos(x.unsqueeze(-1) * freqs).reshape(x.shape[0], -1)
+        results_sin = torch.sin(x.unsqueeze(-1) * freqs).reshape(x.shape[0], -1)
+        results = torch.cat((x, results_cos, results_sin), dim = 1)
         return results
 
 
