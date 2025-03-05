@@ -785,6 +785,7 @@ class convolutional_block_attention(torch.nn.Module):
 class positional_encoder(torch.nn.Module):
     """
     A positional encoder module.
+    This implementation follows this specific work: `Martin-Brualla, Ricardo, Noha Radwan, Mehdi SM Sajjadi, Jonathan T. Barron, Alexey Dosovitskiy, and Daniel Duckworth. "Nerf in the wild: Neural radiance fields for unconstrained photo collections." In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, pp. 7210-7219. 2021.`.
     """
     
     def __init__(self, L):
