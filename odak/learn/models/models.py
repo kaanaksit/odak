@@ -86,9 +86,9 @@ class multi_layer_perceptron(torch.nn.Module):
                 result = self.activation(result)
             elif self.model_type == 'swish' and layer_id != len(self.layers) - 1:
                 result = swish(result)
-            elif self.model_type == 'SIREN':
+            elif self.model_type == 'SIREN' and layer_id != len(self.layers) - 1:
                 result = torch.sin(result * self.siren_multiplier)
-            elif self.model_type == 'FILM SIREN':
+            elif self.model_type == 'FILM SIREN' and layer_id != len(self.layers) - 1:
                 result = torch.sin(self.alpha[layer_id][0] * result + self.alpha[layer_id][1])
             elif self.model_type == 'Gaussian' and layer_id != len(self.layers) - 1: 
                 result = gaussian(result, self.alpha[layer_id][0])
