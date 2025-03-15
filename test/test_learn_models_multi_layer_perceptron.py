@@ -12,10 +12,10 @@ def test(output_directory = 'test_output'):
     test_filename  = '{}/multi_layer_perceptron_estimation.png'.format(output_directory)
     weights_filename = '{}/multi_layer_perceptron_model_weights.pt'.format(output_directory)
     learning_rate = 1e-4
-    no_epochs = 5
-    dimensions = [2, 128, 128, 3]
+    no_epochs = 2 #20000
+    dimensions = [2, 64, 64, 64, 64, 64, 64, 3]
     device_name = 'cpu'
-    save_at_every = 2000
+    save_at_every = 1000
     model_type = 'FILM SIREN'
     test_resolution_scale = 4
     device = torch.device(device_name)
@@ -24,17 +24,17 @@ def test(output_directory = 'test_output'):
                                                      activation = torch.nn.Tanh(),
                                                      bias = True,
                                                      model_type = model_type,
-                                                     input_multiplier = 200,
+                                                     input_multiplier = 100,
+                                                     siren_multiplier = 1.
                                                     ).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr = learning_rate)
     image = odak.learn.tools.load_image(filename, normalizeby = 255., torch_style = False)[:, :, 0:3].to(device)
     original_resolution = image.shape
-    image = (image * 2.) - 1.
     image = image.reshape(-1, original_resolution[-1])
     test_resolution = [original_resolution[0] * test_resolution_scale, original_resolution[1] * test_resolution_scale, 3]
     train_batches = get_batches(original_resolution).to(device)
     test_batches = get_batches(test_resolution).to(device)
-    loss_function = torch.nn.MSELoss(reduction = 'sum')
+    loss_function = torch.nn.MSELoss(reduction = 'mean')
     epochs = tqdm(range(no_epochs), leave = False, dynamic_ncols = True)    
     if os.path.isfile(weights_filename):
         model.load_state_dict(torch.load(weights_filename))
@@ -82,7 +82,7 @@ def train(output_values, input_values, optimizer, loss_function, model):
 def trial(input_values, model, resolution):
     torch.no_grad()
     estimation = model(input_values)
-    estimated_image = (estimation.reshape(resolution) + 1.) / 2.
+    estimated_image = estimation.reshape(resolution)
     return estimated_image
 
 

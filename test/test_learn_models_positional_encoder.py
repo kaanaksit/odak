@@ -13,18 +13,19 @@ def test(output_directory = 'test_output'):
     test_filename  = '{}/positional_encoder_multi_layer_perceptron_estimation.png'.format(output_directory)
     weights_filename = '{}/positional_encoder_multi_layer_perceptron_weights.pt'.format(output_directory)
     learning_rate = 1e-4
-    no_epochs = 5
-    save_at_every = 5000
+    no_epochs = 10 # Change this +10000
+    save_at_every = 1000
     number_of_batches = 1
-    positional_encoding_level = 24
-    dimensions = [2, 256, 256, 256, 3]
+    positional_encoding_level = 50
+    dimensions = [2, 64, 64, 64, 3]
     dimensions[0] = dimensions[0] + dimensions[0] * 2 * positional_encoding_level
     device = torch.device(device_name)
     positional_encoder = odak.learn.models.components.positional_encoder(L = positional_encoding_level)
     model = odak.learn.models.multi_layer_perceptron(
                                                      dimensions = dimensions,
                                                      activation = torch.nn.ReLU(),
-                                                     bias = False,
+                                                     bias = True,
+                                                     input_multiplier = None,
                                                      model_type = 'conventional'
                                                     ).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr = learning_rate)
@@ -33,7 +34,7 @@ def test(output_directory = 'test_output'):
     loss_function = torch.nn.MSELoss()
     epochs = tqdm(range(no_epochs), leave = False, dynamic_ncols = True)    
     if os.path.isfile(weights_filename):
-        model.load_state_dict(torch.load(weights_filename))
+        model.load_state_dict(torch.load(weights_filename, weights_only = True))
         model.eval()
         print('Model weights loaded: {}'.format(weights_filename))
     try:
@@ -72,8 +73,8 @@ def train(output_values, input_values, optimizer, loss_function, model, position
         normalized_input_value = torch.zeros_like(input_value)
         normalized_input_value[:, 0] = input_value[:, 0] / output_values.shape[0]
         normalized_input_value[:, 1] = input_value[:, 1] / output_values.shape[1]
-        input_value = positional_encoder(input_value)
-        estimation = model(input_value)
+        x = positional_encoder(normalized_input_value)
+        estimation = model(x)
         ground_truth = output_values[input_value[:, 0].int(), input_value[:, 1].int(), :]
         loss = loss_function(estimation, ground_truth)
         loss.backward(retain_graph = True)
@@ -89,8 +90,8 @@ def trial(output_values, input_values, loss_function, model, positional_encoder)
         normalized_input_value = torch.zeros_like(input_value)
         normalized_input_value[:, 0] = input_value[:, 0] / output_values.shape[0]
         normalized_input_value[:, 1] = input_value[:, 1] / output_values.shape[1]
-        input_value = positional_encoder(input_value)
-        estimation = model(input_value)
+        x = positional_encoder(normalized_input_value)
+        estimation = model(x)
         ground_truth = output_values[input_value[:, 0].int(), input_value[:, 1].int(), :]
         estimated_image[input_value[:, 0].int(), input_value[:, 1].int(), :] = estimation
         loss = loss_function(estimation, ground_truth)

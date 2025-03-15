@@ -354,8 +354,12 @@ def get_light_kernels(
         light_parameters[wavelength_id, distance_id, pixel_pitch_id, :, :, 0] = wavelength
         light_parameters[wavelength_id, distance_id, pixel_pitch_id, :, :, 1] = distance
         light_parameters[wavelength_id, distance_id, pixel_pitch_id, :, :, 2] = pixel_pitch
-        x = torch.linspace(-1., 1., resolution[0] * resolution_factor, device = device) * pixel_pitch / 2. * resolution[0]
-        y = torch.linspace(-1., 1., resolution[1] * resolution_factor, device = device) * pixel_pitch / 2. * resolution[1]
+        lims = [
+                resolution[0] // 2 * pixel_pitch,
+                resolution[1] // 2 * pixel_pitch 
+               ]
+        x = torch.linspace(-lims[0], lims[0], resolution[0] * resolution_factor, device = device)
+        y = torch.linspace(-lims[1], lims[1], resolution[1] * resolution_factor, device = device)        
         X, Y = torch.meshgrid(x, y, indexing = 'ij')
         light_parameters[wavelength_id, distance_id, pixel_pitch_id, :, :, 3] = X
         light_parameters[wavelength_id, distance_id, pixel_pitch_id, :, :, 4] = Y
