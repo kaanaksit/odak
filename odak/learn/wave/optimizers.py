@@ -229,17 +229,20 @@ class multi_color_hologram_optimizer():
                                      Constrained output phase.
         """
         phase_zero_mean = phase - torch.mean(phase)
-        phase_low = torch.nan_to_num(phase_zero_mean - phase_offset, nan = 2 * np.pi)
-        phase_high = torch.nan_to_num(phase_zero_mean + phase_offset, nan = 2 * np.pi)
-        loss = multi_scale_total_variation_loss(phase_low, levels = 6)
-        loss += multi_scale_total_variation_loss(phase_high, levels = 6)
-        loss += torch.std(phase_low)
-        loss += torch.std(phase_high)
+        phase_low = torch.nan_to_num(phase_zero_mean - phase_offset, nan=2 * np.pi) % (2 * np.pi)
+        phase_high = torch.nan_to_num(phase_zero_mean + phase_offset, nan=2 * np.pi) % (2 * np.pi)
+        loss = (multi_scale_total_variation_loss(phase_low, levels=6) +
+                multi_scale_total_variation_loss(phase_high, levels=6) +
+                torch.std(phase_low) +
+                torch.std(phase_high))
+
         phase_only = torch.zeros_like(phase)
+
         phase_only[0::2, 0::2] = phase_low[0::2, 0::2]
         phase_only[0::2, 1::2] = phase_high[0::2, 1::2]
         phase_only[1::2, 0::2] = phase_high[1::2, 0::2]
         phase_only[1::2, 1::2] = phase_low[1::2, 1::2]
+
         return phase_only, loss
 
 
@@ -259,9 +262,8 @@ class multi_color_hologram_optimizer():
         phase_only                 : torch.tensor
                                      Constrained output phase.
         """
-        phase_only = torch.nan_to_num(phase - phase_offset, nan = 2 * np.pi)
-        loss = multi_scale_total_variation_loss(phase, levels = 6)
-        loss += multi_scale_total_variation_loss(phase_offset, levels = 6)
+        phase_only = torch.nan_to_num(phase - phase_offset, nan = 2 * np.pi) % (2 * np.pi)
+        loss = multi_scale_total_variation_loss(phase_only, levels = 6)
         return phase_only, loss
 
 
