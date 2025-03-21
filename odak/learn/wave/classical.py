@@ -239,6 +239,7 @@ def get_propagation_kernel(
                                                         device = device
                                                        )
     elif propagation_type == 'Seperable Impulse Response Fresnel':
+        print(propagation_type, scale)
         kernel, _, _, _ = get_seperable_impulse_response_fresnel_kernel(
                                                                         nu = nu,
                                                                         nv = nv,
@@ -301,7 +302,7 @@ def get_light_kernels(
     light_parameters        : torch.tensor
                               Parameters of each pixel in light_kernels* [w x d x p x m x n x 5].  Last dimension contains, wavelengths, distances, pixel pitches, X and Y locations in order.
     """
-    if propagation_type != 'Impulse Response Fresnel':
+    if propagation_type != 'Impulse Response Fresnel' and propagation_type != 'Seperable Impulse Response Fresnel':
         resolution_factor = 1
     light_kernels_complex = torch.zeros(            
                                         len(wavelengths),
