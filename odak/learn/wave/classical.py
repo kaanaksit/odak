@@ -239,7 +239,6 @@ def get_propagation_kernel(
                                                         device = device
                                                        )
     elif propagation_type == 'Seperable Impulse Response Fresnel':
-        print(propagation_type, scale)
         kernel, _, _, _ = get_seperable_impulse_response_fresnel_kernel(
                                                                         nu = nu,
                                                                         nv = nv,
