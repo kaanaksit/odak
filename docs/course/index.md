@@ -21,9 +21,8 @@ Some well-known subfields of Computational Light are Computer Graphics, Computat
 
 <figure markdown>
   ![Image title](media/telelife.png){ width="600" }
-  <figcaption>Future is yet to be decided. Will you help me build it? A rendering from <a href="https://kaanaksit.com/assets/pdf/OrloskyEtAl_FrontiersInVirtualReality2021_Telelife_the_future_of_remote_living.pdf">Telelife vision paper</a>.</figcaption>
+  Future is yet to be decided. Will you help me build it? A rendering from <a href="https://kaanaksit.com/assets/pdf/OrloskyEtAl_FrontiersInVirtualReality2021_Telelife_the_future_of_remote_living.pdf">Telelife vision paper</a> [@orlosky2021telelife].
 </figure>
-[@orlosky2021telelife]
 
 
 Computational Light Course bridges the gap between Computer Science and physics. In other words, Computational Light Course offers students a gateway to get familiar with various aspects of the physics of light, the human visual system, computational methods in designing light-based devices, and applications of light. Precisely, students will familiarize themselves with designing and implementing graphics, display, sensor, and camera systems using state-of-the-art deep learning and optimization methods. A deep understanding of these topics can help students become experts in the computational design of new graphics, displays, sensors, and camera systems.
