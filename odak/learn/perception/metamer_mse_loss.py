@@ -54,6 +54,7 @@ class MetamerMSELoss():
         self.loss_func = torch.nn.MSELoss()
         self.noise = None
 
+
     def gen_metamer(self, image, gaze):
         """ 
         Generates a metamer for an image, following the method in [this paper](https://dl.acm.org/doi/abs/10.1145/3450626.3459943)
@@ -88,6 +89,7 @@ class MetamerMSELoss():
         input_pyramid = self.metameric_loss.pyramid_maker.construct_pyramid(
             image, self.metameric_loss.n_pyramid_levels)
 
+
         def match_level(input_level, target_mean, target_std):
             level = input_level.clone()
             level -= torch.mean(level)
@@ -116,24 +118,25 @@ class MetamerMSELoss():
         metamer = metamer[:image_size[0], :image_size[1], :image_size[2], :image_size[3]]
         return metamer
 
-    def __call__(self, image, target, gaze=[0.5, 0.5]):
+
+    def __call__(self, image, target, gaze = [0.5, 0.5]):
         """ 
         Calculates the Metamer MSE Loss.
 
         Parameters
         ----------
         image   : torch.tensor
-                Image to compute loss for. Should be an RGB image in NCHW format (4 dimensions)
+                  Image to compute loss for. Should be an RGB image in NCHW format (4 dimensions)
         target  : torch.tensor
-                Ground truth target image to compute loss for. Should be an RGB image in NCHW format (4 dimensions)
+                  Ground truth target image to compute loss for. Should be an RGB image in NCHW format (4 dimensions)
         gaze    : list
-                Gaze location in the image, in normalized image coordinates (range [0, 1]) relative to the top left of the image.
+                   Gaze location in the image, in normalized image coordinates (range [0, 1]) relative to the top left of the image.
 
         Returns
         -------
 
-        loss                : torch.tensor
-                                The computed loss.
+        loss    : torch.tensor
+                  The computed loss.
         """
         check_loss_inputs("MetamerMSELoss", image, target)
         # Pad image and target if necessary
@@ -145,6 +148,7 @@ class MetamerMSELoss():
             self.target = target
 
         return self.loss_func(image, self.target_metamer)
+
 
     def to(self, device):
         self.metameric_loss = self.metameric_loss.to(device)

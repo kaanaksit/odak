@@ -269,7 +269,6 @@ def make_equi_pooling_size_map_lod(gaze_angles, image_pixel_size, alpha=0.3, mod
                                 The computed pooling size map, of size HxW.
     """
     pooling_pixel = make_equi_pooling_size_map_pixels(gaze_angles, image_pixel_size, alpha, mode)
-    import matplotlib.pyplot as plt
-    pooling_lod = torch.log2(1e-6+pooling_pixel)
+    pooling_lod = torch.log2(1e-6 + pooling_pixel)
     pooling_lod[pooling_lod < 0] = 0
     return pooling_lod

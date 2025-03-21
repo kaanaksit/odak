@@ -14,7 +14,9 @@ I encourage readers to carefully read this page to decide if they want to contin
 
 
 ## Brief course description
-Computational Light is a term that brings the concepts in computational methods with the characteristics of light. In other words, wherever we can program the qualities of light, such as its intensity or direction, this will get us into the topics of Computational Light. Some well-known subfields of Computational Light are Computer Graphics, Computational Displays, Computational Photography, Computational Imaging and Sensing, Computational Optics and Fabrication, Optical Communication, and All-optical Machine Learning.
+Computational Light is a term that brings the concepts in computational methods with the characteristics of light.
+So more specifically, wherever we can program the qualities of light, such as intensity or direction, this will bring us into the topics of Computational Light.
+Some well-known subfields of Computational Light are Computer Graphics, Computational Displays, Computational Photography, Computational Imaging and Sensing, Computational Optics and Fabrication, Optical Communication, and All-optical Machine Learning.
 
 
 <figure markdown>
