@@ -14,6 +14,9 @@ I encourage readers to carefully read this page to decide if they want to contin
 
 
 ## Brief course description
+
+:octicons-info-24: Informative
+
 Computational Light is a term that brings the concepts in computational methods with the characteristics of light.
 So more specifically, wherever we can program the qualities of light, such as intensity or direction, this will bring us into the topics of Computational Light.
 Some well-known subfields of Computational Light are Computer Graphics, Computational Displays, Computational Photography, Computational Imaging and Sensing, Computational Optics and Fabrication, Optical Communication, and All-optical Machine Learning.
@@ -26,6 +29,132 @@ Some well-known subfields of Computational Light are Computer Graphics, Computat
 
 
 Computational Light Course bridges the gap between Computer Science and physics. In other words, Computational Light Course offers students a gateway to get familiar with various aspects of the physics of light, the human visual system, computational methods in designing light-based devices, and applications of light. Precisely, students will familiarize themselves with designing and implementing graphics, display, sensor, and camera systems using state-of-the-art deep learning and optimization methods. A deep understanding of these topics can help students become experts in the computational design of new graphics, displays, sensors, and camera systems.
+
+
+## What is Computational Light?
+
+
+:octicons-info-24: Informative
+
+
+Computational light is a term that brings the concepts in computational methods with the characteristics of light.
+In other words, wherever we can program the qualities of light, this will get us into the topics of computational light.
+Programming light may sound unconventional, but I invite you to consider how we program current computers.
+These conventional computers interpret voltage levels in an electric signal as ones and zeros.
+Color, $\lambda$, propagation direction, $\vec{r}$, amplitude, $A$, phase, $\phi$, polarization, diffraction, and interference are all qualities that could help us program light to achieve tasks for specific applications. For now, many of these suggested programable qualities of light may be unknown to you. We will cover all these qualities in this course, so please patient in terms of growing your understanding on the topic.
+
+## Applications of Computational Light
+
+
+:octicons-info-24: Informative ·
+:octicons-eye-24: Media
+
+
+There are enormous amounts of applications of light.
+Let us glance at some of the important ones to get a sense of possibilities for people studying the topics of computational light.
+For each topic highlighted below, please click on the box to discover more about that specific subfield of computational light.
+
+
+??? success end "Computer Graphics"
+    Computer Graphics deals with generating synthetic images using computers and simulations of light.
+    Common examples of Computer Graphics are the video games we all play and are familiar with.
+    In today's world, you can often find Computer Graphics as a tool to simulate and synthesize scenes for developing a trending topic, artificial intelligence.
+    
+    * **Noticeable profiles.** Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of modern Computer Graphics.
+    Here are some people I would encourage you to explore their websites: [Peter Shirley](https://www.petershirley.com/), and [Morgan Mcguire](https://casual-effects.com/).
+    * **Successful products.** Here are a few examples of successful outcomes from the field of Computer Graphics: [Roblox](https://www.roblox.com/), [NVIDIA's DLSS](https://www.nvidia.com/en-gb/geforce/technologies/dlss/), [Apple's Metal](https://developer.apple.com/metal/), [OpenGL](https://www.opengl.org/) and [Vulkan](https://www.vulkan.org/).
+    * **Did you know?** The lecturer of the Computational Light Course, [Kaan Akşit](https://kaanaksit.com), is actively researching topics of Computer Graphics (e.g., [Beyond blur: Real-time ventral metamers for foveated rendering](https://kaanaksit.com/assets/pdf/WaltonEtAl_SIGGRAPH2021_Beyond_blur_real_time_ventral_metamers_for_foveated_rendering.pdf)[@walton2021beyond]).
+    * **Want to learn more?** Although we will cover a great deal of Computer Graphics in this course, you may want to dig deeper with a dedicated course, which you can follow online:
+    <center><iframe width="560" height="315" src="https://www.youtube.com/embed/-LqUu61oRdk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></center>
+
+
+??? success end "Computational Displays"
+    Computational Displays topic deals with inventing next-generation display technology for the future of human-computer interaction.
+    Common examples of emerging Computational Displays are near-eye displays such as Virtual Reality headsets and Augmented Reality Glasses.
+    Today, we all use displays as a core component for any visual task, such as working, entertainment, education, and many more.
+
+    * **Noticeable profiles.** Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of Computational Displays.
+    Here are some examples of such people; I would encourage you to explore their websites: [Rafał Mantiuk](https://www.cl.cam.ac.uk/~rkm38/), and [Andrew Maimone](https://www.cs.unc.edu/~maimone/).
+    * **Successful products.** Here are a few examples of successful outcomes from the field of Computational Displays: [Nreal Augmented Reality glasses](https://www.nreal.ai/) and [Meta Quest Virtual Reality headsets](https://www.oculus.com/experiences/quest/).
+    * **Did you know?** The lecturer of the Computational Light Course, [Kaan Akşit](https://kaanaksit.com), is actively researching topics of Computational Displays (e.g., [Near-Eye Varifocal Augmented Reality Display using See-Through Screens](https://kaanaksit.com/assets/pdf/AksitEtAl_SiggraphAsia2017_Near_eye_varifocal_augmented_reality_display_using_see_through_screens.pdf) [@akcsit2017near]).
+    Kaan has made noticeable contributions to three-dimensional displays, virtual reality headsets, and augmented reality glasses.
+    * **Want to learn more?** Although we will cover a great deal of Computational Displays in this course, you may want to dig deeper with a dedicated course, which you can follow online [@kavakli2022optimizing]:
+    <center> <iframe width="560" height="315" src="https://www.youtube.com/embed/z_AtSgct6_I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center>
+
+
+??? success end "Computational Photography"
+    Computational Photography topic deals with digital image capture based on optical hardware such as cameras.
+    Common examples of emerging Computational Photography are smartphone applications such as shooting in the dark or capturing selfies.
+    Today, we all use products of Computational Photography to capture glimpses from our daily lives and store them as memories.
+
+    * **Noticeable profiles.** Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of Computational Displays.
+    Here are some examples of such people; I would encourage you to explore their websites: [Diego Gutierrez](http://giga.cps.unizar.es/~diegog/) and [Jinwei Gu](http://www.gujinwei.org/).
+    * **Successful products.** Here are a few examples of successful outcomes from the field of Computational Displays: [Google's Night Sight](https://support.google.com/googlecamera/answer/9708795?hl=en) and [Samsung Camera modes](https://www.samsung.com/uk/support/mobile-devices/what-is-panorama-mode-and-how-do-i-use-it/).
+    * **Want to learn more?** Although we will cover relevant information for Computational Photography in this course, you may want to dig deeper with a dedicated course, which you can follow online:
+    <center> <iframe width="560" height="315" src="https://www.youtube.com/embed/y7HrM-fk_Rc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center>
+
+
+??? success end "Computational Imaging and Sensing"
+    Computational Imaging and Sensing topic deal with imaging and sensing certain scene qualities.
+    Common examples of Computational Imaging and Sensing can be found in the two other domains of Computational Light: Computational Astronomy and Computational Microscopy.
+    Today, medical diagnoses of biological samples in hospitals or imaging stars and beyond or sensing vital signals are all products of Computational Imaging and Sensing.
+
+    * **Noticeable profiles.** Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of Computational Imaging and Sensing.
+    Here are some examples of such people; I would encourage you to explore their websites: [Laura Waller](http://www.laurawaller.com/) and [Nick Antipa](http://nickantipa.com/).
+    * **Successful products.** Here are a few examples of successful outcomes from the field of Computational Imaging and Sensing: [Zeiss Microscopes](https://www.zeiss.com/microscopy/en/products/light-microscopes.html) and [Heart rate sensors on Apple's Smartwatch](https://support.apple.com/guide/watch/heart-rate-apda88aefe4c/watchos).
+    * **Did you know?** The lecturer of the Computational Light Course, [Kaan Akşit](https://kaanaksit.com), is actively researching topics of Computational Imaging and Displays (e.g., [Unrolled Primal-Dual Networks for Lensless Cameras](https://kaanaksit.com/assets/pdf/KingshottEtAl_OpticsExpress2022_Unrolled_primal_dual_networks_for_lensless_cameras.pdf) [@kingshott2022unrolled]).
+    * **Want to learn more?** Although we will cover a great deal of Computational Imaging and Sensing in this course, you may want to dig deeper with a dedicated course, which you can follow online:
+    <center> <iframe width="560" height="315" src="https://www.youtube.com/embed/5AWx_FLVpmk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center>
+
+
+??? success end "Computational Optics and Fabrication"
+    The Computational Optics and Fabrication topic deals with designing and fabricating optical components such as lenses, mirrors, diffraction gratings, holographic optical elements, and metasurfaces.
+     There is a little bit of Computational Optics and Fabrication in every sector of Computational Light, especially when there is a need for custom optical design.
+
+    * **Noticeable profiles.** Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of Computational Optics and Fabrication.
+    Here are some examples of such people; I would encourage you to explore their websites: [Jannick Rolland](https://www.odalab-spectrum.org/Rochester/Technologies.html) and [Mark Pauly](https://www.epfl.ch/labs/gcm/research-projects/computational-caustics/).
+    * **Did you know?** The lecturer of the Computational Light Course, [Kaan Akşit](https://kaanaksit.com), is actively researching topics of Computational Optics and Fabrication (e.g., [Manufacturing application-driven foveated near-eye displays](https://kaanaksit.com/assets/pdf/AksitEtAl_IEEEVR2019_manufacturing_application_driven_foveated_near_eye_displays.pdf) [@akcsit2019manufacturing]).
+    * **Want to learn more?** Although we will cover a great deal of Computational Imaging and Sensing in this course, you may want to dig deeper with a dedicated course, which you can follow online:
+    <center> <iframe width="560" height="315" src="https://www.youtube.com/embed/cEzVhisjFn0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center>
+
+
+??? success end "Optical Communication"
+    Optical Communication deals with using light as a medium for telecommunication applications.
+    Common examples of Optical Communication are the fiber cables and satellites equipped with optical links in space running our Internet.
+    In today's world, Optical Communication runs our entire modern life by making the Internet a reality.
+
+    * **Noticeable profiles.** Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of modern Optical Communication.
+    Here are some people I would encourage you to explore their websites: [Harald Haas](https://www.lifi.eng.ed.ac.uk/) and [Anna Maria Vegni](http://comlab.uniroma3.it).
+    * **Did you know?** The lecturer of the Computational Light Course, [Kaan Akşit](https://kaanaksit.com), was researching topics of Optical Communication (e.g., [From sound to sight: Using audio processing to enable visible light communication](https://kaanaksit.com/assets/pdf/SchmidEtAl_WoOWC2014_From_sound_to_sight_using_audio_processing_to_enable_visible_light_communication.pdf) [@schmid2014sound]).
+    * **Want to learn more?** Although we will cover relevant information for Optical Communication in this course, you may want to dig deeper and could start with this online video:
+    <center><iframe width="560" height="315" src="https://www.youtube.com/embed/6-0fhUMaZ5I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></center>
+
+
+??? success end "All-optical Machine Learning"
+    All-optical Machine Learning deals with building neural networks and computers running solely based on light.
+    As this is an emerging field, there are yet to be products in this field that we use in our daily lives.
+    But this also means there are opportunities for newcomers and investors in this space.
+
+    * **Noticeable profiles.** Like in any field, there are noticeable people in this field that you may want to observe their profiles to get a sense of who they are, what they achieve, or what they built for the development of All-optical Machine Learning.
+    Here are some people I would encourage you to explore their websites: [Aydogan Ozcan](https://research.seas.ucla.edu/ozcan/).
+    * **Want to learn more?** Although we will cover a great deal of All-optical Machine Learning in this course, you may want to dig deeper with a dedicated course, which you can follow online:
+    <center><iframe width="560" height="315" src="https://www.youtube.com/embed/pjy860nZypU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></center>
+
+??? example end "Lab work: What are the other fields and interesting profiles out there?"
+    Please explore other relevant fields to Computational Light, and explore interesting profiles out there.
+    Please make a list of relevant fields and interesting profiles and report your top three.
+
+
+Indeed, there are more topics related to computational light than the ones highlighted here.
+If you are up to a challenge for the next phase of your life, you could help the field identify new opportunities with light-based sciences.
+In addition, there are indeed more topics, more noticeable profiles, successful product examples, and dedicated courses that focus on every one of these topics.
+Examples are not limited to the ones that I have provided above.
+Your favorite search engine is your friend to find out more in this case.
+
+
+??? example end "Lab work: Where do we find good resources?"
+    Please explore software projects on GitHub and papers on Google Scholar to find out about works that are relevant to the theme of Computational Light.
+    Please make a list of these projects and report the top three projects that you feel most exciting and interesting.
 
 
 ## Prerequisites
