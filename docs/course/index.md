@@ -161,7 +161,7 @@ Your favorite search engine is your friend to find out more in this case.
 These are the prerequisites of **Computational Light** course:
 
 
-- **Background knowledge.** First and foremost being fluent in programming with [Python programming language](https://www.python.org/) and a graduate-level understanding of `Linear Algebra,` and  `Machine Learning` are highly required.
+- **Background knowledge.** First and foremost being fluent in programming with [Python programming language](https://www.python.org/) and a graduate-level understanding of `Linear Algebra,` and  `Deep Learning` are highly required.
 - **Skills and abilities.** Throughout the entire course, three libraries will be used, and these libraries include [`odak`](https://github.com/kaanaksit/odak), [`numpy`](https://numpy.org/), and [`torch`](https://pytorch.org/).
 Familiarity with these libraries is a big plus.
 - **Required Resources.** Readers need a computer with decent computational resources (e.g., GPU) when working on the provided materials, laboratory work, and projects. 
@@ -191,7 +191,7 @@ Here are some questions and answers related to the course that readers may ask:
 
 
 ??? question end "How can I learn Python programming, linear Algebra and machine learning?"
-    There isn't a point in providing references on how to learn `Python programming,` `Linear Algebra,` and `Machine Learning` as there is a vast amount of resources online or in your previous university courses.
+    There isn't a point in providing references on how to learn `Python programming,` `Linear Algebra,` and `Deep Learning` as there is a vast amount of resources online or in your previous university courses.
     Your favorite search engine is your friend in this case.
 
 
