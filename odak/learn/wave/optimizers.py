@@ -1,6 +1,5 @@
 import torch
 import logging
-import numpy as np
 from tqdm import tqdm
 from .util import wavenumber, generate_complex_field, calculate_amplitude, calculate_phase
 from ..tools import torch_load, multi_scale_total_variation_loss, quantize
@@ -229,8 +228,8 @@ class multi_color_hologram_optimizer():
                                      Constrained output phase.
         """
         phase_zero_mean = phase - torch.mean(phase)
-        phase_low = torch.nan_to_num(phase_zero_mean - phase_offset, nan = 2 * np.pi)
-        phase_high = torch.nan_to_num(phase_zero_mean + phase_offset, nan = 2 * np.pi)
+        phase_low = torch.nan_to_num(phase_zero_mean - phase_offset, nan = 2 * torch.pi)
+        phase_high = torch.nan_to_num(phase_zero_mean + phase_offset, nan = 2 * torch.pi)
         loss = multi_scale_total_variation_loss(phase_low, levels = 6)
         loss += multi_scale_total_variation_loss(phase_high, levels = 6)
         loss += torch.std(phase_low)
@@ -259,7 +258,7 @@ class multi_color_hologram_optimizer():
         phase_only                 : torch.tensor
                                      Constrained output phase.
         """
-        phase_only = torch.nan_to_num(phase - phase_offset, nan = 2 * np.pi)
+        phase_only = torch.nan_to_num(phase - phase_offset, nan = 2 * torch.pi)
         loss = multi_scale_total_variation_loss(phase, levels = 6)
         loss += multi_scale_total_variation_loss(phase_offset, levels = 6)
         return phase_only, loss
@@ -409,7 +408,7 @@ class multi_color_hologram_optimizer():
                                                 number_of_iterations=number_of_iterations,
                                                 weights=weights
                                                )
-        hologram_phases = quantize(hologram_phases % (2 * np.pi), bits = bits, limits = [0., 2 * np.pi]) / 2 ** bits * 2 * np.pi
+        hologram_phases = quantize(hologram_phases % (2 * torch.pi), bits = bits, limits = [0., 2 * torch.pi]) / 2 ** bits * 2 * torch.pi
         torch.no_grad()
         reconstruction_intensities = self.propagator.reconstruct(hologram_phases)
         laser_powers = self.propagator.get_laser_powers()
