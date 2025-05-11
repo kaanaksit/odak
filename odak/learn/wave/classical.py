@@ -342,7 +342,7 @@ def get_light_kernels(
                                                 samples = samples
                                                )
         if kernel_type == 'spatial':
-            kernel = torch.fft.ifftshift(torch.fft.ifft2(torch.fft.ifftshift(kernel_fourier)))
+            kernel = torch.fft.ifftshift(torch.fft.ifft2(kernel_fourier))
         elif kernel_type == 'fourier':
             kernel = kernel_fourier
         else:
