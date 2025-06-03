@@ -276,7 +276,7 @@ class multiplane_loss():
         self.targets = self.targets.detach().clone() * self.multiplier
     
 
-    def __call__(self, image, target, plane_id = None):
+    def __call__(self, image, target, plane_id = None, inject_noise = False, noise_ratio = 1e-3):
         """
         Calculates the multiplane loss against a given target.
         
@@ -288,6 +288,10 @@ class multiplane_loss():
                         Target image for comparison [3 x m x n].
         plane_id      : int
                         Number of the plane under test.
+        inject_noise  : bool
+                        When True, noise is added on the targets at the given `noise_ratio`.
+        noise_ratio   : float
+                        Noise ratio
         
         Returns
         -------
@@ -299,6 +303,8 @@ class multiplane_loss():
             mask = self.masks
         else:
             mask= self.masks[plane_id, :]
+        if inject_noise:
+            target = target + torch.randn_like(target) * noise_ratio * (target.max() - target.min())
         l2_mask = self.weights[1] * self.loss_function(image * mask, target * mask)
         l2_cor = self.weights[2] * self.loss_function(image * target, target * target)
         loss = l2 + l2_mask + l2_cor
