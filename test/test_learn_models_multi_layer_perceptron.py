@@ -12,12 +12,14 @@ def test(output_directory = 'test_output'):
     test_filename  = '{}/multi_layer_perceptron_estimation.png'.format(output_directory)
     weights_filename = '{}/multi_layer_perceptron_model_weights.pt'.format(output_directory)
     learning_rate = 1e-4
-    no_epochs = 2 #20000
+    no_epochs = 2 #100000
     dimensions = [2, 64, 64, 64, 64, 64, 64, 3]
     device_name = 'cpu'
     save_at_every = 1000
     model_type = 'FILM SIREN'
     test_resolution_scale = 4
+    inject_noise = True
+    noise_ratio = 1e-3
     device = torch.device(device_name)
     model = odak.learn.models.multi_layer_perceptron(
                                                      dimensions = dimensions,
@@ -28,6 +30,7 @@ def test(output_directory = 'test_output'):
                                                      siren_multiplier = 1.
                                                     ).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr = learning_rate)
+    scheduler =  torch.optim.lr_scheduler.PolynomialLR(optimizer, total_iters = no_epochs, power = 1.)
     image = odak.learn.tools.load_image(filename, normalizeby = 255., torch_style = False)[:, :, 0:3].to(device)
     original_resolution = image.shape
     image = image.reshape(-1, original_resolution[-1])
@@ -42,8 +45,18 @@ def test(output_directory = 'test_output'):
         print('Model weights loaded: {}'.format(weights_filename))
     try:
         for epoch_id in epochs:
-            train_loss = train(image, train_batches, optimizer, loss_function, model)
-            description = 'train loss: {:.5f}'.format(train_loss)
+            train_loss = train(
+                               output_values = image, 
+                               input_values = train_batches,
+                               optimizer = optimizer, 
+                               scheduler = scheduler,
+                               loss_function = loss_function,
+                               model = model,
+                               inject_noise = inject_noise,
+                               noise_ratio = noise_ratio
+                              )
+            current_learning_rate = optimizer.param_groups[0]['lr']
+            description = 'train loss: {:.8f}, learning rate: {:.8f}'.format(train_loss, current_learning_rate)
             epochs.set_description(description)
             if epoch_id % save_at_every == 0: 
                 estimation = trial(test_batches, model, test_resolution)
@@ -70,13 +83,26 @@ def get_batches(size):
     return batches
 
 
-def train(output_values, input_values, optimizer, loss_function, model):
+def train(
+          output_values,
+          input_values,
+          optimizer,
+          scheduler,
+          loss_function,
+          model,
+          inject_noise = False,
+          noise_ratio = 1e-3
+         ):
     optimizer.zero_grad()
     estimation = model(input_values)
-    loss = loss_function(estimation, output_values)
+    gt = output_values.detach().clone()
+    if inject_noise:
+        gt += (gt.max() - gt.min()) * noise_ratio * torch.randn_like(gt)
+    loss = loss_function(estimation, gt)
     loss.backward()
     optimizer.step()
-    return loss.item()
+    scheduler.step()
+    return float(loss.item())
 
 
 def trial(input_values, model, resolution):
