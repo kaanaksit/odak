@@ -453,7 +453,7 @@ class perceptual_multiplane_loss():
         self.targets = self.targets.detach().clone() * self.multiplier
     
 
-    def __call__(self, image, target, plane_id = None):
+    def __call__(self, image, target, plane_id = None, inject_noise = False, noise_ratio = 1e-3):
         """
         Calculates the multiplane loss against a given target.
         
@@ -465,6 +465,11 @@ class perceptual_multiplane_loss():
                         Target image for comparison [3 x m x n].
         plane_id      : int
                         Number of the plane under test.
+        inject_noise  : bool
+                        When True, noise is added on the targets at the given `noise_ratio`.
+        noise_ratio   : float
+                        Noise ratio
+
         
         Returns
         -------
@@ -476,6 +481,8 @@ class perceptual_multiplane_loss():
             mask = self.masks
         else:
             mask= self.masks[plane_id, :]
+        if inject_noise:
+            target = target + torch.randn_like(target) * noise_ratio * (target.max() - target.min())
         l2 = self.base_loss_weights['base_l2_loss'] * self.l2_loss_fn(image, target)
         l2_mask = self.base_loss_weights['loss_l2_mask'] * self.l2_loss_fn(image * mask, target * mask)
         l2_cor = self.base_loss_weights['loss_l2_cor'] * self.l2_loss_fn(image * target, target * target)
