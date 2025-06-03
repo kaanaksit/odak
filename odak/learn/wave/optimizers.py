@@ -194,7 +194,7 @@ class multi_color_hologram_optimizer():
 
 
 
-    def evaluate(self, input_image, target_image, plane_id = 0):
+    def evaluate(self, input_image, target_image, plane_id = 0, noise_ratio = 1e-3, inject_noise = False):
         """
         Internal function to evaluate the loss.
         """
@@ -206,7 +206,9 @@ class multi_color_hologram_optimizer():
                 loss += self.loss_function(
                                            input_image[i],
                                            target_image[i],
-                                           plane_id = plane_id
+                                           plane_id = plane_id,
+                                           noise_ratio = noise_ratio,
+                                           inject_noise = inject_noise
                                           )
         return loss
 
@@ -264,7 +266,7 @@ class multi_color_hologram_optimizer():
         return phase_only, loss
 
 
-    def gradient_descent(self, number_of_iterations=100, weights=[1., 1., 0., 0.]):
+    def gradient_descent(self, number_of_iterations=100, weights=[1., 1., 0., 0.], inject_noise = False, noise_ratio  = 1e-3):
         """
         Function to optimize multiplane phase-only holograms using stochastic gradient descent.
 
@@ -274,6 +276,10 @@ class multi_color_hologram_optimizer():
                                      Number of iterations.
         weights                    : list
                                      Weights used in the loss function.
+        inject_noise               : bool
+                                     When set True, this will inject noise with the given `noise_ratio` to the target images.
+        noise_ratio                : float
+                                     Noise ratio, a multiplier (1e-3 is 0.1 percent).
 
         Returns
         -------
@@ -346,6 +352,8 @@ class multi_color_hologram_optimizer():
                 loss_image = self.evaluate(
                                            reconstruction_intensity,
                                            depth_target * self.peak_amplitude,
+                                           noise_ratio = noise_ratio,
+                                           inject_noise = inject_noise,
                                            plane_id = depth_id
                                           )
                 loss = weights[0] * loss_image
@@ -383,7 +391,7 @@ class multi_color_hologram_optimizer():
         return hologram_phases.detach()
 
 
-    def optimize(self, number_of_iterations=100, weights=[1., 1., 1.], bits = 8):
+    def optimize(self, number_of_iterations=100, weights=[1., 1., 1.], bits = 8, inject_noise = False, noise_ratio = 1e-3):
         """
         Function to optimize multiplane phase-only holograms.
 
@@ -395,6 +403,11 @@ class multi_color_hologram_optimizer():
                                      Loss weights.
         bits                       : int
                                      Quantizes the hologram using the given bits and reconstructs.
+        inject_noise               : bool
+                                     When set True, this will inject noise with the given `noise_ratio` to the target images.
+        noise_ratio                : float
+                                     Noise ratio, a multiplier (1e-3 is 0.1 percent).
+
 
         Returns
         -------
@@ -406,6 +419,8 @@ class multi_color_hologram_optimizer():
         self.init_optimizer()
         hologram_phases = self.gradient_descent(
                                                 number_of_iterations=number_of_iterations,
+                                                noise_ratio = noise_ratio,
+                                                inject_noise = inject_noise,
                                                 weights=weights
                                                )
         hologram_phases = quantize(hologram_phases % (2 * torch.pi), bits = bits, limits = [0., 2 * torch.pi]) / 2 ** bits * 2 * torch.pi
