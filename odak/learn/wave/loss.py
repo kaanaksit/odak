@@ -291,7 +291,7 @@ class multiplane_loss():
         inject_noise  : bool
                         When True, noise is added on the targets at the given `noise_ratio`.
         noise_ratio   : float
-                        Noise ratio
+                        Noise ratio.
         
         Returns
         -------
@@ -468,7 +468,7 @@ class perceptual_multiplane_loss():
         inject_noise  : bool
                         When True, noise is added on the targets at the given `noise_ratio`.
         noise_ratio   : float
-                        Noise ratio
+                        Noise ratio.
 
         
         Returns
