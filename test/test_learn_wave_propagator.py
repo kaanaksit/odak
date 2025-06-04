@@ -27,6 +27,7 @@ def test(output_directory = 'test_output'):
                                                   normalizeby = 255.,
                                                   torch_style = True
                                                  ).to(device) * odak.pi * 2
+    hologram_phases = odak.learn.tools.zero_pad(hologram_phases, size = resolution)
     propagator = odak.learn.wave.propagator(
                                             resolution = resolution,
                                             wavelengths = wavelengths,
