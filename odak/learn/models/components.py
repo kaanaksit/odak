@@ -51,6 +51,7 @@ class residual_layer(torch.nn.Module):
                  mid_channels = 16,
                  kernel_size = 3,
                  bias = False,
+                 normalization = True,
                  activation = torch.nn.ReLU()
                 ):
         """
@@ -67,6 +68,8 @@ class residual_layer(torch.nn.Module):
                           Kernel size.
         bias            : bool 
                           Set to True to let convolutional layers have bias term.
+        normalization   : bool                
+                          If True, adds a Batch Normalization layer after the convolutional layer.
         activation      : torch.nn
                           Nonlinear activation layer to be used. If None, uses torch.nn.ReLU().
         """
@@ -77,6 +80,7 @@ class residual_layer(torch.nn.Module):
                                               mid_channels = mid_channels,
                                               output_channels = input_channels,
                                               kernel_size = kernel_size,
+                                              normalization = normalization,
                                               bias = bias,
                                               activation = activation
                                              )
@@ -112,7 +116,7 @@ class convolution_layer(torch.nn.Module):
                  kernel_size = 3,
                  bias = False,
                  stride = 1,
-                 normalization = True,
+                 normalization = False,
                  activation = torch.nn.ReLU()
                 ):
         """
@@ -182,7 +186,7 @@ class double_convolution(torch.nn.Module):
                  output_channels = 2,
                  kernel_size = 3, 
                  bias = False,
-                 normalization = True,
+                 normalization = False,
                  activation = torch.nn.ReLU()
                 ):
         """
@@ -465,6 +469,7 @@ class downsample_layer(torch.nn.Module):
                  output_channels,
                  kernel_size = 3,
                  bias = False,
+                 normalization = False,
                  activation = torch.nn.ReLU()
                 ):
         """
@@ -480,6 +485,8 @@ class downsample_layer(torch.nn.Module):
                           Kernel size.
         bias            : bool 
                           Set to True to let convolutional layers have bias term.
+        normalization   : bool                
+                          If True, adds a Batch Normalization layer after the convolutional layer.
         activation      : torch.nn
                           Nonlinear activation layer to be used. If None, uses torch.nn.ReLU().
         """
@@ -492,6 +499,7 @@ class downsample_layer(torch.nn.Module):
                                                                    output_channels = output_channels,
                                                                    kernel_size = kernel_size,
                                                                    bias = bias,
+                                                                   normalization = normalization,
                                                                    activation = activation
                                                                   )
                                                )
@@ -527,6 +535,7 @@ class upsample_layer(torch.nn.Module):
                  output_channels,
                  kernel_size = 3,
                  bias = False,
+                 normalization = False,
                  activation = torch.nn.ReLU(),
                  bilinear = True
                 ):
@@ -543,6 +552,8 @@ class upsample_layer(torch.nn.Module):
                           Kernel size.
         bias            : bool 
                           Set to True to let convolutional layers have bias term.
+        normalization   : bool                
+                          If True, adds a Batch Normalization layer after the convolutional layer.
         activation      : torch.nn
                           Nonlinear activation layer to be used. If None, uses torch.nn.ReLU().
         bilinear        : bool
@@ -556,6 +567,7 @@ class upsample_layer(torch.nn.Module):
                                            mid_channels = input_channels // 2,
                                            output_channels = output_channels,
                                            kernel_size = kernel_size,
+                                           normalization = normalization,
                                            bias = bias,
                                            activation = activation
                                           )
@@ -566,6 +578,7 @@ class upsample_layer(torch.nn.Module):
                                            mid_channels = output_channels,
                                            output_channels = output_channels,
                                            kernel_size = kernel_size,
+                                           normalization = normalization,
                                            bias = bias,
                                            activation = activation
                                           )
