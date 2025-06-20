@@ -50,11 +50,31 @@ def total_variation_loss(frame):
         frame = frame.unsqueeze(0)
     if len(frame.shape) == 3:
         frame = frame.unsqueeze(0)
-    diff_x = frame[:, :, :, 1:] - frame[:, :, :, :-1]
-    diff_y = frame[:, :, 1:, :] - frame[:, :, :-1, :]
+    diff_x, diff_y = spatial_gradient(frame)
     pixel_count = frame.shape[0] * frame.shape[1] * frame.shape[2] * frame.shape[3]
     loss = ((diff_x ** 2).sum() + (diff_y ** 2).sum()) / pixel_count
     return loss
+
+
+def spatial_gradient(frame):
+    """
+    Function to calculate the spatial gradient of a given frame.
+        
+    Parameters
+    ----------
+    frame         : torch.tensor
+                    Input frame [1 x 3 x m x n] or [3 x m x n] or [m x n].
+
+    Returns
+    -------
+    diff_x        : float
+                    Spatial gradient along X.
+    diff_y        : float
+                    Spatial gradient along Y.
+    """
+    diff_x = frame[:, :, :, 1:] - frame[:, :, :, :-1]
+    diff_y = frame[:, :, 1:, :] - frame[:, :, :-1, :]
+    return diff_x, diff_y
 
 
 def radial_basis_function(value, epsilon = 0.5):
