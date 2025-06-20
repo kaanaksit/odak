@@ -72,6 +72,10 @@ def spatial_gradient(frame):
     diff_y        : float
                     Spatial gradient along Y.
     """
+    if len(frame.shape) == 2:
+        frame = frame.unsqueeze(0)
+    if len(frame.shape) == 3:
+        frame = frame.unsqueeze(0)    
     diff_x = frame[:, :, :, 1:] - frame[:, :, :, :-1]
     diff_y = frame[:, :, 1:, :] - frame[:, :, :-1, :]
     return diff_x, diff_y
