@@ -88,7 +88,7 @@ def save_image(fn, img, cmin = 0, cmax = 255, color_depth = 8):
     input_img[input_img < cmin] = cmin
     input_img[input_img > cmax] = cmax
     input_img /= cmax
-    input_img = input_img * 1. * (2**color_depth - 1)
+    input_img = input_img * 1. * (2 ** color_depth - 1)
     if color_depth == 8:
         input_img = input_img.astype(np.uint8)
     elif color_depth == 16:
