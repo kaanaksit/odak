@@ -22,6 +22,7 @@ def test(
     metameric_loss = odak.learn.perception.MetamerMSELoss().to(device)
     optimizer = torch.optim.Adam([estimate], lr = learning_rate)
     t = tqdm(range(number_of_steps), leave = False, dynamic_ncols = True)
+    print(ground_truth.shape, estimate.shape)
     for step in t:
         optimizer.zero_grad()
         loss = metameric_loss(estimate, ground_truth, gaze = gaze)

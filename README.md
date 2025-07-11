@@ -158,6 +158,7 @@ For more of these examples, you can either check our [course documentation](http
 ## Sample Projects that use Odak
 Here are some sample projects that use `odak`:
 
+* [Assessing Learned Models for Phase-only Hologram Compression](https://complightlab.com/publications/assess_hologram_compression/)
 * [SpecTrack: Learned Multi-Rotation Tracking via Speckle Imaging](https://complightlab.com/publications/spec_track/)
 * [Focal Surface Holographic Light Transport using Learned Spatially Adaptive Convolutions](https://complightlab.com/publications/focal_surface_light_transport/)
 * [AutoColor: Learned Light Power Control for Multi-Color Holograms](https://complightlab.com/autocolor_/)
