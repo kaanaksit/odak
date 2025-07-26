@@ -130,7 +130,7 @@ class RadiallyVaryingBlur():
                 blended_levels = (1 - self.lod_fraction) * \
                     mipmap[l] + self.lod_fraction*mipmap[l+1]
             mask = mask[None, None, ...]
-            mask = mask.repeat(1, image.size(1), 1, 1)
+            mask = mask.repeat(image.size(0), image.size(1), 1, 1)
             output[mask] = blended_levels[mask]
 
         return output
