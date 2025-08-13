@@ -62,7 +62,6 @@ class MetamericLoss():
                                     The gaze argument is instead interpreted as gaze angles, and should be in the range
                                     [-pi,pi]x[-pi/2,pi]
         """
-        self.target = None
         self.device = device
         self.pyramid_maker = None
         self.alpha = alpha
@@ -115,7 +114,7 @@ class MetamericLoss():
                 mask = blur.lod_map > 1e-6
                 mask = mask[None, None, ...]
                 if image_means.size(1) > 1:
-                    mask = mask.repeat(1, image_means.size(1), 1, 1)
+                    mask = mask.repeat(image_means.size(0), image_means.size(1), 1, 1)
                 matte = torch.zeros_like(image_means)
                 matte[mask] = 1.0
                 return image_means * matte, image_std * matte
@@ -125,11 +124,9 @@ class MetamericLoss():
             image, self.n_pyramid_levels)
         means, variances = find_stats(image_pyramid[0]['h'], self.blurs[0])
         if self.use_l2_foveal_loss:
-            self.fovea_mask = torch.zeros(image.size(), device=image.device)
-            for i in range(self.fovea_mask.size(1)):
-                self.fovea_mask[0, i, ...] = 1.0 - \
-                    (self.blurs[0].lod_map / torch.max(self.blurs[0].lod_map))
-                self.fovea_mask[0, i, self.blurs[0].lod_map < 1e-6] = 1.0
+            base_mask = 1.0 - (self.blurs[0].lod_map / torch.max(self.blurs[0].lod_map))
+            base_mask[self.blurs[0].lod_map < 1e-6] = 1.0
+            self.fovea_mask = base_mask[None, None, ...].expand(image.size()).clone()
             self.fovea_mask = torch.pow(self.fovea_mask, 10.0)
             #self.fovea_mask     = torch.nn.functional.interpolate(self.fovea_mask, scale_factor=0.125, mode="area")
             #self.fovea_mask     = torch.nn.functional.interpolate(self.fovea_mask, size=(image.size(-2), image.size(-1)), mode="bilinear")
@@ -171,7 +168,7 @@ class MetamericLoss():
                 radii = make_radial_map(
                     [a.size(-2), a.size(-1)], gaze).to(a.device)
                 weights = 1.1 - (radii * radii * radii * radii)
-                weights = weights[None, None, ...].repeat(1, a.size(1), 1, 1)
+                weights = weights[None, None, ...].repeat(a.size(0), a.size(1), 1, 1)
                 loss += torch.nn.MSELoss()(weights*a, weights*b)
             else:
                 loss += torch.nn.MSELoss()(a, b)
@@ -179,14 +176,15 @@ class MetamericLoss():
         return loss
 
     def visualise_loss_map(self, image_stats):
-        loss_map = torch.zeros(image_stats[0].size()[-2:])
+        batch_size = image_stats[0].size(0)
+        loss_map = torch.zeros((batch_size,) + image_stats[0].size()[-2:])
         for i in range(len(image_stats)):
             stats = image_stats[i]
             target_stats = self.target_stats[i]
             stat_mse_map = torch.sqrt(torch.pow(stats - target_stats, 2))
-            stat_mse_map = torch.nn.functional.interpolate(stat_mse_map, size=loss_map.size(
-            ), mode="bilinear", align_corners=False, recompute_scale_factor=False)
-            loss_map += stat_mse_map[0, 0, ...]
+            stat_mse_map = torch.nn.functional.interpolate(stat_mse_map, size=loss_map.size()[1:],
+                mode="bilinear", align_corners=False, recompute_scale_factor=False)
+            loss_map += stat_mse_map[:, 0, ...]
         self.loss_map = loss_map
 
     def __call__(self, image, target, gaze=[0.5, 0.5], image_colorspace="RGB", visualise_loss=False):
@@ -221,42 +219,38 @@ class MetamericLoss():
         if image.size(1) == 3 and image_colorspace == "RGB":
             image = rgb_2_ycrcb(image)
             target = rgb_2_ycrcb(target)
-        if self.target is None:
-            self.target = torch.zeros(target.shape).to(target.device)
-        if type(target) == type(self.target):
-            if not torch.all(torch.eq(target, self.target)):
-                self.target = target.detach().clone()
-                self.target_stats = self.calc_statsmaps(
-                    self.target,
-                    gaze=gaze,
-                    alpha=self.alpha,
-                    real_image_width=self.real_image_width,
-                    real_viewing_distance=self.real_viewing_distance,
-                    mode=self.mode
-                )
-                self.target = target.detach().clone()
-            image_stats = self.calc_statsmaps(
-                image,
-                gaze=gaze,
-                alpha=self.alpha,
-                real_image_width=self.real_image_width,
-                real_viewing_distance=self.real_viewing_distance,
-                mode=self.mode
-            )
-            if visualise_loss:
-                self.visualise_loss_map(image_stats)
-            if self.use_l2_foveal_loss:
-                peripheral_loss = self.metameric_loss_stats(
-                    image_stats, self.target_stats, gaze)
-                foveal_loss = torch.nn.MSELoss()(self.fovea_mask*image, self.fovea_mask*target)
-                # New weighting - evenly weight fovea and periphery.
-                loss = peripheral_loss + self.fovea_weight * foveal_loss
-            else:
-                loss = self.metameric_loss_stats(
-                    image_stats, self.target_stats, gaze)
-            return loss
+        
+        self.target_stats = self.calc_statsmaps(
+            target,
+            gaze=gaze,
+            alpha=self.alpha,
+            real_image_width=self.real_image_width,
+            real_viewing_distance=self.real_viewing_distance,
+            mode=self.mode
+        )
+        
+        image_stats = self.calc_statsmaps(
+            image,
+            gaze=gaze,
+            alpha=self.alpha,
+            real_image_width=self.real_image_width,
+            real_viewing_distance=self.real_viewing_distance,
+            mode=self.mode
+        )
+        
+        if visualise_loss:
+            self.visualise_loss_map(image_stats)
+        
+        if self.use_l2_foveal_loss:
+            peripheral_loss = self.metameric_loss_stats(
+                image_stats, self.target_stats, gaze)
+            foveal_loss = torch.nn.MSELoss()(self.fovea_mask*image, self.fovea_mask*target)
+            # New weighting - evenly weight fovea and periphery.
+            loss = peripheral_loss + self.fovea_weight * foveal_loss
         else:
-            raise Exception("Target of incorrect type")
+            loss = self.metameric_loss_stats(
+                image_stats, self.target_stats, gaze)
+        return loss
 
     def to(self, device):
         self.device = device
