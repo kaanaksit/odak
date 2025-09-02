@@ -194,6 +194,121 @@ save_image('phase_only_hologram_w_grating.png',phase_only_hologram_w_grating)
 
     True
 
+## Optimizing holograms with only NumPy
+
+In some cases, you may want to implement hologram optimization without relying on deep learning frameworks such as PyTorch.  
+Here we show how to optimize a phase-only hologram using **only NumPy**, following a differentiable angular spectrum method (ASM).
+
+We first define the propagation model.  
+This is a band-limited angular spectrum method (band-ASM), which accounts for the finite sampling aperture:
+
+```python
+import numpy as np 
+import matplotlib.pyplot as plt
+from PIL import Image
+
+def bandASM(field, wavelength, pixel_pitch, z):
+    nv, nu = field.shape
+
+    k = 2 * np.pi / wavelength
+    fx = np.linspace(-1 / 2. / pixel_pitch, 1 / 2. / pixel_pitch, nu)
+    fy = np.linspace(-1 / 2. / pixel_pitch, 1 / 2. / pixel_pitch, nv)
+
+    FX, FY = np.meshgrid(fx, fy)
+    H_exp = np.exp(1j * k * z * (1 - (FX * wavelength)**2 - (FY * wavelength)**2) ** 0.5)
+    # Dispersion relation: k_z² + k_x² + k_y² = k²
+    # k_x = 2π·fx, k_y = 2π·fy, k = 2π/λ
+    # k_z = k·√(1 - (λ·fx)² - (λ·fy)²)
+
+    x = pixel_pitch * float(nu)
+    y = pixel_pitch * float(nv)
+    fx_max = 1 / np.sqrt((2 * z * (1/x))**2 + 1) / wavelength
+    fy_max = 1 / np.sqrt((2 * z * (1/y))**2 + 1) / wavelength
+    H_filter = ((np.abs(FX) < fx_max) & (np.abs(FY) < fy_max))
+
+    H = H_filter * H_exp
+    field_fft = np.fft.fftshift(np.fft.fft2(field))
+    prop_fft = H * field_fft
+    return np.fft.ifft2(np.fft.ifftshift(prop_fft))
+```
+
+Next, we define a differentiable loss function with respect to the phase.  
+The gradient is computed using Wirtinger calculus, back-propagating the error through the propagation operator:
+
+```python
+def compute_loss(phase, target, wavelength, pixel_pitch, z):
+    P = np.exp(1j*phase)
+    U = bandASM(P, wavelength, pixel_pitch, z)
+    raw_intensity = np.abs(U) ** 2 
+
+    # Normalize intensity to [0,1]
+    intensity = (raw_intensity - np.min(raw_intensity)) / (np.max(raw_intensity) - np.min(raw_intensity))
+
+    # Mean squared error
+    loss = np.mean((intensity - target)**2)
+    N = intensity.size
+    dL_dI = 2 * (intensity - target) / N
+
+    # Gradient wrt U
+    I_range = np.max(raw_intensity) - np.min(raw_intensity)
+    dI_draw = 1.0 / I_range
+    dL_draw = dL_dI * dI_draw
+    dL_dU = dL_draw * np.conj(U)
+
+    # Back-propagate through ASM
+    dL_dP = bandASM(dL_dU, wavelength, pixel_pitch, -z)
+
+    # Gradient wrt real phase
+    dL_dphase = -np.imag(dL_dP * np.conj(P))
+    return loss, dL_dphase, intensity
+```
+
+For visualization, we provide a plotting helper to compare target, reconstruction, and phase:
+
+```python
+def plot_results(target, intensity, phase, i):
+    fig, axes = plt.subplots(1, 3, figsize=(7,3))
+    axes[0].imshow(target, cmap='gray', vmin=0, vmax=1)
+    axes[1].imshow(intensity, cmap='gray', vmin=0, vmax=1)
+    axes[2].imshow(phase, cmap='gray')
+    plt.tight_layout()
+    plt.savefig(f'recon_{i}.png')
+    plt.close()
+```
+
+Finally, we bring everything together into an optimization loop.  
+Here we use simple gradient descent on the phase values:
+
+```python
+def optimize_hologram():
+    image_path = "./input.png"
+    wavelength = 515e-9
+    pixel_pitch = 6e-6
+    z = 1e-3
+
+    # Load grayscale target and normalize
+    img = Image.open(image_path).convert('L').resize((128, 128))
+    target = np.array(img) / 255.
+
+    # Initialize phase with small random values
+    phase = np.random.uniform(-0.1, 0.1, target.shape)
+
+    learning_rate = 0.5
+    num_iter = 7000
+
+    for i in range(num_iter):
+        loss, grad, intensity = compute_loss(phase, target, wavelength, pixel_pitch, z)
+        phase -= learning_rate * grad
+
+        if i % 1000 == 0:
+            print(f"iter {i} Loss {loss}")
+            plot_results(target, intensity, phase, i)
+
+
+if __name__ == "__main__":
+    optimize_hologram()
+```
+
 ## See also
 For more engineering notes, follow:
 
