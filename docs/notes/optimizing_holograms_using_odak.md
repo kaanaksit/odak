@@ -196,11 +196,9 @@ save_image('phase_only_hologram_w_grating.png',phase_only_hologram_w_grating)
 
 ## Optimizing holograms with only NumPy
 
-In some cases, you may want to implement hologram optimization without relying on deep learning frameworks such as PyTorch.  
-Here we show how to optimize a phase-only hologram using **only NumPy**, following a differentiable angular spectrum method (ASM).
+In some cases, you may want to implement hologram optimization without relying on deep learning frameworks such as PyTorch. Here we show how to optimize a phase-only hologram using **only NumPy**, following a differentiable angular spectrum method (ASM).
 
-We first define the propagation model.  
-This is a band-limited angular spectrum method (band-ASM), which accounts for the finite sampling aperture:
+We first define the propagation model. This is a band-limited angular spectrum method (band-ASM), which accounts for the finite sampling aperture:
 
 ```python
 import numpy as np 
@@ -232,8 +230,7 @@ def bandASM(field, wavelength, pixel_pitch, z):
     return np.fft.ifft2(np.fft.ifftshift(prop_fft))
 ```
 
-Next, we define a differentiable loss function with respect to the phase.  
-The gradient is computed using Wirtinger calculus, back-propagating the error through the propagation operator:
+Next, we define a differentiable loss function with respect to the phase. The gradient is computed using Wirtinger calculus, back-propagating the error through the propagation operator:
 
 ```python
 def compute_loss(phase, target, wavelength, pixel_pitch, z):
@@ -276,8 +273,7 @@ def plot_results(target, intensity, phase, i):
     plt.close()
 ```
 
-Finally, we bring everything together into an optimization loop.  
-Here we use simple gradient descent on the phase values:
+Finally, we bring everything together into an optimization loop. Here we use simple gradient descent on the phase values:
 
 ```python
 def optimize_hologram():
