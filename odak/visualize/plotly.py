@@ -837,7 +837,15 @@ class rayshow():
         self.fig.write_image(filename)
 
 
-    def add_point(self, point, row = 1, column = 1, color = 'red', show_legend = False):
+    def add_point(
+                  self,
+                  point,
+                  row = 1,
+                  column = 1,
+                  color = 'red',
+                  colorscale = 'viridis',
+                  show_legend = False
+                 ):
         """
         Definition to add a point to the figure.
 
@@ -849,6 +857,10 @@ class rayshow():
                          Row number of the figure.
         column         : int
                          Column number of the figure.
+        color          : str
+                         Color of the point(s).
+        colorscale     : str
+                         Color scale to be used (e.g., viridis).
         show_legend    : bool
                          Set True to enable legend for the line.
         """
@@ -865,7 +877,8 @@ class rayshow():
                                         marker = dict(
                                                       size = self.settings["marker size"],
                                                       color = color,
-                                                      opacity = self.settings["opacity"]
+                                                      opacity = self.settings["opacity"],
+                                                      colorscale = colorscale
                                                      ),
                                        showlegend = show_legend  
                                       ),
