@@ -141,11 +141,11 @@ class surfaceshow():
                       Opacity of the plot. The value must be between one to zero. Zero is fully trasnparent, while one is opaque.
         """ 
         if isinstance(data_x, type(torch.tensor([]))):
-            data_x = data_x.detach().cpu()
+            data_x = data_x.detach().cpu().numpy()
         if isinstance(data_y, type(torch.tensor([]))):
-            data_y = data_y.detach().cpu()
+            data_y = data_y.detach().cpu().numpy()
         if isinstance(data_z, type(torch.tensor([]))):
-            data_z = data_z.detach().cpu()
+            data_z = data_z.detach().cpu().numpy()
         self.fig.add_trace(
                            go.Surface(
                                       x = data_x,
