@@ -862,7 +862,7 @@ class rayshow():
                          Set True to enable legend for the line.
         """
         if torch.is_tensor(point) == True:
-            point = point.detach().numpy()
+            point = point.detach().cpu().numpy()
         if len(point.shape) == 1:
             point = np.expand_dims(point, axis=0)
         self.fig.add_trace(
@@ -904,7 +904,7 @@ class rayshow():
                          Set True to enable legend for the line.
         """
         if torch.is_tensor(sphere) == True:
-            sphere = sphere.detach().numpy()
+            sphere = sphere.detach().cpu().numpy()
         if len(sphere.shape) == 1:
             sphere = np.expand_dims(sphere, axis=0)
         theta = np.linspace(0, 2 * np.pi, 100)
@@ -950,7 +950,7 @@ class rayshow():
         """
 
         if torch.is_tensor(triangle) == True:
-            triangle = triangle.detach().numpy()
+            triangle = triangle.detach().cpu().numpy()
         if len(triangle.shape) == 2:
             triangle = np.expand_dims(triangle, axis=0)
         current_triangle = triangle.reshape(-1, 3)
@@ -990,11 +990,11 @@ class rayshow():
                          Set True to enable legend for the line.
         """
         if torch.is_tensor(point_start):
-            point_start = point_start.detach().numpy()
+            point_start = point_start.detach().cpu().numpy()
         if len(point_start.shape) == 1:
             point_start = np.expand_dims(point_start, axis=0)
         if torch.is_tensor(point_end):
-            point_end = point_end.detach().numpy()
+            point_end = point_end.detach().cpu().numpy()
         if len(point_end.shape) == 1:
             point_end = np.expand_dims(point_end, axis=0)
         if point_start.shape != point_end.shape:
