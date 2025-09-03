@@ -843,7 +843,6 @@ class rayshow():
                   row = 1,
                   column = 1,
                   color = 'red',
-                  colorscale = 'viridis',
                   show_legend = False
                  ):
         """
@@ -859,8 +858,6 @@ class rayshow():
                          Column number of the figure.
         color          : str
                          Color of the point(s).
-        colorscale     : str
-                         Color scale to be used (e.g., viridis).
         show_legend    : bool
                          Set True to enable legend for the line.
         """
@@ -878,7 +875,7 @@ class rayshow():
                                                       size = self.settings["marker size"],
                                                       color = color,
                                                       opacity = self.settings["opacity"],
-                                                      colorscale = colorscale
+                                                      colorscale = self.settings["color scale"]
                                                      ),
                                        showlegend = show_legend  
                                       ),
