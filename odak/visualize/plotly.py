@@ -863,6 +863,8 @@ class rayshow():
         """
         if torch.is_tensor(point) == True:
             point = point.detach().cpu().numpy()
+        if torch.is_tensor(color) == True:
+            color = color.detach().cpu().numpy()
         if len(point.shape) == 1:
             point = np.expand_dims(point, axis=0)
         self.fig.add_trace(
