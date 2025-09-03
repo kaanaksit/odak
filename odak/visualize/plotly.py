@@ -825,6 +825,18 @@ class rayshow():
         return result
 
 
+    def save_image(self, filename):
+        """
+        Definition to save the figure.
+
+        Parameters
+        ----------
+        filename    : str
+                      Filename.
+        """
+        self.fig.write_image(filename)
+
+
     def add_point(self, point, row = 1, column = 1, color = 'red', show_legend = False):
         """
         Definition to add a point to the figure.
