@@ -155,23 +155,6 @@ for item_id, item in enumerate(pos_x1):
 
 For more of these examples, you can either check our [course documentation](https://kaanaksit.com/odak/course) or visit our [unit tests](https://github.com/kaanaksit/odak/tree/master/test) to get inspired.
 
-## Sample Projects that use Odak
-Here are some sample projects that use `odak`:
-
-* [Learned Single-Pass Multitasking Perceptual Graphics for Immersive Displays](https://complightlab.com/publications/multitasking_perceptual_graphics/)
-* [Assessing Learned Models for Phase-only Hologram Compression](https://complightlab.com/publications/assess_hologram_compression/)
-* [SpecTrack: Learned Multi-Rotation Tracking via Speckle Imaging](https://complightlab.com/publications/spec_track/)
-* [Focal Surface Holographic Light Transport using Learned Spatially Adaptive Convolutions](https://complightlab.com/publications/focal_surface_light_transport/)
-* [AutoColor: Learned Light Power Control for Multi-Color Holograms](https://complightlab.com/autocolor_/)
-* [Multi-color Holograms Improve Brightness in Holographic Displays](https://complightlab.com/publications/multi_color/)
-* [ChromaCorrect: Prescription Correction in Virtual Reality Headsets through Perceptual Guidance](http://complightlab.com/ChromaCorrect/)
-* [HoloBeam: Paper-Thin Near-Eye Displays](https://complightlab.com/publications/holobeam/)
-* [Optimizing Vision and Visuals: Lectures on Cameras, Displays and Perception](https://complightlab.com/teaching/siggraph2022_optimizing_vision_and_visuals/)
-* [Realistic Defocus Blur for Multiplane Computer-Generated Holography](https://complightlab.com/publications/realistic_defocus_cgh/)
-* [Metameric Varifocal Computer-Generated Holography](https://github.com/complight/metameric_holography)
-* [Learned Holographic Light Transport](https://github.com/complight/realistic_holography)
-
-
 ## How to cite
 To add the link to this repository in your publication, please use [Zenodo's citation](https://zenodo.org/badge/latestdoi/3987171). 
 If you have used `odak` in your research project, please consider citing any of the following works:
@@ -210,3 +193,21 @@ If you have used `odak` in your research project, please consider citing any of 
 }
 
 ```
+
+## Sample Projects that use Odak
+Here are some sample projects that use `odak`:
+
+* [Learned Single-Pass Multitasking Perceptual Graphics for Immersive Displays](https://complightlab.com/publications/multitasking_perceptual_graphics/)
+* [Assessing Learned Models for Phase-only Hologram Compression](https://complightlab.com/publications/assess_hologram_compression/)
+* [SpecTrack: Learned Multi-Rotation Tracking via Speckle Imaging](https://complightlab.com/publications/spec_track/)
+* [Focal Surface Holographic Light Transport using Learned Spatially Adaptive Convolutions](https://complightlab.com/publications/focal_surface_light_transport/)
+* [AutoColor: Learned Light Power Control for Multi-Color Holograms](https://complightlab.com/autocolor_/)
+* [Multi-color Holograms Improve Brightness in Holographic Displays](https://complightlab.com/publications/multi_color/)
+* [ChromaCorrect: Prescription Correction in Virtual Reality Headsets through Perceptual Guidance](http://complightlab.com/ChromaCorrect/)
+* [HoloBeam: Paper-Thin Near-Eye Displays](https://complightlab.com/publications/holobeam/)
+* [Optimizing Vision and Visuals: Lectures on Cameras, Displays and Perception](https://complightlab.com/teaching/siggraph2022_optimizing_vision_and_visuals/)
+* [Realistic Defocus Blur for Multiplane Computer-Generated Holography](https://complightlab.com/publications/realistic_defocus_cgh/)
+* [Metameric Varifocal Computer-Generated Holography](https://github.com/complight/metameric_holography)
+* [Learned Holographic Light Transport](https://github.com/complight/realistic_holography)
+
+
