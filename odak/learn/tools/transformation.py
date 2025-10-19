@@ -17,13 +17,14 @@ def rotmatx(angle):
                    Rotation matrix along X axis.
     """
     angle = torch.deg2rad(angle)
-    one = torch.ones(1, device = angle.device)
-    zero = torch.zeros(1, device = angle.device)
-    rotx = torch.stack([
-                        torch.stack([ one,              zero,              zero]),
-                        torch.stack([zero,  torch.cos(angle), -torch.sin(angle)]),
-                        torch.stack([zero,  torch.sin(angle),  torch.cos(angle)])
-                       ]).reshape(3, 3)
+    rotx = torch.zeros(angle.shape[0], 3, 3, device = angle.device)
+    rotx[:, 0, 0] = 1.
+    rotx[:, 1, 1] = torch.cos(angle)
+    rotx[:, 1, 2] = - torch.sin(angle)
+    rotx[:, 2, 1] = torch.sin(angle)
+    rotx[:, 2, 2] = torch.cos(angle)
+    if rotx.shape[0] == 1:
+        rotx = rotx.squeeze(0)
     return rotx
 
 
@@ -42,13 +43,14 @@ def rotmaty(angle):
                    Rotation matrix along Y axis.
     """
     angle = torch.deg2rad(angle)
-    one = torch.ones(1, device = angle.device)
-    zero = torch.zeros(1, device = angle.device)
-    roty = torch.stack([
-                        torch.stack([ torch.cos(angle), zero, torch.sin(angle)]),
-                        torch.stack([             zero,  one,             zero]),
-                        torch.stack([-torch.sin(angle), zero, torch.cos(angle)])
-                       ]).reshape(3, 3)
+    roty = torch.zeros(angle.shape[0], 3, 3, device = angle.device)
+    roty[:, 0, 0] = torch.cos(angle)
+    roty[:, 0, 2] = torch.sin(angle)
+    roty[:, 1, 1] = 1.
+    roty[:, 2, 0] = - torch.sin(angle)
+    roty[:, 2, 2] = torch.cos(angle)
+    if roty.shape[0] == 1:
+        roty = roty.squeeze(0)
     return roty
 
 
@@ -67,13 +69,14 @@ def rotmatz(angle):
                    Rotation matrix along Z axis.
     """
     angle = torch.deg2rad(angle)
-    one = torch.ones(1, device = angle.device)
-    zero = torch.zeros(1, device = angle.device)
-    rotz = torch.stack([
-                        torch.stack([torch.cos(angle), -torch.sin(angle), zero]),
-                        torch.stack([torch.sin(angle),  torch.cos(angle), zero]),
-                        torch.stack([            zero,              zero,  one])
-                       ]).reshape(3,3)
+    rotz = torch.zeros(angle.shape[0], 3, 3, device = angle.device)
+    rotz[:, 0, 0] = torch.cos(angle)
+    rotz[:, 0, 1] = - torch.sin(angle)
+    rotz[:, 1, 0] = torch.sin(angle)
+    rotz[:, 1, 1] = torch.cos(angle)
+    rotz[:, 2, 2] = 1.
+    if rotz.shape[0] == 1:
+        rotz = rotz.squeeze(0)
     return rotz
 
 
@@ -156,17 +159,23 @@ def rotate_points(
     rotx = rotmatx(angles[:, 0])
     roty = rotmaty(angles[:, 1])
     rotz = rotmatz(angles[:, 2])
-    new_point = (point - origin).T
+    new_points = (point - origin).T
+    if angles.shape[0] > 1:
+        new_points = new_points.unsqueeze(0)
+        if len(origin.shape) == 2:
+            origin = origin.unsqueeze(1)
+        if len(offset.shape) == 2:
+            offset = offset.unsqueeze(1)
     if mode == 'XYZ':
-        result = torch.mm(rotz, torch.mm(roty, torch.mm(rotx, new_point))).T
+        result = (rotz @ (roty @ (rotx @ new_points))).mT
     elif mode == 'XZY':
-        result = torch.mm(roty, torch.mm(rotz, torch.mm(rotx, new_point))).T
+        result = torch.mm(roty, torch.mm(rotz, torch.mm(rotx, new_points))).T
     elif mode == 'YXZ':
-        result = torch.mm(rotz, torch.mm(rotx, torch.mm(roty, new_point))).T
+        result = torch.mm(rotz, torch.mm(rotx, torch.mm(roty, new_points))).T
     elif mode == 'ZXY':
-        result = torch.mm(roty, torch.mm(rotx, torch.mm(rotz, new_point))).T
+        result = torch.mm(roty, torch.mm(rotx, torch.mm(rotz, new_points))).T
     elif mode == 'ZYX':
-        result = torch.mm(rotx, torch.mm(roty, torch.mm(rotz, new_point))).T
+        result = torch.mm(rotx, torch.mm(roty, torch.mm(rotz, new_points))).T
     result += origin
     result += offset
     return result, rotx, roty, rotz
