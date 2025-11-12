@@ -154,7 +154,7 @@ extra:
   annotate:
     json: [.s2]
   social:
-    - icon: fontawesome/brands/x
+    - icon: fontawesome/brands/x-twitter
       link: https://x.com/kaanaksit
     - icon: fontawesome/brands/slack
       link: https://join.slack.com/t/rpcdrendering-m4b9370/shared_invite/zt-13b5caruu-o7Ra99nEXkntnJqVYJTVdg
