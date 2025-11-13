@@ -74,6 +74,7 @@ def create_ray_from_two_points(x0y0z0, x1y1z1):
     ray[:, 1] = cosines
     return ray
 
+
 def create_ray_from_all_pairs(x0y0z0, x1y1z1):
     """
     Creates rays from all possible pairs of points in x0y0z0 and x1y1z1.
@@ -287,3 +288,30 @@ def propagate_ray(ray, distance):
     new_ray[:, 0, 1] = distance * ray[:, 1, 1] + ray[:, 0, 1]
     new_ray[:, 0, 2] = distance * ray[:, 1, 2] + ray[:, 0, 2]
     return new_ray
+
+
+def get_points_along_a_ray_segment(ray, distances):
+    """
+    Definition to get the spatial locations on a ray propagated to various distances.
+
+    Parameters
+    ----------
+    ray        : torch.tensor
+                 A ray with a size of [2 x 3], [1 x 2 x 3] or a batch of rays with [m x 2 x 3].
+    distances  : torch.tensor
+                 Distance with a size of [1], [1, m] or distances with a size of [m], [1, m].
+
+    Returns
+    ----------
+    points     : torch.tensor
+                 Points on the segment from the propagad ray with a size of [1 x 3] or [m x 3].
+    """
+    if len(ray.shape) == 2:
+        ray = ray.unsqueeze(0)
+    repeated_ray = ray.repeat(distances.shape[-1], 1, 1)
+    propagated_ray = propagate_ray(
+                                   ray = repeated_ray,
+                                   distance = distances
+                                  )
+    points = propagated_ray[:, 0]
+    return points

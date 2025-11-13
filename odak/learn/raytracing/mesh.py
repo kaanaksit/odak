@@ -51,7 +51,7 @@ class planar_mesh():
         """
         Internal function to initialize a height map.
         Note that self.heights is a differentiable variable, and can be optimized or learned.
-        See unit test `test/test_learn_ray_detector.py` or `test/test_learn_ray_mesh.py` as examples.
+        See unit test `test/test_learn_raytracing_detector.py` or `test/test_learn_raytracing_mesh.py` as examples.
         """
         if not isinstance(heights, type(None)):
             self.heights = heights.to(self.device)
