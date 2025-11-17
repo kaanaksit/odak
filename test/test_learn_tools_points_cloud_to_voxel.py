@@ -24,7 +24,7 @@ def visualize(
 def test(
          voxel_size = [0.07, 0.07, 0.07],
          ply_filename = './test/data/armadillo_low_poly.ply',
-         visualization = True,
+         visualization = False,
          device = torch.device('cpu'),
         ):
     triangles = odak.tools.read_PLY(ply_filename)
