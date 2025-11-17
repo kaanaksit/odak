@@ -7,10 +7,15 @@ def visualize(
               model,
               points,
               ground_truth,
+              threshold = 1e-1,
              ):
     estimate = model(points, test = True)
     estimate[estimate > 1.] = 1.
     estimate[estimate < 0.] = 0.
+    thresholded_points = points[estimate > threshold]
+    estimate = estimate[estimate > threshold]
+    points = points[ground_truth > threshold]
+    ground_truth = ground_truth[ground_truth > threshold]
     estimation_diagram = odak.visualize.plotly.rayshow(
                                                        columns = 2,
                                                        line_width = 3.,
@@ -18,7 +23,7 @@ def visualize(
                                                        subplot_titles = ['Estimation', 'Ground truth'],
                                                       )
     estimation_diagram.add_point(
-                                 points.detach().cpu().numpy(), 
+                                 thresholded_points.detach().cpu().numpy(), 
                                  color = estimate.detach().cpu().numpy(),
                                  column = 1,
                                 ) 
