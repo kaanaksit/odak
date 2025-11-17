@@ -58,11 +58,11 @@ def get_training_data(
 def main(
          directory = 'test_output',
          ply_filename = './test/data/armadillo_low_poly.ply',
-         number_of_elements = 4000,
+         number_of_elements = 500,
          learning_rate = 3e-3,
          number_of_epochs = 0, # Suggested: 10000,
          save_at_every = 1000,
-         scheduler_power = 2,
+         scheduler_power = 1,
          weights_filename = 'gaussian_3d_volume_weights.pt',
          device = torch.device('cpu'),
          visualization = False,
