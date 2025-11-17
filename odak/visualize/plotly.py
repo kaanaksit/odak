@@ -793,14 +793,26 @@ class rayshow():
                                 )
 
 
-    def show(self):
+    def show(
+             self,
+             aspect_ratio = [1., 1., 1.]
+            ):
         """
         Definition to show the plot.
+
+        Parameters
+        ----------
+        aspect_ratio     : list
+                           Aspect ratio of the plot.
         """
         self.fig.update_layout(
                                scene = dict(
                                             aspectmode = 'manual',
-                                            aspectratio = dict(x=1., y=1., z=1.),
+                                            aspectratio = dict(
+                                                               x = aspect_ratio[0], 
+                                                               y = aspect_ratio[1],
+                                                               z = aspect_ratio[2]
+                                                              ),
                                            ),
                               )
         self.fig.show()

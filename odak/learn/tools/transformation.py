@@ -205,3 +205,53 @@ def tilt_towards(location, lookat):
     theta = torch.arccos(dz / dist)
     angles = [0, float(torch.rad2deg(theta)), float(torch.rad2deg(phi))]
     return angles
+
+
+def point_cloud_to_voxel(
+                         points,
+                         voxel_size = [0.1, 0.1, 0.1],
+                        ):
+    """
+    Convert a point cloud to a voxel grid representation.
+
+    Parameters
+    ----------
+    points     : torch.Tensor, shape (N, 3)
+                 The input point cloud, where each row is a 3D point.
+    voxel_size : list or torch.Tensor, shape (3,), optional
+                 The size of each voxel in the x, y, and z directions. Default is [0.1, 0.1, 0.1].
+
+    Returns
+    -------
+    locations  : torch.Tensor, shape (Gx, Gy, Gz, 3)
+                 The coordinates of each voxel center in the grid.
+    grid       : torch.Tensor, shape (Gx, Gy, Gz)
+                 A binary voxel grid where 1 indicates the presence of at least one point.
+
+    Notes
+    -----
+    - The voxel grid is constructed by discretizing the space between the minimum and maximum
+      coordinates of the point cloud.
+    - Only voxels containing at least one point are marked as 1.
+    - The output grid is of type float32 and resides on the same device as the input points.
+    """
+    voxel_size = torch.as_tensor(voxel_size, device = points.device)
+
+    min_coords = points.min(dim = 0).values
+    max_coords = points.max(dim = 0).values
+    grid_size = ((max_coords - min_coords) / voxel_size).ceil().int()
+    points = points - min_coords
+
+    x = torch.linspace(min_coords[0], max_coords[0], grid_size[0], device = points.device)
+    y = torch.linspace(min_coords[1], max_coords[1], grid_size[1], device = points.device)
+    z = torch.linspace(min_coords[2], max_coords[2], grid_size[2], device = points.device)
+    X, Y, Z = torch.meshgrid(x, y, z, indexing='ij')
+    locations = torch.stack([X, Y, Z], dim=-1)
+
+    voxel_indices = (points / voxel_size).floor().int()
+    mask = (voxel_indices >= 0).all(dim=1) & (voxel_indices < grid_size).all(dim=1)
+    voxel_indices = voxel_indices[mask]
+    grid = torch.zeros(grid_size.tolist(), dtype=torch.float32, device = points.device)
+    grid[voxel_indices[:, 0], voxel_indices[:, 1], voxel_indices[:, 2]] = 1.
+
+    return locations, grid

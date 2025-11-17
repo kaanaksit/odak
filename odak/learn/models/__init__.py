@@ -7,3 +7,4 @@ Provides necessary definitions for components used in machine learning and deep 
 # To get sub-modules.
 from .components import * 
 from .models import *
+from .gaussians import *
