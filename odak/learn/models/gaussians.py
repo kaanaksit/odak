@@ -189,12 +189,11 @@ class gaussian_3d_volume(torch.nn.Module):
                          torch.sum(torch.abs(self.angles[self.angles < -1.]))
             loss += weights['angle'] * loss_angle
         if weights['center'] != 0.:
-            loss_center = self.l2_loss(self.centers, torch.mean(self.centers)) 
-#            loss_center = torch.sum(
-#                                    torch.abs(
-#                                              self.centers[torch.abs(self.centers) > 1.0]
-#                                             )
-#                                   )
+            loss_center = torch.sum(
+                                    torch.abs(
+                                              self.centers[torch.abs(self.centers) > 1.0]
+                                             )
+                                   )
             loss += weights['center'] * loss_center
         return loss
 
