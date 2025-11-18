@@ -3,7 +3,7 @@ import odak
 
 
 def test(
-         n = [50, 50, 5],
+         n = [20, 20, 20],
          limits = [
                    [-5, 5],
                    [-5, 5],
@@ -31,7 +31,7 @@ def test(
                             [3., 0., 0.],
                             [0., 3., 0.],
                             [-2., -2., 1.],
-                            [0., 0., 5.],
+                            [0., 0., 4.],
                            ], 
                            device = device
                           )
@@ -43,21 +43,24 @@ def test(
                           ], 
                           device = device
                          ) 
-    sigmas = torch.tensor([
-                           [1., 1., 1.],
-                           [1., 1., 1.],
-                           [1., 1., 3.],
+    scales = torch.tensor([
+                           [0.1, 1., 0.5],
+                           [0.2, 0.2, 0.2],
+                           [1., 2., 0.3],
                            [1., 1., 1.],
                           ],
                           device = device
                          )
+    opacity = torch.tensor([[2.0, 1.1, 2.5, 20.]], device = device).T
+                            
 
 
     intensities = odak.learn.tools.evaluate_3d_gaussians(
                                                          points = points,
                                                          centers = centers,
-                                                         sigmas = sigmas,
+                                                         scales = scales,
                                                          angles = angles,
+                                                         opacity = opacity,
                                                         )
     total_intensities = torch.sum(intensities, dim = -1)
 
@@ -66,12 +69,13 @@ def test(
         points = points.cpu().numpy()
         centers = centers.cpu().numpy()
         total_intensities = total_intensities.cpu().numpy()
+        total_intensities = total_intensities / total_intensities.max()
         ray_diagram = odak.visualize.plotly.rayshow(
                                                     line_width = 3.,
                                                     marker_size = 3.,
                                                     subplot_titles = ['Gaussians'],
                                                    )
-        ray_diagram.add_point(points, color = total_intensities, opacity = 0.3)
+        ray_diagram.add_volume(points, values = total_intensities, limits = [0., 1.], opacity = 0.3, surface_count = 40)
         ray_diagram.add_point(centers, color = 'green', opacity = 0.3)
         ray_diagram.show()
     assert True == True

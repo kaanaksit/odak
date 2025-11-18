@@ -5,7 +5,7 @@ from .transformation import rotate_points
 def evaluate_3d_gaussians(
                           points,
                           centers = torch.zeros(1, 3),
-                          sigmas = torch.ones(1, 3),
+                          scales = torch.ones(1, 3),
                           angles = torch.zeros(1, 3),
                           opacity = torch.ones(1, 1),
                          ) -> torch.Tensor:
@@ -18,7 +18,7 @@ def evaluate_3d_gaussians(
                   The 3D points at which to evaluate the Gaussians.
     centers     : torch.Tensor, shape [n, 3]
                   The centers of the Gaussians.
-    sigmas      : torch.Tensor, shape [n, 3]
+    scales      : torch.Tensor, shape [n, 3]
                   The standard deviations (spread) of the Gaussians along each axis.
     angles      : torch.Tensor, shape [n, 3]
                   The rotation angles (in radians) for each Gaussian, applied to the points.
@@ -36,9 +36,9 @@ def evaluate_3d_gaussians(
                                             origin = centers
                                            )
     points_rotated = points_rotated - centers.unsqueeze(0)
-    sigmas = sigmas.unsqueeze(0)
-    exponent = torch.sum(-0.5 * (points_rotated / sigmas) ** 2, dim = -1)
-    divider = (sigmas[:, :, 0] * sigmas[:, :, 1] * sigmas[:, :, 2]) * (2. * torch.pi) ** (3. / 2.)
+    scales = scales.unsqueeze(0)
+    exponent = torch.sum(-0.5 * (points_rotated / scales) ** 2, dim = -1)
+    divider = (scales[:, :, 0] * scales[:, :, 1] * scales[:, :, 2]) * (2. * torch.pi) ** (3. / 2.)
     exponential = torch.exp(exponent)
     intensities = (exponential / divider)
     intensities = opacity.T * intensities

@@ -788,7 +788,26 @@ class rayshow():
                                                  specs = specs
                                                 )
 
-   
+    def set_axis_limits(
+                        self,
+                        row = 1,
+                        column = 1,
+                        x_limits = [-1., 1.],
+                        y_limits = [-1., 1.],
+                        z_limits = [-1., 1.],
+                       ):
+        scene_dictionary = dict(
+                                xaxis = dict(range = x_limits),
+                                yaxis = dict(range = y_limits),
+                                zaxis = dict(range = z_limits)
+                               )
+        self.fig.update_layout(
+                               scene = scene_dictionary,
+                               #scene2 = scene_dictionary,
+                               #scene3 = scene_dictionary,
+                              )
+
+
     def show(
              self,
              aspect_ratio = [1., 1., 1.],
@@ -1096,3 +1115,51 @@ class rayshow():
                            col = column,
                           )
         logger.info('odak.visualize.plotly.rayshow.add_surface')
+
+
+    def add_volume(
+                   self,
+                   points,
+                   values,
+                   limits = [0., 1.],
+                   row = 1,
+                   column = 1,
+                   opacity = 1.,
+                   surface_count = 17,
+
+                  ):
+        """
+        Definition to add data to the plot.
+
+        Parameters
+        ----------
+        points        : numpy.ndarray
+                        Points in XYZ space. The expected size is [N x 3].
+        values        : numpy.ndarray
+                        Values at the given points. The expected size is [N x 1]
+        limits        : list
+                        Isomin and Isomax, in other terms limits of the volume rendering. See `plotly.graph_objects.Volume` for more details.
+        row           : int
+                        Row number of the figure.
+        column        : int
+                        Column number of the figure.
+        opacity       : float
+                        Opacity of the plot. The value must be between one to zero. Zero is fully trasnparent, while one is opaque.
+        surface_count : int
+                        Integer to decide on the quality of the volume rendering. For more details, see `plotly.grap_objects.Volume`.
+        """
+        self.fig.add_trace(
+                           go.Volume(
+                                     x = points[:, 0],
+                                     y = points[:, 1],
+                                     z = points[:, 2],
+                                     value = values,
+                                     isomin = limits[0],
+                                     isomax = limits[1],
+                                     opacity = opacity,
+                                     surface_count = surface_count,
+                                    ),
+                           row = row,
+                           col = column,
+                          )
+        logger.info('odak.visualize.plotly.rayshow.volume')
