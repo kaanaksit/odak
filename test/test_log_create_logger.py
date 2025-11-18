@@ -12,10 +12,10 @@ def test(
                                      directory,
                                      logger_filename,
                                     )
-    logger = odak.tools.create_logger(
-                                      logger_name = logger_name,
-                                      logger_filename = logger_filename,
-                                     )
+    logger = odak.log.create_logger(
+                                    logger_name = logger_name,
+                                    logger_filename = logger_filename,
+                                   )
     assert True == True
 
 

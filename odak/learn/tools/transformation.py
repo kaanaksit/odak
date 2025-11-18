@@ -115,10 +115,10 @@ def get_rotation_matrix(tilt_angles = [0., 0., 0.], tilt_order = 'XYZ'):
 
 def rotate_points(
                  point,
-                 angles = torch.tensor([[0, 0, 0]]), 
-                 mode='XYZ', 
-                 origin = torch.tensor([[0, 0, 0]]), 
-                 offset = torch.tensor([[0, 0, 0]])
+                 angles = torch.zeros(1, 3), 
+                 mode = 'XYZ', 
+                 origin = torch.zeros(1, 3), 
+                 offset = torch.zeros(1, 3),
                 ):
     """
     Definition to rotate a given point. Note that rotation is always with respect to 0,0,0.
@@ -152,32 +152,39 @@ def rotate_points(
     """
     origin = origin.to(point.device)
     offset = offset.to(point.device)
+    angles = angles.to(point.device)
+
     if len(point.shape) == 1:
         point = point.unsqueeze(0)
     if len(angles.shape) == 1:
         angles = angles.unsqueeze(0)
-    rotx = rotmatx(angles[:, 0])
-    roty = rotmaty(angles[:, 1])
-    rotz = rotmatz(angles[:, 2])
-    new_points = (point - origin).T
-    if angles.shape[0] > 1:
-        new_points = new_points.unsqueeze(0)
-        if len(origin.shape) == 2:
-            origin = origin.unsqueeze(1)
-        if len(offset.shape) == 2:
-            offset = offset.unsqueeze(1)
+    if len(origin.shape) == 1:
+        origin = origin.unsqueeze(0)
+    if len(offset.shape) == 1:
+        offset = offset.unsqueeze(0)        
+
+    rotx = rotmatx(angles[:, 0]).unsqueeze(0)
+    roty = rotmaty(angles[:, 1]).unsqueeze(0)
+    rotz = rotmatz(angles[:, 2]).unsqueeze(0)
+
+    new_points = (point.unsqueeze(1) - origin.unsqueeze(0)).unsqueeze(-1)
+
     if mode == 'XYZ':
-        result = (rotz @ (roty @ (rotx @ new_points))).mT
+        result = (rotz @ (roty @ (rotx @ new_points)))
     elif mode == 'XZY':
-        result = torch.mm(roty, torch.mm(rotz, torch.mm(rotx, new_points))).T
+        result = (roty @ (rotz @ (rotx @ new_points)))
     elif mode == 'YXZ':
-        result = torch.mm(rotz, torch.mm(rotx, torch.mm(roty, new_points))).T
+        result = (rotz @ (rotx @ (roty @ new_points)))
     elif mode == 'ZXY':
-        result = torch.mm(roty, torch.mm(rotx, torch.mm(rotz, new_points))).T
+        result = (roty @ (rotx @ (rotz @ new_points)))
     elif mode == 'ZYX':
-        result = torch.mm(rotx, torch.mm(roty, torch.mm(rotz, new_points))).T
-    result += origin
-    result += offset
+        result = (rotx @ (roty @ (rotz @ new_points)))
+
+    result = result.squeeze(-1)
+    result = result + origin.unsqueeze(0) 
+    result = result + offset.unsqueeze(0)
+    if result.shape[1] == 1:
+        result = result.squeeze(1)
     return result, rotx, roty, rotz
 
 

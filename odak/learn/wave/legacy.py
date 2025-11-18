@@ -1,10 +1,10 @@
 import torch
-import logging
 import numpy as np
 from tqdm import tqdm
+from .propagators import propagator
 from .util import wavenumber, generate_complex_field, calculate_amplitude, calculate_phase
 from ..tools import torch_load, multi_scale_total_variation_loss
-from .propagators import propagator
+from ...log import logger
 
 
 class multiplane_hologram_optimizer():
@@ -26,7 +26,7 @@ class multiplane_hologram_optimizer():
                  zero_mode_distance = 0.15,
                  device = torch.device('cpu')
                 ):
-        logging.warning('odak.learn.wave.multiplane_hologram_optimizer module will be removed in the next releases. Please consider using odak.learn.wave.multi_color_hologram_optimizer instead.')
+        logger.warning('odak.learn.wave.multiplane_hologram_optimizer module will be removed in the next releases. Please consider using odak.learn.wave.multi_color_hologram_optimizer instead.')
         self.device = device
         torch.cuda.empty_cache()
         torch.random.seed()
@@ -237,5 +237,5 @@ class multiplane_hologram_optimizer():
                 self.optimizer.step()
             description = "Gradient Descent, loss:{:.4f}".format(loss.item())
             t.set_description(description)
-        logging.warning(description)
+        logger.warning(description)
         return hologram.detach().clone()

@@ -3,7 +3,8 @@ import torch
 import numpy as np_cpu
 import odak
 from torch.functional import F
-import logging
+from ...log import logger
+
 
 
 
@@ -219,10 +220,10 @@ class display_color_hvs():
 
         '''
         if self.read_spectrum == 'tensor':
-            logging.warning('Tensor primary spectrum is used')
-            logging.warning('The number of primaries used is {}'.format(self.primaries_spectrum.shape[0]))
+            logger.info('Tensor primary spectrum is used in odak.learn.perception.display_color_hvs().')
+            logger.info('The number of primaries used is {} in odak.learn.perception.display_color_hvs().'.format(self.primaries_spectrum.shape[0]))
         else:
-            logging.warning("No Spectrum data is provided")
+            logger.warning("No Spectrum data is provided for odak.learn.perception.display_color_hvs().")
         
         self.lms_tensor = torch.zeros(self.primaries_spectrum.shape[0], 3).to(self.device)
         for i in range(self.primaries_spectrum.shape[0]):
@@ -254,10 +255,10 @@ class display_color_hvs():
 
         '''
         if self.read_spectrum == 'tensor':
-            logging.warning('Tensor primary spectrum is used')
-            logging.warning('The number of primaries used is {}'.format(self.primaries_spectrum.shape[0]))
+            logger.warning('Tensor primary spectrum is used')
+            logger.warning('The number of primaries used is {}'.format(self.primaries_spectrum.shape[0]))
         else:
-            logging.warning("No Spectrum data is provided")
+            logger.warning("No Spectrum data is provided")
         
         self.primaries_tensor = torch.zeros(3, self.primaries_spectrum.shape[0]).to(self.device)
         for i in range(self.primaries_spectrum.shape[0]):

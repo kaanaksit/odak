@@ -29,7 +29,7 @@ def test():
                                               slm_resolution = resolution,
                                               targets = targets,
                                               propagation_type = "Bandlimited Angular Spectrum",
-                                              number_of_iterations = 2,
+                                              number_of_iterations = 1, # Replace it with a higher number.
                                               learning_rate = 0.04,
                                               number_of_planes = 2,
                                               mask_limits = [0.0, 1.0, 0.0, 1.0], 

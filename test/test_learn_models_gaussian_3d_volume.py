@@ -16,23 +16,32 @@ def visualize(
     estimate = estimate[estimate > threshold]
     points = points[ground_truth > threshold]
     ground_truth = ground_truth[ground_truth > threshold]
-    estimation_diagram = odak.visualize.plotly.rayshow(
-                                                       columns = 2,
-                                                       line_width = 3.,
-                                                       marker_size = 3.,
-                                                       subplot_titles = ['Estimation', 'Ground truth'],
-                                                      )
-    estimation_diagram.add_point(
-                                 thresholded_points.detach().cpu().numpy(), 
-                                 color = estimate.detach().cpu().numpy(),
-                                 column = 1,
-                                ) 
-    estimation_diagram.add_point(
-                                 points.detach().cpu().numpy(), 
-                                 color = ground_truth.detach().cpu().numpy(),
-                                 column = 2,
-                                ) 
-    estimation_diagram.show()
+    diagram = odak.visualize.plotly.rayshow(
+                                            columns = 3,
+                                            line_width = 3.,
+                                            marker_size = 3.,
+                                            subplot_titles = [
+                                                              'Centers',
+                                                              'Estimation',
+                                                              'Ground truth',
+                                                             ],
+                                           )
+    diagram.add_point(
+                      model.centers.detach().cpu().numpy(), 
+                      color = 'green',
+                      column = 1,
+                     ) 
+    diagram.add_point(
+                      thresholded_points.detach().cpu().numpy(), 
+                      color = estimate.detach().cpu().numpy(),
+                      column = 2,
+                     ) 
+    diagram.add_point(
+                      points.detach().cpu().numpy(), 
+                      color = ground_truth.detach().cpu().numpy(),
+                      column = 3,
+                     ) 
+    diagram.show()
 
 
 def get_training_data(
@@ -58,7 +67,7 @@ def get_training_data(
 def main(
          directory = 'test_output',
          ply_filename = './test/data/armadillo_low_poly.ply',
-         number_of_elements = 500,
+         number_of_elements = 300,
          learning_rate = 3e-3,
          number_of_epochs = 0, # Suggested: 10000,
          save_at_every = 1000,
@@ -71,9 +80,10 @@ def main(
                                       'l2'  : 1e+0,
                                       'l1'  : 0e-0,
                                      },
-                         'sigma'   : 0e-0,
-                         'alpha'   : 0e-0,
-                         'angle'   : 0e-0,
+                         'sigma'   : 0e-1,
+                         'alpha'   : 1e-1,
+                         'angle'   : 0e-1,
+                         'center'  : 0e-1,
                         },
         ):
     odak.tools.check_directory(directory)

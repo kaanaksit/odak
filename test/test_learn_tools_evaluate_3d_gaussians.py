@@ -3,8 +3,7 @@ import odak
 
 
 def test(
-         number_of_gaussians = 1,
-         n = [50, 50, 3],
+         n = [50, 50, 5],
          limits = [
                    [-5, 5],
                    [-5, 5],
@@ -28,9 +27,30 @@ def test(
         points = torch.cat((points, new_points), dim = 0)
 
 
-    centers = torch.randn(number_of_gaussians, 3, device = device) * 3
-    angles = torch.randn(number_of_gaussians, 3, device = device) * 180.
-    sigmas = torch.rand(number_of_gaussians, 3, device = device) * 5
+    centers = torch.tensor([
+                            [3., 0., 0.],
+                            [0., 3., 0.],
+                            [-2., -2., 1.],
+                            [0., 0., 5.],
+                           ], 
+                           device = device
+                          )
+    angles = torch.tensor([
+                           [0., 10., 0.],
+                           [0., 0., 0.],
+                           [0., 0., 0.],
+                           [0., 0., 0.],
+                          ], 
+                          device = device
+                         ) 
+    sigmas = torch.tensor([
+                           [1., 1., 1.],
+                           [1., 1., 1.],
+                           [1., 1., 3.],
+                           [1., 1., 1.],
+                          ],
+                          device = device
+                         )
 
 
     intensities = odak.learn.tools.evaluate_3d_gaussians(
@@ -39,18 +59,20 @@ def test(
                                                          sigmas = sigmas,
                                                          angles = angles,
                                                         )
-    total_intensities = torch.sum(intensities, dim = 0)
+    total_intensities = torch.sum(intensities, dim = -1)
 
 
     if visualize:
         points = points.cpu().numpy()
+        centers = centers.cpu().numpy()
         total_intensities = total_intensities.cpu().numpy()
         ray_diagram = odak.visualize.plotly.rayshow(
                                                     line_width = 3.,
                                                     marker_size = 3.,
                                                     subplot_titles = ['Gaussians'],
                                                    )
-        ray_diagram.add_point(points, color = total_intensities)
+        ray_diagram.add_point(points, color = total_intensities, opacity = 0.3)
+        ray_diagram.add_point(centers, color = 'green', opacity = 0.3)
         ray_diagram.show()
     assert True == True
 

@@ -1,17 +1,12 @@
 import sys
 import torch
-import logging
-try:
-    import plotly
-    import plotly.graph_objects as go
-    from plotly.subplots import make_subplots
-    from PIL import Image
-except Exception as e:
-    warning = 'odak.visualize.plotly requires certain packages: pip install plotly kaleido pillow'
-    logging.warning(warning)
-    logging.warning(e)
+import plotly
 import numpy as np
-from ..wave import calculate_phase, calculate_amplitude, calculate_intensity
+import plotly.graph_objects as go
+import plotly.subplots
+from PIL import Image
+from ...wave import calculate_phase, calculate_amplitude, calculate_intensity
+from ...log import logger
 
 
 class surfaceshow():
@@ -63,15 +58,15 @@ class surfaceshow():
                            'camera': camera,
                            'colorbar length': colorbarlength,
         }
-        self.fig = make_subplots(
-            rows=1,
-            cols=1,
-            specs=[
-                [
-                    {"type": "scene"},
-                ],
-            ],
-        )
+        self.fig = plotly.subplots.make_subplots(
+                                                 rows = 1,
+                                                 cols = 1,
+                                                 specs = [
+                                                          [
+                                                           {"type": "scene"},
+                                                          ],
+                                                         ],
+                                                )
 
 
     def save_image(self, filename):
@@ -207,12 +202,12 @@ class plotshow():
             for col in range(cols):
                 new_col.append({"type": "xy"})
             specs.append(new_col)
-        self.fig = make_subplots(
-                                 rows = rows,
-                                 cols = cols,
-                                 specs = specs,
-                                 subplot_titles = subplot_titles
-                                )
+        self.fig = plotly.subplots.make_subplots(
+                                                 rows = rows,
+                                                 cols = cols,
+                                                 specs = specs,
+                                                 subplot_titles = subplot_titles
+                                                )
 
 
     def show(self):
@@ -411,15 +406,15 @@ class plot2dshow():
             for j in range(0, self.settings["column number"]):
                 new_row.append({"type": "heatmap"})
             specs.append(new_row)
-        self.fig = make_subplots(
-                                 rows = self.settings["row number"],
-                                 cols = self.settings["column number"],
-                                 specs = specs,
-                                 subplot_titles = self.settings["subplot titles"],
-                                 row_titles = self.settings["row titles"],
-                                 horizontal_spacing = self.settings["horizontal spacing"],
-                                 vertical_spacing = self.settings["vertical spacing"],
-                                )
+        self.fig = plotly.subplots.make_subplots(
+                                                 rows = self.settings["row number"],
+                                                 cols = self.settings["column number"],
+                                                 specs = specs,
+                                                 subplot_titles = self.settings["subplot titles"],
+                                                 row_titles = self.settings["row titles"],
+                                                 horizontal_spacing = self.settings["horizontal spacing"],
+                                                 vertical_spacing = self.settings["vertical spacing"],
+                                                )
 
 
     def update_layout(self):
@@ -637,13 +632,14 @@ class detectorshow():
             for j in range(0, self.settings["column number"]):
                 new_row.append({"type": "heatmap"})
             specs.append(new_row)
-        self.fig = make_subplots(
-            rows=self.settings["row number"],
-            cols=self.settings["column number"],
-            specs=specs,
-            subplot_titles=self.settings["subplot titles"],
-            row_titles=self.settings["row titles"]
-        )
+        self.fig = plotly.subplots.make_subplots(
+                                                 rows = self.settings["row number"],
+                                                 cols = self.settings["column number"],
+                                                 specs = specs,
+                                                 subplot_titles = self.settings["subplot titles"],
+                                                 row_titles = self.settings["row titles"]
+                                                )
+
 
     def show(self):
         """
@@ -785,17 +781,17 @@ class rayshow():
             for j in range(0, columns):
                 new_row.append({"type": "scene"},)
             specs.append(new_row)
-        self.fig = make_subplots(
-                                 rows = self.settings['rows'],
-                                 cols = self.settings['columns'],
-                                 subplot_titles = self.settings['subplot titles'],
-                                 specs = specs
-                                )
+        self.fig = plotly.subplots.make_subplots(
+                                                 rows = self.settings['rows'],
+                                                 cols = self.settings['columns'],
+                                                 subplot_titles = self.settings['subplot titles'],
+                                                 specs = specs
+                                                )
 
-
+   
     def show(
              self,
-             aspect_ratio = [1., 1., 1.]
+             aspect_ratio = [1., 1., 1.],
             ):
         """
         Definition to show the plot.
@@ -855,6 +851,7 @@ class rayshow():
                   row = 1,
                   column = 1,
                   color = 'red',
+                  opacity = 1.,
                   show_legend = False
                  ):
         """
@@ -870,6 +867,8 @@ class rayshow():
                          Column number of the figure.
         color          : str
                          Color of the point(s).
+        opacity        : float
+                         Opacity of the point(s). `1` refers to opaque and `0` refers to fully transparent.
         show_legend    : bool
                          Set True to enable legend for the line.
         """
@@ -888,14 +887,15 @@ class rayshow():
                                         marker = dict(
                                                       size = self.settings["marker size"],
                                                       color = color,
-                                                      opacity = self.settings["opacity"],
+                                                      opacity = opacity,
                                                       colorscale = self.settings["color scale"]
                                                      ),
                                        showlegend = show_legend  
                                       ),
-                                      row = row,
-                                      col = column
+                           row = row,
+                           col = column
                           )
+        logger.info('odak.visualize.plotly.rayshow.add_point')
 
 
     def add_sphere(self, sphere, row = 1, column = 1, dash = None, color = 'red', show_legend = False):
@@ -938,6 +938,7 @@ class rayshow():
                            row = row,
                            col = column,
                           )            
+        logger.info('odak.visualize.plotly.rayshow.add_sphere')
 
        
 
@@ -980,6 +981,7 @@ class rayshow():
                            row = row,
                            col = column,
                           )            
+        logger.info('odak.visualize.plotly.rayshow.add_triangle')
 
 
     def add_line(self, point_start, point_end, row = 1, column = 1, dash = None, color = 'red', show_legend = False):
@@ -1040,9 +1042,22 @@ class rayshow():
                                row = row,
                                col = column,
                               )
+        logger.info('odak.visualize.plotly.rayshow.add_line')
 
 
-    def add_surface(self, data_x, data_y, data_z, surface_color, row = 1, column = 1, label = '', mode = 'lines+markers', opacity = 1., contour = False):
+    def add_surface(
+                    self,
+                    data_x,
+                    data_y,
+                    data_z,
+                    surface_color,
+                    row = 1,
+                    column = 1,
+                    label = '',
+                    mode = 'lines+markers',
+                    opacity = 1.,
+                    contour = False
+                   ):
         """
         Definition to add data to the plot.
 
@@ -1080,3 +1095,4 @@ class rayshow():
                            row = row,
                            col = column,
                           )
+        logger.info('odak.visualize.plotly.rayshow.add_surface')

@@ -1,4 +1,4 @@
-import logging
+from ...log import logger
 import torch
 import torch.nn as nn
 
@@ -18,8 +18,8 @@ class CVVDP(nn.Module):
             import pycvvdp
             self.cvvdp = pycvvdp.cvvdp(display_name = 'standard_4k', device = device)
         except Exception as e:
-            logging.warning('ColorVideoVDP is missing, consider installing by running "pip install -U git+https://github.com/gfxdisp/ColorVideoVDP"')
-            logging.warning(e)
+            logger.warning('ColorVideoVDP is missing, consider installing by running "pip install -U git+https://github.com/gfxdisp/ColorVideoVDP"')
+            logger.warning(e)
 
 
     def forward(self, predictions, targets, dim_order = 'BCHW'):
@@ -45,8 +45,8 @@ class CVVDP(nn.Module):
             l_ColorVideoVDP = self.cvvdp.predict(predictions, targets, dim_order = dim_order)[0]
             return l_ColorVideoVDP
         except Exception as e:
-            logging.warning('ColorVideoVDP failed to compute.')
-            logging.warning(e)
+            logger.warning('ColorVideoVDP failed to compute.')
+            logger.warning(e)
             return torch.tensor(0.0)
         
 class FVVDP(nn.Module):
@@ -64,8 +64,8 @@ class FVVDP(nn.Module):
             import pyfvvdp
             self.fvvdp = pyfvvdp.fvvdp(display_name = 'standard_4k', heatmap = 'none', device = device)
         except Exception as e:
-            logging.warning('FovVideoVDP is missing, consider installing by running "pip install pyfvvdp"')
-            logging.warning(e)
+            logger.warning('FovVideoVDP is missing, consider installing by running "pip install pyfvvdp"')
+            logger.warning(e)
 
 
     def forward(self, predictions, targets, dim_order = 'BCHW'):
@@ -91,8 +91,8 @@ class FVVDP(nn.Module):
             l_FovVideoVDP = self.fvvdp.predict(predictions, targets, dim_order = dim_order)[0]
             return l_FovVideoVDP
         except Exception as e:
-            logging.warning('FovVideoVDP failed to compute.')
-            logging.warning(e)
+            logger.warning('FovVideoVDP failed to compute.')
+            logger.warning(e)
             return torch.tensor(0.0)
 
 
@@ -108,8 +108,8 @@ class LPIPS(nn.Module):
             import torchmetrics
             self.lpips = torchmetrics.image.lpip.LearnedPerceptualImagePatchSimilarity(net_type = 'squeeze')
         except Exception as e:
-            logging.warning('torchmetrics is missing, consider installing by running "pip install torchmetrics"')
-            logging.warning(e)
+            logger.warning('torchmetrics is missing, consider installing by running "pip install torchmetrics"')
+            logger.warning(e)
 
 
     def forward(self, predictions, targets):
@@ -143,7 +143,7 @@ class LPIPS(nn.Module):
             l_LPIPS = self.lpips(lpips_image, lpips_target)
             return l_LPIPS
         except Exception as e:
-            logging.warning('LPIPS failed to compute.')
-            logging.warning(e)
+            logger.warning('LPIPS failed to compute.')
+            logger.warning(e)
             return torch.tensor(0.0)
            

@@ -1,9 +1,9 @@
 import torch
-import logging
 from tqdm import tqdm
+from .propagators import propagator
 from .util import wavenumber, generate_complex_field, calculate_amplitude, calculate_phase
 from ..tools import torch_load, multi_scale_total_variation_loss, quantize
-from .propagators import propagator
+from ...log import logger
 
 
 class multi_color_hologram_optimizer():
@@ -52,7 +52,7 @@ class multi_color_hologram_optimizer():
         self.channel_power_filename = channel_power_filename
         self.method = method
         if self.method != 'conventional' and self.method != 'multi-color':
-           logging.warning('Unknown optimization method. Options are conventional or multi-color.')
+           logger.warning('Unknown optimization method. Options are conventional or multi-color.')
            import sys
            sys.exit()
         self.peak_amplitude = peak_amplitude
@@ -137,7 +137,7 @@ class multi_color_hologram_optimizer():
         Internal function to set the starting phase of the phase-only hologram.
         """
         if self.method == 'conventional':
-            logging.warning('Scheme: Conventional')
+            logger.warning('Scheme: Conventional')
             self.channel_power = torch.eye(
                                            self.number_of_frames,
                                            self.number_of_channels,
@@ -146,7 +146,7 @@ class multi_color_hologram_optimizer():
                                           )
 
         elif self.method == 'multi-color':
-            logging.warning('Scheme: Multi-color')
+            logger.warning('Scheme: Multi-color')
             self.channel_power = torch.ones(
                                             self.number_of_frames,
                                             self.number_of_channels,
@@ -162,9 +162,9 @@ class multi_color_hologram_optimizer():
                 self.channel_power.requires_grad = True
             if self.method == 'conventional':
                 self.channel_power = torch.abs(torch.cos(self.channel_power))
-            logging.warning('Channel powers:')
-            logging.warning(self.channel_power)
-            logging.warning('Channel powers loaded from {}.'.format(self.channel_power_filename))
+            logger.warning('Channel powers:')
+            logger.warning(self.channel_power)
+            logger.warning('Channel powers loaded from {}.'.format(self.channel_power_filename))
         self.propagator.set_laser_powers(self.channel_power)
 
 
@@ -387,7 +387,7 @@ class multi_color_hologram_optimizer():
             del intensity
             del phase
             del hologram
-        logging.warning(description)
+        logger.warning(description)
         return hologram_phases.detach()
 
 
@@ -428,6 +428,6 @@ class multi_color_hologram_optimizer():
         reconstruction_intensities = self.propagator.reconstruct(hologram_phases)
         laser_powers = self.propagator.get_laser_powers()
         channel_powers = self.propagator.channel_power
-        logging.warning("Final peak amplitude: {}".format(self.peak_amplitude))
-        logging.warning('Laser powers: {}'.format(laser_powers))
+        logger.warning("Final peak amplitude: {}".format(self.peak_amplitude))
+        logger.warning('Laser powers: {}'.format(laser_powers))
         return hologram_phases, reconstruction_intensities, laser_powers, channel_powers, float(self.peak_amplitude)

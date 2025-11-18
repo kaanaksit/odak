@@ -11,6 +11,7 @@ def test(directory = 'test_output'):
                                                        size = [20., 20.], 
                                                        center = [0., 0., 10.]
                                                       ) # (3)
+    print(end_points.shape, starting_point.shape)
     rays_from_points = odak.learn.raytracing.create_ray_from_two_points(
                                                                         starting_point,
                                                                         end_points

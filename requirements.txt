@@ -3,3 +3,5 @@ numpy>=1.26.4
 torch>=2.3.0
 plyfile>=1.0.3
 tqdm>=4.66.4
+plotly>=6.3.1
+pillow>=11.2.1

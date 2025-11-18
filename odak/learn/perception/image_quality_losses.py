@@ -1,6 +1,8 @@
-import logging
+from ...log import logger
 import torch
 import torch.nn as nn
+
+
 
 
 class PSNR(nn.Module):
@@ -64,8 +66,8 @@ class SSIM(nn.Module):
             l_SSIM = structural_similarity_index_measure(predictions, targets)
             return l_SSIM
         except Exception as e:
-            logging.warning('SSIM failed to compute.')
-            logging.warning(e)
+            logger.warning('SSIM failed to compute.')
+            logger.warning(e)
             return torch.tensor(0.0)
 
 class MSSSIM(nn.Module):
@@ -98,6 +100,6 @@ class MSSSIM(nn.Module):
             l_MSSSIM = multiscale_structural_similarity_index_measure(predictions, targets, data_range = 1.0)
             return l_MSSSIM  
         except Exception as e:
-            logging.warning('MS-SSIM failed to compute.')
-            logging.warning(e)
+            logger.warning('MS-SSIM failed to compute.')
+            logger.warning(e)
             return torch.tensor(0.0)

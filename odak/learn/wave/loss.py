@@ -1,11 +1,13 @@
 import torch
 import torch.nn.functional as F
 import torch.nn as nn
-import logging
 from torch.autograd import Variable
+from ...log import logger
 from ..tools import generate_2d_gaussian
 from ..perception.learned_perceptual_losses import CVVDP, FVVDP, LPIPS
 from ..perception.image_quality_losses import PSNR, SSIM, MSSSIM
+
+
 
 
 class phase_gradient(nn.Module):
@@ -358,7 +360,7 @@ class perceptual_multiplane_loss():
         self.multiplier       = multiplier
         self.reduction        = reduction
         if self.reduction == 'none' and len(list(additional_loss_weights.keys())) > 0:
-            logging.warning("Reduction cannot be 'none' for additional loss functions. Changing reduction to 'mean'.")
+            logger.warning("Reduction cannot be 'none' for additional loss functions. Changing reduction to 'mean'.")
             self.reduction = 'mean'
         self.blur_ratio       = blur_ratio
         self.set_targets()

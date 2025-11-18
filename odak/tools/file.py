@@ -4,10 +4,10 @@ import json
 import pathlib
 import numpy as np
 import cv2
-import logging
 import sys
 import shutil
-import logging
+from ..log import logger
+
 
 
 def get_base_filename(filename):
@@ -127,7 +127,7 @@ def load_image(fn, normalizeby = 0., torch_style = False):
     """
     image = cv2.imread(expanduser(fn), cv2.IMREAD_UNCHANGED)
     if isinstance(image, type(None)):
-         logging.warning('Image not properly loaded. Check filename or image type.')    
+         logger.warning('Image not properly loaded. Check filename or image type.')    
          sys.exit()
     if len(image.shape) > 2:
         new_image = np.copy(image)
@@ -139,40 +139,6 @@ def load_image(fn, normalizeby = 0., torch_style = False):
     if torch_style == True and len(image.shape) > 2:
         image = np.moveaxis(image, -1, 0)
     return image.astype(float)
-
-
-def create_logger(
-                  logger_name,
-                  logger_filename,
-                  logger_level = logging.DEBUG,
-                 ):  
-    """
-    Definiton to create a logger object using Python's built-in `logging` library.
-
-
-    Parameters
-    ----------
-    logger_name     : string
-                      Logger object name.
-    logger_filename : string
-                      Logger object's filename.
-    logger_level    : int
-                      Defaults is `logging.DEBUG`. For more details, refer to `logging` library's documentation.
-
-
-    Returns
-    ----------
-    logger          : logging.Logger
-                      For more details, refer to `logging` libray's documentation.
-    """
-    formatter = logging.Formatter('%(asctime)s - %(message)s')
-    handler = logging.FileHandler(expanduser(logger_filename))
-    handler.setFormatter(formatter)
-    logger = logging.getLogger(logger_name)
-    logger.setLevel(logger_level)
-    logger.addHandler(handler)
-    logger.info('Logger initiated. Log is saved to {}.'.format(logger_filename))
-    return logger
 
 
 def shell_command(cmd, cwd = '.', timeout = None, check = True):

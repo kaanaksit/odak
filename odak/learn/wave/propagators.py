@@ -1,9 +1,10 @@
 import torch
 import numpy as np
-import logging
 from .classical import get_propagation_kernel, custom
 from .util import wavenumber, generate_complex_field, calculate_amplitude, calculate_phase
 from ..tools import zero_pad, crop_center, circular_binary_mask
+from ...log import logger
+
 
 
 class propagator():
@@ -114,7 +115,7 @@ class propagator():
         else:
             self.distances = torch.as_tensor(distances)
             self.number_of_depth_layers = self.distances.shape[0]
-        logging.warning('Distances: {}'.format(self.distances))
+        logger.warning('Distances: {}'.format(self.distances))
 
 
     def init_kernels(self):
@@ -338,7 +339,7 @@ class propagator():
         else:
             reconstruction_type = torch.float32
         if hologram_phases.shape[0] != self.number_of_frames:
-            logging.warning('Provided hologram frame count is {} but the configured number of frames is {}.'.format(hologram_phases.shape[0], self.number_of_frames))
+            logger.warning('Provided hologram frame count is {} but the configured number of frames is {}.'.format(hologram_phases.shape[0], self.number_of_frames))
         reconstructions = torch.zeros(
                                       self.number_of_frames,
                                       self.number_of_depth_layers,

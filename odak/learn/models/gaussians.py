@@ -1,6 +1,6 @@
 from ..tools import evaluate_3d_gaussians, expanduser
+from ...log import logger
 import torch
-import logging
 import os
 from tqdm import tqdm
 
@@ -58,8 +58,9 @@ class gaussian_3d_volume(torch.nn.Module):
                                             centers = self.centers,
                                             sigmas = self.sigmas,
                                             angles = self.angles * 180,
+                                            opacity = self.alphas,
                                            )
-        total_intensities = torch.sum(intensities * self.alphas, axis = 0)
+        total_intensities = torch.sum(intensities, axis = -1)
         return total_intensities
 
 
@@ -124,7 +125,7 @@ class gaussian_3d_volume(torch.nn.Module):
             t_epoch.set_description(description)
             if epoch_id % save_at_every == save_at_every - 1:
                 self.save_weights(weights_filename)
-        logging.info(description)
+        logger.info(description)
 
 
     def evaluate(
@@ -139,6 +140,7 @@ class gaussian_3d_volume(torch.nn.Module):
                             'sigma'   : 0e-0,
                             'alpha'   : 0e-0,
                             'angle'   : 0e-0,
+                            'center'  : 0e-0, 
                            },
                 ):
         """
@@ -151,8 +153,7 @@ class gaussian_3d_volume(torch.nn.Module):
         ground_truth : torch.Tensor
                        Ground truth values.
         weights      : dict, optional
-                       Dictionary of weights for each loss component. Default is
-                       ``{'content': {'l2': 1.0, 'l1': 0.0}, 'sigma': 0.0, 'alpha': 0.0, 'angle': 0.0}`.
+                       Dictionary of weights for each loss component.
 
         Returns
         -------
@@ -172,16 +173,23 @@ class gaussian_3d_volume(torch.nn.Module):
             loss_l1_content = self.l1_loss(estimate, ground_truth)
             loss += weights['content']['l1'] * loss_l1_content
         if weights['sigma'] != 0.:
-            loss_sigmas = torch.sum(torch.abs(self.sigmas[self.sigmas < 0.]))
+            loss_sigmas = torch.sum(torch.abs(self.sigmas)[self.sigmas < 1e-2])
             loss += weights['sigma'] * loss_sigmas
         if weights['alpha'] != 0.:
             loss_alphas = torch.sum(self.alphas[self.alphas > 1.]) + \
-                          torch.sum(torch.abs(self.alphas[self.alphas < 0.]))
+                          torch.sum(torch.abs(self.alphas[self.alphas < 1e-2]))
             loss += weights['alpha'] * loss_alphas
         if weights['angle'] != 0.:
             loss_angle = torch.sum(self.angles[self.angles > 1.]) + \
                          torch.sum(torch.abs(self.angles[self.angles < -1.]))
             loss += weights['angle'] * loss_angle
+        if weights['center'] != 0.:
+            loss_center = torch.sum(
+                                    torch.abs(
+                                              self.centers[torch.abs(self.centers) > 1.0]
+                                             )
+                                   )
+            loss += weights['center'] * loss_center
         return loss
 
 
@@ -207,7 +215,7 @@ class gaussian_3d_volume(torch.nn.Module):
         """        
         weights_filename = expanduser(weights_filename)
         torch.save(self.state_dict(), weights_filename)
-        logging.info('gaussian_3d_volume model weights saved: {}'.format(weights_filename))
+        logger.info('gaussian_3d_volume model weights saved: {}'.format(weights_filename))
 
 
     def load_weights(self, weights_filename = None, device = torch.device('cpu')):
@@ -238,4 +246,4 @@ class gaussian_3d_volume(torch.nn.Module):
                                                )
                                    )
                 self.eval()
-                logging.info('gaussian_3d_volume model weights loaded: {}'.format(weights_filename))
+                logger.info('gaussian_3d_volume model weights loaded: {}'.format(weights_filename))

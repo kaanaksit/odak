@@ -1,10 +1,10 @@
 import torch
-import logging
 import itertools
 from .util import set_amplitude, generate_complex_field, calculate_amplitude, calculate_phase
 from .lens import quadratic_phase_function
 from .util import wavenumber
 from ..tools import zero_pad, crop_center, generate_2d_gaussian, circular_binary_mask, correlation_2d
+from ...log import logger
 from tqdm import tqdm
 
 
@@ -141,7 +141,7 @@ def propagate_beam(
                                              aperture = aperture
                                             )
     else:
-        logging.warning('Propagation type not recognized')
+        logger.warning('Propagation type not recognized')
         assert True == False
     if zero_padding[2]:
         result = crop_center(result)
@@ -190,7 +190,7 @@ def get_propagation_kernel(
     kernel             : torch.tensor
                          Complex kernel for the given propagation type.
     """                                                      
-    logging.warning('Requested propagation kernel size for {} method with {} m distance, {} m pixel pitch, {} m wavelength, {} x {} resolutions, x{} scale and {} samples.'.format(propagation_type, distance, dx, wavelength, nu, nv, scale, samples))
+    logger.warning('Requested propagation kernel size for {} method with {} m distance, {} m pixel pitch, {} m wavelength, {} x {} resolutions, x{} scale and {} samples.'.format(propagation_type, distance, dx, wavelength, nu, nv, scale, samples))
     if propagation_type == 'Bandlimited Angular Spectrum':
         kernel = get_band_limited_angular_spectrum_kernel(
                                                           nu = nu,
@@ -250,7 +250,7 @@ def get_propagation_kernel(
                                                                         aperture_samples = samples
                                                                        )
     else:
-        logging.warning('Propagation type not recognized')
+        logger.warning('Propagation type not recognized')
         assert True == False
     return kernel
 
@@ -346,7 +346,7 @@ def get_light_kernels(
         elif kernel_type == 'fourier':
             kernel = kernel_fourier
         else:
-            logging.warning('Unknown kernel type requested.')
+            logger.warning('Unknown kernel type requested.')
             raise ValueError('Unknown kernel type requested.')
         kernel_amplitude = calculate_amplitude(kernel)
         kernel_phase = calculate_phase(kernel) % (2 * torch.pi)
@@ -1274,7 +1274,7 @@ def stochastic_gradient_descent(
         loss.backward(retain_graph = True)
         optimizer.step()
         t.set_description(description)
-    logging.warning(description)
+    logger.warning(description)
     torch.no_grad()
     hologram = generate_complex_field(1., phase)
     reconstruction = propagate_beam(
