@@ -91,6 +91,7 @@ class planar_mesh():
                             Filename.
         """
         triangles = self.get_triangles()
+        triangles = triangles.detach()
         write_PLY(triangles, filename)
 
 
