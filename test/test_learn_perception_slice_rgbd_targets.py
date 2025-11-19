@@ -7,7 +7,11 @@ from odak.learn.tools import load_image, save_image
 from odak.tools import check_directory
 
 
-def test(device = torch.device('cpu'), output_directory = 'test_output'):
+def test(
+         device = torch.device('cpu'),
+         output_directory = 'test_output',
+         header = 'test/test_learn_perception_slice_rgbd_targets.py',
+        ):
     check_directory(output_directory)
     
     target = load_image(
@@ -40,7 +44,7 @@ def test(device = torch.device('cpu'), output_directory = 'test_output'):
                    cmin = masks[idx].min(),
                    cmax = masks[idx].max()
                   )
-    print(depth_slices_sum.mean().item())
+    odak.log.logger.info('{} -> {}'.format(header, depth_slices_sum.mean().item()))
     assert depth_slices_sum.mean().item() == 1. # The mean of the depth slices sum shoud be 1
     
     

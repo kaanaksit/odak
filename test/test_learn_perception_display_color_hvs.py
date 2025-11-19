@@ -4,6 +4,9 @@ import sys
 from odak.learn.perception.color_conversion import display_color_hvs
 
 
+header = 'test/test_learn_perception_display_color_hvs.py'
+
+
 def test(
          device = torch.device('cpu'),
          output_directory = 'test_output'
@@ -61,7 +64,7 @@ def test(
 
     image_rgb_noisy = image_rgb * 0.6 + torch.rand_like(image_rgb) * 0.4 # (7)
     loss_lms = display_color(image_rgb, image_rgb_noisy) # (8)
-    print('The third stage LMS sensation difference between two input images is {:.10f}.'.format(loss_lms))
+    odak.log.logger.info('{} -> The third stage LMS sensation difference between two input images is {:.10f}.'.format(header, loss_lms))
     assert True == True
 
 if __name__ == "__main__":

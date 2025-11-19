@@ -4,7 +4,10 @@ import torch
 from tqdm import tqdm
 
 
-def test(output_directory = 'test_output'):
+def test(
+         output_directory = 'test_output',
+         header = 'test_learn_raytracing_optimization.py',
+        ):
     odak.tools.check_directory(output_directory)
     final_surface = torch.tensor([[
                                    [-5., -5., 0.],
@@ -58,7 +61,7 @@ def test(output_directory = 'test_output'):
         loss.backward(retain_graph = True)
         optimizer.step()
         t.set_description('Loss: {}'.format(loss.item()))
-    print('Loss: {}, angles: {}'.format(loss.item(), angles))
+    odak.log.logger.info('{} -> Loss: {}, angles: {}'.format(header, loss.item(), angles))
 
 
     visualize = False

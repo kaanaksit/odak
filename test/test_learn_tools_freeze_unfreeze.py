@@ -3,10 +3,13 @@ import sys
 import odak
 
 
+header = './test_learn_tools_freeze_unfreeze.py'
+
+
 def check_parameters_gradient(model):
-    print(model.parameters)
+    odak.log.logger.info('{} -> {}'.format(header, model.parameters))
     for (fullname, parameter) in model.named_parameters():
-        print('Name: {}, Requires grad: {}'.format(fullname, parameter.requires_grad))
+        odak.log.logger.info('{} -> Name: {}, Requires grad: {}'.format(header, fullname, parameter.requires_grad))
 
 
 def test(

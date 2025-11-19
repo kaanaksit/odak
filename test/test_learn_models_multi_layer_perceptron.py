@@ -6,7 +6,10 @@ import os
 from tqdm import tqdm
 
 
-def test(output_directory = 'test_output'):
+def test(
+         output_directory = 'test_output',
+         header = 'test/test_learn_models_multi_layer_perceptron.py',
+        ):
     odak.tools.check_directory(output_directory)
     filename = './test/data/fruit_lady.png'
     test_filename  = '{}/multi_layer_perceptron_estimation.png'.format(output_directory)
@@ -42,7 +45,7 @@ def test(output_directory = 'test_output'):
     if os.path.isfile(weights_filename):
         model.load_state_dict(torch.load(weights_filename))
         model.eval()
-        print('Model weights loaded: {}'.format(weights_filename))
+        odak.log.logger.info('{} -> Model weights loaded: {}'.format(header, weights_filename))
     try:
         for epoch_id in epochs:
             train_loss = train(
@@ -63,13 +66,13 @@ def test(output_directory = 'test_output'):
                 odak.learn.tools.save_image(test_filename, estimation, cmin = 0., cmax = 1.)
         estimation = trial(test_batches, model, test_resolution)
         odak.learn.tools.save_image(test_filename, estimation, cmin = 0., cmax = 1.)
-        print(description)
+        odak.log.logger.info('{} -> {}'.format(header, description))
         torch.save(model.state_dict(), weights_filename)
-        print('Model weights save: {}'.format(weights_filename))
+        odak.log.logger.info('{} -> Model weights save: {}'.format(header, weights_filename))
     except KeyboardInterrupt:
-        print(description)
+        odak.log.logger.info('{} -> {}'.format(header, description))
         torch.save(model.state_dict(), weights_filename)
-        print('Model weights save: {}'.format(weights_filename))
+        odak.log.logger.info('{} -> Model weights save: {}'.format(header, weights_filename))
         odak.learn.tools.save_image(test_filename, estimation, cmin = 0., cmax = 1.)
         assert True == True
     assert True == True

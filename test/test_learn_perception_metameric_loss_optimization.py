@@ -9,8 +9,9 @@ def test(
          learning_rate = 1e-2,
          gaze = [0.5, 0.5],
          number_of_steps = 1, # Change this to 150 to run the optimization properly.
-         output_directory = 'output',
-         device = torch.device('cpu')
+         output_directory = 'test_output',
+         device = torch.device('cpu'),
+         header = 'test/test_learn_perception_metameric_loss_optimization.py'
         ):
     ground_truth = odak.learn.tools.load_image(
                                                filename,
@@ -22,13 +23,12 @@ def test(
     metameric_loss = odak.learn.perception.MetamerMSELoss().to(device)
     optimizer = torch.optim.Adam([estimate], lr = learning_rate)
     t = tqdm(range(number_of_steps), leave = False, dynamic_ncols = True)
-    print(ground_truth.shape, estimate.shape)
     for step in t:
         optimizer.zero_grad()
         loss = metameric_loss(estimate, ground_truth, gaze = gaze)
         loss.backward(retain_graph = True)
         optimizer.step()
-        description = 'Loss: {}'.format(loss.item())
+        description = '{} -> Loss: {}'.format(header, loss.item())
         t.set_description(description)
         if step % 10 == 0:
             odak.tools.check_directory(output_directory)
@@ -38,7 +38,7 @@ def test(
                                         cmin = 0.,
                                         cmax = 1.
                                        )
-    print(description)
+    odak.log.logger.info(description)
     assert True == True
 
 

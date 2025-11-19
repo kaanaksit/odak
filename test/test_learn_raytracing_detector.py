@@ -4,7 +4,10 @@ import torch
 from tqdm import tqdm
 
 
-def test(output_directory = 'test_output'):
+def test(
+         output_directory = 'test_output',
+         header = 'test/test_learn_raytracing_detector.py'
+        ):
     odak.tools.check_directory(output_directory)
     device = torch.device('cpu')
     detector_size = torch.tensor([0.1, 0.1], device = device)
@@ -81,7 +84,7 @@ def test(output_directory = 'test_output'):
             odak.learn.tools.save_image('{}/targets_{:04d}.png'.format(output_directory, step), target_locations, cmin = 0., cmax = image.max())
             mesh.save_heights(filename = '{}/heights.pt'.format(output_directory))
             mesh.save_heights_as_PLY(filename = '{}/heights.ply'.format(output_directory))
-    print(description)
+    odak.log.logger.info('{} -> {}'.format(header, description))
 
     visualize = False
     if visualize:

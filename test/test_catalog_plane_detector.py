@@ -4,7 +4,9 @@ import sys
 from odak.tools.sample import grid_sample, batch_of_rays
 
 
-def test():
+def test(
+         header = 'test_catalog_plane_detector.py',
+        ):
     sample_entry_points = grid_sample(
         no=[4, 4],
         size=[100., 100.],
@@ -28,7 +30,7 @@ def test():
         angles=[0., 10., 0.]
     )
     normals, distances = detector.raytrace(rays)
-    print(detector.get_field())
+    odak.log.logger.info('{} -> {}'.format(header, detector.get_field()))
     assert True == True
 
 

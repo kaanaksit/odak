@@ -2,15 +2,19 @@ import sys
 import odak
 import torch
 
+
+header = 'test/test_ColorVideoVDP.py'
+
+
 def test():
     try:
         import pycvvdp
     except ImportError:
-        print('ColorVideoVDP is missing, consider installing by visiting: https://github.com/gfxdisp/ColorVideoVDP')
+        odak.log.logger.warning('{} -> ColorVideoVDP is missing, consider installing by visiting: https://github.com/gfxdisp/ColorVideoVDP'.format(header))
         assert True == True
     if 'pycvvdp' in sys.modules:
         import pycvvdp
-        print('ColorVideoVDP is imported.')
+        odak.log.logger.warning('{} -> ColorVideoVDP is imported.'.format(header))
         main(pycvvdp)
     assert True == True
 
@@ -47,7 +51,7 @@ def main(
                              device = device
                             )
     loss = colorvdp.loss(image_noisy, image, dim_order = 'CHW')
-    print(loss)
+    odak.log.logger.info('{} -> {}'.format(header, loss))
     assert True == True
 
 

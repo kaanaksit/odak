@@ -4,7 +4,10 @@ import torch
 from tqdm import tqdm
 
 
-def test(output_directory = 'test_output'):
+def test(
+         output_directory = 'test_output',
+         header = 'test/test_learn_raytracing_mesh.py',
+        ):
     odak.tools.check_directory(output_directory)
     device = torch.device('cpu')
     final_target = torch.tensor([-2., -2., 10.], device = device)
@@ -46,9 +49,9 @@ def test(output_directory = 'test_output'):
         loss = loss_function(final_points, target)
         loss.backward(retain_graph = True)
         optimizer.step() 
-        description = 'Loss: {}'.format(loss.item())
+        description = '{} -> Loss: {}'.format(header, loss.item())
         t.set_description(description)
-    print(description)
+    odak.log.logger.info(description)
             
 
     visualize = False
