@@ -80,8 +80,20 @@ def test(
         description = 'Loss: {}'.format(loss.item())
         t.set_description(description)
         if step % save_at_every == 0:
-            odak.learn.tools.save_image('{}/image_{:04d}.png'.format(output_directory, step), image, cmin = 0., cmax = image.detach().max())
-            odak.learn.tools.save_image('{}/targets_{:04d}.png'.format(output_directory, step), target_locations, cmin = 0., cmax = image.detach().max())
+            image = image.detach()
+            target_locations = target_locations.detach()
+            odak.learn.tools.save_image(
+                                        '{}/image_{:04d}.png'.format(output_directory, step),
+                                        image,
+                                        cmin = 0.,
+                                        cmax = image.max()
+                                       )
+            odak.learn.tools.save_image(
+                                        '{}/targets_{:04d}.png'.format(output_directory, step),
+                                        target_locations,
+                                        cmin = 0.,
+                                        cmax = image.max()
+                                       )
             mesh.save_heights(filename = '{}/heights.pt'.format(output_directory))
             mesh.save_heights_as_PLY(filename = '{}/heights.ply'.format(output_directory))
     odak.log.logger.info('{} -> {}'.format(header, description))
