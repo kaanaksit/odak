@@ -1,5 +1,6 @@
-import torch
 import sys
+import odak
+import torch
 
 from os.path import join
 from odak.learn.perception.util import slice_rgbd_targets

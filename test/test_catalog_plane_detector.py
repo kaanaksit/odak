@@ -1,6 +1,7 @@
 import odak.raytracing as raytracer
 import odak.catalog as catalog
 import sys
+import odak
 from odak.tools.sample import grid_sample, batch_of_rays
 
 
