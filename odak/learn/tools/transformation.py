@@ -1,5 +1,7 @@
 import math
 import torch
+from ...raytracing import center_of_triangle
+from ...tools import read_PLY
 
 
 def rotmatx(angle):
@@ -262,3 +264,46 @@ def point_cloud_to_voxel(
     grid[voxel_indices[:, 0], voxel_indices[:, 1], voxel_indices[:, 2]] = 1.
 
     return locations, grid
+
+
+def load_voxelized_PLY(
+                       ply_filename,
+                       voxel_size = [0.05, 0.05, 0.05],
+                       device = torch.device('cpu'),
+                      ):
+    """
+    Load a point cloud from a PLY file and convert it into a voxel grid representation.
+
+    Parameters
+    ----------
+    ply_filename : str or Path
+                   The path to the input PLY file containing triangle data.
+    voxel_size   : list or tuple, shape (3,), optional
+                   The size of each voxel in the x, y, and z directions. Default is [0.05, 0.05, 0.05].
+    device       : torch.device, optional
+                   The device on which to perform computations. Default is CPU.
+
+    Returns
+    -------
+    points      : torch.Tensor, shape (N, 3)
+                  A tensor containing the coordinates of the voxel centers.
+    ground_truth: torch.Tensor, shape (Gx * Gy * Gz,)
+                  A binary tensor where each element indicates whether a corresponding voxel contains at least one point.
+
+    Notes
+    -----
+    - The function reads triangle data from the PLY file and computes the center points of these triangles.
+    - These points are then processed to create a normalized point cloud, which is converted into a voxel grid.
+    - Only voxels containing at least one point are marked as 1 in `ground_truth`.
+    - All operations are performed on the specified device for efficiency.
+    """
+    triangles = read_PLY(ply_filename)
+    points = center_of_triangle(triangles)
+    points = torch.as_tensor(points, device = device)
+    points = points - points.mean()
+    points = points / torch.amax(points)
+    ground_truth = torch.ones(points.shape[0], device = device)
+    voxel_locations, voxel_grid = point_cloud_to_voxel(points = points, voxel_size = voxel_size,)
+    points = voxel_locations.reshape(-1, 3)
+    ground_truth = voxel_grid.reshape(-1)
+    return points, ground_truth

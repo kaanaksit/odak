@@ -14,7 +14,18 @@ class surfaceshow():
     A class for general purpose surface plotting using plotly.
     """
 
-    def __init__(self, title='plot', shape=[1000, 1000], labels=['x', 'y', 'z'], types=['linear', 'linear', 'linear'], font_size=12, tick_no=[10, 10, 10], margin=[65, 50, 65, 90], camera=[1.87, 0.88, -0.64], colorbarlength=0.75):
+    def __init__(
+                 self,
+                 title = 'plot',
+                 shape = [1000, 1000],
+                 labels = ['x', 'y', 'z'],
+                 types = ['linear', 'linear', 'linear'],
+                 font_size = 12,
+                 tick_no = [10, 10, 10],
+                 margin = [65, 50, 65, 90],
+                 camera = [1.87, 0.88, -0.64],
+                 colorbarlength = 0.75,
+                ):
         """
         Class for plotting detectors.
 
@@ -101,19 +112,19 @@ class surfaceshow():
             ),
             title=self.settings['title'],
             font=dict(
-                size=self.settings['font size'],
-            ),
-            margin=dict(
-                l=self.settings['margin'][0],
-                r=self.settings['margin'][1],
-                b=self.settings['margin'][2],
-                t=self.settings['margin'][3]
-            ),
-            scene_camera_eye=dict(
-                x=self.settings['camera'][0],
-                y=self.settings['camera'][1],
-                z=self.settings['camera'][2]
-            ),
+                      size = self.settings['font size'],
+                     ),
+            margin = dict(
+                         l = self.settings['margin'][0],
+                         r = self.settings['margin'][1],
+                         b = self.settings['margin'][2],
+                         t = self.settings['margin'][3]
+                        ),
+            scene_camera_eye = dict(
+                                    x = self.settings['camera'][0],
+                                    y = self.settings['camera'][1],
+                                    z = self.settings['camera'][2]
+                                   ),
         )
         self.fig.show()
 
@@ -788,6 +799,32 @@ class rayshow():
                                                  specs = specs
                                                 )
 
+
+    def get_scene_number(
+                         self,
+                         row = 1,
+                         column = 1
+                        ):
+        """
+        Calculate the scene number based on the given row and column indices.
+
+        Parameters
+        ----------
+        row     : int, optional
+                  The row index (starting from 1). Defaults to 1.
+        column  : int, optional
+                  The column index within the specified row (starting from 1). 
+                  Defaults to 1.
+
+        Returns
+        -------
+        number : int
+                 The calculated scene number based on the input indices.
+        """        
+        number = self.settings['columns'] * (row - 1) + column
+        return number
+
+
     def set_axis_limits(
                         self,
                         row = 1,
@@ -796,16 +833,79 @@ class rayshow():
                         y_limits = [-1., 1.],
                         z_limits = [-1., 1.],
                        ):
-        scene_dictionary = dict(
-                                xaxis = dict(range = x_limits),
-                                yaxis = dict(range = y_limits),
-                                zaxis = dict(range = z_limits)
-                               )
-        self.fig.update_layout(
-                               scene = scene_dictionary,
-                               #scene2 = scene_dictionary,
-                               #scene3 = scene_dictionary,
-                              )
+        """
+        Set the axis limits for a specific scene in the figure layout.
+
+        Parameters
+        ----------
+        row      : int, optional
+                   The row index of the subplot (1-based). Default is 1.
+        column   : int, optional
+                   The column index of the subplot (1-based). Default is 1.
+        x_limits : list or array-like, shape (2,)
+                   The new range for the x-axis. Should contain two elements: [min, max].
+        y_limits : list or array-like, shape (2,), optional
+                   The new range for the y-axis. Should contain two elements: [min, max]. 
+        z_limits : list or array-like, shape (2,), optional
+                   The new range for the z-axis. Should contain two elements: [min, max].
+
+        Notes
+        -----
+        This function updates the axis limits of a specific subplot in the figure layout.
+        The `row` and `column` parameters are used to determine which scene/subplot to modify.
+        """
+        number = self.get_scene_number(row = row, column = column)
+        self.fig.layout[f'scene{number}']['xaxis']['range'] = x_limits
+        self.fig.layout[f'scene{number}']['yaxis']['range'] = y_limits
+        self.fig.layout[f'scene{number}']['zaxis']['range'] = z_limits
+
+
+    def set_camera(
+                   self,
+                   row = 1,
+                   column = 1,
+                   x = 0.,
+                   y = 0.,
+                   z = 1.,
+                  ):
+
+        """
+        Set the camera position for a specific scene.
+
+        Parameters
+        ----------
+        row    : int, optional
+                 The row index of the scene. Defaults to 1.
+        column : int, optional
+                 The column index of the scene. Defaults to 1.
+        x      : float, optional
+                 X-coordinate of the camera's eye position. Defaults to 0..
+        y      : float, optional
+                 Y-coordinate of the camera's eye position. Defaults to 0..
+        z      : float, optional
+                 Z-coordinate of the camera's eye position. Defaults to 1.
+
+        Notes
+        -----
+        This function adjusts the camera viewpoint for a specific scene based on the provided row and column indices.
+        The `get_scene_number` method is internally used to convert these indices into a unique scene number.
+
+        Examples
+        --------
+        To set the camera position for the first scene (default):
+
+        >>> obj.set_camera()
+
+        To adjust the camera's eye position:
+
+        >>> obj.set_camera(x=2., y=-1., z=3.)
+        """        
+        number = self.get_scene_number(row = row, column = column)
+        self.fig.layout[f'scene{number}']['camera']['eye'] = dict(
+                                                                  x = x,
+                                                                  y = y,
+                                                                  z = z,
+                                                                 )
 
 
     def show(
@@ -958,8 +1058,6 @@ class rayshow():
                            col = column,
                           )            
         logger.info('odak.visualize.plotly.rayshow.add_sphere')
-
-       
 
 
 

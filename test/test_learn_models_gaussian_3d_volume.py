@@ -15,14 +15,16 @@ def visualize(
                                             line_width = 3.,
                                             marker_size = 3.,
                                             subplot_titles = [
-                                                              'Gaussian Centers',
-                                                              'Estimation',
-                                                              'Ground truth',
+                                                              '<b>Gaussian Centers</b> <br><b>Color:</b> Opacity',
+                                                              '<b>Estimation</b>',
+                                                              '<b>Ground truth</b>',
                                                              ],
                                            )
+    centers = model.centers.detach().cpu().numpy()
+    alphas = model.alphas.detach().squeeze(-1).detach().cpu().numpy()
     diagram.add_point(
-                      model.centers.detach().cpu().numpy(), 
-                      color = 'green',
+                      centers, 
+                      color = alphas, 
                       column = 1,
                      )  
 
@@ -55,8 +57,8 @@ def visualize(
     diagram.add_volume(
                        points = samples_flat.detach().cpu().numpy(),
                        values = estimate.detach().cpu().numpy(),
-                       limits = [1e-1, 1.],
-                       surface_count = 27,
+                       limits = [5e-2, 1.],
+                       surface_count = 35,
                        opacity = 0.3,
                        column = 2,
                       ) 
@@ -67,41 +69,24 @@ def visualize(
                       color = ground_truth.detach().cpu().numpy(),
                       column = 3,
                      ) 
-    diagram.set_axis_limits(column = 1)
-    diagram.set_axis_limits(column = 2)
-    diagram.set_axis_limits(column = 3)
+
+    diagram.set_axis_limits(x_limits = [-1, 1], y_limits = [-1, 1], z_limits = [-1, 1], column = 1)
+    diagram.set_axis_limits(x_limits = [-1, 1], y_limits = [-1, 1], z_limits = [-1, 1], column = 2)
+    diagram.set_axis_limits(x_limits = [-1, 1], y_limits = [-1, 1], z_limits = [-1, 1], column = 3)
+
+    diagram.set_camera(x = 0., y = 0.7, z = -2., column = 1)
+    diagram.set_camera(x = 0., y = 0.7, z = -2., column = 2)
+    diagram.set_camera(x = 0., y = 0.7, z = -2., column = 3)
     diagram.show()
-
-
-def get_training_data(
-                      ply_filename,
-                      voxel_size = [0.05, 0.05, 0.05],
-                      device = torch.device('cpu'),
-                     ):
-
-    triangles = odak.tools.read_PLY(ply_filename)
-    points = odak.raytracing.center_of_triangle(triangles)
-    points = torch.as_tensor(points, device = device)
-    points = points / 100 
-    points[:, 0] += 0.10
-    points[:, 1] -= 0.35
-    points[:, 2] -= 0.20
-    ground_truth = torch.ones(points.shape[0], device = device)
-    voxel_locations, voxel_grid = odak.learn.tools.point_cloud_to_voxel(
-                                                                        points = points,
-                                                                        voxel_size = voxel_size,
-                                                                       )
-    points = voxel_locations.reshape(-1, 3)
-    ground_truth = voxel_grid.reshape(-1)
-    return points, ground_truth
 
 
 def main(
          directory = 'test_output',
          ply_filename = './test/data/armadillo_low_poly.ply',
-         number_of_elements = 300,
-         learning_rate = 3e-2,
-         number_of_epochs = 0, # Suggested: 10000,
+         ply_voxel_size = [5e-2, 5e-2, 5e-2],
+         number_of_elements = 200,
+         learning_rate = 1e-2,
+         number_of_epochs = 0,
          save_at_every = 1000,
          scheduler_power = 1,
          weights_filename = 'gaussian_3d_volume_weights.pt',
@@ -110,13 +95,18 @@ def main(
          loss_weights = {
                          'content' : {
                                       'l2'  : 1e+0,
-                                      'l1'  : 0e-0,
+                                      'l1'  : 1e-3,
                                      },
                          'alpha'   : {
-                                      'sum' : 1e-2,
-                                      'threshold' : [1e-2, 1000.]
+                                      'smaller' : 1.0e-3,
+                                      'larger' : 0.,
+                                      'threshold' : [1e-7, 1.]
                                      },
-                         'scale'   : 1e-2,
+                         'scale'   : {
+                                      'smaller' : 1.0e-3,
+                                      'larger'  : 0.,
+                                      'threshold' : [1e-3, 1.]
+                                     },
                          'angle'   : 0e-0,
                          'center'  : 1e-2,
                         },
@@ -126,10 +116,11 @@ def main(
 
 
     points, \
-    ground_truth = get_training_data(
-                                     ply_filename = ply_filename,
-                                     device = device
-                                    )
+    ground_truth = odak.learn.tools.load_voxelized_PLY(
+                                                       ply_filename = ply_filename,
+                                                       voxel_size = ply_voxel_size,
+                                                       device = device
+                                                      )
 
 
     model = odak.learn.models.gaussian_3d_volume(
