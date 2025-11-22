@@ -10,7 +10,7 @@ from .vector import *
 from .utils import *
 from .classical import *
 from .lens import *
-from odak.tools import save_image
+from ..tools import save_image
 
 
 def rayleigh_resolution(diameter, focal=None, wavelength=0.0005):

@@ -25,6 +25,7 @@ setup(
       install_requires = install_requires,
       packages = [
                   'odak',
+                  'odak/log',
                   'odak/raytracing',
                   'odak/fit',
                   'odak/jones',
