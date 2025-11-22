@@ -52,4 +52,4 @@ logger = create_logger(
                        logger_datefmt = '%d-%b-%y %H:%M:%S',
                        logger_level = logging.DEBUG,
                       )
-logger.info('Odak initiated a logger and logs are saved to "{}".'.format(filename_logger)
+logger.info('Odak initiated a logger and logs are saved to "{}".'.format(filename_logger))
