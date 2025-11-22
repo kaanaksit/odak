@@ -38,6 +38,7 @@ setup(
                   'odak/learn/raytracing',
                   'odak/learn/lensless',
                   'odak/visualize',
+                  'odak/visualize/plotly',
                   'odak/visualize/blender',
                   'odak/manager',
                   'odak/measurement',
