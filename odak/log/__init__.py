@@ -43,3 +43,13 @@ def create_logger(
     logger.addHandler(handler)
     logger.info('Logger initiated. Log is saved to {}.'.format(logger_filename))
     return logger
+
+filename_logger = 'odak.log'
+logger = create_logger(
+                       logger_name = 'odak',
+                       logger_filename = filename_logger,
+                       logger_fmt = '%(asctime)s - %(message)s',
+                       logger_datefmt = '%d-%b-%y %H:%M:%S',
+                       logger_level = logging.DEBUG,
+                      )
+logger.info('Odak initiated a logger and logs are saved to "{}".'.format(filename_logger)
