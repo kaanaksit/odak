@@ -14,3 +14,4 @@ from .matrix import *
 from .conversions import *
 from .latex import *
 from .markdown import *
+from .variables import *
