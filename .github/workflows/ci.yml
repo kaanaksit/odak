@@ -34,9 +34,9 @@ jobs:
       - run: pip install jinja2
       - run: pip install mkdocs-glightbox
       - run: pip install mkdocstrings
-      - run: pip install mkdocs-material
       - run: pip install mkdocs-bibtex
       - run: pip install pytkdocs[numpy-style]
       - run: pip install mkdocstrings-python
+      - run: pip install mkdocs-material
       - run: mkdocs gh-deploy --force
 
