@@ -184,32 +184,21 @@ class gaussian_3d_volume(torch.nn.Module):
             loss += weights['content']['l1'] * loss_l1_content
         if weights['scale']['smaller'] != 0.:
             threshold = weights['scale']['threshold']
-            if len(self.scales < threshold[0]) > 0:
-                loss_scales_smaller = self.l2_loss(
-                                                   torch.mean(self.scales[self.scales < threshold[0]]),
-                                                   torch.amin(self.scales[self.scales > threshold[0]])
-                                                  )
+            if torch.sum(self.scales < threshold[0]) > 0:
+                loss_scales_smaller = torch.sum(torch.abs(self.scales[self.scales < threshold[0]]))
                 loss += loss_scales_smaller * weights['scale']['smaller']
         if weights['scale']['larger'] != 0.:
             threshold = weights['scale']['threshold']
-            loss_scales_larger = torch.sum(
-                                           self.scales[self.scales > threshold[1]]
-                                          )
+            loss_scales_larger = torch.sum(self.scales[self.scales > threshold[1]])
             loss += loss_scales_larger * weights['scale']['larger']
         if weights['alpha']['smaller'] != 0.:
             threshold = weights['alpha']['threshold']
-            if len(self.alphas < threshold[0]) > 0:
-                loss_alphas_smaller = self.l2_loss(
-                                                   torch.mean(self.alphas[self.alphas < threshold[0]]),
-                                                   torch.amin(self.alphas[self.alphas > threshold[0]])
-                                                  )
-
+            if torch.sum(self.alphas < threshold[0]) > 0:
+                loss_alphas_smaller = torch.sum(torch.abs(self.alphas[self.alphas < threshold[0]]))
                 loss += loss_alphas_smaller * weights['alpha']['smaller']
         if weights['alpha']['larger'] != 0.:
             threshold = weights['alpha']['threshold']
-            loss_alphas_larger = torch.sum(
-                                           self.alphas[self.alphas > threshold[1]]
-                                          )
+            loss_alphas_larger = torch.sum(self.alphas[self.alphas > threshold[1]])
             loss += loss_alphas_larger * weights['alpha']['larger']
         if weights['angle'] != 0.:
             loss_angle = torch.sum(self.angles[self.angles > 1.]) + \

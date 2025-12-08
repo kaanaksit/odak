@@ -86,7 +86,7 @@ def main(
          ply_voxel_size = [5e-2, 5e-2, 5e-2],
          number_of_elements = 200,
          learning_rate = 1e-2,
-         number_of_epochs = 0,
+         number_of_epochs = 0, #10000 suggested
          save_at_every = 1000,
          scheduler_power = 1,
          weights_filename = 'gaussian_3d_volume_weights.pt',
