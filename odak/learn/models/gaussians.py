@@ -256,8 +256,8 @@ class gaussian_3d_volume(torch.nn.Module):
         - A log message is emitted upon successful loading.
         """
         if not isinstance(weights_filename, type(None)):
+            weights_filename = expanduser(weights_filename)
             if os.path.isfile(weights_filename):
-                weights_filename = expanduser(weights_filename)
                 self.load_state_dict(
                                      torch.load(
                                                 weights_filename,
