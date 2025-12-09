@@ -947,8 +947,8 @@ class rayshow():
         result          : str
                           Results as HTML div.
         """
-        plotly.offline.plot(self.fig, filename = filename)
-        result = plotly.offline.plot(self.fig, include_plotlyjs = False, output_type = 'div')
+        plotly.offline.plot(self.fig, filename = filename, auto_open = False)
+        result = plotly.offline.plot(self.fig, include_plotlyjs = False, output_type = 'div', auto_open = False)
         return result
 
 
