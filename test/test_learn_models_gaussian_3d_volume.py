@@ -84,7 +84,7 @@ def main(
          directory = 'test_output',
          ply_filename = './test/data/armadillo_low_poly.ply',
          ply_voxel_size = [5e-2, 5e-2, 5e-2],
-         number_of_elements = 200,
+         number_of_elements = 150,
          learning_rate = 1e-2,
          number_of_epochs = 0, #10000 suggested
          save_at_every = 1000,
@@ -93,23 +93,26 @@ def main(
          device = torch.device('cpu'),
          visualization = False,
          loss_weights = {
-                         'content' : {
-                                      'l2'  : 1e+0,
-                                      'l1'  : 1e-3,
-                                     },
-                         'alpha'   : {
-                                      'smaller' : 1.0e-3,
-                                      'larger' : 0.,
-                                      'threshold' : [1e-7, 1.]
-                                     },
-                         'scale'   : {
-                                      'smaller' : 1.0e-3,
-                                      'larger'  : 0.,
-                                      'threshold' : [1e-3, 1.]
-                                     },
-                         'angle'   : 0e-0,
-                         'center'  : 1e-2,
-                        },
+                         'content'    : {
+                                         'l2'  : 1e+0,
+                                         'l1'  : 1e-3,
+                                        },
+                         'alpha'      : {
+                                         'smaller'   : 1.0e-2,
+                                         'larger'    : 0.,
+                                         'threshold' : [1e-2, 1.]
+                                        },
+                         'scale'      : {
+                                         'smaller'   : 1.0e-2,
+                                         'larger'    : 0.,
+                                         'threshold' : [1e-3, 1.]
+                                        },
+                         'angle'       : 0e-0,
+                         'center'      : 1e-2,
+                         'utilization' : {
+                                          'l2'  : 1e-3,
+                                         }
+                       }
         ):
     odak.tools.check_directory(directory)
     weights_filename = '{}/{}'.format(directory, weights_filename)

@@ -13,27 +13,75 @@ class gaussian_3d_volume(torch.nn.Module):
     ----------
     number_of_elements : int
                          Number of Gaussian elements in the volume (default: 10).
+    initial_centers    : torch.Tensor or None, optional
+                         Initial centers of the Gaussians (shape: [N, 3]). If not provided,
+                         random initialization is used where N is `number_of_elements`.
+    initial_angles     : torch.Tensor or None, optional
+                         Initial angles defining the orientation of each Gaussian. If not 
+                         provided, random initialization is used.
+    initial_scales     : torch.Tensor or None, optional
+                         Initial scales controlling the spread (variance) of each Gaussian. 
+                         If not provided, random initialization is used.
+    initial_alphas     : torch.Tensor or None, optional
+                         Initial alphas controlling the blending between Gaussians.
+                         If not provided, random initialization is used.                         
     """    
     def __init__(
                  self,
                  number_of_elements = 10,
+                 initial_centers = None,
+                 initial_angles = None,
+                 initial_scales = None,
+                 initial_alphas = None,
                 ):
         super(gaussian_3d_volume, self).__init__()
         self.number_of_elements = number_of_elements
-        self.centers = torch.nn.Parameter(
-                                          torch.randn(self.number_of_elements, 3)
-                                         )
-        self.angles = torch.nn.Parameter(
-                                         torch.randn(self.number_of_elements, 3)
-                                        )
-        self.scales = torch.nn.Parameter(
-                                         torch.rand(self.number_of_elements, 3)
-                                        )
-        self.alphas = torch.nn.Parameter(
-                                         torch.rand(self.number_of_elements, 1)
-                                        )
+        self.initialize_parameters(
+                                   centers = initial_centers,
+                                   angles = initial_angles,
+                                   scales = initial_scales,
+                                   alphas = initial_alphas,
+                                  )
         self.l2_loss = torch.nn.MSELoss()
         self.l1_loss = torch.nn.L1Loss()
+
+
+    def initialize_parameters(
+                              self,
+                              centers = None,
+                              angles = None,
+                              scales = None,
+                              alphas = None,
+                             ):
+        """
+        Initialize model parameters using PyTorch tensors.
+
+        Parameters
+        ----------
+        centers : torch.Tensor, optional
+                  If None (default), initializes as a tensor of shape 
+                  (number_of_elements, 3) with values sampled from standard normal distribution.
+        angles  : torch.Tensor, optional
+                  If None (default), initializes similarly to centers: shape (n,3).
+        scales  : torch.Tensor, optional
+                  If None (default), initializes as a tensor of shape 
+                  (number_of_elements, 3) with values uniformly distributed between 0 and 1.
+        alphas  : torch.Tensor, optional
+                  If None (default), initializes as a tensor of shape 
+                  (number_of_elements, 1) with values uniformly distributed between 0 and 1.        
+        """
+        if isinstance(centers, type(None)):
+            centers = torch.randn(self.number_of_elements, 3)
+        if isinstance(angles, type(None)):
+            angles = torch.randn(self.number_of_elements, 3)
+        if isinstance(scales, type(None)):
+            scales = torch.rand(self.number_of_elements, 3)
+        if isinstance(alphas, type(None)):
+            alphas = torch.rand(self.number_of_elements, 1)
+        self.centers = torch.nn.Parameter(centers)
+        self.angles = torch.nn.Parameter(angles)
+        self.scales = torch.nn.Parameter(scales)
+        self.alphas = torch.nn.Parameter(alphas)
 
 
     def forward(self, points, test = False):
@@ -117,6 +165,8 @@ class gaussian_3d_volume(torch.nn.Module):
             loss = self.evaluate(
                                  estimates,
                                  ground_truth,
+                                 epoch_id = epoch_id,
+                                 epoch_count = number_of_epochs,
                                  weights = loss_weights,
                                 )
             loss.backward(retain_graph = True)
@@ -133,24 +183,29 @@ class gaussian_3d_volume(torch.nn.Module):
                  self,
                  estimate,
                  ground_truth,
+                 epoch_id = 0,
+                 epoch_count = 1,
                  weights = {
-                            'content' : {
-                                         'l2'  : 1e+0,
-                                         'l1'  : 0e-0,
-                                        },
-                            'alpha'   : {
-                                         'smaller' : 0e-0,
-                                         'larger' : 1e0,
-                                         'threshold' : [0., 1.]
-                                        },                 
-                            'scale'   : {
-                                         'smaller' : 0e-0,
-                                         'larger' : 0e-0,
-                                         'threshold' : [0., 1.],
-                                        },
-                            'alpha'   : 0e-0,
-                            'angle'   : 0e-0,
-                            'center'  : 0e-0, 
+                            'content'     : {
+                                             'l2'  : 1e+0,
+                                             'l1'  : 0e-0,
+                                            },
+                            'alpha'       : {
+                                             'smaller'   : 0e-0,
+                                             'larger'    : 0e-0,
+                                             'threshold' : [0., 1.]
+                                            },                 
+                            'scale'       : {
+                                             'smaller'   : 0e-0,
+                                             'larger'    : 0e-0,
+                                             'threshold' : [0., 1.],
+                                            },
+                            'alpha'       : 0e-0,
+                            'angle'       : 0e-0,
+                            'center'      : 0e-0, 
+                            'utilization' : {
+                                             'l2'        : 0e+0,
+                                            }
                            },
                 ):
         """
@@ -169,11 +224,6 @@ class gaussian_3d_volume(torch.nn.Module):
         -------
         loss         : torch.Tensor
                        Computed loss value.
-
-        Notes
-        -----
-        - Loss is a weighted sum of L1, L2, and regularization terms for scale, alpha, and angle.
-        - Only non-zero weights are used in the loss calculation.
         """
         loss = 0.
         if weights['content']['l2'] != 0.:
@@ -183,22 +233,20 @@ class gaussian_3d_volume(torch.nn.Module):
             loss_l1_content = self.l1_loss(estimate, ground_truth)
             loss += weights['content']['l1'] * loss_l1_content
         if weights['scale']['smaller'] != 0.:
-            threshold = weights['scale']['threshold']
-            if torch.sum(self.scales < threshold[0]) > 0:
-                loss_scales_smaller = torch.sum(torch.abs(self.scales[self.scales < threshold[0]]))
-                loss += loss_scales_smaller * weights['scale']['smaller']
+            threshold = weights['scale']['threshold'][0]
+            loss_scales_smaller = torch.sum(torch.abs(self.scales[self.scales < threshold]))
+            loss += loss_scales_smaller * weights['scale']['smaller']
         if weights['scale']['larger'] != 0.:
-            threshold = weights['scale']['threshold']
-            loss_scales_larger = torch.sum(self.scales[self.scales > threshold[1]])
+            threshold = weights['scale']['threshold'][1]
+            loss_scales_larger = torch.sum(self.scales[self.scales > threshold])
             loss += loss_scales_larger * weights['scale']['larger']
         if weights['alpha']['smaller'] != 0.:
-            threshold = weights['alpha']['threshold']
-            if torch.sum(self.alphas < threshold[0]) > 0:
-                loss_alphas_smaller = torch.sum(torch.abs(self.alphas[self.alphas < threshold[0]]))
-                loss += loss_alphas_smaller * weights['alpha']['smaller']
+            threshold = weights['alpha']['threshold'][0]
+            loss_alphas_smaller = torch.sum(torch.abs(self.alphas[self.alphas < threshold]))
+            loss += loss_alphas_smaller * weights['alpha']['smaller']
         if weights['alpha']['larger'] != 0.:
-            threshold = weights['alpha']['threshold']
-            loss_alphas_larger = torch.sum(self.alphas[self.alphas > threshold[1]])
+            threshold = weights['alpha']['threshold'][1]
+            loss_alphas_larger = torch.sum(self.alphas[self.alphas > threshold])
             loss += loss_alphas_larger * weights['alpha']['larger']
         if weights['angle'] != 0.:
             loss_angle = torch.sum(self.angles[self.angles > 1.]) + \
@@ -206,10 +254,12 @@ class gaussian_3d_volume(torch.nn.Module):
             loss += weights['angle'] * loss_angle
         if weights['center'] != 0.:
             centers = torch.abs(self.centers)
-            loss_center = torch.sum(
-                                    centers[self.centers > 1.0]
-                                   )
+            loss_center = torch.sum(centers[centers > 1.0])
             loss += weights['center'] * loss_center
+        if weights['utilization']['l2'] !=0:
+            loss_activity = torch.std(torch.abs(self.centers)) + torch.std(self.alphas) + torch.std(self.scales)
+            decay = 1. - ((epoch_count - epoch_id) / epoch_count)
+            loss +=  decay * weights['utilization']['l2'] * loss_activity
         return loss
 
 
