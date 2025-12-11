@@ -93,14 +93,14 @@ def main(
          directory = 'test_output',
          ply_filename = './test/data/armadillo_low_poly.ply',
          ply_voxel_size = [5e-2, 5e-2, 5e-2],
-         number_of_elements = 150,
+         number_of_elements = 100,
          learning_rate = 1e-2,
-         number_of_epochs = 1000, #10000 suggested
+         number_of_epochs = 0, #10000 suggested
          save_at_every = 1000,
          scheduler_power = 1,
          weights_filename = 'gaussian_3d_volume_weights.pt',
-         device = torch.device('cuda'),
-         visualization = True,
+         device = torch.device('cpu'),
+         visualization = False,
          loss_weights = {
                          'content'     : {
                                           'l2'  : 1e+0,

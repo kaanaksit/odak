@@ -263,15 +263,22 @@ class gaussian_3d_volume(torch.nn.Module):
         if weights['utilization']['l2'] !=0:
             n = self.alphas.numel()
             k = int(weights['utilization']['percentile'] / 100. * n)
-            _, low_indices = torch.topk(self.alphas, k, dim = 0, largest = False)
-            _, high_indices = torch.topk(self.alphas, k, dim = 0, largest = True)
+            _, low_indices = torch.topk(torch.abs(self.alphas), k, dim = 0, largest = False)
+            _, high_indices = torch.topk(torch.abs(self.alphas), k, dim = 0, largest = True)
             loss_utilization = torch.abs(torch.std(self.centers[low_indices, 0]) - torch.std(self.centers[high_indices, 0])) + \
                                torch.abs(torch.std(self.centers[low_indices, 1]) - torch.std(self.centers[high_indices, 1])) + \
-                               torch.abs(torch.std(self.centers[low_indices, 2]) - torch.std(self.centers[high_indices, 2]))
-            for i in range(3):
-                _, low_indices = torch.topk(self.scales[:, i], k, dim = 0, largest = False)
-                _, high_indices = torch.topk(self.scales[:, i], k, dim = 0, largest = True)
-                loss_utilization += torch.abs(torch.std(self.scales[low_indices, i]) - torch.std(self.scales[high_indices, i]))
+                               torch.abs(torch.std(self.centers[low_indices, 2]) - torch.std(self.centers[high_indices, 2])) + \
+                               torch.abs(torch.mean(self.centers[low_indices, 0]) - torch.mean(self.centers[high_indices, 0])) + \
+                               torch.abs(torch.mean(self.centers[low_indices, 1]) - torch.mean(self.centers[high_indices, 1])) + \
+                               torch.abs(torch.mean(self.centers[low_indices, 2]) - torch.mean(self.centers[high_indices, 2])) + \
+                               torch.abs(torch.std(self.scales[low_indices, 0]) - torch.std(self.scales[high_indices, 0])) + \
+                               torch.abs(torch.std(self.scales[low_indices, 1]) - torch.std(self.scales[high_indices, 1])) + \
+                               torch.abs(torch.std(self.scales[low_indices, 2]) - torch.std(self.scales[high_indices, 2])) + \
+                               torch.abs(torch.mean(self.scales[low_indices, 0]) - torch.mean(self.scales[high_indices, 0])) + \
+                               torch.abs(torch.mean(self.scales[low_indices, 1]) - torch.mean(self.scales[high_indices, 1])) + \
+                               torch.abs(torch.mean(self.scales[low_indices, 2]) - torch.mean(self.scales[high_indices, 2])) + \
+                               torch.abs(torch.mean(self.alphas[low_indices]) - torch.mean(self.alphas[high_indices])) + \
+                               torch.abs(torch.std(self.alphas[low_indices]) - torch.std(self.alphas[high_indices]))
             loss_distribution = torch.std(self.centers[:, 0]) + \
                                 torch.std(self.centers[:, 1]) + \
                                 torch.std(self.centers[:, 2]) + \
