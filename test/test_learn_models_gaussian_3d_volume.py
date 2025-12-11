@@ -9,6 +9,11 @@ def visualize(
               ground_truth,
               sample_count = [20, 20, 20],
               threshold = 1e-1,
+              camera_locations = [
+                                  [0., 0.7, -2.],
+                                  [0., 0.7, -2.],
+                                  [0., 0.7, -2.],
+                                 ]
              ):
     diagram = odak.visualize.plotly.rayshow(
                                             columns = 3,
@@ -74,9 +79,13 @@ def visualize(
     diagram.set_axis_limits(x_limits = [-1, 1], y_limits = [-1, 1], z_limits = [-1, 1], column = 2)
     diagram.set_axis_limits(x_limits = [-1, 1], y_limits = [-1, 1], z_limits = [-1, 1], column = 3)
 
-    diagram.set_camera(x = 0., y = 0.7, z = -2., column = 1)
-    diagram.set_camera(x = 0., y = 0.7, z = -2., column = 2)
-    diagram.set_camera(x = 0., y = 0.7, z = -2., column = 3)
+    for column_id in range(3):
+        diagram.set_camera(
+                           x = camera_locations[column_id][0], 
+                           y = camera_locations[column_id][1],
+                           z = camera_locations[column_id][2],
+                           column = column_id + 1
+                          )
     diagram.show()
 
 
@@ -93,24 +102,24 @@ def main(
          device = torch.device('cpu'),
          visualization = False,
          loss_weights = {
-                         'content'    : {
-                                         'l2'  : 1e+0,
-                                         'l1'  : 1e-3,
-                                        },
-                         'alpha'      : {
-                                         'smaller'   : 1.0e-2,
-                                         'larger'    : 0.,
-                                         'threshold' : [1e-2, 1.]
-                                        },
-                         'scale'      : {
-                                         'smaller'   : 1.0e-2,
-                                         'larger'    : 0.,
-                                         'threshold' : [1e-3, 1.]
-                                        },
+                         'content'     : {
+                                          'l2'  : 1e+0,
+                                          'l1'  : 1e-3,
+                                         },
+                         'alpha'       : {
+                                          'smaller'   : 1.0e-2,
+                                          'larger'    : 0.,
+                                          'threshold' : [1e-2, 1.]
+                                         },
+                         'scale'       : {
+                                          'smaller'   : 1.0e-2,
+                                          'larger'    : 0.,
+                                          'threshold' : [1e-3, 1.]
+                                         },
                          'angle'       : 0e-0,
                          'center'      : 1e-2,
                          'utilization' : {
-                                          'l2'  : 1e-3,
+                                          'l2'  : 0.0,
                                          }
                        }
         ):

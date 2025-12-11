@@ -209,21 +209,24 @@ class gaussian_3d_volume(torch.nn.Module):
                            },
                 ):
         """
-        Evaluate the model's loss using weighted combinations of L1, L2, and regularization terms.
-
         Parameters
         ----------
         estimate     : torch.Tensor
                        Model's output estimate.
         ground_truth : torch.Tensor
                        Ground truth values.
+        epoch_id     : int, optional
+                       ID of the starting epoch. Default: 0.
+        epoch_count  : int, optional
+                       Total number of epochs for training. Default: 1.
         weights      : dict, optional
-                       Dictionary of weights for each loss component.
-
-        Returns
-        -------
-        loss         : torch.Tensor
-                       Computed loss value.
+                       Dictionary containing weights for various loss components:
+                       - content: {'l2': float, 'l1': float}
+                       - scale: {'smaller': float, 'larger': float, 'threshold': List[float]}
+                       - alpha: {'smaller': float, 'larger': float, 'threshold': List[float]}
+                       - angle : float
+                       - center: float
+                       - utilization: {'l2': float}        
         """
         loss = 0.
         if weights['content']['l2'] != 0.:
@@ -257,7 +260,13 @@ class gaussian_3d_volume(torch.nn.Module):
             loss_center = torch.sum(centers[centers > 1.0])
             loss += weights['center'] * loss_center
         if weights['utilization']['l2'] !=0:
-            loss_activity = torch.std(torch.abs(self.centers)) + torch.std(self.alphas) + torch.std(self.scales)
+            loss_activity = torch.std(torch.abs(self.centers[:, 0])) + \
+                            torch.std(torch.abs(self.centers[:, 1])) + \
+                            torch.std(torch.abs(self.centers[:, 2])) + \
+                            torch.std(self.scales[:, 0]) +\
+                            torch.std(self.scales[:, 1]) +\
+                            torch.std(self.scales[:, 2]) +\
+                            torch.std(self.alphas)
             decay = 1. - ((epoch_count - epoch_id) / epoch_count)
             loss +=  decay * weights['utilization']['l2'] * loss_activity
         return loss
