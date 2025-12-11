@@ -95,12 +95,12 @@ def main(
          ply_voxel_size = [5e-2, 5e-2, 5e-2],
          number_of_elements = 150,
          learning_rate = 1e-2,
-         number_of_epochs = 0, #10000 suggested
+         number_of_epochs = 1000, #10000 suggested
          save_at_every = 1000,
          scheduler_power = 1,
          weights_filename = 'gaussian_3d_volume_weights.pt',
-         device = torch.device('cpu'),
-         visualization = False,
+         device = torch.device('cuda'),
+         visualization = True,
          loss_weights = {
                          'content'     : {
                                           'l2'  : 1e+0,
@@ -119,7 +119,8 @@ def main(
                          'angle'       : 0e-0,
                          'center'      : 1e-2,
                          'utilization' : {
-                                          'l2'  : 1.0e-2,
+                                          'l2'         : 1.0e-2,
+                                          'percentile' : 10,
                                          }
                        }
         ):

@@ -187,24 +187,25 @@ class gaussian_3d_volume(torch.nn.Module):
                  epoch_count = 1,
                  weights = {
                             'content'     : {
-                                             'l2'  : 1e+0,
-                                             'l1'  : 0e-0,
+                                             'l2'         : 1e+0,
+                                             'l1'         : 0e-0,
                                             },
                             'alpha'       : {
-                                             'smaller'   : 0e-0,
-                                             'larger'    : 0e-0,
-                                             'threshold' : [0., 1.]
+                                             'smaller'    : 0e-0,
+                                             'larger'     : 0e-0,
+                                             'threshold'  : [0., 1.]
                                             },                 
                             'scale'       : {
-                                             'smaller'   : 0e-0,
-                                             'larger'    : 0e-0,
-                                             'threshold' : [0., 1.],
+                                             'smaller'    : 0e-0,
+                                             'larger'     : 0e-0,
+                                             'threshold'  : [0., 1.],
                                             },
                             'alpha'       : 0e-0,
                             'angle'       : 0e-0,
                             'center'      : 0e-0, 
                             'utilization' : {
-                                             'l2'        : 0e+0,
+                                             'l2'         : 0e+0,
+                                             'percentile' : 0
                                             }
                            },
                 ):
@@ -226,7 +227,7 @@ class gaussian_3d_volume(torch.nn.Module):
                        - alpha: {'smaller': float, 'larger': float, 'threshold': List[float]}
                        - angle : float
                        - center: float
-                       - utilization: {'l2': float}        
+                       - utilization: {'l2': float, 'percentile': int}        
         """
         loss = 0.
         if weights['content']['l2'] != 0.:
@@ -260,15 +261,27 @@ class gaussian_3d_volume(torch.nn.Module):
             loss_center = torch.sum(centers[centers > 1.0])
             loss += weights['center'] * loss_center
         if weights['utilization']['l2'] !=0:
-            loss_activity = torch.std(torch.abs(self.centers[:, 0])) + \
-                            torch.std(torch.abs(self.centers[:, 1])) + \
-                            torch.std(torch.abs(self.centers[:, 2])) + \
-                            torch.std(self.scales[:, 0]) +\
-                            torch.std(self.scales[:, 1]) +\
-                            torch.std(self.scales[:, 2]) +\
-                            torch.std(self.alphas)
+            n = self.alphas.numel()
+            k = int(weights['utilization']['percentile'] / 100. * n)
+            _, low_indices = torch.topk(self.alphas, k, dim = 0, largest = False)
+            _, high_indices = torch.topk(self.alphas, k, dim = 0, largest = True)
+            loss_utilization = torch.abs(torch.std(self.centers[low_indices, 0]) - torch.std(self.centers[high_indices, 0])) + \
+                               torch.abs(torch.std(self.centers[low_indices, 1]) - torch.std(self.centers[high_indices, 1])) + \
+                               torch.abs(torch.std(self.centers[low_indices, 2]) - torch.std(self.centers[high_indices, 2]))
+            for i in range(3):
+                _, low_indices = torch.topk(self.scales[:, i], k, dim = 0, largest = False)
+                _, high_indices = torch.topk(self.scales[:, i], k, dim = 0, largest = True)
+                loss_utilization += torch.abs(torch.std(self.scales[low_indices, i]) - torch.std(self.scales[high_indices, i]))
+            loss_distribution = torch.std(self.centers[:, 0]) + \
+                                torch.std(self.centers[:, 1]) + \
+                                torch.std(self.centers[:, 2]) + \
+                                torch.std(self.scales[:, 0]) +\
+                                torch.std(self.scales[:, 1]) +\
+                                torch.std(self.scales[:, 2]) +\
+                                torch.std(self.alphas)
             decay = 1. - ((epoch_count - epoch_id) / epoch_count)
-            loss +=  decay * weights['utilization']['l2'] * loss_activity
+            loss += decay * weights['utilization']['l2'] * \
+                    (loss_distribution + loss_utilization)
         return loss
 
 
