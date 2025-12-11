@@ -119,7 +119,7 @@ def main(
                          'angle'       : 0e-0,
                          'center'      : 1e-2,
                          'utilization' : {
-                                          'l2'  : 0.0,
+                                          'l2'  : 1.0e-2,
                                          }
                        }
         ):
