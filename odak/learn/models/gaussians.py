@@ -52,6 +52,7 @@ class gaussian_3d_volume(torch.nn.Module):
                               angles = None,
                               scales = None,
                               alphas = None,
+                              device = torch.device('cpu'),
                              ):
         """
         Initialize model parameters using PyTorch tensors.
@@ -69,15 +70,18 @@ class gaussian_3d_volume(torch.nn.Module):
         alphas  : torch.Tensor, optional
                   If None (default), initializes as a tensor of shape 
                   (number_of_elements, 1) with values uniformly distributed between 0 and 1.        
+        device  : torch.device
+                  Device to be used to define the parameters.
+                  Make sure to pass the device you use with this model for proper manual parameter initilization.
         """
         if isinstance(centers, type(None)):
-            centers = torch.randn(self.number_of_elements, 3)
+            centers = torch.randn(self.number_of_elements, 3, device = device)
         if isinstance(angles, type(None)):
-            angles = torch.randn(self.number_of_elements, 3)
+            angles = torch.randn(self.number_of_elements, 3, device = device)
         if isinstance(scales, type(None)):
-            scales = torch.rand(self.number_of_elements, 3)
+            scales = torch.rand(self.number_of_elements, 3, device = device)
         if isinstance(alphas, type(None)):
-            alphas = torch.rand(self.number_of_elements, 1)
+            alphas = torch.rand(self.number_of_elements, 1, device = device)
         self.centers = torch.nn.Parameter(centers)
         self.angles = torch.nn.Parameter(angles)
         self.scales = torch.nn.Parameter(scales)
