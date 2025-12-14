@@ -126,6 +126,7 @@ class gaussian_3d_volume(torch.nn.Module):
                  number_of_epochs = 10,
                  scheduler_power = 1,
                  save_at_every = 1,
+                 max_norm = None,
                  weights_filename = None,
                 ):
         """
@@ -147,6 +148,8 @@ class gaussian_3d_volume(torch.nn.Module):
                            Power parameter for the polynomial learning rate scheduler. Default is 1.
         save_at_every    : int
                            Save model weights every `save_at_every` epochs. Default is 1.
+        max_norm         : float, optional
+                           By default it is None, when set clips the gradient with the given threshold.
         weights_filename : str, optional
                            Filename for saving model weights. If None, weights are not saved.
 
@@ -174,6 +177,8 @@ class gaussian_3d_volume(torch.nn.Module):
                                  weights = loss_weights,
                                 )
             loss.backward(retain_graph = True)
+            if not isinstance(max_norm, type(None)):
+                torch.nn.utils.clip_grad_norm_(self.parameters(), max_norm)
             optimizer.step()
             scheduler.step()
             description = 'gaussian_3d_volume model loss:{:.4f}'.format(loss.item())
