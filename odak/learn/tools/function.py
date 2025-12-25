@@ -43,3 +43,48 @@ def evaluate_3d_gaussians(
     intensities = (exponential / divider)
     intensities = opacity.T * intensities
     return intensities
+
+
+def zernike_polynomial(
+                       n,
+                       m,
+                       rho,
+                       theta,
+                      ):
+    """
+    Compute the 2D Zernike polynomial Z_n^m(rho, theta).
+
+    Parameters
+    ----------
+    n          : int
+                 Radial degree of the polynomial (n >= 0).
+    m          : int
+                 Azimuthal frequency of the polynomial.
+    rho        : torch.Tensor
+                 Radial distance from the origin (0 to 1).
+    theta      : torch.Tensor
+                 Azimuthal angle in radians. Shape (H, W).
+     
+
+    Returns
+    -------
+    zernike    : torch.Tensor
+                 The computed 2D Zernike complex polynomial.
+                 Values are zero where rho > 1.
+    """
+    if abs(m) > n or (n - m) % 2 != 0:
+        return torch.zeros
+
+    m_abs = abs(m)
+    radial = torch.zeros_like(rho)
+    
+    for k in range((n - m_abs) // 2 + 1):
+        num = ((-1)**k * torch.exp(torch.lgamma(torch.tensor(n - k + 1.0))))
+        den = (torch.exp(torch.lgamma(torch.tensor(k + 1.0))) *
+               torch.exp(torch.lgamma(torch.tensor((n + m_abs) // 2 - k + 1.0))) *
+               torch.exp(torch.lgamma(torch.tensor((n - m_abs) // 2 - k + 1.0))))
+        radial += (num / den) * torch.pow(rho, n - 2 * k)
+    
+    zernike = radial * torch.exp(1j * m * theta)
+    zernike[rho > 1] = 0
+    return zernike

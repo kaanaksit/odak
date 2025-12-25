@@ -9,7 +9,7 @@ def test(
                    [-5, 5],
                    [-5, 5]
                   ],
-         visualize = False,
+         visualize = True,
          device = torch.device('cpu'),
         ):
 
