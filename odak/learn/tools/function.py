@@ -72,10 +72,10 @@ def zernike_polynomial(
                  The computed 2D Zernike complex polynomial.
                  Values are zero where rho > 1.
     """
-    if abs(m) > n or (n - m) % 2 != 0:
-        return torch.zeros
-
     m_abs = abs(m)
+    if m_abs > n or (n - m_abs) % 2 != 0:
+        return torch.zeros(rho.shape, dtype=torch.complex64, device = rho.device)
+
     radial = torch.zeros_like(rho)
     
     for k in range((n - m_abs) // 2 + 1):
