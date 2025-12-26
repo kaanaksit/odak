@@ -69,7 +69,7 @@ def zernike_polynomial(
     Returns
     -------
     zernike    : torch.Tensor
-                 The computed 2D Zernike complex polynomial.
+                 The computed 2D Zernike polynomial.
                  Values are zero where rho > 1.
     """
     m_abs = abs(m)
@@ -79,12 +79,16 @@ def zernike_polynomial(
     radial = torch.zeros_like(rho)
     
     for k in range((n - m_abs) // 2 + 1):
-        num = ((-1)**k * torch.exp(torch.lgamma(torch.tensor(n - k + 1.0))))
+        num = ((-1) ** k * torch.exp(torch.lgamma(torch.tensor(n - k + 1.0))))
         den = (torch.exp(torch.lgamma(torch.tensor(k + 1.0))) *
                torch.exp(torch.lgamma(torch.tensor((n + m_abs) // 2 - k + 1.0))) *
                torch.exp(torch.lgamma(torch.tensor((n - m_abs) // 2 - k + 1.0))))
         radial += (num / den) * torch.pow(rho, n - 2 * k)
     
-    zernike = radial * torch.exp(1j * m * theta)
+    if m >= 0:
+        zernike = radial * torch.cos(m * theta)
+    else:
+        zernike = radial * torch.sin(m_abs * theta)
     zernike[rho > 1] = 0
+
     return zernike
