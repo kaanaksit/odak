@@ -102,3 +102,24 @@ def generate_complex_field(amplitude, phase):
     """
     field = amplitude * torch.cos(phase) + 1j * amplitude * torch.sin(phase)
     return field
+
+
+def normalize_phase(
+                    phase: torch.Tensor,  # Input tensor of shape (batch_size, sequence_length) containing the raw phase values.
+                    period: float = 2. * torch.pi,  # The period of the waveform to be normalized. Default is 2*pi.
+                    multiplier: float = 1.,  # A scaling factor used to adjust the range of the normalized phase values. Default is 1.
+                ) -> torch.Tensor:
+    """
+    Normalizes the input phase tensor by applying a modulo operation and dividing it by the period, then multiplying it by the multiplier. The resulting normalized_phase tensor will have zero mean and unit variance.
+    
+    Args:
+        phase (torch.Tensor): Input tensor of shape (batch_size, sequence_length) containing the raw phase values.
+        period (float, optional): The period of the waveform to be normalized. Default is 2*pi.
+        multiplier (float, optional): A scaling factor used to adjust the range of the normalized phase values. Default is 1.
+        
+    Returns:
+        torch.Tensor: Normalized phase tensor of shape (batch_size, sequence_length) with zero mean and unit variance.
+    """
+    normalized_phase = phase % period / period * multiplier
+    normalized_phase = normalized_phase - normalized_phase.mean() + multiplier / 2.
+    return normalized_phase
