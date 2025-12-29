@@ -1,5 +1,6 @@
 import sys
 import odak
+import logging
 
 
 def test(
@@ -15,7 +16,11 @@ def test(
     logger = odak.log.create_logger(
                                     logger_name = logger_name,
                                     logger_filename = logger_filename,
+                                    logger_fmt = '%(asctime)s - %(message)s',
+                                    logger_datefmt = '%d-%b-%y %H:%M:%S',
+                                    logger_level = logging.DEBUG,
                                    )
+    logger.info('This is a test.')
     assert True == True
 
 
