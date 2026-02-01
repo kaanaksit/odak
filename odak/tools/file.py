@@ -405,3 +405,6 @@ def read_text_file(filename):
     while line := loaded_file.readline():
         content.append(line.rstrip())
     return content
+
+
+
