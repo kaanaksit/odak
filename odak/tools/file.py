@@ -270,6 +270,22 @@ def list_files(path, key = '*.*', recursive = True):
     return files_list
 
 
+def list_directories(path, recursive = True):
+    directories = []
+    path = expanduser(path)
+    if recursive:
+        for entry in os.listdir(path):
+            full_path = os.path.join(path, entry)
+            if os.path.isdir(full_path):
+                directories.append(entry)
+                directories.extend(list_directories(full_path, recursive=True))         
+    else:
+        contents = os.listdir(path)
+        directories = [f for f in contents if os.path.isdir(os.path.join(path, f))]
+    return sorted(directories)
+
+
+
 def convert_bytes(num):
     """
     A definition to convert bytes to semantic scheme (MB,GB or alike). Inspired from https://stackoverflow.com/questions/2104080/how-can-i-check-file-size-in-python#2104083.
