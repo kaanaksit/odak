@@ -271,6 +271,22 @@ def list_files(path, key = '*.*', recursive = True):
 
 
 def list_directories(path, recursive = True):
+    """
+    Lists directories inside a given directory, recursively if specified.
+
+    Parameters
+    ----------
+    path      : str
+                The path to the directory you want to list.
+    recursive : bool, optional
+                If True, lists subdirectories recursively. Defaults to True.
+
+    Returns
+    -------
+    list
+                A list of directory names.
+
+    """
     directories = []
     path = expanduser(path)
     if recursive:
