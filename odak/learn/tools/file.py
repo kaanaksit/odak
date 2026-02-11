@@ -108,7 +108,7 @@ def save_torch_tensor(fn, tensor):
     torch.save(tensor, expanduser(fn))
 
 
-def torch_load(fn, weights_only = True):
+def torch_load(fn, weights_only = True, map_location = None):
     """
     Definition to load a torch files (*.pt).
 
@@ -118,6 +118,9 @@ def torch_load(fn, weights_only = True):
                    Filename.
     weights_only : bool
                    See torch.load() for details.
+    map_location : str
+                   The device location to place data (e.g., `cuda`, `cpu`, etc.).
+                   The default is None.
     
     Returns
     -------
@@ -126,6 +129,7 @@ def torch_load(fn, weights_only = True):
     """  
     data = torch.load(
                       expanduser(fn),
-                      weights_only = weights_only
+                      weights_only = weights_only,
+                      map_location = map_location,
                      )
     return data
