@@ -4,7 +4,7 @@ Odak is also the toolkit for the research conducted in [Computational Light Labo
 To learn more about what Odak can do to help your design, experimentation, and development, consult our [documentation](https://kaanaksit.com/odak/)!
 
 
-🚀 Getting Started
+## 🚀 Getting Started
 
 ### Installing
 
@@ -67,7 +67,7 @@ pip3 install -r requirements.txt
 pip3 install -e .
 ```
 
-📚 Usage and examples
+### 📚 Usage and examples
 
 You can import Odak and start designing your next in Optics, Computer Graphics, or Perception! 
 We prepared a [documentation](https://kaanaksit.com/odak/) on usage and much more.
