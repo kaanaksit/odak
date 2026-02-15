@@ -4,7 +4,7 @@ Odak is also the toolkit for the research conducted in [Computational Light Labo
 To learn more about what Odak can do to help your design, experimentation, and development, consult our [documentation](https://kaanaksit.com/odak/)!
 
 
-## Getting Started
+🚀 Getting Started
 
 ### Installing
 
@@ -16,8 +16,34 @@ python3 -m venv odak
 source odak/bin/activate
 ```
 
+Once activated, you can install odak using the previous instructions.
+To deactivate the virtual environment, use `deactivate` command in your terminal.
+
+For the most recent guidance on installing Odak, please consult [installation documentation](https://kaanaksit.com/odak/installation/).
+
+Odak can be installed using [pip](https://pypi.org/project/pip):
+
+```bash
+pip3 install odak
+```
+
+or you can follow this, but remember that it will install the latest version in the repository this way:
+
+```bash
+pip3 install git+https://github.com/kaanaksit/odak --upgrade
+```
+
+or this:
+
+```bash
+git clone git@github.com:kaanaksit/odak.git
+cd odak
+pip3 install -r requirements.txt
+pip3 install -e .
+```
+
 Once activated, in the first usage, you can install odak using the previous instructions.
-To deactivate the virtual environemnt, you can always use `deactivate` command in your terminal.
+To deactivate the virtual environment, you can always use `deactivate` command in your terminal.
 Once you have an activated virtual environment, please consider following any of the highlighted installation methods below.
 
 For the most recent guidance on installing Odak, please consult [installation documentation](https://kaanaksit.com/odak/installation/).
@@ -41,7 +67,8 @@ pip3 install -r requirements.txt
 pip3 install -e .
 ```
 
-### Usage and examples
+📚 Usage and examples
+
 You can import Odak and start designing your next in Optics, Computer Graphics, or Perception! 
 We prepared a [documentation](https://kaanaksit.com/odak/) on usage and much more.
 Absolute beginners can [learn light, computation, and odak with our Computational Light course.](https://kaanaksit.com/odak/course)
@@ -66,9 +93,9 @@ triangle = torch.tensor([[
                          ]])
 
 normals, distance, _, _, check = odak.learn.raytracing.intersect_w_triangle(
-                                                                            rays,
-                                                                            triangle
-                                                                           )
+                                                                             rays,
+                                                                             triangle
+                                                                            )
 print('intersection point is {}. Surface normal cosines are {}.'.format(normals[0, 0], normals[0, 1]))
 ```
 
@@ -77,19 +104,16 @@ Here is a simple example of `computer-generated holography` with odak, and there
 import odak
 import torch
 
-
 wavelength = 532e-9
 pixel_pitch = 8e-6 
 distance = 5e-3
 propagation_type = 'Angular Spectrum'
 k = odak.learn.wave.wavenumber(wavelength)
 
-
 amplitude = torch.zeros(500, 500)
 amplitude[200:300, 200:300 ] = 1.
 phase = torch.randn_like(amplitude) * 2 * odak.pi
 hologram = odak.learn.wave.generate_complex_field(amplitude, phase)
-
 
 image_plane = odak.learn.wave.propagate_beam(
                                              hologram,
@@ -124,7 +148,6 @@ Here is a simple example on `deep learning` methods with odak:
 import odak
 import torch
 
-
 x1 = torch.arange(10).unsqueeze(-1) * 30.
 pos_x1 = torch.arange(x1.shape[0]).unsqueeze(-1) * 1.
 model_mlp = odak.learn.models.multi_layer_perceptron(
@@ -132,7 +155,6 @@ model_mlp = odak.learn.models.multi_layer_perceptron(
                                                      bias = False,
                                                      model_type = 'conventional'
                                                     )
-
 
 optimizer = torch.optim.AdamW(model_mlp.parameters(), lr = 1e-3)
 loss_function = torch.nn.MSELoss()
@@ -144,7 +166,6 @@ for epoch in range(10000):
     loss.backward(retain_graph = True)
     optimizer.step()
 print('Training loss: {}'.format(loss.item()))
-
 
 for item_id, item in enumerate(pos_x1):
     torch.no_grad()
