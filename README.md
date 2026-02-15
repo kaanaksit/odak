@@ -176,7 +176,7 @@ for item_id, item in enumerate(pos_x1):
 
 For more of these examples, you can either check our [course documentation](https://kaanaksit.com/odak/course) or visit our [unit tests](https://github.com/kaanaksit/odak/tree/master/test) to get inspired.
 
-## How to cite
+## ✍ How to cite
 To add the link to this repository in your publication, please use [Zenodo's citation](https://zenodo.org/badge/latestdoi/3987171). 
 If you have used `odak` in your research project, please consider citing any of the following works:
 
@@ -215,7 +215,7 @@ If you have used `odak` in your research project, please consider citing any of 
 
 ```
 
-## Sample Projects that use Odak
+## ⚙️ Sample Projects that use Odak
 Here are some sample projects that use `odak`:
 
 
