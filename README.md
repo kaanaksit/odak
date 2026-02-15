@@ -67,7 +67,7 @@ pip3 install -r requirements.txt
 pip3 install -e .
 ```
 
-### 📚 Usage and examples
+## 📚 Usage and examples
 
 You can import Odak and start designing your next in Optics, Computer Graphics, or Perception! 
 We prepared a [documentation](https://kaanaksit.com/odak/) on usage and much more.
