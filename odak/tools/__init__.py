@@ -4,7 +4,7 @@
 Provides necessary definitions for general tools used across the library.
 
 """
-# To get sub-modules.
+# Import all public modules for easy access.
 from .transformation import *
 from .vector import *
 from .sample import *

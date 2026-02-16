@@ -9,7 +9,6 @@ import shutil
 from ..log import logger
 
 
-
 def get_base_filename(filename):
     """
     Definition to retrieve the base filename and extension type.
@@ -54,11 +53,13 @@ def resize_image(img, target_size):
                     Resized image.
 
     """
-    img = cv2.resize(img, dsize=(target_size[0], target_size[1]), interpolation=cv2.INTER_AREA)
+    img = cv2.resize(
+        img, dsize=(target_size[0], target_size[1]), interpolation=cv2.INTER_AREA
+    )
     return img
 
 
-def save_image(fn, img, cmin = 0, cmax = 255, color_depth = 8):
+def save_image(fn, img, cmin=0, cmax=255, color_depth=8):
     """
     Definition to save a Numpy array as an image.
 
@@ -89,7 +90,7 @@ def save_image(fn, img, cmin = 0, cmax = 255, color_depth = 8):
     input_img[input_img < cmin] = cmin
     input_img[input_img > cmax] = cmax
     input_img /= cmax
-    input_img = input_img * 1. * (2 ** color_depth - 1)
+    input_img = input_img * 1.0 * (2**color_depth - 1)
     if color_depth == 8:
         input_img = input_img.astype(np.uint8)
     elif color_depth == 16:
@@ -104,8 +105,8 @@ def save_image(fn, img, cmin = 0, cmax = 255, color_depth = 8):
     return True
 
 
-def load_image(fn, normalizeby = 0., torch_style = False):
-    """ 
+def load_image(fn, normalizeby=0.0, torch_style=False):
+    """
     Definition to load an image from a given location as a Numpy array.
 
 
@@ -127,21 +128,21 @@ def load_image(fn, normalizeby = 0., torch_style = False):
     """
     image = cv2.imread(expanduser(fn), cv2.IMREAD_UNCHANGED)
     if isinstance(image, type(None)):
-         logger.warning('Image not properly loaded. Check filename or image type.')    
-         sys.exit()
+        logger.warning("Image not properly loaded. Check filename or image type.")
+        sys.exit()
     if len(image.shape) > 2:
         new_image = np.copy(image)
         new_image[:, :, 0] = image[:, :, 2]
         new_image[:, :, 2] = image[:, :, 0]
         image = new_image
-    if normalizeby != 0.:
-        image = image * 1. / normalizeby
+    if normalizeby != 0.0:
+        image = image * 1.0 / normalizeby
     if torch_style == True and len(image.shape) > 2:
         image = np.moveaxis(image, -1, 0)
     return image.astype(float)
 
 
-def shell_command(cmd, cwd = '.', timeout = None, check = True):
+def shell_command(cmd, cwd=".", timeout=None, check=True):
     """
     Definition to initiate shell commands.
 
@@ -149,7 +150,7 @@ def shell_command(cmd, cwd = '.', timeout = None, check = True):
     Parameters
     ----------
     cmd          : list
-                   Command to be executed. 
+                   Command to be executed.
     cwd          : str
                    Working directory.
     timeout      : int
@@ -170,15 +171,11 @@ def shell_command(cmd, cwd = '.', timeout = None, check = True):
     """
     for item_id in range(len(cmd)):
         cmd[item_id] = expanduser(cmd[item_id])
-    proc = subprocess.Popen(
-                            cmd,
-                            cwd = cwd,
-                            stdout = subprocess.PIPE
-                           )
+    proc = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE)
     if check == False:
         return proc, None, None
     try:
-        outs, errs = proc.communicate(timeout = timeout)
+        outs, errs = proc.communicate(timeout=timeout)
     except subprocess.TimeoutExpired:
         proc.kill()
         outs, errs = proc.communicate()
@@ -213,7 +210,7 @@ def save_dictionary(settings, filename):
     filename      : str
                     Filename.
     """
-    with open(expanduser(filename), 'w', encoding='utf-8') as f:
+    with open(expanduser(filename), "w", encoding="utf-8") as f:
         json.dump(settings, f, ensure_ascii=False, indent=4)
     return settings
 
@@ -239,7 +236,7 @@ def load_dictionary(filename):
     return settings
 
 
-def list_files(path, key = '*.*', recursive = True):
+def list_files(path, key="*.*", recursive=True):
     """
     Definition to list files in a given path with a given key.
 
@@ -259,18 +256,18 @@ def list_files(path, key = '*.*', recursive = True):
     files_list  : ndarray
                   list of files found in a given path.
     """
+    search_result = None
     if recursive == True:
         search_result = pathlib.Path(expanduser(path)).rglob(key)
     elif recursive == False:
         search_result = pathlib.Path(expanduser(path)).glob(key)
-    files_list = []
-    for item in search_result:
-        files_list.append(str(item))
-    files_list = sorted(files_list)
-    return files_list
+    if search_result is None:
+        return []
+    files_list = [str(item) for item in search_result]
+    return sorted(files_list)
 
 
-def list_directories(path, recursive = True):
+def list_directories(path, recursive=True):
     """
     Lists directories inside a given directory, recursively if specified.
 
@@ -294,12 +291,11 @@ def list_directories(path, recursive = True):
             full_path = os.path.join(path, entry)
             if os.path.isdir(full_path):
                 directories.append(entry)
-                directories.extend(list_directories(full_path, recursive=True))         
+                directories.extend(list_directories(full_path, recursive=True))
     else:
         contents = os.listdir(path)
         directories = [f for f in contents if os.path.isdir(os.path.join(path, f))]
     return sorted(directories)
-
 
 
 def convert_bytes(num):
@@ -320,7 +316,7 @@ def convert_bytes(num):
     x          : str
                  New unit bytes, KB, MB, GB or TB.
     """
-    for x in ['bytes', 'KB', 'MB', 'GB', 'TB']:
+    for x in ["bytes", "KB", "MB", "GB", "TB"]:
         if num < 1024.0:
             return num, x
         num /= 1024.0
@@ -372,7 +368,7 @@ def expanduser(filename):
     return new_filename
 
 
-def copy_file(source, destination, follow_symlinks = True):
+def copy_file(source, destination, follow_symlinks=True):
     """
     Definition to copy a file from one location to another.
 
@@ -388,13 +384,11 @@ def copy_file(source, destination, follow_symlinks = True):
                       Set to True to follow the source of symbolic links.
     """
     return shutil.copyfile(
-                           expanduser(source),
-                           expanduser(source),
-                           follow_symlinks = follow_symlinks
-                          )
+        expanduser(source), expanduser(destination), follow_symlinks=follow_symlinks
+    )
 
 
-def write_to_text_file(content, filename, write_flag = 'w'):
+def write_to_text_file(content, filename, write_flag="w"):
     """
     Defininition to write a Pythonic list to a text file.
 
@@ -406,13 +400,13 @@ def write_to_text_file(content, filename, write_flag = 'w'):
     filename        : str
                       Destination filename (i.e. test.txt).
     write_flag      : str
-                      Defines the interaction with the file. 
+                      Defines the interaction with the file.
                       The default is "w" (overwrite any existing content).
                       For more see: https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files
     """
     with open(expanduser(filename), write_flag) as f:
         for line in content:
-            f.write('{}\n'.format(line))
+            f.write("{}\n".format(line))
     return True
 
 
@@ -420,7 +414,7 @@ def read_text_file(filename):
     """
     Definition to read a given text file and convert it into a Pythonic list.
 
-    
+
     Parameters
     ----------
     filename        : str
@@ -437,6 +431,3 @@ def read_text_file(filename):
     while line := loaded_file.readline():
         content.append(line.rstrip())
     return content
-
-
-
