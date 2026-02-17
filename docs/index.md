@@ -1,4 +1,4 @@
-# Getting started
+# Getting started 🚀
 :octicons-info-24: Informative
 
 Odak (pronounced "O-dac") is the fundamental library for scientific computing in optical sciences, computer graphics, and visual perception.
@@ -12,13 +12,13 @@ If you think you need a refresher or are a beginner willing to learn more about 
 
 [Computational Light Course: Learn Odak and Physics of Light](course/index.md){ .md-button .md-button--primary }
 
-## New Users
+## New Users 👨‍💻
 :octicons-info-24: Informative
 
 - [`What is Odak?`](beginning.md)
 - [`Installation`](installation.md)
 
-## Use cases
+## Use cases 📊
 :octicons-info-24: Informative
 
 - [`Computer-generated holography`](cgh.md)
@@ -28,12 +28,12 @@ If you think you need a refresher or are a beginner willing to learn more about 
 - [`Visual Perception`](perception.md)
 - [`Lensless Cameras`](lensless.md)
 
-## New contributors
+## New contributors 🤝
 :octicons-info-24: Informative
 
 - [`Contributing to Odak`](contributing.md)
 
-## Additional information
+## Additional information 📚
 :octicons-info-24: Informative
 
 - [`Citing Odak in a scientific publication using Zenodo`](https://github.com/kaanaksit/odak#how-to-cite)

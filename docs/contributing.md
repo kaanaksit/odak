@@ -26,7 +26,7 @@ Once you test the modified version, please do not hesitate to initiate a pull re
 We will revise your code, and if found suitable, it will be merged to the master branch.
 Remember to follow `numpy` convention while adding documentation to your newly added functions to Odak.
 
-Another thing to mention is regarding to the code quality and standard.
+Another thing to mention is regarding code quality and standards.
 Although it hasn't been strictly followed since the start of Odak, note that Odak follows code conventions of `flake8`, which can be installed using:
 
 ```
@@ -48,7 +48,7 @@ pip3 install autopep8
 ```
 
 Please once you are ready to have a pull request, make sure to add a unit test for your additions in `test` folder, and make sure to test all unit tests by running `pytest`.
-If your system do not have `pytest` installed, it can be installed using:
+If your system does not have `pytest` installed, it can be installed using:
 
 ```
 pip3 install pytest
