@@ -1,6 +1,15 @@
 # Installation
-We use odak with Linux operating systems. 
-Therefore, we don't know if it can work with Windows or Mac operating systems.
+We encourage users to use virtual environments in their development pipeline when working with or developing odak.
+You can simply create and activate a virtual environment by using the following syntax:
+
+```bash
+python3 -m venv odak
+source odak/bin/activate
+```
+
+Once activated, you can install odak using the previous instructions.
+To deactivate the virtual environment, use `deactivate` command in your terminal.
+
 Odak can be installed in multiple ways. 
 However, our recommended method for installing Odak is using [pip](https://pypi.org/project/pip) distribution system. 
 We update Odak within pip with each new version.
@@ -9,6 +18,7 @@ Thus, the most straightforward way to install Odak is to use the below command i
 ```bash
 pip3 install odak
 ```
+
 Note that Odak is in constant development. 
 One may want to install the latest and greatest odak in the source repository for their reasons.
 In this case, our recommended method is to rely on pip for installing Odak from the source using:
@@ -56,10 +66,16 @@ pip3 install -U pytest
 ```
 
 Once `pytest` is installed, unit tests can be run by calling:
- 
+
 ```bash
 cd odak
 pytest
 ```
 The tests should return no error.
 However, if an error is encountered, please [start a new issue](https://github.com/kaanaksit/odak/issues) to help us be aware of the issue.
+
+## Notes before running
+Some notes should be highlighted to users, and these include:
+
+* Odak installs `PyTorch` that only uses `CPU`. 
+To properly install `PyTorch` with GPU support, please consult [PyTorch website](https://pytorch.org).
