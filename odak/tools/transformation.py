@@ -18,11 +18,14 @@ def rotmatx(angle):
     """
     angle = np.float64(angle)
     angle = np.radians(angle)
-    rotx = np.array([
-        [1.,               0.,               0.],
-        [0.,  math.cos(angle), -math.sin(angle)],
-        [0.,  math.sin(angle),  math.cos(angle)]
-    ], dtype=np.float64)
+    rotx = np.array(
+        [
+            [1.0, 0.0, 0.0],
+            [0.0, math.cos(angle), -math.sin(angle)],
+            [0.0, math.sin(angle), math.cos(angle)],
+        ],
+        dtype=np.float64,
+    )
     return rotx
 
 
@@ -41,11 +44,14 @@ def rotmaty(angle):
                    Rotation matrix along Y axis.
     """
     angle = np.radians(angle)
-    roty = np.array([
-        [math.cos(angle),  0., math.sin(angle)],
-        [0.,               1.,              0.],
-        [-math.sin(angle), 0., math.cos(angle)]
-    ], dtype=np.float64)
+    roty = np.array(
+        [
+            [math.cos(angle), 0.0, math.sin(angle)],
+            [0.0, 1.0, 0.0],
+            [-math.sin(angle), 0.0, math.cos(angle)],
+        ],
+        dtype=np.float64,
+    )
     return roty
 
 
@@ -64,16 +70,21 @@ def rotmatz(angle):
                    Rotation matrix along Z axis.
     """
     angle = np.radians(angle)
-    rotz = np.array([
-        [math.cos(angle), -math.sin(angle), 0.],
-        [math.sin(angle),  math.cos(angle), 0.],
-        [0.,               0., 1.]
-    ], dtype=np.float64)
+    rotz = np.array(
+        [
+            [math.cos(angle), -math.sin(angle), 0.0],
+            [math.sin(angle), math.cos(angle), 0.0],
+            [0.0, 0.0, 1.0],
+        ],
+        dtype=np.float64,
+    )
 
     return rotz
 
 
-def rotate_point(point, angles = [0, 0, 0], mode = 'XYZ', origin = [0, 0, 0], offset = [0, 0, 0]):
+def rotate_point(
+    point, angles=[0, 0, 0], mode="XYZ", origin=[0, 0, 0], offset=[0, 0, 0]
+):
     """
     Definition to rotate a given point. Note that rotation is always with respect to 0,0,0.
 
@@ -82,7 +93,7 @@ def rotate_point(point, angles = [0, 0, 0], mode = 'XYZ', origin = [0, 0, 0], of
     point        : ndarray
                    A point.
     angles       : list
-                   Rotation angles in degrees. 
+                   Rotation angles in degrees.
     mode         : str
                    Rotation mode determines ordering of the rotations at each axis. There are XYZ,YXZ,ZXY and ZYX modes.
     origin       : list
@@ -106,22 +117,24 @@ def rotate_point(point, angles = [0, 0, 0], mode = 'XYZ', origin = [0, 0, 0], of
     rotx = rotmatx(angles[0])
     roty = rotmaty(angles[1])
     rotz = rotmatz(angles[2])
-    if mode == 'XYZ':
+    if mode == "XYZ":
         result = np.dot(rotz, np.dot(roty, np.dot(rotx, point)))
-    elif mode == 'XZY':
+    elif mode == "XZY":
         result = np.dot(roty, np.dot(rotz, np.dot(rotx, point)))
-    elif mode == 'YXZ':
+    elif mode == "YXZ":
         result = np.dot(rotz, np.dot(rotx, np.dot(roty, point)))
-    elif mode == 'ZXY':
+    elif mode == "ZXY":
         result = np.dot(roty, np.dot(rotx, np.dot(rotz, point)))
-    elif mode == 'ZYX':
+    elif mode == "ZYX":
         result = np.dot(rotx, np.dot(roty, np.dot(rotz, point)))
     result += np.asarray(origin)
     result += np.asarray(offset)
     return result, rotx, roty, rotz
 
 
-def rotate_points(points, angles = [0, 0, 0], mode = 'XYZ', origin = [0, 0, 0], offset = [0, 0, 0]):
+def rotate_points(
+    points, angles=[0, 0, 0], mode="XYZ", origin=[0, 0, 0], offset=[0, 0, 0]
+):
     """
     Definition to rotate points.
 
@@ -130,7 +143,7 @@ def rotate_points(points, angles = [0, 0, 0], mode = 'XYZ', origin = [0, 0, 0], 
     points       : ndarray
                    Points.
     angles       : list
-                   Rotation angles in degrees. 
+                   Rotation angles in degrees.
     mode         : str
                    Rotation mode determines ordering of the rotations at each axis. There are XYZ,YXZ,ZXY and ZYX modes.
     origin       : list
@@ -141,7 +154,7 @@ def rotate_points(points, angles = [0, 0, 0], mode = 'XYZ', origin = [0, 0, 0], 
     Returns
     ----------
     result       : ndarray
-                   Result of the rotation   
+                   Result of the rotation
     """
     points = np.asarray(points)
     if angles[0] == 0 and angles[1] == 0 and angles[2] == 0:
@@ -151,15 +164,15 @@ def rotate_points(points, angles = [0, 0, 0], mode = 'XYZ', origin = [0, 0, 0], 
     rotx = rotmatx(angles[0])
     roty = rotmaty(angles[1])
     rotz = rotmatz(angles[2])
-    if mode == 'XYZ':
+    if mode == "XYZ":
         result = np.dot(rotz, np.dot(roty, np.dot(rotx, points.T))).T
-    elif mode == 'XZY':
+    elif mode == "XZY":
         result = np.dot(roty, np.dot(rotz, np.dot(rotx, points.T))).T
-    elif mode == 'YXZ':
+    elif mode == "YXZ":
         result = np.dot(rotz, np.dot(rotx, np.dot(roty, points.T))).T
-    elif mode == 'ZXY':
+    elif mode == "ZXY":
         result = np.dot(roty, np.dot(rotx, np.dot(rotz, points.T))).T
-    elif mode == 'ZYX':
+    elif mode == "ZYX":
         result = np.dot(rotx, np.dot(roty, np.dot(rotz, points.T))).T
     result += np.array(origin)
     result += np.array(offset)
@@ -182,15 +195,11 @@ def tilt_towards(location, lookat):
     angles       : list
                    Rotation angles in degrees.
     """
-    dx = location[0]-lookat[0]
-    dy = location[1]-lookat[1]
-    dz = location[2]-lookat[2]
-    dist = np.sqrt(dx**2+dy**2+dz**2)
+    dx = location[0] - lookat[0]
+    dy = location[1] - lookat[1]
+    dz = location[2] - lookat[2]
+    dist = np.sqrt(dx**2 + dy**2 + dz**2)
     phi = np.arctan2(dy, dx)
-    theta = np.arccos(dz/dist)
-    angles = [
-        0,
-        np.degrees(theta).tolist(),
-        np.degrees(phi).tolist()
-    ]
+    theta = np.arccos(dz / dist)
+    angles = [0, np.degrees(theta).tolist(), np.degrees(phi).tolist()]
     return angles

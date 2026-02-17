@@ -3,8 +3,8 @@ from ..tools.vector import same_side
 from ..tools.transformation import rotate_points
 
 
-def define_plane(point, angles = torch.tensor([0., 0., 0.])):
-    """ 
+def define_plane(point, angles=torch.tensor([0.0, 0.0, 0.0])):
+    """
     Definition to generate a rotation matrix along X axis.
 
     Parameters
@@ -19,23 +19,21 @@ def define_plane(point, angles = torch.tensor([0., 0., 0.])):
     plane        : torch.tensor
                    Points defining plane.
     """
-    plane = torch.tensor([
-                          [10., 10., 0.],
-                          [0., 10., 0.],
-                          [0.,  0., 0.]
-                         ], device = point.device)
+    plane = torch.tensor(
+        [[10.0, 10.0, 0.0], [0.0, 10.0, 0.0], [0.0, 0.0, 0.0]], device=point.device
+    )
     for i in range(0, plane.shape[0]):
-        plane[i], _, _, _ = rotate_points(plane[i], angles = angles.to(point.device))
+        plane[i], _, _, _ = rotate_points(plane[i], angles=angles.to(point.device))
         plane[i] = plane[i] + point
     return plane
 
 
 def define_plane_mesh(
-                      number_of_meshes = [10, 10], 
-                      size = [1., 1.], 
-                      angles = torch.tensor([0., 0., 0.]), 
-                      offset = torch.tensor([[0., 0., 0.]])
-                     ):
+    number_of_meshes=[10, 10],
+    size=[1.0, 1.0],
+    angles=torch.tensor([0.0, 0.0, 0.0]),
+    offset=torch.tensor([[0.0, 0.0, 0.0]]),
+):
     """
     Definition to generate a plane with meshes.
 
@@ -52,8 +50,8 @@ def define_plane_mesh(
     offset            : torch.tensor
                         Offset along XYZ axes.
                         Expected dimension is [1 x 3] or offset for each triangle [m x 3].
-                        m here refers to `2 * number_of_meshes[0]` times  `number_of_meshes[1]`. 
-    
+                        m here refers to `2 * number_of_meshes[0]` times  `number_of_meshes[1]`.
+
     Returns
     -------
     triangles         : torch.tensor
@@ -63,18 +61,42 @@ def define_plane_mesh(
     step = [size[0] / number_of_meshes[0], size[1] / number_of_meshes[1]]
     for i in range(0, number_of_meshes[0] - 1):
         for j in range(0, number_of_meshes[1] - 1):
-            first_triangle = torch.tensor([
-                                           [       -size[0] / 2. + step[0] * i,       -size[1] / 2. + step[0] * j, 0.],
-                                           [ -size[0] / 2. + step[0] * (i + 1),       -size[1] / 2. + step[0] * j, 0.],
-                                           [       -size[0] / 2. + step[0] * i, -size[1] / 2. + step[0] * (j + 1), 0.]
-                                          ])
-            second_triangle = torch.tensor([
-                                            [ -size[0] / 2. + step[0] * (i + 1), -size[1] / 2. + step[0] * (j + 1), 0.],
-                                            [ -size[0] / 2. + step[0] * (i + 1),       -size[1] / 2. + step[0] * j, 0.],
-                                            [       -size[0] / 2. + step[0] * i, -size[1] / 2. + step[0] * (j + 1), 0.]
-                                           ])
-            triangles[0, i, j], _, _, _ = rotate_points(first_triangle, angles = angles)
-            triangles[1, i, j], _, _, _ = rotate_points(second_triangle, angles = angles)
+            first_triangle = torch.tensor(
+                [
+                    [-size[0] / 2.0 + step[0] * i, -size[1] / 2.0 + step[0] * j, 0.0],
+                    [
+                        -size[0] / 2.0 + step[0] * (i + 1),
+                        -size[1] / 2.0 + step[0] * j,
+                        0.0,
+                    ],
+                    [
+                        -size[0] / 2.0 + step[0] * i,
+                        -size[1] / 2.0 + step[0] * (j + 1),
+                        0.0,
+                    ],
+                ]
+            )
+            second_triangle = torch.tensor(
+                [
+                    [
+                        -size[0] / 2.0 + step[0] * (i + 1),
+                        -size[1] / 2.0 + step[0] * (j + 1),
+                        0.0,
+                    ],
+                    [
+                        -size[0] / 2.0 + step[0] * (i + 1),
+                        -size[1] / 2.0 + step[0] * j,
+                        0.0,
+                    ],
+                    [
+                        -size[0] / 2.0 + step[0] * i,
+                        -size[1] / 2.0 + step[0] * (j + 1),
+                        0.0,
+                    ],
+                ]
+            )
+            triangles[0, i, j], _, _, _ = rotate_points(first_triangle, angles=angles)
+            triangles[1, i, j], _, _, _ = rotate_points(second_triangle, angles=angles)
     triangles = triangles.view(-1, 3, 3) + offset
     return triangles
 
@@ -86,7 +108,7 @@ def center_of_triangle(triangle):
     Parameters
     ----------
     triangle      : torch.tensor
-                    An array that contains three points defining a triangle (Mx3). 
+                    An array that contains three points defining a triangle (Mx3).
                     It can also parallel process many triangles (NxMx3).
 
     Returns
@@ -102,7 +124,7 @@ def center_of_triangle(triangle):
 
 def is_it_on_triangle(point_to_check, triangle):
     """
-    Definition to check if a given point is inside a triangle. 
+    Definition to check if a given point is inside a triangle.
     If the given point is inside a defined triangle, this definition returns True.
     For more details, visit: [https://blackpawn.com/texts/pointinpoly/](https://blackpawn.com/texts/pointinpoly/).
 
@@ -136,13 +158,13 @@ def is_it_on_triangle(point_to_check, triangle):
         v2 = v2.unsqueeze(0)
     dot00 = torch.mm(v0, v0.T)
     dot01 = torch.mm(v0, v1.T)
-    dot02 = torch.mm(v0, v2.T) 
+    dot02 = torch.mm(v0, v2.T)
     dot11 = torch.mm(v1, v1.T)
     dot12 = torch.mm(v1, v2.T)
-    invDenom = 1. / (dot00 * dot11 - dot01 * dot01)
+    invDenom = 1.0 / (dot00 * dot11 - dot01 * dot01)
     u = (dot11 * dot02 - dot01 * dot12) * invDenom
     v = (dot00 * dot12 - dot01 * dot02) * invDenom
-    result = (u >= 0.) & (v >= 0.) & ((u + v) < 1)
+    result = (u >= 0.0) & (v >= 0.0) & ((u + v) < 1)
     return result
 
 
@@ -154,13 +176,13 @@ def is_it_on_triangle_batch(point_to_check, triangle):
     ----------
     point_to_check  : torch.tensor
                       Points to check (m x n x 3).
-    triangle        : torch.tensor 
+    triangle        : torch.tensor
                       Triangles (m x 3 x 3).
 
     Returns
     ----------
     result          : torch.tensor (m x n)
-                        
+
     """
     if len(point_to_check.shape) == 1:
         point_to_check = point_to_check.unsqueeze(0)
@@ -181,14 +203,15 @@ def is_it_on_triangle_batch(point_to_check, triangle):
     dot02 = torch.bmm(v0.unsqueeze(1), v2.permute(0, 2, 1)).squeeze(1)
     dot11 = torch.bmm(v1.unsqueeze(1), v1.unsqueeze(1).permute(0, 2, 1)).squeeze(1)
     dot12 = torch.bmm(v1.unsqueeze(1), v2.permute(0, 2, 1)).squeeze(1)
-    invDenom = 1. / (dot00 * dot11 - dot01 * dot01)
+    invDenom = 1.0 / (dot00 * dot11 - dot01 * dot01)
     u = (dot11 * dot02 - dot01 * dot12) * invDenom
     v = (dot00 * dot12 - dot01 * dot02) * invDenom
-    result = (u >= 0.) & (v >= 0.) & ((u + v) < 1)
+    result = (u >= 0.0) & (v >= 0.0) & ((u + v) < 1)
 
     return result
 
-def define_sphere(center = torch.tensor([[0., 0., 0.]]), radius = torch.tensor([1.])):
+
+def define_sphere(center=torch.tensor([[0.0, 0.0, 0.0]]), radius=torch.tensor([1.0])):
     """
     Definition to define a sphere.
 
@@ -211,9 +234,9 @@ def define_sphere(center = torch.tensor([[0., 0., 0.]]), radius = torch.tensor([
         radius = radius.unsqueeze(0)
     if len(center.shape) == 1:
         center = center.unsqueeze(1)
-    parameters = torch.cat((center, radius), dim = 1)
+    parameters = torch.cat((center, radius), dim=1)
     return parameters
-                  
+
 
 def define_circle(center, radius, angles):
     """
@@ -234,9 +257,5 @@ def define_circle(center, radius, angles):
               Single variable packed form.
     """
     points = define_plane(center, angles=angles)
-    circle = [
-        points,
-        center,
-        torch.tensor([radius])
-    ]
+    circle = [points, center, torch.tensor([radius])]
     return circle

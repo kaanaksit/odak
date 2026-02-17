@@ -4,7 +4,7 @@ import torch.nn as nn
 
 
 class CVVDP(nn.Module):
-    def __init__(self, device = torch.device('cpu')):
+    def __init__(self, device=torch.device("cpu")):
         """
         Initializes the CVVDP model with a specified device.
 
@@ -16,13 +16,15 @@ class CVVDP(nn.Module):
         super(CVVDP, self).__init__()
         try:
             import pycvvdp
-            self.cvvdp = pycvvdp.cvvdp(display_name = 'standard_4k', device = device)
+
+            self.cvvdp = pycvvdp.cvvdp(display_name="standard_4k", device=device)
         except Exception as e:
-            logger.warning('ColorVideoVDP is missing, consider installing by running "pip install -U git+https://github.com/gfxdisp/ColorVideoVDP"')
+            logger.warning(
+                'ColorVideoVDP is missing, consider installing by running "pip install -U git+https://github.com/gfxdisp/ColorVideoVDP"'
+            )
             logger.warning(e)
 
-
-    def forward(self, predictions, targets, dim_order = 'BCHW'):
+    def forward(self, predictions, targets, dim_order="BCHW"):
         """
         Parameters
         ----------
@@ -42,15 +44,18 @@ class CVVDP(nn.Module):
             if len(predictions.shape) == 3:
                 predictions = predictions.unsqueeze(0)
                 targets = targets.unsqueeze(0)
-            l_ColorVideoVDP = self.cvvdp.predict(predictions, targets, dim_order = dim_order)[0]
+            l_ColorVideoVDP = self.cvvdp.predict(
+                predictions, targets, dim_order=dim_order
+            )[0]
             return l_ColorVideoVDP
         except Exception as e:
-            logger.warning('ColorVideoVDP failed to compute.')
+            logger.warning("ColorVideoVDP failed to compute.")
             logger.warning(e)
             return torch.tensor(0.0)
-        
+
+
 class FVVDP(nn.Module):
-    def __init__(self, device = torch.device('cpu')):
+    def __init__(self, device=torch.device("cpu")):
         """
         Initializes the FVVDP model with a specified device.
 
@@ -62,13 +67,17 @@ class FVVDP(nn.Module):
         super(FVVDP, self).__init__()
         try:
             import pyfvvdp
-            self.fvvdp = pyfvvdp.fvvdp(display_name = 'standard_4k', heatmap = 'none', device = device)
+
+            self.fvvdp = pyfvvdp.fvvdp(
+                display_name="standard_4k", heatmap="none", device=device
+            )
         except Exception as e:
-            logger.warning('FovVideoVDP is missing, consider installing by running "pip install pyfvvdp"')
+            logger.warning(
+                'FovVideoVDP is missing, consider installing by running "pip install pyfvvdp"'
+            )
             logger.warning(e)
 
-
-    def forward(self, predictions, targets, dim_order = 'BCHW'):
+    def forward(self, predictions, targets, dim_order="BCHW"):
         """
         Parameters
         ----------
@@ -88,10 +97,12 @@ class FVVDP(nn.Module):
             if len(predictions.shape) == 3:
                 predictions = predictions.unsqueeze(0)
                 targets = targets.unsqueeze(0)
-            l_FovVideoVDP = self.fvvdp.predict(predictions, targets, dim_order = dim_order)[0]
+            l_FovVideoVDP = self.fvvdp.predict(
+                predictions, targets, dim_order=dim_order
+            )[0]
             return l_FovVideoVDP
         except Exception as e:
-            logger.warning('FovVideoVDP failed to compute.')
+            logger.warning("FovVideoVDP failed to compute.")
             logger.warning(e)
             return torch.tensor(0.0)
 
@@ -106,11 +117,15 @@ class LPIPS(nn.Module):
         super(LPIPS, self).__init__()
         try:
             import torchmetrics
-            self.lpips = torchmetrics.image.lpip.LearnedPerceptualImagePatchSimilarity(net_type = 'squeeze')
-        except Exception as e:
-            logger.warning('torchmetrics is missing, consider installing by running "pip install torchmetrics"')
-            logger.warning(e)
 
+            self.lpips = torchmetrics.image.lpip.LearnedPerceptualImagePatchSimilarity(
+                net_type="squeeze"
+            )
+        except Exception as e:
+            logger.warning(
+                'torchmetrics is missing, consider installing by running "pip install torchmetrics"'
+            )
+            logger.warning(e)
 
     def forward(self, predictions, targets):
         """
@@ -120,7 +135,7 @@ class LPIPS(nn.Module):
                         The predicted images.
         targets       : torch.tensor
                         The ground truth images.
-       
+
         Returns
         -------
         result        : torch.tensor
@@ -143,7 +158,6 @@ class LPIPS(nn.Module):
             l_LPIPS = self.lpips(lpips_image, lpips_target)
             return l_LPIPS
         except Exception as e:
-            logger.warning('LPIPS failed to compute.')
+            logger.warning("LPIPS failed to compute.")
             logger.warning(e)
             return torch.tensor(0.0)
-           

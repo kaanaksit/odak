@@ -4,8 +4,8 @@ from ..tools.transformation import rotate_point, rotate_points
 from ..tools.vector import same_side, point_to_ray_distance
 
 
-def define_plane(point, angles=[0., 0., 0.]):
-    """ 
+def define_plane(point, angles=[0.0, 0.0, 0.0]):
+    """
     Definition to generate a rotation matrix along X axis.
 
     Parameters
@@ -20,19 +20,24 @@ def define_plane(point, angles=[0., 0., 0.]):
     plane        : ndarray
                    Points defining plane.
     """
-    plane = np.array([
-        [10., 10., 0.],
-        [0., 10., 0.],
-        [0.,  0., 0.]
-    ], dtype=np.float64)
+    plane = np.array(
+        [[10.0, 10.0, 0.0], [0.0, 10.0, 0.0], [0.0, 0.0, 0.0]], dtype=np.float64
+    )
     point = np.asarray(point)
     for i in range(0, plane.shape[0]):
         plane[i], _, _, _ = rotate_point(plane[i], angles=angles)
-        plane[i] = plane[i]+point
+        plane[i] = plane[i] + point
     return plane
 
 
-def bring_plane_to_origin(point, plane, shape=[10., 10.], center=[0., 0., 0.], angles=[0., 0., 0.], mode='XYZ'):
+def bring_plane_to_origin(
+    point,
+    plane,
+    shape=[10.0, 10.0],
+    center=[0.0, 0.0, 0.0],
+    angles=[0.0, 0.0, 0.0],
+    mode="XYZ",
+):
     """
     Definition to bring points back to reference origin with respect to a plane.
 
@@ -59,7 +64,7 @@ def bring_plane_to_origin(point, plane, shape=[10., 10.], center=[0., 0., 0.], a
     reverse_mode = mode[::-1]
     angles = [-angles[0], -angles[1], -angles[2]]
     center = np.asarray(center).reshape((1, 3))
-    transformed_points = point-center
+    transformed_points = point - center
     transformed_points = rotate_points(
         transformed_points,
         angles=angles,
@@ -132,11 +137,7 @@ def define_circle(center, radius, angles):
               Single variable packed form.
     """
     points = define_plane(center, angles=angles)
-    circle = [
-        points,
-        center,
-        radius
-    ]
+    circle = [points, center, radius]
     return circle
 
 
@@ -156,8 +157,7 @@ def define_sphere(center, radius):
     sphere     : ndarray
                  Single variable packed form.
     """
-    sphere = np.array(
-        [center[0], center[1], center[2], radius], dtype=np.float64)
+    sphere = np.array([center[0], center[1], center[2], radius], dtype=np.float64)
     return sphere
 
 
@@ -180,12 +180,16 @@ def sphere_function(point, sphere):
     point = np.asarray(point)
     if len(point.shape) == 1:
         point = point.reshape((1, 3))
-    result = (point[:, 0]-sphere[0])**2 + (point[:, 1]-sphere[1]
-                                           )**2 + (point[:, 2]-sphere[2])**2 - sphere[3]**2
+    result = (
+        (point[:, 0] - sphere[0]) ** 2
+        + (point[:, 1] - sphere[1]) ** 2
+        + (point[:, 2] - sphere[2]) ** 2
+        - sphere[3] ** 2
+    )
     return result
 
 
-def define_cylinder(center, radius, rotation=[0., 0., 0.]):
+def define_cylinder(center, radius, rotation=[0.0, 0.0, 0.0]):
     """
     Definition to define a cylinder
 
@@ -203,19 +207,18 @@ def define_cylinder(center, radius, rotation=[0., 0., 0.]):
     cylinder   : ndarray
                  Single variable packed form.
     """
-    cylinder_ray = create_ray_from_angles(
-        np.asarray(center), np.asarray(rotation))
+    cylinder_ray = create_ray_from_angles(np.asarray(center), np.asarray(rotation))
     cylinder = np.array(
         [
             center[0],
             center[1],
             center[2],
             radius,
-            center[0]+cylinder_ray[1, 0],
-            center[1]+cylinder_ray[1, 1],
-            center[2]+cylinder_ray[1, 2]
+            center[0] + cylinder_ray[1, 0],
+            center[1] + cylinder_ray[1, 1],
+            center[2] + cylinder_ray[1, 2],
         ],
-        dtype=np.float64
+        dtype=np.float64,
     )
     return cylinder
 
@@ -242,8 +245,8 @@ def cylinder_function(point, cylinder):
     distance = point_to_ray_distance(
         point,
         np.array([cylinder[0], cylinder[1], cylinder[2]], dtype=np.float64),
-        np.array([cylinder[4], cylinder[5], cylinder[6]], dtype=np.float64)
+        np.array([cylinder[4], cylinder[5], cylinder[6]], dtype=np.float64),
     )
     r = cylinder[3]
-    result = distance - r ** 2
+    result = distance - r**2
     return result

@@ -1,9 +1,4 @@
-
-
-def copy_dict_with_keys(
-                        d: dict,
-                        keys = None
-                       ):
+def copy_dict_with_keys(d: dict, keys=None):
     """
     Copy elements from a dictionary based on specified keys.
 

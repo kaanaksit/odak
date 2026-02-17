@@ -38,5 +38,5 @@ def convert_to_numpy(a):
     b          : numpy.ndarray
                  Converted array.
     """
-    b = a.to('cpu').detach().numpy()
+    b = a.to("cpu").detach().numpy()
     return b

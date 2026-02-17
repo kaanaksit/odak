@@ -8,12 +8,19 @@ from ..raytracing.primitives import define_sphere, define_circle
 from ..raytracing.boundary import intersect_w_circle, intersect_w_sphere
 
 
-class plano_convex_lens():
+class plano_convex_lens:
     """
     A class to represent a plano-convex lens. This is generally useful for raytracing and wave calculations.
     """
 
-    def __init__(self, item='LA1024', location=[0., 0., 0.], rotation=[0., 0., 0.], wavelength=0.000532, meduium='air'):
+    def __init__(
+        self,
+        item="LA1024",
+        location=[0.0, 0.0, 0.0],
+        rotation=[0.0, 0.0, 0.0],
+        wavelength=0.000532,
+        meduium="air",
+    ):
         """
         Class to represent plano-convex lens.
 
@@ -34,7 +41,8 @@ class plano_convex_lens():
         self.location = np.asarray(location)
         self.rotation = np.asarray(rotation)
         self.path_to_catalog = "{}/data/plano_convex_lenses.json".format(
-            os.path.dirname(odak.catalog.__file__))
+            os.path.dirname(odak.catalog.__file__)
+        )
         self.settings = load_dictionary(self.path_to_catalog)[self.item]
         self.set_variables()
         self.define_geometry()
@@ -54,27 +62,16 @@ class plano_convex_lens():
         """
         A definition to define geometry of a plano-convex lens.
         """
-        self.center = np.array([
-            0.,
-            0.,
-            self.radius-self.thickness
-        ])
+        self.center = np.array([0.0, 0.0, self.radius - self.thickness])
         self.center, _, _, _ = rotate_point(
-            self.center,
-            angles=self.rotation,
-            offset=self.location
+            self.center, angles=self.rotation, offset=self.location
         )
 
-        self.plane_center = np.array([0., 0., 0.])+self.location
-        self.convex_point = self.plane_center-self.thickness
-        self.convex_surface = define_sphere(
-            self.center,
-            self.radius
-        )
+        self.plane_center = np.array([0.0, 0.0, 0.0]) + self.location
+        self.convex_point = self.plane_center - self.thickness
+        self.convex_surface = define_sphere(self.center, self.radius)
         self.plane_surface = define_circle(
-            self.plane_center,
-            self.diameter,
-            self.rotation
+            self.plane_center, self.diameter, self.rotation
         )
 
     def intersect(self, ray):
@@ -84,16 +81,10 @@ class plano_convex_lens():
         Parameters
         ----------
         ray          : ndarray
-                       Ray(s) to be intersected. 
+                       Ray(s) to be intersected.
         """
-        convex_normal, convex_distance = intersect_w_sphere(
-            ray,
-            self.convex_surface
-        )
-        plane_normal, plane_distance = intersect_w_circle(
-            ray,
-            self.plane_surface
-        )
+        convex_normal, convex_distance = intersect_w_sphere(ray, self.convex_surface)
+        plane_normal, plane_distance = intersect_w_circle(ray, self.plane_surface)
         test_normal = convex_normal
         if len(test_normal.shape) < 3:
             test_normal = convex_normal[0]
@@ -101,16 +92,16 @@ class plano_convex_lens():
             test_normal,
             self.convex_point,
             self.plane_surface[0][1],
-            self.plane_surface[0][2]
+            self.plane_surface[0][2],
         )
-        surface_normals = np.array(
-            [convex_normal, plane_normal], dtype=np.float64)
+        surface_normals = np.array([convex_normal, plane_normal], dtype=np.float64)
         surface_distances = np.array(
-            [convex_distance, plane_distance], dtype=np.float64)
+            [convex_distance, plane_distance], dtype=np.float64
+        )
         which_surface = np.amin(surface_distances, axis=0)
         ids = np.where(surface_distances == which_surface)
         ids = np.asarray(ids)
-#        ids[0]                        = ids[0] | is_it_in_lens
+        #        ids[0]                        = ids[0] | is_it_in_lens
         normal = surface_normals[ids[0], ids[1]]
         distance = surface_distances[ids[0], ids[1]]
         return normal, distance
@@ -125,7 +116,7 @@ class plano_convex_lens():
         rays       : ndarray
                      Input ray(s).
         """
-#        which_surface
-#        refract
-#        return output_rays
+        #        which_surface
+        #        refract
+        #        return output_rays
         return None

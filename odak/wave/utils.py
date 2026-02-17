@@ -2,7 +2,7 @@ import numpy as np
 
 
 def calculate_phase(field, deg=False):
-    """ 
+    """
     Definition to calculate phase of a single or multiple given electric field(s).
 
     Parameters
@@ -19,12 +19,12 @@ def calculate_phase(field, deg=False):
     """
     phase = np.angle(field)
     if deg == True:
-        phase *= 180./np.pi
+        phase *= 180.0 / np.pi
     return phase
 
 
 def calculate_amplitude(field):
-    """ 
+    """
     Definition to calculate amplitude of a single or multiple given electric field(s).
 
     Parameters

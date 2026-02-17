@@ -9,21 +9,21 @@ def forward(x, m, n):
 
 
 def main():
-    m = torch.tensor([100.], requires_grad = True)
-    n = torch.tensor([0.], requires_grad = True)
-    x_vals = torch.tensor([1., 2., 3., 100.])
-    y_vals = torch.tensor([5., 6., 7., 101.])
-    optimizer = torch.optim.Adam([m, n], lr = 5e1)
+    m = torch.tensor([100.0], requires_grad=True)
+    n = torch.tensor([0.0], requires_grad=True)
+    x_vals = torch.tensor([1.0, 2.0, 3.0, 100.0])
+    y_vals = torch.tensor([5.0, 6.0, 7.0, 101.0])
+    optimizer = torch.optim.Adam([m, n], lr=5e1)
     loss_function = torch.nn.MSELoss()
     for step in range(1000):
         optimizer.zero_grad()
         y_estimate = forward(x_vals, m, n)
         loss = loss_function(y_estimate, y_vals)
-        loss.backward(retain_graph = True)
+        loss.backward(retain_graph=True)
         optimizer.step()
-        print('Step: {}, Loss: {}'.format(step, loss.item()))
+        print("Step: {}, Loss: {}".format(step, loss.item()))
     print(m, n)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

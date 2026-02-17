@@ -7,7 +7,7 @@ from .foveation import make_radial_map
 from .util import check_loss_inputs
 
 
-class MetamericLoss():
+class MetamericLoss:
     """
     The `MetamericLoss` class provides a perceptual loss function.
 
@@ -16,44 +16,54 @@ class MetamericLoss():
     Its interface is similar to other `pytorch` loss functions, but note that the gaze location must be provided in addition to the source and target images.
     """
 
-
-    def __init__(self, device=torch.device('cpu'), alpha=0.2, real_image_width=0.2,
-                 real_viewing_distance=0.7, n_pyramid_levels=5, mode="quadratic",
-                 n_orientations=2, use_l2_foveal_loss=True, fovea_weight=20.0, use_radial_weight=False,
-                 use_fullres_l0=False, equi=False):
+    def __init__(
+        self,
+        device=torch.device("cpu"),
+        alpha=0.2,
+        real_image_width=0.2,
+        real_viewing_distance=0.7,
+        n_pyramid_levels=5,
+        mode="quadratic",
+        n_orientations=2,
+        use_l2_foveal_loss=True,
+        fovea_weight=20.0,
+        use_radial_weight=False,
+        use_fullres_l0=False,
+        equi=False,
+    ):
         """
         Parameters
         ----------
 
         alpha                   : float
                                     parameter controlling foveation - larger values mean bigger pooling regions.
-        real_image_width        : float 
+        real_image_width        : float
                                     The real width of the image as displayed to the user.
                                     Units don't matter as long as they are the same as for real_viewing_distance.
-        real_viewing_distance   : float 
+        real_viewing_distance   : float
                                     The real distance of the observer's eyes to the image plane.
                                     Units don't matter as long as they are the same as for real_image_width.
-        n_pyramid_levels        : int 
+        n_pyramid_levels        : int
                                     Number of levels of the steerable pyramid. Note that the image is padded
                                     so that both height and width are multiples of 2^(n_pyramid_levels), so setting this value
                                     too high will slow down the calculation a lot.
-        mode                    : str 
+        mode                    : str
                                     Foveation mode, either "quadratic" or "linear". Controls how pooling regions grow
                                     as you move away from the fovea. We got best results with "quadratic".
-        n_orientations          : int 
+        n_orientations          : int
                                     Number of orientations in the steerable pyramid. Can be 1, 2, 4 or 6.
                                     Increasing this will increase runtime.
-        use_l2_foveal_loss      : bool 
-                                    If true, for all the pixels that have pooling size 1 pixel in the 
+        use_l2_foveal_loss      : bool
+                                    If true, for all the pixels that have pooling size 1 pixel in the
                                     largest scale will use direct L2 against target rather than pooling over pyramid levels.
                                     In practice this gives better results when the loss is used for holography.
-        fovea_weight            : float 
+        fovea_weight            : float
                                     A weight to apply to the foveal region if use_l2_foveal_loss is set to True.
-        use_radial_weight       : bool 
+        use_radial_weight       : bool
                                     If True, will apply a radial weighting when calculating the difference between
                                     the source and target stats maps. This weights stats closer to the fovea more than those
                                     further away.
-        use_fullres_l0          : bool 
+        use_fullres_l0          : bool
                                     If true, stats for the lowpass residual are replaced with blurred versions
                                     of the full-resolution source and target images.
         equi                    : bool
@@ -78,30 +88,59 @@ class MetamericLoss():
         self.equi = equi
         if self.use_fullres_l0 and self.use_l2_foveal_loss:
             raise Exception(
-                "Can't use use_fullres_l0 and use_l2_foveal_loss options together in MetamericLoss!")
+                "Can't use use_fullres_l0 and use_l2_foveal_loss options together in MetamericLoss!"
+            )
 
-    def calc_statsmaps(self, image, gaze=None, alpha=0.01, real_image_width=0.3,
-                       real_viewing_distance=0.6, mode="quadratic", equi=False):
+    def calc_statsmaps(
+        self,
+        image,
+        gaze=None,
+        alpha=0.01,
+        real_image_width=0.3,
+        real_viewing_distance=0.6,
+        mode="quadratic",
+        equi=False,
+    ):
 
-        if self.pyramid_maker is None or \
-                self.pyramid_maker.device != self.device or \
-                len(self.pyramid_maker.band_filters) != self.n_orientations or\
-                self.pyramid_maker.filt_h0.size(0) != image.size(1):
+        if (
+            self.pyramid_maker is None
+            or self.pyramid_maker.device != self.device
+            or len(self.pyramid_maker.band_filters) != self.n_orientations
+            or self.pyramid_maker.filt_h0.size(0) != image.size(1)
+        ):
             self.pyramid_maker = SpatialSteerablePyramid(
-                use_bilinear_downup=False, n_channels=image.size(1),
-                device=self.device, n_orientations=self.n_orientations, filter_type="cropped", filter_size=5)
+                use_bilinear_downup=False,
+                n_channels=image.size(1),
+                device=self.device,
+                n_orientations=self.n_orientations,
+                filter_type="cropped",
+                filter_size=5,
+            )
 
         if self.blurs is None or len(self.blurs) != self.n_pyramid_levels:
-            self.blurs = [RadiallyVaryingBlur()
-                          for i in range(self.n_pyramid_levels)]
+            self.blurs = [RadiallyVaryingBlur() for i in range(self.n_pyramid_levels)]
 
         def find_stats(image_pyr_level, blur):
             image_means = blur.blur(
-                image_pyr_level, alpha, real_image_width, real_viewing_distance, centre=gaze, mode=mode, equi=self.equi)
-            image_meansq = blur.blur(image_pyr_level*image_pyr_level, alpha,
-                                     real_image_width, real_viewing_distance, centre=gaze, mode=mode, equi=self.equi)
+                image_pyr_level,
+                alpha,
+                real_image_width,
+                real_viewing_distance,
+                centre=gaze,
+                mode=mode,
+                equi=self.equi,
+            )
+            image_meansq = blur.blur(
+                image_pyr_level * image_pyr_level,
+                alpha,
+                real_image_width,
+                real_viewing_distance,
+                centre=gaze,
+                mode=mode,
+                equi=self.equi,
+            )
 
-            image_vars = image_meansq - (image_means*image_means)
+            image_vars = image_meansq - (image_means * image_means)
             image_vars[image_vars < 1e-7] = 1e-7
             image_std = torch.sqrt(image_vars)
             if torch.any(torch.isnan(image_means)):
@@ -119,17 +158,19 @@ class MetamericLoss():
                 matte[mask] = 1.0
                 return image_means * matte, image_std * matte
             return image_means, image_std
+
         output_stats = []
         image_pyramid = self.pyramid_maker.construct_pyramid(
-            image, self.n_pyramid_levels)
-        means, variances = find_stats(image_pyramid[0]['h'], self.blurs[0])
+            image, self.n_pyramid_levels
+        )
+        means, variances = find_stats(image_pyramid[0]["h"], self.blurs[0])
         if self.use_l2_foveal_loss:
             base_mask = 1.0 - (self.blurs[0].lod_map / torch.max(self.blurs[0].lod_map))
             base_mask[self.blurs[0].lod_map < 1e-6] = 1.0
             self.fovea_mask = base_mask[None, None, ...].expand(image.size()).clone()
             self.fovea_mask = torch.pow(self.fovea_mask, 10.0)
-            #self.fovea_mask     = torch.nn.functional.interpolate(self.fovea_mask, scale_factor=0.125, mode="area")
-            #self.fovea_mask     = torch.nn.functional.interpolate(self.fovea_mask, size=(image.size(-2), image.size(-1)), mode="bilinear")
+            # self.fovea_mask     = torch.nn.functional.interpolate(self.fovea_mask, scale_factor=0.125, mode="area")
+            # self.fovea_mask     = torch.nn.functional.interpolate(self.fovea_mask, size=(image.size(-2), image.size(-1)), mode="bilinear")
             periphery_mask = 1.0 - self.fovea_mask
             self.periphery_mask = periphery_mask.clone()
             output_stats.append(means * periphery_mask)
@@ -138,10 +179,9 @@ class MetamericLoss():
             output_stats.append(means)
             output_stats.append(variances)
 
-        for l in range(0, len(image_pyramid)-1):
-            for o in range(len(image_pyramid[l]['b'])):
-                means, variances = find_stats(
-                    image_pyramid[l]['b'][o], self.blurs[l])
+        for l in range(0, len(image_pyramid) - 1):
+            for o in range(len(image_pyramid[l]["b"])):
+                means, variances = find_stats(image_pyramid[l]["b"][o], self.blurs[l])
                 if self.use_l2_foveal_loss:
                     output_stats.append(means * periphery_mask)
                     output_stats.append(variances * periphery_mask)
@@ -150,13 +190,20 @@ class MetamericLoss():
                     output_stats.append(variances)
             if self.use_l2_foveal_loss:
                 periphery_mask = torch.nn.functional.interpolate(
-                    periphery_mask, scale_factor=0.5, mode="area", recompute_scale_factor=False)
+                    periphery_mask,
+                    scale_factor=0.5,
+                    mode="area",
+                    recompute_scale_factor=False,
+                )
 
         if self.use_l2_foveal_loss:
             output_stats.append(image_pyramid[-1]["l"] * periphery_mask)
         elif self.use_fullres_l0:
-            output_stats.append(self.blurs[0].blur(
-                image, alpha, real_image_width, real_viewing_distance, gaze, mode))
+            output_stats.append(
+                self.blurs[0].blur(
+                    image, alpha, real_image_width, real_viewing_distance, gaze, mode
+                )
+            )
         else:
             output_stats.append(image_pyramid[-1]["l"])
         return output_stats
@@ -165,11 +212,10 @@ class MetamericLoss():
         loss = 0.0
         for a, b in zip(statsmap_a, statsmap_b):
             if self.use_radial_weight:
-                radii = make_radial_map(
-                    [a.size(-2), a.size(-1)], gaze).to(a.device)
+                radii = make_radial_map([a.size(-2), a.size(-1)], gaze).to(a.device)
                 weights = 1.1 - (radii * radii * radii * radii)
                 weights = weights[None, None, ...].repeat(a.size(0), a.size(1), 1, 1)
-                loss += torch.nn.MSELoss()(weights*a, weights*b)
+                loss += torch.nn.MSELoss()(weights * a, weights * b)
             else:
                 loss += torch.nn.MSELoss()(a, b)
         loss /= len(statsmap_a)
@@ -182,13 +228,25 @@ class MetamericLoss():
             stats = image_stats[i]
             target_stats = self.target_stats[i]
             stat_mse_map = torch.sqrt(torch.pow(stats - target_stats, 2))
-            stat_mse_map = torch.nn.functional.interpolate(stat_mse_map, size=loss_map.size()[1:],
-                mode="bilinear", align_corners=False, recompute_scale_factor=False)
+            stat_mse_map = torch.nn.functional.interpolate(
+                stat_mse_map,
+                size=loss_map.size()[1:],
+                mode="bilinear",
+                align_corners=False,
+                recompute_scale_factor=False,
+            )
             loss_map += stat_mse_map[:, 0, ...]
         self.loss_map = loss_map
 
-    def __call__(self, image, target, gaze=[0.5, 0.5], image_colorspace="RGB", visualise_loss=False):
-        """ 
+    def __call__(
+        self,
+        image,
+        target,
+        gaze=[0.5, 0.5],
+        image_colorspace="RGB",
+        visualise_loss=False,
+    ):
+        """
         Calculates the Metameric Loss.
 
         Parameters
@@ -203,7 +261,7 @@ class MetamericLoss():
         gaze                : list
                                 Gaze location in the image, in normalized image coordinates (range [0, 1]) relative to the top left of the image.
         visualise_loss      : bool
-                                Shows a heatmap indicating which parts of the image contributed most to the loss. 
+                                Shows a heatmap indicating which parts of the image contributed most to the loss.
 
         Returns
         -------
@@ -219,37 +277,39 @@ class MetamericLoss():
         if image.size(1) == 3 and image_colorspace == "RGB":
             image = rgb_2_ycrcb(image)
             target = rgb_2_ycrcb(target)
-        
+
         self.target_stats = self.calc_statsmaps(
             target,
             gaze=gaze,
             alpha=self.alpha,
             real_image_width=self.real_image_width,
             real_viewing_distance=self.real_viewing_distance,
-            mode=self.mode
+            mode=self.mode,
         )
-        
+
         image_stats = self.calc_statsmaps(
             image,
             gaze=gaze,
             alpha=self.alpha,
             real_image_width=self.real_image_width,
             real_viewing_distance=self.real_viewing_distance,
-            mode=self.mode
+            mode=self.mode,
         )
-        
+
         if visualise_loss:
             self.visualise_loss_map(image_stats)
-        
+
         if self.use_l2_foveal_loss:
             peripheral_loss = self.metameric_loss_stats(
-                image_stats, self.target_stats, gaze)
-            foveal_loss = torch.nn.MSELoss()(self.fovea_mask*image, self.fovea_mask*target)
+                image_stats, self.target_stats, gaze
+            )
+            foveal_loss = torch.nn.MSELoss()(
+                self.fovea_mask * image, self.fovea_mask * target
+            )
             # New weighting - evenly weight fovea and periphery.
             loss = peripheral_loss + self.fovea_weight * foveal_loss
         else:
-            loss = self.metameric_loss_stats(
-                image_stats, self.target_stats, gaze)
+            loss = self.metameric_loss_stats(image_stats, self.target_stats, gaze)
         return loss
 
     def to(self, device):

@@ -3,17 +3,15 @@ import torch
 import torch.nn as nn
 
 
-
-
 class PSNR(nn.Module):
-    '''
+    """
     A class to calculate peak-signal-to-noise ratio of an image with respect to a ground truth image.
-    '''
+    """
 
     def __init__(self):
         super(PSNR, self).__init__()
- 
-    def forward(self, predictions, targets, peak_value = 1.0):
+
+    def forward(self, predictions, targets, peak_value=1.0):
         """
         A function to calculate peak-signal-to-noise ratio of an image with respect to a ground truth image.
 
@@ -37,9 +35,9 @@ class PSNR(nn.Module):
 
 
 class SSIM(nn.Module):
-    '''
+    """
     A class to calculate structural similarity index of an image with respect to a ground truth image.
-    '''
+    """
 
     def __init__(self):
         super(SSIM, self).__init__()
@@ -55,25 +53,29 @@ class SSIM(nn.Module):
 
         Returns
         -------
-        result      : torch.tensor 
+        result      : torch.tensor
                       The computed SSIM value if successful, otherwise 0.0.
         """
         try:
-            from torchmetrics.functional.image import structural_similarity_index_measure
+            from torchmetrics.functional.image import (
+                structural_similarity_index_measure,
+            )
+
             if len(predictions.shape) == 3:
                 predictions = predictions.unsqueeze(0)
                 targets = targets.unsqueeze(0)
             l_SSIM = structural_similarity_index_measure(predictions, targets)
             return l_SSIM
         except Exception as e:
-            logger.warning('SSIM failed to compute.')
+            logger.warning("SSIM failed to compute.")
             logger.warning(e)
             return torch.tensor(0.0)
 
+
 class MSSSIM(nn.Module):
-    '''
+    """
     A class to calculate multi-scale structural similarity index of an image with respect to a ground truth image.
-    '''
+    """
 
     def __init__(self):
         super(MSSSIM, self).__init__()
@@ -89,17 +91,22 @@ class MSSSIM(nn.Module):
 
         Returns
         -------
-        result      : torch.tensor 
+        result      : torch.tensor
                       The computed MS-SSIM value if successful, otherwise 0.0.
         """
         try:
-            from torchmetrics.functional.image import multiscale_structural_similarity_index_measure
+            from torchmetrics.functional.image import (
+                multiscale_structural_similarity_index_measure,
+            )
+
             if len(predictions.shape) == 3:
                 predictions = predictions.unsqueeze(0)
                 targets = targets.unsqueeze(0)
-            l_MSSSIM = multiscale_structural_similarity_index_measure(predictions, targets, data_range = 1.0)
-            return l_MSSSIM  
+            l_MSSSIM = multiscale_structural_similarity_index_measure(
+                predictions, targets, data_range=1.0
+            )
+            return l_MSSSIM
         except Exception as e:
-            logger.warning('MS-SSIM failed to compute.')
+            logger.warning("MS-SSIM failed to compute.")
             logger.warning(e)
             return torch.tensor(0.0)

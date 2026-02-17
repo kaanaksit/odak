@@ -8,12 +8,21 @@ from ..tools.transformation import rotate_points, tilt_towards
 from ..raytracing.ray import create_ray_from_two_points
 
 
-class thin_diffuser():
+class thin_diffuser:
     """
     A class to represent a thin diffuser. This is generally useful for raytracing and wave calculations.
     """
 
-    def __init__(self, phase=None, shape=[10., 10.], center=[0., 0., 0.], angles=[0., 0., 0.], diffusion_angle=5., diffusion_no=[3, 3], name='diffuser'):
+    def __init__(
+        self,
+        phase=None,
+        shape=[10.0, 10.0],
+        center=[0.0, 0.0, 0.0],
+        angles=[0.0, 0.0, 0.0],
+        diffusion_angle=5.0,
+        diffusion_no=[3, 3],
+        name="diffuser",
+    ):
         """
         Class to represent a simple thin diffuser with a random phase.
 
@@ -33,30 +42,29 @@ class thin_diffuser():
                            Number of rays to be generated along two axes at each diffusion.
         """
         self.settings = {
-            'name': name,
-            'center': center,
-            'angles': angles,
-            'rotation mode': 'XYZ',
-            'shape': shape,
-            'diffusion angle': diffusion_angle,
-            'number of diffusion rays': diffusion_no
+            "name": name,
+            "center": center,
+            "angles": angles,
+            "rotation mode": "XYZ",
+            "shape": shape,
+            "diffusion angle": diffusion_angle,
+            "number of diffusion rays": diffusion_no,
         }
         self.plane = define_plane(
-            self.settings['center'],
-            angles=self.settings['angles']
+            self.settings["center"], angles=self.settings["angles"]
         )
         self.k = wavenumber(0.05)
         self.diffusion_points = circular_uniform_sample(
             no=self.settings["number of diffusion rays"],
-            radius=np.tan(np.radians(self.settings["diffusion angle"]/2.)),
-            center=[0., 0., 1.]
+            radius=np.tan(np.radians(self.settings["diffusion angle"] / 2.0)),
+            center=[0.0, 0.0, 1.0],
         )
         if type(phase) == type(None):
             self.surface_points = grid_sample(
                 no=[100, 100],
                 size=self.settings["shape"],
                 center=self.settings["center"],
-                angles=self.settings["angles"]
+                angles=self.settings["angles"],
             )
 
     def plot_diffuser(self, figure):
@@ -72,7 +80,7 @@ class thin_diffuser():
             no=[10, 10],
             size=self.settings["shape"],
             center=self.settings["center"],
-            angles=self.settings["angles"]
+            angles=self.settings["angles"],
         )
         points = points.reshape((10, 10, 3))
         figure.add_surface(
@@ -81,7 +89,7 @@ class thin_diffuser():
             data_z=points[:, :, 2],
             surface_color=np.zeros(points[:, :, 2].shape),
             opacity=0.5,
-            contour=False
+            contour=False,
         )
 
     def raytrace(self, ray):
@@ -100,7 +108,7 @@ class thin_diffuser():
                       Diffusion rays.
         normal      : ndarray
                       Surface normals
-        distance    : ndarray 
+        distance    : ndarray
                       Distance ray(s) has/have travelled until to the point of diffusion.
         """
         if len(ray.shape) == 2:
@@ -113,11 +121,13 @@ class thin_diffuser():
         for point_id in range(0, normal.shape[0]):
             tilt_angles = tilt_towards(ray[point_id, 0], normal[point_id, 0])
             tilted_points = rotate_points(
-                self.diffusion_points,
-                angles=tilt_angles,
-                offset=normal[point_id, 0]
+                self.diffusion_points, angles=tilt_angles, offset=normal[point_id, 0]
             )
             new_rays = np.vstack(
-                (new_rays, create_ray_from_two_points(normal[point_id, 0], tilted_points)))
+                (
+                    new_rays,
+                    create_ray_from_two_points(normal[point_id, 0], tilted_points),
+                )
+            )
         new_rays = np.asarray(new_rays)
         return new_rays, normal, distance

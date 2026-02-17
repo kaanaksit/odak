@@ -57,12 +57,12 @@ def create_ray_from_two_points(x0y0z0, x1y1z1):
     xdiff = x1y1z1[:, 0] - x0y0z0[:, 0]
     ydiff = x1y1z1[:, 1] - x0y0z0[:, 1]
     zdiff = x1y1z1[:, 2] - x0y0z0[:, 2]
-    s = np.sqrt(xdiff ** 2 + ydiff ** 2 + zdiff ** 2)
+    s = np.sqrt(xdiff**2 + ydiff**2 + zdiff**2)
     s[s == 0] = np.nan
     cosines = np.zeros((xdiff.shape[0], 3))
-    cosines[:, 0] = xdiff/s
-    cosines[:, 1] = ydiff/s
-    cosines[:, 2] = zdiff/s
+    cosines[:, 0] = xdiff / s
+    cosines[:, 1] = ydiff / s
+    cosines[:, 2] = zdiff / s
     ray = np.zeros((xdiff.shape[0], 2, 3), dtype=np.float64)
     ray[:, 0] = x0y0z0
     ray[:, 1] = cosines
@@ -71,7 +71,7 @@ def create_ray_from_two_points(x0y0z0, x1y1z1):
     return ray
 
 
-def create_ray_from_angles(point, angles, mode='XYZ'):
+def create_ray_from_angles(point, angles, mode="XYZ"):
     """
     Definition to create a ray from a point and angles.
 
@@ -92,7 +92,7 @@ def create_ray_from_angles(point, angles, mode='XYZ'):
     if len(point.shape) == 1:
         point = point.reshape((1, 3))
     new_point = np.zeros(point.shape)
-    new_point[:, 2] += 5.
+    new_point[:, 2] += 5.0
     new_point = rotate_points(new_point, angles, mode=mode, offset=point[:, 0])
     ray = create_ray_from_two_points(point, new_point)
     if ray.shape[0] == 1:
@@ -119,9 +119,9 @@ def propagate_a_ray(ray, distance):
     if len(ray.shape) == 2:
         ray = ray.reshape((1, 2, 3))
     new_ray = np.copy(ray)
-    new_ray[:, 0, 0] = distance*new_ray[:, 1, 0] + new_ray[:, 0, 0]
-    new_ray[:, 0, 1] = distance*new_ray[:, 1, 1] + new_ray[:, 0, 1]
-    new_ray[:, 0, 2] = distance*new_ray[:, 1, 2] + new_ray[:, 0, 2]
+    new_ray[:, 0, 0] = distance * new_ray[:, 1, 0] + new_ray[:, 0, 0]
+    new_ray[:, 0, 1] = distance * new_ray[:, 1, 1] + new_ray[:, 0, 1]
+    new_ray[:, 0, 2] = distance * new_ray[:, 1, 2] + new_ray[:, 0, 2]
     if new_ray.shape[0] == 1:
         new_ray = new_ray.reshape((2, 3))
     return new_ray
@@ -145,16 +145,16 @@ def calculate_intersection_of_two_rays(ray0, ray1):
     distances  : ndarray
                  Distances.
     """
-    A = np.array([
-        [float(ray0[1][0]), float(ray1[1][0])],
-        [float(ray0[1][1]), float(ray1[1][1])],
-        [float(ray0[1][2]), float(ray1[1][2])]
-    ])
-    B = np.array([
-        ray0[0][0]-ray1[0][0],
-        ray0[0][1]-ray1[0][1],
-        ray0[0][2]-ray1[0][2]
-    ])
+    A = np.array(
+        [
+            [float(ray0[1][0]), float(ray1[1][0])],
+            [float(ray0[1][1]), float(ray1[1][1])],
+            [float(ray0[1][2]), float(ray1[1][2])],
+        ]
+    )
+    B = np.array(
+        [ray0[0][0] - ray1[0][0], ray0[0][1] - ray1[0][1], ray0[0][2] - ray1[0][2]]
+    )
     distances = np.linalg.lstsq(A, B, rcond=None)[0]
     if np.allclose(np.dot(A, distances), B) == False:
         distances = np.array([0, 0])
@@ -181,10 +181,18 @@ def find_nearest_points(ray0, ray1):
     c1         : ndarray
                  Closest point on ray1.
     """
-    p0 = ray0[0].reshape(3,)
-    d0 = ray0[1].reshape(3,)
-    p1 = ray1[0].reshape(3,)
-    d1 = ray1[1].reshape(3,)
+    p0 = ray0[0].reshape(
+        3,
+    )
+    d0 = ray0[1].reshape(
+        3,
+    )
+    p1 = ray1[0].reshape(
+        3,
+    )
+    d1 = ray1[1].reshape(
+        3,
+    )
     n = np.cross(d0, d1)
     if np.all(n) == 0:
         point, distances = calculate_intersection_of_two_rays(ray0, ray1)
@@ -192,6 +200,6 @@ def find_nearest_points(ray0, ray1):
     else:
         n0 = np.cross(d0, n)
         n1 = np.cross(d1, n)
-        c0 = p0+(np.dot((p1-p0), n1)/np.dot(d0, n1))*d0
-        c1 = p1+(np.dot((p0-p1), n0)/np.dot(d1, n0))*d1
+        c0 = p0 + (np.dot((p1 - p0), n1) / np.dot(d0, n1)) * d0
+        c1 = p1 + (np.dot((p0 - p1), n0) / np.dot(d1, n0)) * d1
     return c0, c1

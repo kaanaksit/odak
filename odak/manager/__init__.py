@@ -6,10 +6,11 @@ Provides necessary definition for submitting, running and gathering compute.
 """
 
 import threading
+
 try:
     import dispy
 except:
-    print('odak.manager relies on dispy. Install it using: pip install dispy')
+    print("odak.manager relies on dispy. Install it using: pip install dispy")
 from tqdm import tqdm
 from ..tools import shell_command
 
@@ -18,16 +19,12 @@ def start_server():
     """
     Definition to start a dispynode.py.
     """
-    cmd = [
-        'dispynode.py',
-        '--clean',
-        '--daemon'
-    ]
+    cmd = ["dispynode.py", "--clean", "--daemon"]
     shell_command(cmd)
     return True
 
 
-class agent():
+class agent:
     def __init__(self, compute, cluster=False, depends=[], server=False):
         """
         Class to submit and run task(s), same class gathers results at the end of a compute.
@@ -49,8 +46,7 @@ class agent():
         self.results = []
         self.jobs = []
         if self.cluster == True:
-            self.job_cluster = dispy.JobCluster(
-                self.compute, depends=self.depends)
+            self.job_cluster = dispy.JobCluster(self.compute, depends=self.depends)
         if self.server == True:
             self.server_thread = threading.Thread(target=start_server)
             self.server_thread.start()
@@ -81,7 +77,7 @@ class agent():
         results       : list
                         Returns results from compute with a list.
         """
-        print('Progress of the submitted jobs:')
+        print("Progress of the submitted jobs:")
         pbar = tqdm(total=len(self.jobs))
         self.results = []
         if self.cluster == False:

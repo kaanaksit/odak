@@ -70,7 +70,7 @@ def distance_between_point_clouds(points0, points1):
     a = np.repeat(c, points0.shape[0], axis=0)
     b = points0.reshape((points0.shape[0], 1, points0.shape[1]))
     b = np.repeat(b, a.shape[1], axis=1)
-    distances = np.sqrt(np.sum((a-b)**2, axis=2))
+    distances = np.sqrt(np.sum((a - b) ** 2, axis=2))
     return distances
 
 
@@ -93,9 +93,9 @@ def distance_between_two_points(point1, point2):
     point1 = np.asarray(point1)
     point2 = np.asarray(point2)
     if len(point1.shape) == 1 and len(point2.shape) == 1:
-        distance = np.sqrt(np.sum((point1-point2)**2))
+        distance = np.sqrt(np.sum((point1 - point2) ** 2))
     elif len(point1.shape) == 2 or len(point2.shape) == 2:
-        distance = np.sqrt(np.sum((point1-point2)**2, axis=1))
+        distance = np.sqrt(np.sum((point1 - point2) ** 2, axis=1))
     return distance
 
 
@@ -116,17 +116,18 @@ def closest_point_to_a_ray(point, ray):
                     Calculated closest point.
     """
     from odak.raytracing import propagate_a_ray
+
     if len(ray.shape) == 2:
         ray = ray.reshape((1, 2, 3))
     p0 = ray[:, 0]
-    p1 = propagate_a_ray(ray, 1.)
+    p1 = propagate_a_ray(ray, 1.0)
     if len(p1.shape) == 2:
         p1 = p1.reshape((1, 2, 3))
     p1 = p1[:, 0]
     p1 = p1.reshape(3)
     p0 = p0.reshape(3)
     point = point.reshape(3)
-    closest_distance = -np.dot((p0-point), (p1-p0))/np.sum((p1-p0)**2)
+    closest_distance = -np.dot((p0 - point), (p1 - p0)) / np.sum((p1 - p0) ** 2)
     closest_point = propagate_a_ray(ray, closest_distance)[0]
     return closest_point
 
@@ -149,6 +150,7 @@ def point_to_ray_distance(point, ray_point_0, ray_point_1):
     distance    : float
                   Calculated distance.
     """
-    distance = np.sum(np.cross((point-ray_point_0), (point-ray_point_1))
-                      ** 2)/np.sum((ray_point_1-ray_point_0)**2)
+    distance = np.sum(
+        np.cross((point - ray_point_0), (point - ray_point_1)) ** 2
+    ) / np.sum((ray_point_1 - ray_point_0) ** 2)
     return distance

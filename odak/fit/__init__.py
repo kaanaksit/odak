@@ -30,18 +30,18 @@ def least_square_1d(x, y):
 
 
 def gradient_descent_1d(
-                        input_data,
-                        ground_truth_data,
-                        parameters,
-                        function,
-                        gradient_function,
-                        loss_function,
-                        learning_rate = 1e-1,
-                        iteration_number = 10
-                       ):
+    input_data,
+    ground_truth_data,
+    parameters,
+    function,
+    gradient_function,
+    loss_function,
+    learning_rate=1e-1,
+    iteration_number=10,
+):
     """
     Vanilla Gradient Descent algorithm for 1D data.
-    
+
     Parameters
     ----------
     input_data        : numpy.array
@@ -74,12 +74,14 @@ def gradient_descent_1d(
             gradient = gradient + gradient_function(x, y, function, parameters)
         parameters = parameters - learning_rate * gradient / input_data.shape[0]
         loss = loss_function(ground_truth_data, function(input_data, parameters))
-        description = 'Iteration number:{}, loss:{:0.4f}, parameters:{}'.format(i, loss, np.round(parameters, 2))
+        description = "Iteration number:{}, loss:{:0.4f}, parameters:{}".format(
+            i, loss, np.round(parameters, 2)
+        )
         t.set_description(description)
     return parameters
 
 
-def perceptron(x, y, learning_rate = 0.1, iteration_number = 100):
+def perceptron(x, y, learning_rate=0.1, iteration_number=100):
     """
     A function to train a perceptron model.
 
@@ -109,12 +111,12 @@ def perceptron(x, y, learning_rate = 0.1, iteration_number = 100):
             y_hat = threshold_linear_model(x_i, weights)
             if y_hat - y_i != 0:
                 unsuccessful += 1
-                weights = weights + learning_rate * (y_i - y_hat) * x_i 
-            description = 'Unsuccessful count: {}/{}'.format(unsuccessful, x.shape[0])
+                weights = weights + learning_rate * (y_i - y_hat) * x_i
+            description = "Unsuccessful count: {}/{}".format(unsuccessful, x.shape[0])
     return weights
 
 
-def threshold_linear_model(x, w, threshold = 0):
+def threshold_linear_model(x, w, threshold=0):
     """
     A function for thresholding a linear model described with a dot product.
 
@@ -135,5 +137,5 @@ def threshold_linear_model(x, w, threshold = 0):
     value = np.dot(x.T, w)
     result = 0
     if value >= threshold:
-       result = 1
+        result = 1
     return result

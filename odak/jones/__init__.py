@@ -3,6 +3,7 @@
 
 Provides necessary definitions for jones calculus. See "Introduction to Fourier Optics" by Joseph Goodman.
 """
+
 import numpy as np
 
 
@@ -46,12 +47,10 @@ def linearpolarizer(field, rotation=0):
     rotmat = np.array(
         [
             [float(np.cos(rotation)), float(np.sin(rotation))],
-            [float(-np.sin(rotation)),
-             float(np.cos(rotation))]
+            [float(-np.sin(rotation)), float(np.cos(rotation))],
         ]
     )
     linearpolarizer = np.array([[1, 0], [0, 0]])
-    linearpolarizer = np.dot(
-        rotmat.transpose(), np.dot(linearpolarizer, rotmat))
+    linearpolarizer = np.dot(rotmat.transpose(), np.dot(linearpolarizer, rotmat))
     result = np.dot(linearpolarizer, field)
     return result

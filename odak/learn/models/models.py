@@ -7,14 +7,15 @@ class multi_layer_perceptron(torch.nn.Module):
     A multi-layer perceptron model.
     """
 
-    def __init__(self,
-                 dimensions,
-                 activation = torch.nn.ReLU(),
-                 bias = False,
-                 model_type = 'conventional',
-                 siren_multiplier = 1.,
-                 input_multiplier = None
-                ):
+    def __init__(
+        self,
+        dimensions,
+        activation=torch.nn.ReLU(),
+        bias=False,
+        model_type="conventional",
+        siren_multiplier=1.0,
+        input_multiplier=None,
+    ):
         """
         Parameters
         ----------
@@ -35,7 +36,7 @@ class multi_layer_perceptron(torch.nn.Module):
                             Model type: `conventional`, `swish`, `SIREN`, `FILM SIREN`, `Gaussian`.
                             `conventional` refers to a standard multi layer perceptron.
                             For `SIREN,` see: Sitzmann, Vincent, et al. "Implicit neural representations with periodic activation functions." Advances in neural information processing systems 33 (2020): 7462-7473.
-                            For `Swish,` see: Ramachandran, Prajit, Barret Zoph, and Quoc V. Le. "Searching for activation functions." arXiv preprint arXiv:1710.05941 (2017). 
+                            For `Swish,` see: Ramachandran, Prajit, Barret Zoph, and Quoc V. Le. "Searching for activation functions." arXiv preprint arXiv:1710.05941 (2017).
                             For `FILM SIREN,` see: Chan, Eric R., et al. "pi-gan: Periodic implicit generative adversarial networks for 3d-aware image synthesis." Proceedings of the IEEE/CVF conference on computer vision and pattern recognition. 2021.
                             For `Gaussian,` see: Ramasinghe, Sameera, and Simon Lucey. "Beyond periodicity: Towards a unifying framework for activations in coordinate-mlps." In European Conference on Computer Vision, pp. 142-158. Cham: Springer Nature Switzerland, 2022.
         """
@@ -47,50 +48,57 @@ class multi_layer_perceptron(torch.nn.Module):
         self.siren_multiplier = siren_multiplier
         self.dimensions = dimensions
         for i in range(len(self.dimensions) - 1):
-            self.layers.append(torch.nn.Linear(self.dimensions[i], self.dimensions[i + 1], bias = self.bias))
+            self.layers.append(
+                torch.nn.Linear(
+                    self.dimensions[i], self.dimensions[i + 1], bias=self.bias
+                )
+            )
         if not isinstance(input_multiplier, type(None)):
             self.input_multiplier = torch.nn.ParameterList()
-            self.input_multiplier.append(torch.nn.Parameter(torch.ones(1, self.dimensions[0]) * input_multiplier))
-        if self.model_type == 'FILM SIREN':
+            self.input_multiplier.append(
+                torch.nn.Parameter(torch.ones(1, self.dimensions[0]) * input_multiplier)
+            )
+        if self.model_type == "FILM SIREN":
             self.alpha = torch.nn.ParameterList()
             for j in self.dimensions[1::]:
                 self.alpha.append(torch.nn.Parameter(torch.randn(2, 1, j)))
-        if self.model_type == 'Gaussian':
+        if self.model_type == "Gaussian":
             self.alpha = torch.nn.ParameterList()
             for j in self.dimensions[1::]:
                 self.alpha.append(torch.nn.Parameter(torch.randn(1, 1, j)))
 
-
     def forward(self, x):
         """
         Forward model.
-        
+
         Parameters
         ----------
         x             : torch.tensor
                         Input data.
-      
- 
+
+
         Returns
         ----------
         result        : torch.tensor
-                        Estimated output.      
+                        Estimated output.
         """
-        if hasattr(self, 'input_multiplier'):
+        if hasattr(self, "input_multiplier"):
             result = x * self.input_multiplier[0]
         else:
             result = x
         for layer_id, layer in enumerate(self.layers):
             result = layer(result)
-            if self.model_type == 'conventional' and layer_id != len(self.layers) -1:
+            if self.model_type == "conventional" and layer_id != len(self.layers) - 1:
                 result = self.activation(result)
-            elif self.model_type == 'swish' and layer_id != len(self.layers) - 1:
+            elif self.model_type == "swish" and layer_id != len(self.layers) - 1:
                 result = swish(result)
-            elif self.model_type == 'SIREN' and layer_id != len(self.layers) - 1:
+            elif self.model_type == "SIREN" and layer_id != len(self.layers) - 1:
                 result = torch.sin(result * self.siren_multiplier)
-            elif self.model_type == 'FILM SIREN' and layer_id != len(self.layers) - 1:
-                result = torch.sin(self.alpha[layer_id][0] * result + self.alpha[layer_id][1])
-            elif self.model_type == 'Gaussian' and layer_id != len(self.layers) - 1: 
+            elif self.model_type == "FILM SIREN" and layer_id != len(self.layers) - 1:
+                result = torch.sin(
+                    self.alpha[layer_id][0] * result + self.alpha[layer_id][1]
+                )
+            elif self.model_type == "Gaussian" and layer_id != len(self.layers) - 1:
                 result = gaussian(result, self.alpha[layer_id][0])
         return result
 
@@ -101,16 +109,16 @@ class unet(torch.nn.Module):
     """
 
     def __init__(
-                 self, 
-                 depth = 4,
-                 dimensions = 64, 
-                 input_channels = 2, 
-                 output_channels = 1, 
-                 bilinear = False,
-                 kernel_size = 3,
-                 bias = False,
-                 activation = torch.nn.ReLU(inplace = True),
-                ):
+        self,
+        depth=4,
+        dimensions=64,
+        input_channels=2,
+        output_channels=1,
+        bilinear=False,
+        kernel_size=3,
+        bias=False,
+        activation=torch.nn.ReLU(inplace=True),
+    ):
         """
         U-Net model.
 
@@ -133,55 +141,62 @@ class unet(torch.nn.Module):
         """
         super(unet, self).__init__()
         self.inc = double_convolution(
-                                      input_channels = input_channels,
-                                      mid_channels = dimensions,
-                                      output_channels = dimensions,
-                                      kernel_size = kernel_size,
-                                      bias = bias,
-                                      activation = activation
-                                     )      
-        
+            input_channels=input_channels,
+            mid_channels=dimensions,
+            output_channels=dimensions,
+            kernel_size=kernel_size,
+            bias=bias,
+            activation=activation,
+        )
+
         self.downsampling_layers = torch.nn.ModuleList()
         self.upsampling_layers = torch.nn.ModuleList()
-        for i in range(depth): # downsampling layers
-            in_channels = dimensions * (2 ** i)
+        for i in range(depth):  # downsampling layers
+            in_channels = dimensions * (2**i)
             out_channels = dimensions * (2 ** (i + 1))
-            down_layer = downsample_layer(in_channels,
-                                            out_channels,
-                                            kernel_size=kernel_size,
-                                            bias=bias,
-                                            activation=activation
-                                            )
-            self.downsampling_layers.append(down_layer)      
-       
+            down_layer = downsample_layer(
+                in_channels,
+                out_channels,
+                kernel_size=kernel_size,
+                bias=bias,
+                activation=activation,
+            )
+            self.downsampling_layers.append(down_layer)
+
         for i in range(depth - 1, -1, -1):  # upsampling layers
-            up_in_channels = dimensions * (2 ** (i + 1))  
-            up_out_channels = dimensions * (2 ** i) 
-            up_layer = upsample_layer(up_in_channels, up_out_channels, kernel_size=kernel_size, bias=bias, activation=activation, bilinear=bilinear)
+            up_in_channels = dimensions * (2 ** (i + 1))
+            up_out_channels = dimensions * (2**i)
+            up_layer = upsample_layer(
+                up_in_channels,
+                up_out_channels,
+                kernel_size=kernel_size,
+                bias=bias,
+                activation=activation,
+                bilinear=bilinear,
+            )
             self.upsampling_layers.append(up_layer)
         self.outc = torch.nn.Conv2d(
-                                    dimensions, 
-                                    output_channels,
-                                    kernel_size = kernel_size,
-                                    padding = kernel_size // 2,
-                                    bias = bias
-                                   )
+            dimensions,
+            output_channels,
+            kernel_size=kernel_size,
+            padding=kernel_size // 2,
+            bias=bias,
+        )
 
-    
     def forward(self, x):
         """
         Forward model.
-        
+
         Parameters
         ----------
         x             : torch.tensor
                         Input data.
-      
- 
+
+
         Returns
         ----------
         result        : torch.tensor
-                        Estimated output.      
+                        Estimated output.
         """
         downsampling_outputs = [self.inc(x)]
         for down_layer in self.downsampling_layers:
@@ -189,7 +204,7 @@ class unet(torch.nn.Module):
             downsampling_outputs.append(x_down)
         x_up = downsampling_outputs[-1]
         for i, up_layer in enumerate((self.upsampling_layers)):
-            x_up = up_layer(x_up, downsampling_outputs[-(i + 2)])       
+            x_up = up_layer(x_up, downsampling_outputs[-(i + 2)])
         result = self.outc(x_up)
         return result
 
@@ -204,15 +219,15 @@ class spatially_varying_kernel_generation_model(torch.nn.Module):
     """
 
     def __init__(
-                 self,
-                 depth = 3,
-                 dimensions = 8,
-                 input_channels = 7,
-                 kernel_size = 3,
-                 bias = True,
-                 normalization = False,
-                 activation = torch.nn.LeakyReLU(0.2, inplace = True)
-                ):
+        self,
+        depth=3,
+        dimensions=8,
+        input_channels=7,
+        kernel_size=3,
+        bias=True,
+        normalization=False,
+        activation=torch.nn.LeakyReLU(0.2, inplace=True),
+    ):
         """
         U-Net model.
 
@@ -234,18 +249,18 @@ class spatially_varying_kernel_generation_model(torch.nn.Module):
         super().__init__()
         self.depth = depth
         self.inc = convolution_layer(
-                                     input_channels = input_channels,
-                                     output_channels = dimensions,
-                                     kernel_size = kernel_size,
-                                     bias = bias,
-                                     normalization = normalization,
-                                     activation = activation
-                                    )
+            input_channels=input_channels,
+            output_channels=dimensions,
+            kernel_size=kernel_size,
+            bias=bias,
+            normalization=normalization,
+            activation=activation,
+        )
         self.encoder = torch.nn.ModuleList()
         for i in range(depth + 1):  # downsampling layers
             if i == 0:
-                in_channels = dimensions * (2 ** i)
-                out_channels = dimensions * (2 ** i)
+                in_channels = dimensions * (2**i)
+                out_channels = dimensions * (2**i)
             elif i == depth:
                 in_channels = dimensions * (2 ** (i - 1))
                 out_channels = dimensions * (2 ** (i - 1))
@@ -254,14 +269,14 @@ class spatially_varying_kernel_generation_model(torch.nn.Module):
                 out_channels = 2 * in_channels
             pooling_layer = torch.nn.AvgPool2d(2)
             double_convolution_layer = double_convolution(
-                                                          input_channels = in_channels,
-                                                          mid_channels = in_channels,
-                                                          output_channels = out_channels,
-                                                          kernel_size = kernel_size,
-                                                          bias = bias,
-                                                          normalization = normalization,
-                                                          activation = activation
-                                                         )
+                input_channels=in_channels,
+                mid_channels=in_channels,
+                output_channels=out_channels,
+                kernel_size=kernel_size,
+                bias=bias,
+                normalization=normalization,
+                activation=activation,
+            )
             self.encoder.append(pooling_layer)
             self.encoder.append(double_convolution_layer)
         self.spatially_varying_feature = torch.nn.ModuleList()  # for kernel generation
@@ -278,44 +293,44 @@ class spatially_varying_kernel_generation_model(torch.nn.Module):
                 spatially_varying_kernel_generation.append(pooling_layer)
             kernel_generation_block = torch.nn.Sequential(
                 torch.nn.Conv2d(
-                                in_channels = svf_in_channels,
-                                out_channels = svf_mid_channels,
-                                kernel_size = kernel_size,
-                                padding = kernel_size // 2,
-                                bias = bias
-                               ),
+                    in_channels=svf_in_channels,
+                    out_channels=svf_mid_channels,
+                    kernel_size=kernel_size,
+                    padding=kernel_size // 2,
+                    bias=bias,
+                ),
                 activation,
                 torch.nn.Conv2d(
-                                in_channels = svf_mid_channels,
-                                out_channels = svf_mid_channels,
-                                kernel_size = kernel_size,
-                                padding = kernel_size // 2,
-                                bias = bias
-                               ),
+                    in_channels=svf_mid_channels,
+                    out_channels=svf_mid_channels,
+                    kernel_size=kernel_size,
+                    padding=kernel_size // 2,
+                    bias=bias,
+                ),
                 activation,
                 torch.nn.Conv2d(
-                                in_channels = svf_mid_channels,
-                                out_channels = svf_out_channels,
-                                kernel_size = kernel_size,
-                                padding = kernel_size // 2,
-                                bias = bias
-                               ),
+                    in_channels=svf_mid_channels,
+                    out_channels=svf_out_channels,
+                    kernel_size=kernel_size,
+                    padding=kernel_size // 2,
+                    bias=bias,
+                ),
             )
             spatially_varying_kernel_generation.append(kernel_generation_block)
             self.spatially_varying_feature.append(spatially_varying_kernel_generation)
         self.decoder = torch.nn.ModuleList()
         global_feature_layer = global_feature_module(  # global feature layer
-                                                     input_channels = dimensions * (2 ** (depth - 1)),
-                                                     mid_channels = dimensions * (2 ** (depth - 1)),
-                                                     output_channels = dimensions * (2 ** (depth - 1)),
-                                                     kernel_size = kernel_size,
-                                                     bias = bias,
-                                                     activation = torch.nn.LeakyReLU(0.2, inplace = True)
-                                                    )
+            input_channels=dimensions * (2 ** (depth - 1)),
+            mid_channels=dimensions * (2 ** (depth - 1)),
+            output_channels=dimensions * (2 ** (depth - 1)),
+            kernel_size=kernel_size,
+            bias=bias,
+            activation=torch.nn.LeakyReLU(0.2, inplace=True),
+        )
         self.decoder.append(global_feature_layer)
         for i in range(depth, 0, -1):
             if i == 2:
-                up_in_channels = (dimensions // 2) * (2 ** i)
+                up_in_channels = (dimensions // 2) * (2**i)
                 up_out_channels = up_in_channels
                 up_mid_channels = up_in_channels
             elif i == 1:
@@ -323,26 +338,25 @@ class spatially_varying_kernel_generation_model(torch.nn.Module):
                 up_out_channels = dimensions
                 up_mid_channels = up_out_channels
             else:
-                up_in_channels = (dimensions // 2) * (2 ** i)
+                up_in_channels = (dimensions // 2) * (2**i)
                 up_out_channels = up_in_channels // 2
                 up_mid_channels = up_in_channels
             upsample_layer = upsample_convtranspose2d_layer(
-                                                            input_channels = up_in_channels,
-                                                            output_channels = up_mid_channels,
-                                                            kernel_size = 2,
-                                                            stride = 2,
-                                                            bias = bias,
-                                                           )
+                input_channels=up_in_channels,
+                output_channels=up_mid_channels,
+                kernel_size=2,
+                stride=2,
+                bias=bias,
+            )
             conv_layer = double_convolution(
-                                            input_channels = up_mid_channels,
-                                            output_channels = up_out_channels,
-                                            kernel_size = kernel_size,
-                                            bias = bias,
-                                            normalization = normalization,
-                                            activation = activation,
-                                           )
+                input_channels=up_mid_channels,
+                output_channels=up_out_channels,
+                kernel_size=kernel_size,
+                bias=bias,
+                normalization=normalization,
+                activation=activation,
+            )
             self.decoder.append(torch.nn.ModuleList([upsample_layer, conv_layer]))
-
 
     def forward(self, focal_surface, field):
         """
@@ -366,29 +380,40 @@ class spatially_varying_kernel_generation_model(torch.nn.Module):
                     where C_i, H_i, and W_i represent the channel, height, and width
                     of each feature at a certain scale.
         """
-        x = self.inc(torch.cat((focal_surface, field), dim = 1))
+        x = self.inc(torch.cat((focal_surface, field), dim=1))
         downsampling_outputs = [focal_surface]
         downsampling_outputs.append(x)
         for i, down_layer in enumerate(self.encoder):
             x_down = down_layer(downsampling_outputs[-1])
             downsampling_outputs.append(x_down)
         sv_kernels = []
-        for i, (up_layer, svf_layer) in enumerate(zip(self.decoder, self.spatially_varying_feature)):
+        for i, (up_layer, svf_layer) in enumerate(
+            zip(self.decoder, self.spatially_varying_feature)
+        ):
             if i == 0:
-                global_feature = up_layer(downsampling_outputs[-2], downsampling_outputs[-1])
+                global_feature = up_layer(
+                    downsampling_outputs[-2], downsampling_outputs[-1]
+                )
                 downsampling_outputs[-1] = global_feature
                 sv_feature = [global_feature, downsampling_outputs[0]]
                 for j in range(self.depth - i + 1):
                     sv_feature[1] = svf_layer[self.depth - i](sv_feature[1])
                     if j > 0:
                         sv_feature.append(svf_layer[j](downsampling_outputs[2 * j]))
-                sv_feature = [sv_feature[0], sv_feature[1], sv_feature[4], sv_feature[2],
-                              sv_feature[3]]
-                sv_kernel = svf_layer[-1](torch.cat(sv_feature, dim = 1))
+                sv_feature = [
+                    sv_feature[0],
+                    sv_feature[1],
+                    sv_feature[4],
+                    sv_feature[2],
+                    sv_feature[3],
+                ]
+                sv_kernel = svf_layer[-1](torch.cat(sv_feature, dim=1))
                 sv_kernels.append(sv_kernel)
             else:
-                x_up = up_layer[0](downsampling_outputs[-1],
-                                   downsampling_outputs[2 * (self.depth + 1 - i) + 1])
+                x_up = up_layer[0](
+                    downsampling_outputs[-1],
+                    downsampling_outputs[2 * (self.depth + 1 - i) + 1],
+                )
                 x_up = up_layer[1](x_up)
                 downsampling_outputs[-1] = x_up
                 sv_feature = [x_up, downsampling_outputs[0]]
@@ -397,8 +422,13 @@ class spatially_varying_kernel_generation_model(torch.nn.Module):
                     if j > 0:
                         sv_feature.append(svf_layer[j](downsampling_outputs[2 * j]))
                 if i == 1:
-                    sv_feature = [sv_feature[0], sv_feature[1], sv_feature[3], sv_feature[2]]
-                sv_kernel = svf_layer[-1](torch.cat(sv_feature, dim = 1))
+                    sv_feature = [
+                        sv_feature[0],
+                        sv_feature[1],
+                        sv_feature[3],
+                        sv_feature[2],
+                    ]
+                sv_kernel = svf_layer[-1](torch.cat(sv_feature, dim=1))
                 sv_kernels.append(sv_kernel)
         return sv_kernels
 
@@ -412,17 +442,18 @@ class spatially_adaptive_unet(torch.nn.Module):
 
     Chuanjun Zheng, Yicheng Zhan, Liang Shi, Ozan Cakmakci, and Kaan Akşit, "Focal Surface Holographic Light Transport using Learned Spatially Adaptive Convolutions," SIGGRAPH Asia 2024 Technical Communications (SA Technical Communications '24), December, 2024.
     """
+
     def __init__(
-                 self,
-                 depth=3,
-                 dimensions=8,
-                 input_channels=6,
-                 out_channels=6,
-                 kernel_size=3,
-                 bias=True,
-                 normalization=False,
-                 activation=torch.nn.LeakyReLU(0.2, inplace=True)
-                ):
+        self,
+        depth=3,
+        dimensions=8,
+        input_channels=6,
+        out_channels=6,
+        kernel_size=3,
+        bias=True,
+        normalization=False,
+        activation=torch.nn.LeakyReLU(0.2, inplace=True),
+    ):
         """
         U-Net model.
 
@@ -447,55 +478,59 @@ class spatially_adaptive_unet(torch.nn.Module):
         self.depth = depth
         self.out_channels = out_channels
         self.inc = convolution_layer(
-                                     input_channels=input_channels,
-                                     output_channels=dimensions,
-                                     kernel_size=kernel_size,
-                                     bias=bias,
-                                     normalization=normalization,
-                                     activation=activation
-                                    )
+            input_channels=input_channels,
+            output_channels=dimensions,
+            kernel_size=kernel_size,
+            bias=bias,
+            normalization=normalization,
+            activation=activation,
+        )
 
         self.encoder = torch.nn.ModuleList()
         for i in range(self.depth + 1):  # Downsampling layers
-            down_in_channels = dimensions * (2 ** i)
+            down_in_channels = dimensions * (2**i)
             down_out_channels = 2 * down_in_channels
             pooling_layer = torch.nn.AvgPool2d(2)
             double_convolution_layer = double_convolution(
-                                                          input_channels=down_in_channels,
-                                                          mid_channels=down_in_channels,
-                                                          output_channels=down_in_channels,
-                                                          kernel_size=kernel_size,
-                                                          bias=bias,
-                                                          normalization=normalization,
-                                                          activation=activation
-                                                         )
+                input_channels=down_in_channels,
+                mid_channels=down_in_channels,
+                output_channels=down_in_channels,
+                kernel_size=kernel_size,
+                bias=bias,
+                normalization=normalization,
+                activation=activation,
+            )
             sam = spatially_adaptive_module(
-                                            input_channels=down_in_channels,
-                                            output_channels=down_out_channels,
-                                            kernel_size=kernel_size,
-                                            bias=bias,
-                                            activation=activation
-                                           )
-            self.encoder.append(torch.nn.ModuleList([pooling_layer, double_convolution_layer, sam]))
+                input_channels=down_in_channels,
+                output_channels=down_out_channels,
+                kernel_size=kernel_size,
+                bias=bias,
+                activation=activation,
+            )
+            self.encoder.append(
+                torch.nn.ModuleList([pooling_layer, double_convolution_layer, sam])
+            )
         self.global_feature_module = torch.nn.ModuleList()
         double_convolution_layer = double_convolution(
-                                                      input_channels=dimensions * (2 ** (depth + 1)),
-                                                      mid_channels=dimensions * (2 ** (depth + 1)),
-                                                      output_channels=dimensions * (2 ** (depth + 1)),
-                                                      kernel_size=kernel_size,
-                                                      bias=bias,
-                                                      normalization=normalization,
-                                                      activation=activation
-                                                     )
+            input_channels=dimensions * (2 ** (depth + 1)),
+            mid_channels=dimensions * (2 ** (depth + 1)),
+            output_channels=dimensions * (2 ** (depth + 1)),
+            kernel_size=kernel_size,
+            bias=bias,
+            normalization=normalization,
+            activation=activation,
+        )
         global_feature_layer = global_feature_module(
-                                                     input_channels=dimensions * (2 ** (depth + 1)),
-                                                     mid_channels=dimensions * (2 ** (depth + 1)),
-                                                     output_channels=dimensions * (2 ** (depth + 1)),
-                                                     kernel_size=kernel_size,
-                                                     bias=bias,
-                                                     activation=torch.nn.LeakyReLU(0.2, inplace=True)
-                                                    )
-        self.global_feature_module.append(torch.nn.ModuleList([double_convolution_layer, global_feature_layer]))
+            input_channels=dimensions * (2 ** (depth + 1)),
+            mid_channels=dimensions * (2 ** (depth + 1)),
+            output_channels=dimensions * (2 ** (depth + 1)),
+            kernel_size=kernel_size,
+            bias=bias,
+            activation=torch.nn.LeakyReLU(0.2, inplace=True),
+        )
+        self.global_feature_module.append(
+            torch.nn.ModuleList([double_convolution_layer, global_feature_layer])
+        )
         self.decoder = torch.nn.ModuleList()
         for i in range(depth, -1, -1):
             up_in_channels = dimensions * (2 ** (i + 1))
@@ -503,51 +538,50 @@ class spatially_adaptive_unet(torch.nn.Module):
             if i == 0:
                 up_out_channels = self.out_channels
                 upsample_layer = upsample_convtranspose2d_layer(
-                                                                input_channels=up_in_channels,
-                                                                output_channels=up_mid_channels,
-                                                                kernel_size=2,
-                                                                stride=2,
-                                                                bias=bias,
-                                                               )
+                    input_channels=up_in_channels,
+                    output_channels=up_mid_channels,
+                    kernel_size=2,
+                    stride=2,
+                    bias=bias,
+                )
                 conv_layer = torch.nn.Sequential(
                     convolution_layer(
-                                      input_channels=up_mid_channels,
-                                      output_channels=up_mid_channels,
-                                      kernel_size=kernel_size,
-                                      bias=bias,
-                                      normalization=normalization,
-                                      activation=activation,
-                                     ),
+                        input_channels=up_mid_channels,
+                        output_channels=up_mid_channels,
+                        kernel_size=kernel_size,
+                        bias=bias,
+                        normalization=normalization,
+                        activation=activation,
+                    ),
                     convolution_layer(
-                                      input_channels=up_mid_channels,
-                                      output_channels=up_out_channels,
-                                      kernel_size=1,
-                                      bias=bias,
-                                      normalization=normalization,
-                                      activation=None,
-                                     )
+                        input_channels=up_mid_channels,
+                        output_channels=up_out_channels,
+                        kernel_size=1,
+                        bias=bias,
+                        normalization=normalization,
+                        activation=None,
+                    ),
                 )
                 self.decoder.append(torch.nn.ModuleList([upsample_layer, conv_layer]))
             else:
                 up_out_channels = up_in_channels // 2
                 upsample_layer = upsample_convtranspose2d_layer(
-                                                                input_channels=up_in_channels,
-                                                                output_channels=up_mid_channels,
-                                                                kernel_size=2,
-                                                                stride=2,
-                                                                bias=bias,
-                                                               )
+                    input_channels=up_in_channels,
+                    output_channels=up_mid_channels,
+                    kernel_size=2,
+                    stride=2,
+                    bias=bias,
+                )
                 conv_layer = double_convolution(
-                                                input_channels=up_mid_channels,
-                                                mid_channels=up_mid_channels,
-                                                output_channels=up_out_channels,
-                                                kernel_size=kernel_size,
-                                                bias=bias,
-                                                normalization=normalization,
-                                                activation=activation,
-                                               )
+                    input_channels=up_mid_channels,
+                    mid_channels=up_mid_channels,
+                    output_channels=up_out_channels,
+                    kernel_size=kernel_size,
+                    bias=bias,
+                    normalization=normalization,
+                    activation=activation,
+                )
                 self.decoder.append(torch.nn.ModuleList([upsample_layer, conv_layer]))
-
 
     def forward(self, sv_kernel, field):
         """
@@ -576,10 +610,14 @@ class spatially_adaptive_unet(torch.nn.Module):
         for i, down_layer in enumerate(self.encoder):
             x_down = down_layer[0](downsampling_outputs[-1])
             downsampling_outputs.append(x_down)
-            sam_output = down_layer[2](x_down + down_layer[1](x_down), sv_kernel[self.depth - i])
+            sam_output = down_layer[2](
+                x_down + down_layer[1](x_down), sv_kernel[self.depth - i]
+            )
             downsampling_outputs.append(sam_output)
         global_feature = self.global_feature_module[0][0](downsampling_outputs[-1])
-        global_feature = self.global_feature_module[0][1](downsampling_outputs[-1], global_feature)
+        global_feature = self.global_feature_module[0][1](
+            downsampling_outputs[-1], global_feature
+        )
         downsampling_outputs.append(global_feature)
         x_up = downsampling_outputs[-1]
         for i, up_layer in enumerate(self.decoder):

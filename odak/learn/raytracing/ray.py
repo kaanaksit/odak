@@ -2,7 +2,7 @@ import torch
 from ..tools import rotate_points
 
 
-def create_ray(xyz, abg, direction = False):
+def create_ray(xyz, abg, direction=False):
     """
     Definition to create a ray.
 
@@ -29,7 +29,7 @@ def create_ray(xyz, abg, direction = False):
         points = xyz.unsqueeze(0)
     if len(abg) == 1:
         angles = abg.unsqueeze(0)
-    ray = torch.zeros(points.shape[0], 2, 3, device = points.device)
+    ray = torch.zeros(points.shape[0], 2, 3, device=points.device)
     ray[:, 0] = points
     if direction:
         ray[:, 1] = abg
@@ -63,13 +63,13 @@ def create_ray_from_two_points(x0y0z0, x1y1z1):
     xdiff = x1y1z1[:, 0] - x0y0z0[:, 0]
     ydiff = x1y1z1[:, 1] - x0y0z0[:, 1]
     zdiff = x1y1z1[:, 2] - x0y0z0[:, 2]
-    s = (xdiff ** 2 + ydiff ** 2 + zdiff ** 2) ** 0.5
-    s[s == 0] = float('nan')
+    s = (xdiff**2 + ydiff**2 + zdiff**2) ** 0.5
+    s[s == 0] = float("nan")
     cosines = torch.zeros_like(x0y0z0 * x1y1z1)
     cosines[:, 0] = xdiff / s
     cosines[:, 1] = ydiff / s
     cosines[:, 2] = zdiff / s
-    ray = torch.zeros(xdiff.shape[0], 2, 3, device = x0y0z0.device)
+    ray = torch.zeros(xdiff.shape[0], 2, 3, device=x0y0z0.device)
     ray[:, 0] = x0y0z0
     ray[:, 1] = cosines
     return ray
@@ -98,27 +98,30 @@ def create_ray_from_all_pairs(x0y0z0, x1y1z1):
         x0y0z0 = x0y0z0.unsqueeze(0)
     if len(x1y1z1.shape) == 1:
         x1y1z1 = x1y1z1.unsqueeze(0)
-    
+
     m, n = x0y0z0.shape[0], x1y1z1.shape[0]
     start_points = x0y0z0.unsqueeze(1).expand(-1, n, -1).reshape(-1, 3)
     end_points = x1y1z1.unsqueeze(0).expand(m, -1, -1).reshape(-1, 3)
-    
+
     directions = end_points - start_points
     norms = torch.norm(directions, p=2, dim=1, keepdim=True)
-    norms[norms == 0] = float('nan')
-    
+    norms[norms == 0] = float("nan")
+
     normalized_directions = directions / norms
 
     rays = torch.zeros(m * n, 2, 3, device=x0y0z0.device)
     rays[:, 0, :] = start_points
     rays[:, 1, :] = normalized_directions
-    
+
     return rays
 
-def create_ray_from_grid_w_luminous_angle(center, size, no, tilt, num_ray_per_light, angle_limit):
+
+def create_ray_from_grid_w_luminous_angle(
+    center, size, no, tilt, num_ray_per_light, angle_limit
+):
     """
     Generate a 2D array of lights, each emitting rays within a specified solid angle and tilt.
-    
+
     Parameters:
     ----------
     center              : torch.tensor
@@ -133,7 +136,7 @@ def create_ray_from_grid_w_luminous_angle(center, size, no, tilt, num_ray_per_li
                           The maximum angle in degrees from the initial direction vector within which to emit rays.
     num_rays_per_light  : int
                           The number of rays each light should emit.
-    
+
     Returns:
     ----------
     rays : torch.tensor
@@ -142,13 +145,13 @@ def create_ray_from_grid_w_luminous_angle(center, size, no, tilt, num_ray_per_li
 
     samples = torch.zeros((no[0], no[1], 3))
 
-    x = torch.linspace(-size[0] / 2., size[0] / 2., no[0])
-    y = torch.linspace(-size[1] / 2., size[1] / 2., no[1])
-    X, Y = torch.meshgrid(x, y, indexing='ij')
+    x = torch.linspace(-size[0] / 2.0, size[0] / 2.0, no[0])
+    y = torch.linspace(-size[1] / 2.0, size[1] / 2.0, no[1])
+    X, Y = torch.meshgrid(x, y, indexing="ij")
 
     samples[:, :, 0] = X.detach().clone()
     samples[:, :, 1] = Y.detach().clone()
-    samples = samples.reshape((no[0]*no[1], 3))
+    samples = samples.reshape((no[0] * no[1], 3))
 
     samples, *_ = rotate_points(samples, angles=tilt)
 
@@ -157,41 +160,33 @@ def create_ray_from_grid_w_luminous_angle(center, size, no, tilt, num_ray_per_li
     cos_alpha = torch.cos(angle_limit * torch.pi / 180)
     tilt = tilt * torch.pi / 180
 
-    theta = torch.acos(1 - 2 * torch.rand(num_ray_per_light*samples.size(0)) * (1-cos_alpha))
-    phi = 2 * torch.pi * torch.rand(num_ray_per_light*samples.size(0))  
-    
-    directions = torch.stack([
-        torch.sin(theta) * torch.cos(phi),  
-        torch.sin(theta) * torch.sin(phi),  
-        torch.cos(theta)                    
-    ], dim=1)
-    
+    theta = torch.acos(
+        1 - 2 * torch.rand(num_ray_per_light * samples.size(0)) * (1 - cos_alpha)
+    )
+    phi = 2 * torch.pi * torch.rand(num_ray_per_light * samples.size(0))
+
+    directions = torch.stack(
+        [
+            torch.sin(theta) * torch.cos(phi),
+            torch.sin(theta) * torch.sin(phi),
+            torch.cos(theta),
+        ],
+        dim=1,
+    )
+
     c, s = torch.cos(tilt), torch.sin(tilt)
 
-    Rx = torch.tensor([
-        [1, 0, 0],
-        [0, c[0], -s[0]],
-        [0, s[0], c[0]]
-    ])
+    Rx = torch.tensor([[1, 0, 0], [0, c[0], -s[0]], [0, s[0], c[0]]])
 
-    Ry = torch.tensor([
-        [c[1], 0, s[1]],
-        [0, 1, 0],
-        [-s[1], 0, c[1]]
-    ])
+    Ry = torch.tensor([[c[1], 0, s[1]], [0, 1, 0], [-s[1], 0, c[1]]])
 
-    Rz = torch.tensor([
-        [c[2], -s[2], 0],
-        [s[2], c[2], 0],
-        [0, 0, 1]
-    ])
+    Rz = torch.tensor([[c[2], -s[2], 0], [s[2], c[2], 0], [0, 0, 1]])
 
     origins = samples.repeat(num_ray_per_light, 1)
 
-    directions = torch.matmul(directions, (Rz@Ry@Rx).T)
+    directions = torch.matmul(directions, (Rz @ Ry @ Rx).T)
 
-    
-    rays = torch.zeros(num_ray_per_light*samples.size(0), 2, 3)
+    rays = torch.zeros(num_ray_per_light * samples.size(0), 2, 3)
     rays[:, 0, :] = origins
     rays[:, 1, :] = directions
 
@@ -201,7 +196,7 @@ def create_ray_from_grid_w_luminous_angle(center, size, no, tilt, num_ray_per_li
 def create_ray_from_point_w_luminous_angle(origin, num_ray, tilt, angle_limit):
     """
     Generate rays from a point, tilted by specific angles along x, y, z axes, within a specified solid angle.
-    
+
     Parameters:
     ----------
     origin      : torch.tensor
@@ -218,48 +213,37 @@ def create_ray_from_point_w_luminous_angle(origin, num_ray, tilt, angle_limit):
     rays : torch.tensor
            Array that contains starting points and cosines of a created ray(s). Size of [n x 2 x 3]
     """
-    angle_limit = torch.as_tensor(angle_limit) 
+    angle_limit = torch.as_tensor(angle_limit)
     cos_alpha = torch.cos(angle_limit * torch.pi / 180)
     tilt = tilt * torch.pi / 180
 
-    theta = torch.acos(1 - 2 * torch.rand(num_ray) * (1-cos_alpha))
-    phi = 2 * torch.pi * torch.rand(num_ray)  
-    
-    
-    directions = torch.stack([
-        torch.sin(theta) * torch.cos(phi),  
-        torch.sin(theta) * torch.sin(phi),  
-        torch.cos(theta)                    
-    ], dim=1)
-    
+    theta = torch.acos(1 - 2 * torch.rand(num_ray) * (1 - cos_alpha))
+    phi = 2 * torch.pi * torch.rand(num_ray)
+
+    directions = torch.stack(
+        [
+            torch.sin(theta) * torch.cos(phi),
+            torch.sin(theta) * torch.sin(phi),
+            torch.cos(theta),
+        ],
+        dim=1,
+    )
+
     c, s = torch.cos(tilt), torch.sin(tilt)
 
-    Rx = torch.tensor([
-        [1, 0, 0],
-        [0, c[0], -s[0]],
-        [0, s[0], c[0]]
-    ])
+    Rx = torch.tensor([[1, 0, 0], [0, c[0], -s[0]], [0, s[0], c[0]]])
 
-    Ry = torch.tensor([
-        [c[1], 0, s[1]],
-        [0, 1, 0],
-        [-s[1], 0, c[1]]
-    ])
+    Ry = torch.tensor([[c[1], 0, s[1]], [0, 1, 0], [-s[1], 0, c[1]]])
 
-    Rz = torch.tensor([
-        [c[2], -s[2], 0],
-        [s[2], c[2], 0],
-        [0, 0, 1]
-    ])
+    Rz = torch.tensor([[c[2], -s[2], 0], [s[2], c[2], 0], [0, 0, 1]])
 
     origins = origin.repeat(num_ray, 1)
-    directions = torch.matmul(directions, (Rz@Ry@Rx).T)
+    directions = torch.matmul(directions, (Rz @ Ry @ Rx).T)
 
-    
     rays = torch.zeros(num_ray, 2, 3)
     rays[:, 0, :] = origins
     rays[:, 1, :] = directions
-    
+
     return rays
 
 
@@ -309,9 +293,6 @@ def get_points_along_a_ray_segment(ray, distances):
     if len(ray.shape) == 2:
         ray = ray.unsqueeze(0)
     repeated_ray = ray.repeat(distances.shape[-1], 1, 1)
-    propagated_ray = propagate_ray(
-                                   ray = repeated_ray,
-                                   distance = distances
-                                  )
+    propagated_ray = propagate_ray(ray=repeated_ray, distance=distances)
     points = propagated_ray[:, 0]
     return points

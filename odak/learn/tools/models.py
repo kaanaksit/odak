@@ -9,7 +9,7 @@ def freeze(model):
     Parameters
     ----------
     model          : torch.nn.modules
-                     Model to be frozen, in other terms `requires_grad` to be set to `False`.                    
+                     Model to be frozen, in other terms `requires_grad` to be set to `False`.
     """
     for parameter in model.parameters():
         parameter.requires_grad = False

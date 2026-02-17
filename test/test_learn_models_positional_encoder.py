@@ -7,70 +7,96 @@ from tqdm import tqdm
 
 
 def test(
-         output_directory = 'test_output',
-         header = 'test/test_learn_models_positional_encoder.py',
-        ):
+    output_directory="test_output",
+    header="test/test_learn_models_positional_encoder.py",
+):
     odak.tools.check_directory(output_directory)
-    device_name = 'cpu'
-    filename = './test/data/fruit_lady.png'
-    test_filename  = '{}/positional_encoder_multi_layer_perceptron_estimation.png'.format(output_directory)
-    weights_filename = '{}/positional_encoder_multi_layer_perceptron_weights.pt'.format(output_directory)
+    device_name = "cpu"
+    filename = "./test/data/fruit_lady.png"
+    test_filename = (
+        "{}/positional_encoder_multi_layer_perceptron_estimation.png".format(
+            output_directory
+        )
+    )
+    weights_filename = "{}/positional_encoder_multi_layer_perceptron_weights.pt".format(
+        output_directory
+    )
     learning_rate = 1e-4
-    no_epochs = 10 # Change this +10000
+    no_epochs = 10  # Change this +10000
     save_at_every = 1000
     number_of_batches = 1
     positional_encoding_level = 50
     dimensions = [2, 64, 64, 64, 3]
     dimensions[0] = dimensions[0] + dimensions[0] * 2 * positional_encoding_level
     device = torch.device(device_name)
-    positional_encoder = odak.learn.models.components.positional_encoder(L = positional_encoding_level)
+    positional_encoder = odak.learn.models.components.positional_encoder(
+        L=positional_encoding_level
+    )
     model = odak.learn.models.multi_layer_perceptron(
-                                                     dimensions = dimensions,
-                                                     activation = torch.nn.ReLU(),
-                                                     bias = True,
-                                                     input_multiplier = None,
-                                                     model_type = 'conventional'
-                                                    ).to(device)
-    optimizer = torch.optim.AdamW(model.parameters(), lr = learning_rate)
-    image = odak.learn.tools.load_image(filename, normalizeby = 255., torch_style = False)[:, :, 0:3].to(device)
+        dimensions=dimensions,
+        activation=torch.nn.ReLU(),
+        bias=True,
+        input_multiplier=None,
+        model_type="conventional",
+    ).to(device)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
+    image = odak.learn.tools.load_image(filename, normalizeby=255.0, torch_style=False)[
+        :, :, 0:3
+    ].to(device)
     batches = get_batches(image, number_of_batches).to(device)
     loss_function = torch.nn.MSELoss()
-    epochs = tqdm(range(no_epochs), leave = False, dynamic_ncols = True)    
+    epochs = tqdm(range(no_epochs), leave=False, dynamic_ncols=True)
     if os.path.isfile(weights_filename):
-        model.load_state_dict(torch.load(weights_filename, weights_only = True))
+        model.load_state_dict(torch.load(weights_filename, weights_only=True))
         model.eval()
-        odak.log.logger.info('{} -> Model weights loaded: {}'.format(header, weights_filename))
+        odak.log.logger.info(
+            "{} -> Model weights loaded: {}".format(header, weights_filename)
+        )
     try:
         for epoch_id in epochs:
-            test_loss, estimation = trial(image, batches, loss_function, model, positional_encoder)
-            train_loss = train(image, batches, optimizer, loss_function, model, positional_encoder)
-            description = 'train loss: {:.5f}, test loss:{:.5f}'.format(train_loss, test_loss)
+            test_loss, estimation = trial(
+                image, batches, loss_function, model, positional_encoder
+            )
+            train_loss = train(
+                image, batches, optimizer, loss_function, model, positional_encoder
+            )
+            description = "train loss: {:.5f}, test loss:{:.5f}".format(
+                train_loss, test_loss
+            )
             epochs.set_description(description)
             if epoch_id % save_at_every == 0:
-                odak.learn.tools.save_image(test_filename, estimation, cmin = 0., cmax = 1.)
+                odak.learn.tools.save_image(
+                    test_filename, estimation, cmin=0.0, cmax=1.0
+                )
         torch.save(model.state_dict(), weights_filename)
-        odak.log.logger.info('{} -> Model weights save: {}'.format(header, weights_filename))
-        odak.learn.tools.save_image(test_filename, estimation, cmin = 0., cmax = 1.)
+        odak.log.logger.info(
+            "{} -> Model weights save: {}".format(header, weights_filename)
+        )
+        odak.learn.tools.save_image(test_filename, estimation, cmin=0.0, cmax=1.0)
     except KeyboardInterrupt:
         torch.save(model.state_dict(), weights_filename)
-        odak.log.logger.info('{} -> Model weights save: {}'.format(header, weights_filename))
-        odak.learn.tools.save_image(test_filename, estimation, cmin = 0., cmax = 1.)
+        odak.log.logger.info(
+            "{} -> Model weights save: {}".format(header, weights_filename)
+        )
+        odak.learn.tools.save_image(test_filename, estimation, cmin=0.0, cmax=1.0)
         assert True == True
     assert True == True
 
 
-def get_batches(image, number_of_batches = 100):
+def get_batches(image, number_of_batches=100):
     xs = torch.arange(image.shape[0])
     ys = torch.arange(image.shape[1])
-    XS, YS = torch.meshgrid(xs, ys, indexing = 'ij')
+    XS, YS = torch.meshgrid(xs, ys, indexing="ij")
     XS = XS.reshape(number_of_batches, -1, 1)
     YS = YS.reshape(number_of_batches, -1, 1)
-    batches = torch.concat((XS, YS), axis = 2).float()
+    batches = torch.concat((XS, YS), axis=2).float()
     return batches
 
 
-def train(output_values, input_values, optimizer, loss_function, model, positional_encoder):
-    total_loss = 0.
+def train(
+    output_values, input_values, optimizer, loss_function, model, positional_encoder
+):
+    total_loss = 0.0
     for input_value in input_values:
         optimizer.zero_grad()
         normalized_input_value = torch.zeros_like(input_value)
@@ -78,9 +104,11 @@ def train(output_values, input_values, optimizer, loss_function, model, position
         normalized_input_value[:, 1] = input_value[:, 1] / output_values.shape[1]
         x = positional_encoder(normalized_input_value)
         estimation = model(x)
-        ground_truth = output_values[input_value[:, 0].int(), input_value[:, 1].int(), :]
+        ground_truth = output_values[
+            input_value[:, 0].int(), input_value[:, 1].int(), :
+        ]
         loss = loss_function(estimation, ground_truth)
-        loss.backward(retain_graph = True)
+        loss.backward(retain_graph=True)
         optimizer.step()
         total_loss += loss.item()
     return total_loss
@@ -95,12 +123,16 @@ def trial(output_values, input_values, loss_function, model, positional_encoder)
         normalized_input_value[:, 1] = input_value[:, 1] / output_values.shape[1]
         x = positional_encoder(normalized_input_value)
         estimation = model(x)
-        ground_truth = output_values[input_value[:, 0].int(), input_value[:, 1].int(), :]
-        estimated_image[input_value[:, 0].int(), input_value[:, 1].int(), :] = estimation
+        ground_truth = output_values[
+            input_value[:, 0].int(), input_value[:, 1].int(), :
+        ]
+        estimated_image[input_value[:, 0].int(), input_value[:, 1].int(), :] = (
+            estimation
+        )
         loss = loss_function(estimation, ground_truth)
     loss = loss_function(estimated_image, output_values)
     return loss, estimated_image
 
 
-if  __name__ ==  '__main__':
+if __name__ == "__main__":
     sys.exit(test())

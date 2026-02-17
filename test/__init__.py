@@ -1,2 +1,3 @@
 import odak
-odak.tools.check_directory('test_output')
+
+odak.tools.check_directory("test_output")

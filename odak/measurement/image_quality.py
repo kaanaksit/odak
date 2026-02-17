@@ -37,7 +37,7 @@ def fourier_transform_1d(line):
     """
     result = np.fft.fft(line)
     result /= np.amax(result)
-    result = result[np.arange(0, int(line.shape[0]/2))]
+    result = result[np.arange(0, int(line.shape[0] / 2))]
     return result
 
 
@@ -59,11 +59,12 @@ def polynomial_fit(line_x, line_y, fit_degree=3):
     p           : numpy.poly1d
                   polynomial fit.
     """
-    if np.__name__ == 'numpy':
+    if np.__name__ == "numpy":
         fun_poly = np.polyfit(line_x, line_y, fit_degree)
         p = np.poly1d(fun_poly)
     else:
         import numpy
+
         line_x = np.asnumpy(line_x)
         line_y = np.asnumpy(line_y)
         fun_poly = numpy.polyfit(line_x, line_y, fit_degree)
@@ -91,11 +92,11 @@ def roi(image, location=[0, 100, 0, 100], threshold=[0, 1, 0, 1]):
     line_y     : ndarray
                  Line slice.
     """
-    img = image[location[0]:location[1], location[2]:location[3]]
+    img = image[location[0] : location[1], location[2] : location[3]]
     if len(img.shape) == 3:
         img = np.sum(img, axis=2)
-    line_x = img[:, int(img.shape[1]/2)]
-    line_y = img[int(img.shape[0]/2), :]
+    line_x = img[:, int(img.shape[1] / 2)]
+    line_y = img[int(img.shape[0] / 2), :]
     line_x = np.asarray(line_x)
     line_y = np.asarray(line_y)
     line_x = line_x - np.amin(line_x)
@@ -139,12 +140,12 @@ def modulation_transfer_function(line_x, line_y, px_size):
     mtf_y = fourier_transform_1d(der_y)
     n_x = len(der_x)
     k_x = np.arange(n_x)
-    T_x = n_x*px_size[0]
-    frq_x = k_x/T_x
-    frq_x = frq_x[np.arange(0, int(n_x/2))]
+    T_x = n_x * px_size[0]
+    frq_x = k_x / T_x
+    frq_x = frq_x[np.arange(0, int(n_x / 2))]
     n_y = len(der_y)
     k_y = np.arange(n_y)
-    T_y = n_y*px_size[1]
-    frq_y = k_y/T_y
-    frq_y = frq_y[np.arange(0, int(n_y/2))]
+    T_y = n_y * px_size[1]
+    frq_y = k_y / T_y
+    frq_y = frq_y[np.arange(0, int(n_y / 2))]
     return [mtf_x, mtf_y], [frq_x, frq_y]

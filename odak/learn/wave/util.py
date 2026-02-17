@@ -19,8 +19,8 @@ def wavenumber(wavelength):
     return k
 
 
-def calculate_phase(field, deg = False):
-    """ 
+def calculate_phase(field, deg=False):
+    """
     Definition to calculate phase of a single or multiple given electric field(s).
 
     Parameters
@@ -37,12 +37,12 @@ def calculate_phase(field, deg = False):
     """
     phase = field.imag.atan2(field.real)
     if deg:
-        phase *= 180. / torch.pi
+        phase *= 180.0 / torch.pi
     return phase
 
 
 def calculate_amplitude(field):
-    """ 
+    """
     Definition to calculate amplitude of a single or multiple given electric field(s).
 
     Parameters
@@ -105,21 +105,21 @@ def generate_complex_field(amplitude, phase):
 
 
 def normalize_phase(
-                    phase: torch.Tensor,
-                    period: float = 2. * torch.pi,
-                    multiplier: float = 1.,
-                ) -> torch.Tensor:
+    phase: torch.Tensor,
+    period: float = 2.0 * torch.pi,
+    multiplier: float = 1.0,
+) -> torch.Tensor:
     """
     Normalizes the input phase tensor by applying a modulo operation and dividing it by the period, then multiplying it by the multiplier. The resulting normalized_phase tensor will have zero mean and unit variance.
-    
+
     Args:
         phase (torch.Tensor): Input tensor of shape (batch_size, sequence_length) containing the raw phase values.
         period (float, optional): The period of the waveform to be normalized. Default is 2*pi.
         multiplier (float, optional): A scaling factor used to adjust the range of the normalized phase values. Default is 1.
-        
+
     Returns:
         torch.Tensor: Normalized phase tensor of shape (batch_size, sequence_length) with zero mean and unit variance.
     """
     normalized_phase = phase % period / period * multiplier
-    normalized_phase = normalized_phase - normalized_phase.mean() + multiplier / 2.
+    normalized_phase = normalized_phase - normalized_phase.mean() + multiplier / 2.0
     return normalized_phase

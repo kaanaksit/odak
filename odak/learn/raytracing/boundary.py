@@ -5,7 +5,7 @@ from .primitives import is_it_on_triangle, is_it_on_triangle_batch, center_of_tr
 from ..tools.vector import distance_between_two_points
 
 
-def refract(vector, normvector, n1, n2, error = 0.01):
+def refract(vector, normvector, n1, n2, error=0.01):
     """
     Definition to refract an incoming ray.
     Used method described in G.H. Spencer and M.V.R.K. Murty, "General Ray-Tracing Procedure", 1961.
@@ -23,7 +23,7 @@ def refract(vector, normvector, n1, n2, error = 0.01):
                      Refractive index of the incoming medium.
     n2             : float
                      Refractive index of the outgoing medium.
-    error          : float 
+    error          : float
                      Desired error.
 
     Returns
@@ -36,20 +36,28 @@ def refract(vector, normvector, n1, n2, error = 0.01):
         vector = vector.unsqueeze(0)
     if len(normvector.shape) == 2:
         normvector = normvector.unsqueeze(0)
-    mu    = n1 / n2
-    div   = normvector[:, 1, 0] ** 2  + normvector[:, 1, 1] ** 2 + normvector[:, 1, 2] ** 2
-    a     = mu * (vector[:, 1, 0] * normvector[:, 1, 0] + vector[:, 1, 1] * normvector[:, 1, 1] + vector[:, 1, 2] * normvector[:, 1, 2]) / div
-    b     = (mu ** 2 - 1) / div
-    to    = - b * 0.5 / a
-    num   = 0
-    eps   = torch.ones(vector.shape[0], device = vector.device) * error * 2
+    mu = n1 / n2
+    div = normvector[:, 1, 0] ** 2 + normvector[:, 1, 1] ** 2 + normvector[:, 1, 2] ** 2
+    a = (
+        mu
+        * (
+            vector[:, 1, 0] * normvector[:, 1, 0]
+            + vector[:, 1, 1] * normvector[:, 1, 1]
+            + vector[:, 1, 2] * normvector[:, 1, 2]
+        )
+        / div
+    )
+    b = (mu**2 - 1) / div
+    to = -b * 0.5 / a
+    num = 0
+    eps = torch.ones(vector.shape[0], device=vector.device) * error * 2
     while len(eps[eps > error]) > 0:
-       num   += 1
-       oldto  = to
-       v      = to ** 2 + 2 * a * to + b
-       deltav = 2 * (to + a)
-       to     = to - v / deltav
-       eps    = abs(oldto - to)
+        num += 1
+        oldto = to
+        v = to**2 + 2 * a * to + b
+        deltav = 2 * (to + a)
+        to = to - v / deltav
+        eps = abs(oldto - to)
     output = torch.zeros_like(vector)
     output[:, 0, 0] = normvector[:, 0, 0]
     output[:, 0, 1] = normvector[:, 0, 1]
@@ -61,8 +69,8 @@ def refract(vector, normvector, n1, n2, error = 0.01):
 
 
 def reflect(input_ray, normal):
-    """ 
-    Definition to reflect an incoming ray from a surface defined by a surface normal. 
+    """
+    Definition to reflect an incoming ray from a surface defined by a surface normal.
     Used method described in G.H. Spencer and M.V.R.K. Murty, "General Ray-Tracing Procedure", 1961.
 
 
@@ -86,8 +94,16 @@ def reflect(input_ray, normal):
     if len(normal.shape) == 2:
         normal = normal.unsqueeze(0)
     mu = 1
-    div = normal[:, 1, 0]**2 + normal[:, 1, 1]**2 + normal[:, 1, 2]**2 + 1e-8
-    a = mu * (input_ray[:, 1, 0] * normal[:, 1, 0] + input_ray[:, 1, 1] * normal[:, 1, 1] + input_ray[:, 1, 2] * normal[:, 1, 2]) / div
+    div = normal[:, 1, 0] ** 2 + normal[:, 1, 1] ** 2 + normal[:, 1, 2] ** 2 + 1e-8
+    a = (
+        mu
+        * (
+            input_ray[:, 1, 0] * normal[:, 1, 0]
+            + input_ray[:, 1, 1] * normal[:, 1, 1]
+            + input_ray[:, 1, 2] * normal[:, 1, 2]
+        )
+        / div
+    )
     a = a.unsqueeze(1)
     n = int(torch.amax(torch.tensor([normal.shape[0], input_ray.shape[0]])))
     output_ray = torch.zeros((n, 2, 3)).to(input_ray.device)
@@ -96,7 +112,9 @@ def reflect(input_ray, normal):
     return output_ray
 
 
-def intersect_w_sphere(ray, sphere, learning_rate = 2e-1, number_of_steps = 5000, error_threshold = 1e-2):
+def intersect_w_sphere(
+    ray, sphere, learning_rate=2e-1, number_of_steps=5000, error_threshold=1e-2
+):
     """
     Definition to find the intersection between ray(s) and sphere(s).
 
@@ -129,33 +147,34 @@ def intersect_w_sphere(ray, sphere, learning_rate = 2e-1, number_of_steps = 5000
         ray = ray.unsqueeze(0)
     if len(sphere.shape) == 1:
         sphere = sphere.unsqueeze(0)
-    distance = torch.zeros(ray.shape[0], device = ray.device, requires_grad = True)
-    loss_l2 = torch.nn.MSELoss(reduction = 'sum')
-    optimizer = torch.optim.AdamW([distance], lr = learning_rate)    
-    t = tqdm(range(number_of_steps), leave = False, dynamic_ncols = True)
+    distance = torch.zeros(ray.shape[0], device=ray.device, requires_grad=True)
+    loss_l2 = torch.nn.MSELoss(reduction="sum")
+    optimizer = torch.optim.AdamW([distance], lr=learning_rate)
+    t = tqdm(range(number_of_steps), leave=False, dynamic_ncols=True)
     for step in t:
         optimizer.zero_grad()
         propagated_ray = propagate_ray(ray, distance)
-        test = torch.abs((propagated_ray[:, 0, 0] - sphere[:, 0]) ** 2 + (propagated_ray[:, 0, 1] - sphere[:, 1]) ** 2 + (propagated_ray[:, 0, 2] - sphere[:, 2]) ** 2 - sphere[:, 3] ** 2)
-        loss = loss_l2(
-                       test,
-                       torch.zeros_like(test)
-                      )
-        loss.backward(retain_graph = True)
+        test = torch.abs(
+            (propagated_ray[:, 0, 0] - sphere[:, 0]) ** 2
+            + (propagated_ray[:, 0, 1] - sphere[:, 1]) ** 2
+            + (propagated_ray[:, 0, 2] - sphere[:, 2]) ** 2
+            - sphere[:, 3] ** 2
+        )
+        loss = loss_l2(test, torch.zeros_like(test))
+        loss.backward(retain_graph=True)
         optimizer.step()
-        t.set_description('Sphere intersection loss: {}'.format(loss.item()))
+        t.set_description("Sphere intersection loss: {}".format(loss.item()))
     check = test < error_threshold
     intersecting_ray = propagate_ray(ray[check == True], distance[check == True])
     intersecting_normal = create_ray_from_two_points(
-                                                     sphere[:, 0:3],
-                                                     intersecting_ray[:, 0]
-                                                    )
+        sphere[:, 0:3], intersecting_ray[:, 0]
+    )
     return intersecting_ray, intersecting_normal, distance, check
 
 
 def intersect_w_triangle(ray, triangle):
     """
-    Definition to find intersection point of a ray with a triangle. 
+    Definition to find intersection point of a ray with a triangle.
 
     Parameters
     ----------
@@ -185,9 +204,9 @@ def intersect_w_triangle(ray, triangle):
                           Expected size is [1] or [m].
     """
     if len(triangle.shape) == 2:
-       triangle = triangle.unsqueeze(0)
+        triangle = triangle.unsqueeze(0)
     if len(ray.shape) == 2:
-       ray = ray.unsqueeze(0)
+        ray = ray.unsqueeze(0)
     normal, distance = intersect_w_surface(ray, triangle)
     check = is_it_on_triangle(normal[:, 0], triangle)
     intersecting_ray = ray.unsqueeze(0)
@@ -195,7 +214,7 @@ def intersect_w_triangle(ray, triangle):
     intersecting_ray = intersecting_ray[check == True]
     intersecting_normal = normal.unsqueeze(0)
     intersecting_normal = intersecting_normal.repeat(triangle.shape[0], 1, 1, 1)
-    intersecting_normal = intersecting_normal[check ==  True]
+    intersecting_normal = intersecting_normal[check == True]
     return normal, distance, intersecting_ray, intersecting_normal, check
 
 
@@ -224,9 +243,9 @@ def intersect_w_triangle_batch(ray, triangle):
                       Boolean tensor (m x n) indicating whether each ray intersects with a triangle or not.
     """
     if len(triangle.shape) == 2:
-       triangle = triangle.unsqueeze(0)
+        triangle = triangle.unsqueeze(0)
     if len(ray.shape) == 2:
-       ray = ray.unsqueeze(0)
+        ray = ray.unsqueeze(0)
 
     normal, distance = intersect_w_surface_batch(ray, triangle)
 
@@ -237,8 +256,12 @@ def intersect_w_triangle_batch(ray, triangle):
     flat_ray = ray.repeat(normal.size(0), 1, 1)
     flat_distance = distance.flatten()
 
-    filtered_normal = torch.masked_select(flat_normal, flat_check.unsqueeze(-1).unsqueeze(-1).repeat(1, 2, 3))
-    filtered_ray = torch.masked_select(flat_ray, flat_check.unsqueeze(-1).unsqueeze(-1).repeat(1, 2, 3))
+    filtered_normal = torch.masked_select(
+        flat_normal, flat_check.unsqueeze(-1).unsqueeze(-1).repeat(1, 2, 3)
+    )
+    filtered_ray = torch.masked_select(
+        flat_ray, flat_check.unsqueeze(-1).unsqueeze(-1).repeat(1, 2, 3)
+    )
     filtered_distnace = torch.masked_select(flat_distance, flat_check)
 
     check_count = check.sum(dim=1).tolist()
@@ -287,17 +310,11 @@ def intersect_w_surface(ray, points):
     new_normal[:, 0] = ray[:, 0] + distance * ray[:, 1]
     new_normal[:, 1] = normal[:, 1]
     new_normal = torch.nan_to_num(
-                                  new_normal,
-                                  nan = float('nan'),
-                                  posinf = float('nan'),
-                                  neginf = float('nan')
-                                 )
+        new_normal, nan=float("nan"), posinf=float("nan"), neginf=float("nan")
+    )
     distance = torch.nan_to_num(
-                                distance,
-                                nan = float('nan'),
-                                posinf = float('nan'),
-                                neginf = float('nan')
-                               )
+        distance, nan=float("nan"), posinf=float("nan"), neginf=float("nan")
+    )
     return new_normal, distance
 
 
@@ -326,24 +343,24 @@ def intersect_w_surface_batch(ray, triangle):
         normal = normal.unsqueeze(0)
 
     f = normal[:, None, 0] - ray[None, :, 0]
-    distance = (torch.bmm(normal[:, None, 1], f.permute(0, 2, 1)).squeeze(1) / torch.mm(normal[:, 1], ray[:, 1].T)).T
+    distance = (
+        torch.bmm(normal[:, None, 1], f.permute(0, 2, 1)).squeeze(1)
+        / torch.mm(normal[:, 1], ray[:, 1].T)
+    ).T
 
-    new_normal = torch.zeros((triangle.shape[0], )+ray.shape)
-    new_normal[:, :, 0] = ray[None, :, 0] + (distance[:, :, None] * ray[:, None, 1]).permute(1, 0, 2)
+    new_normal = torch.zeros((triangle.shape[0],) + ray.shape)
+    new_normal[:, :, 0] = ray[None, :, 0] + (
+        distance[:, :, None] * ray[:, None, 1]
+    ).permute(1, 0, 2)
     new_normal[:, :, 1] = normal[:, None, 1]
     new_normal = torch.nan_to_num(
-                                  new_normal,
-                                  nan = float('nan'),
-                                  posinf = float('nan'),
-                                  neginf = float('nan')
-                                 )
+        new_normal, nan=float("nan"), posinf=float("nan"), neginf=float("nan")
+    )
     distance = torch.nan_to_num(
-                                distance,
-                                nan = float('nan'),
-                                posinf = float('nan'),
-                                neginf = float('nan')
-                               )
+        distance, nan=float("nan"), posinf=float("nan"), neginf=float("nan")
+    )
     return new_normal, distance.T
+
 
 def get_triangle_normal(triangle, triangle_center=None):
     """
@@ -365,9 +382,8 @@ def get_triangle_normal(triangle, triangle_center=None):
         triangle = triangle.view((1, 3, 3))
     normal = torch.zeros((triangle.shape[0], 2, 3)).to(triangle.device)
     direction = torch.linalg.cross(
-                                   triangle[:, 0] - triangle[:, 1], 
-                                   triangle[:, 2] - triangle[:, 1]
-                                  )
+        triangle[:, 0] - triangle[:, 1], triangle[:, 2] - triangle[:, 1]
+    )
     if type(triangle_center) == type(None):
         normal[:, 0] = center_of_triangle(triangle)
     else:
@@ -399,9 +415,10 @@ def get_sphere_normal_torch(point, sphere):
     normal_vector = create_ray_from_two_points(point, sphere[0:3])
     return normal_vector
 
+
 def intersect_w_circle(ray, circle):
     """
-    Definition to find intersection point of a ray with a circle. 
+    Definition to find intersection point of a ray with a circle.
     Returns distance as zero if there isn't an intersection.
 
     Parameters
@@ -426,7 +443,7 @@ def intersect_w_circle(ray, circle):
     distance_to_center = distance_between_two_points(normal[:, 0], circle[1])
     mask = distance_to_center > circle[2]
     distance[mask] = 0
-    
+
     if len(ray.shape) == 2:
         normal = normal.squeeze(0)
 

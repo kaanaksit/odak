@@ -2,7 +2,8 @@ import numpy as np
 import sys
 import odak
 
-def generate_data(number_of_elements, offset=[0, 0], scale=[1., 1.], label=0.):
+
+def generate_data(number_of_elements, offset=[0, 0], scale=[1.0, 1.0], label=0.0):
     """
     A function to generate reasonable data with a specific class.
 
@@ -38,31 +39,30 @@ def plot_data(x, y, w, show=True):
     if show == False:
         return
     import matplotlib.pyplot as plt
+
     figure = plt.figure()
     plt.scatter(x[:, 0], x[:, 1], c=y[:, 0])
     x1 = [min(x[:, 0]), max(x[:, 0])]
-    m = - w[1] / w[2]
-    n = - w[0] / w[2]
+    m = -w[1] / w[2]
+    n = -w[0] / w[2]
     x2 = m * x1 + n
     plt.plot(x1, x2)
     plt.show()
 
 
 def test():
-    x0, y0 = generate_data(100, offset=[ 4.,  4.], scale=[4., 4.], label=0)
-    x1, y1 = generate_data(100, offset=[-4., -4.], scale=[5., 5.], label=1) 
-    x_train = np.vstack((x0, x1)); y_train = np.vstack((y0, y1))
-    learning_rate = 0.1; iteration_number = 100
+    x0, y0 = generate_data(100, offset=[4.0, 4.0], scale=[4.0, 4.0], label=0)
+    x1, y1 = generate_data(100, offset=[-4.0, -4.0], scale=[5.0, 5.0], label=1)
+    x_train = np.vstack((x0, x1))
+    y_train = np.vstack((y0, y1))
+    learning_rate = 0.1
+    iteration_number = 100
     weights = odak.fit.perceptron(
-                                  x_train,
-                                  y_train,
-                                  learning_rate=learning_rate,
-                                  iteration_number=iteration_number
-                                 ) 
+        x_train, y_train, learning_rate=learning_rate, iteration_number=iteration_number
+    )
     plot_data(x_train, y_train, weights, show=False)
     assert True == True
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(test())
-

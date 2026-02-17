@@ -9,28 +9,28 @@ from ...wave import calculate_phase, calculate_amplitude, calculate_intensity
 from ...log import logger
 
 
-class surfaceshow():
+class surfaceshow:
     """
     A class for general purpose surface plotting using plotly.
     """
 
     def __init__(
-                 self,
-                 title = 'plot',
-                 shape = [1000, 1000],
-                 labels = ['x', 'y', 'z'],
-                 types = ['linear', 'linear', 'linear'],
-                 font_size = 12,
-                 tick_no = [10, 10, 10],
-                 margin = [65, 50, 65, 90],
-                 camera = [1.87, 0.88, -0.64],
-                 colorbarlength = 0.75,
-                ):
+        self,
+        title="plot",
+        shape=[1000, 1000],
+        labels=["x", "y", "z"],
+        types=["linear", "linear", "linear"],
+        font_size=12,
+        tick_no=[10, 10, 10],
+        margin=[65, 50, 65, 90],
+        camera=[1.87, 0.88, -0.64],
+        colorbarlength=0.75,
+    ):
         """
         Class for plotting detectors.
 
         Parameters
-        ---------- 
+        ----------
         title          : str
                          Title of the plot.
         shape          : list
@@ -51,34 +51,33 @@ class surfaceshow():
                          Length of the colorbar.
         """
         self.settings = {
-            'title': title,
-            'color scale': 'Portland',
-                           'x label': labels[0],
-                           'y label': labels[1],
-                           'z label': labels[2],
-                           'x axis type': types[0],
-                           'y axis type': types[1],
-                           'z axis type': types[2],
-                           'font size': font_size,
-                           'x axis tick number': tick_no[0],
-                           'y axis tick number': tick_no[1],
-                           'z axis tick number': tick_no[2],
-                           'width': shape[0],
-                           'height': shape[1],
-                           'margin': margin,
-                           'camera': camera,
-                           'colorbar length': colorbarlength,
+            "title": title,
+            "color scale": "Portland",
+            "x label": labels[0],
+            "y label": labels[1],
+            "z label": labels[2],
+            "x axis type": types[0],
+            "y axis type": types[1],
+            "z axis type": types[2],
+            "font size": font_size,
+            "x axis tick number": tick_no[0],
+            "y axis tick number": tick_no[1],
+            "z axis tick number": tick_no[2],
+            "width": shape[0],
+            "height": shape[1],
+            "margin": margin,
+            "camera": camera,
+            "colorbar length": colorbarlength,
         }
         self.fig = plotly.subplots.make_subplots(
-                                                 rows = 1,
-                                                 cols = 1,
-                                                 specs = [
-                                                          [
-                                                           {"type": "scene"},
-                                                          ],
-                                                         ],
-                                                )
-
+            rows=1,
+            cols=1,
+            specs=[
+                [
+                    {"type": "scene"},
+                ],
+            ],
+        )
 
     def save_image(self, filename):
         """
@@ -91,45 +90,61 @@ class surfaceshow():
         """
         self.fig.write_image(filename)
 
-
     def show(self):
         """
         Definition to show the plot.
         """
         self.fig.update_layout(
             autosize=False,
-            width=self.settings['width'],
-            height=self.settings['height'],
+            width=self.settings["width"],
+            height=self.settings["height"],
             scene=dict(
-                aspectmode='manual',
-                aspectratio=dict(x=1., y=1., z=1.),
-                xaxis=dict(title=self.settings['x label'], type=self.settings['x axis type'],
-                           nticks=self.settings['x axis tick number']),
-                yaxis=dict(title=self.settings['y label'], type=self.settings['y axis type'],
-                           nticks=self.settings['y axis tick number']),
-                zaxis=dict(title=self.settings['z label'], type=self.settings['z axis type'],
-                           nticks=self.settings['z axis tick number']),
+                aspectmode="manual",
+                aspectratio=dict(x=1.0, y=1.0, z=1.0),
+                xaxis=dict(
+                    title=self.settings["x label"],
+                    type=self.settings["x axis type"],
+                    nticks=self.settings["x axis tick number"],
+                ),
+                yaxis=dict(
+                    title=self.settings["y label"],
+                    type=self.settings["y axis type"],
+                    nticks=self.settings["y axis tick number"],
+                ),
+                zaxis=dict(
+                    title=self.settings["z label"],
+                    type=self.settings["z axis type"],
+                    nticks=self.settings["z axis tick number"],
+                ),
             ),
-            title=self.settings['title'],
+            title=self.settings["title"],
             font=dict(
-                      size = self.settings['font size'],
-                     ),
-            margin = dict(
-                         l = self.settings['margin'][0],
-                         r = self.settings['margin'][1],
-                         b = self.settings['margin'][2],
-                         t = self.settings['margin'][3]
-                        ),
-            scene_camera_eye = dict(
-                                    x = self.settings['camera'][0],
-                                    y = self.settings['camera'][1],
-                                    z = self.settings['camera'][2]
-                                   ),
+                size=self.settings["font size"],
+            ),
+            margin=dict(
+                l=self.settings["margin"][0],
+                r=self.settings["margin"][1],
+                b=self.settings["margin"][2],
+                t=self.settings["margin"][3],
+            ),
+            scene_camera_eye=dict(
+                x=self.settings["camera"][0],
+                y=self.settings["camera"][1],
+                z=self.settings["camera"][2],
+            ),
         )
         self.fig.show()
 
-
-    def add_surface(self, data_x, data_y, data_z, label='', mode='lines+markers', opacity=1., contour=False):
+    def add_surface(
+        self,
+        data_x,
+        data_y,
+        data_z,
+        label="",
+        mode="lines+markers",
+        opacity=1.0,
+        contour=False,
+    ):
         """
         Definition to add data to the plot.
 
@@ -140,12 +155,12 @@ class surfaceshow():
         data_y      : ndarray
                       Y axis data to be plotted.
         label       : str
-                      Label of the plot.  
+                      Label of the plot.
         mode        : str
                       Mode for the plot, it can be either lines+markers, lines or markers.
         opacity     : float
                       Opacity of the plot. The value must be between one to zero. Zero is fully trasnparent, while one is opaque.
-        """ 
+        """
         if isinstance(data_x, type(torch.tensor([]))):
             data_x = data_x.detach().cpu().numpy()
         if isinstance(data_y, type(torch.tensor([]))):
@@ -153,31 +168,41 @@ class surfaceshow():
         if isinstance(data_z, type(torch.tensor([]))):
             data_z = data_z.detach().cpu().numpy()
         self.fig.add_trace(
-                           go.Surface(
-                                      x = data_x,
-                                      y = data_y,
-                                      z = data_z,
-                                      surfacecolor = data_z,
-                                      colorscale = self.settings['color scale'],
-                                      opacity = opacity,
-                                      colorbar = dict(len = self.settings['colorbar length']),
-                                      contours = {
-                                                  'z': {
-                                                        'show': contour,
-                                                       },
-                                                 }
-                                     ),
-                           row = 1,
-                           col = 1,
-                          )
+            go.Surface(
+                x=data_x,
+                y=data_y,
+                z=data_z,
+                surfacecolor=data_z,
+                colorscale=self.settings["color scale"],
+                opacity=opacity,
+                colorbar=dict(len=self.settings["colorbar length"]),
+                contours={
+                    "z": {
+                        "show": contour,
+                    },
+                },
+            ),
+            row=1,
+            col=1,
+        )
 
 
-class plotshow():
+class plotshow:
     """
     A class for general purpose 1D or 2D plotting using plotly.
     """
 
-    def __init__(self, subplot_titles=['plot'], shape=[1000, 1000], font_size=16, labels=['x', 'y'], margin=[65, 50, 65, 90], colorbarlength=0.75, rows=1, cols=1):
+    def __init__(
+        self,
+        subplot_titles=["plot"],
+        shape=[1000, 1000],
+        font_size=16,
+        labels=["x", "y"],
+        margin=[65, 50, 65, 90],
+        colorbarlength=0.75,
+        rows=1,
+        cols=1,
+    ):
         """
         Class for plotting detectors.
 
@@ -187,25 +212,25 @@ class plotshow():
                          Titles of plots.
                          Resolution of the figure to be generated.
         font_size      : int
-                         Font size.                       
+                         Font size.
         labels         : list
                          Labels for x and y axes.
         margin         : list
                          Margins in plotting.
         colorbarlength : float
-                         Length of the colorbar.                         
+                         Length of the colorbar.
         """
         self.settings = {
-                         'subplot titles': subplot_titles,
-                         'color scale': 'Portland',
-                                        'font size': font_size,
-                                        'x label': labels[0],
-                                        'y label': labels[1],
-                                        'margin': margin,
-                                        'colorbar length': colorbarlength,
-                                        'width': shape[0],
-                                        'height': shape[1],
-                        }
+            "subplot titles": subplot_titles,
+            "color scale": "Portland",
+            "font size": font_size,
+            "x label": labels[0],
+            "y label": labels[1],
+            "margin": margin,
+            "colorbar length": colorbarlength,
+            "width": shape[0],
+            "height": shape[1],
+        }
         specs = []
         new_row = []
         for row in range(rows):
@@ -214,41 +239,36 @@ class plotshow():
                 new_col.append({"type": "xy"})
             specs.append(new_col)
         self.fig = plotly.subplots.make_subplots(
-                                                 rows = rows,
-                                                 cols = cols,
-                                                 specs = specs,
-                                                 subplot_titles = subplot_titles
-                                                )
-
+            rows=rows, cols=cols, specs=specs, subplot_titles=subplot_titles
+        )
 
     def show(self):
         """
         Definition to show the plot.
         """
         self.fig.layout = go.Layout(
-                                    xaxis = dict(title=self.settings['x label']),
-                                    yaxis = dict(title=self.settings['y label'])
-                                   )
+            xaxis=dict(title=self.settings["x label"]),
+            yaxis=dict(title=self.settings["y label"]),
+        )
         self.fig.update_layout(
-                               autosize = False,
-                               width = self.settings['width'],
-                               height = self.settings['height'],
-                               scene = dict(
-                                            aspectmode = 'manual',
-                                            aspectratio = dict(x=1., y=1., z=1.),
-                                           ),
-                               font = dict(
-                                           size = self.settings['font size'],
-                                          ),
-                               margin = dict(
-                                             l = self.settings['margin'][0],
-                                             r = self.settings['margin'][1],
-                                            b = self.settings['margin'][2],
-                                             t = self.settings['margin'][3]
-                                            ),
-                             )
+            autosize=False,
+            width=self.settings["width"],
+            height=self.settings["height"],
+            scene=dict(
+                aspectmode="manual",
+                aspectratio=dict(x=1.0, y=1.0, z=1.0),
+            ),
+            font=dict(
+                size=self.settings["font size"],
+            ),
+            margin=dict(
+                l=self.settings["margin"][0],
+                r=self.settings["margin"][1],
+                b=self.settings["margin"][2],
+                t=self.settings["margin"][3],
+            ),
+        )
         self.fig.show()
-
 
     def save_image(self, filename):
         """
@@ -261,16 +281,9 @@ class plotshow():
         """
         self.fig.write_image(filename)
 
-
     def add_plot(
-                 self,
-                 data_x,
-                 data_y = None,
-                 label = '',
-                 mode = 'lines+markers',
-                 row = 1,
-                 col = 1
-                ):
+        self, data_x, data_y=None, label="", mode="lines+markers", row=1, col=1
+    ):
         """
         Definition to add 1D data to the plot.
 
@@ -281,7 +294,7 @@ class plotshow():
         data_y      : ndarray
                       Y axis data to be plotted.
         label       : str
-                      Label of the plot.  
+                      Label of the plot.
         mode        : str
                       Mode for the plot, it can be either lines+markers, lines or markers.
         """
@@ -295,18 +308,10 @@ class plotshow():
                 name=label,
             ),
             row=row,
-            col=col
+            col=col,
         )
 
-
-    def add_2d_plot(
-                    self,
-                    image,
-                    label = '',
-                    row = 1,
-                    col = 1,
-                    showscale = False
-                   ):
+    def add_2d_plot(self, image, label="", row=1, col=1, showscale=False):
         """
         Definition to add 2D data to the plot.
 
@@ -317,62 +322,60 @@ class plotshow():
         data_y      : ndarray
                       Y axis data to be plotted.
         label       : str
-                      Label of the plot.  
+                      Label of the plot.
         mode        : str
                       Mode for the plot, it can be either lines+markers, lines or markers.
         """
         if isinstance(image, type(torch.tensor([]))):
             image = image.detach().cpu().numpy()
         self.fig.add_trace(
-                           go.Heatmap(
-                                      z = image,
-                                      colorscale = self.settings['color scale'],
-                                      showscale = showscale
-                                     ),                
-                           row = row,
-                           col = col
-                          )
+            go.Heatmap(
+                z=image, colorscale=self.settings["color scale"], showscale=showscale
+            ),
+            row=row,
+            col=col,
+        )
 
 
-class plot2dshow():
+class plot2dshow:
     """
     A class for visualizing 2D images using plotly.
     """
 
     def __init__(
-                 self,
-                 row_titles = ['Sample 1'],
-                 subplot_titles = ['Sample 2'],
-                 title = 'test',
-                 rows = 1,
-                 cols = 1,
-                 font_settings = {'size' : 48},
-                 xaxis_settings = {
-                                   'visible' : True,
-                                   'showticklabels' : False,
-                                   'showgrid' : False,
-                                   'zeroline' : False,
-                                   'showline' : True,
-                                   'linecolor' : 'black',
-                                   'linewidth' : 8,
-                                   'mirror' : True
-                                  },
-                 yaxis_settings = {
-                                   'visible' : True,
-                                   'showticklabels' : False,
-                                   'showgrid' : False,
-                                   'zeroline' : False,
-                                   'showline' : True,
-                                   'linecolor' : 'black',
-                                   'linewidth' : 8,
-                                   'mirror' : True
-                                  },
-                 color_scale = 'Inferno',
-                 shape = [1000, 1000],
-                 margin = [65, 50, 65, 90],
-                 horizontal_spacing = 0.05,
-                 vertical_spacing = 0.05,
-                ):
+        self,
+        row_titles=["Sample 1"],
+        subplot_titles=["Sample 2"],
+        title="test",
+        rows=1,
+        cols=1,
+        font_settings={"size": 48},
+        xaxis_settings={
+            "visible": True,
+            "showticklabels": False,
+            "showgrid": False,
+            "zeroline": False,
+            "showline": True,
+            "linecolor": "black",
+            "linewidth": 8,
+            "mirror": True,
+        },
+        yaxis_settings={
+            "visible": True,
+            "showticklabels": False,
+            "showgrid": False,
+            "zeroline": False,
+            "showline": True,
+            "linecolor": "black",
+            "linewidth": 8,
+            "mirror": True,
+        },
+        color_scale="Inferno",
+        shape=[1000, 1000],
+        margin=[65, 50, 65, 90],
+        horizontal_spacing=0.05,
+        vertical_spacing=0.05,
+    ):
         """
         Class for plotting detectors.
 
@@ -396,21 +399,21 @@ class plot2dshow():
                           Margins.
         """
         self.settings = {
-                         'title': title,
-                         'subplot titles': subplot_titles,
-                         'row titles': row_titles,
-                         'color scale': color_scale,
-                         'column number': cols,
-                         'row number': rows,
-                         'font': font_settings,
-                         'width': shape[0],
-                         'height': shape[1],
-                         'margin': margin,
-                         'xaxis' : xaxis_settings,
-                         'yaxis' : yaxis_settings,
-                         'horizontal spacing' : horizontal_spacing,
-                         'vertical spacing' : vertical_spacing,
-                        }
+            "title": title,
+            "subplot titles": subplot_titles,
+            "row titles": row_titles,
+            "color scale": color_scale,
+            "column number": cols,
+            "row number": rows,
+            "font": font_settings,
+            "width": shape[0],
+            "height": shape[1],
+            "margin": margin,
+            "xaxis": xaxis_settings,
+            "yaxis": yaxis_settings,
+            "horizontal spacing": horizontal_spacing,
+            "vertical spacing": vertical_spacing,
+        }
         specs = []
         for i in range(0, self.settings["row number"]):
             new_row = []
@@ -418,50 +421,48 @@ class plot2dshow():
                 new_row.append({"type": "heatmap"})
             specs.append(new_row)
         self.fig = plotly.subplots.make_subplots(
-                                                 rows = self.settings["row number"],
-                                                 cols = self.settings["column number"],
-                                                 specs = specs,
-                                                 subplot_titles = self.settings["subplot titles"],
-                                                 row_titles = self.settings["row titles"],
-                                                 horizontal_spacing = self.settings["horizontal spacing"],
-                                                 vertical_spacing = self.settings["vertical spacing"],
-                                                )
-
+            rows=self.settings["row number"],
+            cols=self.settings["column number"],
+            specs=specs,
+            subplot_titles=self.settings["subplot titles"],
+            row_titles=self.settings["row titles"],
+            horizontal_spacing=self.settings["horizontal spacing"],
+            vertical_spacing=self.settings["vertical spacing"],
+        )
 
     def update_layout(self):
         """
         Definition to set the layout according to the settings.
         """
         self.fig.update_annotations(
-                                    font = self.settings['font'],
-                                   )
+            font=self.settings["font"],
+        )
         self.fig.update_layout(
-                               autosize = True,
-                               width = self.settings['width'],
-                               height = self.settings['height'],
-                               scene = dict(
-                                            aspectmode = 'manual',
-                                            aspectratio = dict(x=1., y=1., z=1.),
-                                           ),
-                               margin = dict(
-                                             l = self.settings['margin'][0],
-                                             r = self.settings['margin'][1],
-                                             b = self.settings['margin'][2],
-                                             t = self.settings['margin'][3]
-                                            ),
-                               font = self.settings['font'],
-                               xaxis = self.settings['xaxis'],
-                               xaxis2 = self.settings['xaxis'],
-                               xaxis3 = self.settings['xaxis'],
-                               xaxis4 = self.settings['xaxis'],
-                               yaxis = self.settings['yaxis'],
-                               yaxis2 = self.settings['yaxis'],
-                               yaxis3 = self.settings['yaxis'],
-                               yaxis4 = self.settings['yaxis'],
-                              )
+            autosize=True,
+            width=self.settings["width"],
+            height=self.settings["height"],
+            scene=dict(
+                aspectmode="manual",
+                aspectratio=dict(x=1.0, y=1.0, z=1.0),
+            ),
+            margin=dict(
+                l=self.settings["margin"][0],
+                r=self.settings["margin"][1],
+                b=self.settings["margin"][2],
+                t=self.settings["margin"][3],
+            ),
+            font=self.settings["font"],
+            xaxis=self.settings["xaxis"],
+            xaxis2=self.settings["xaxis"],
+            xaxis3=self.settings["xaxis"],
+            xaxis4=self.settings["xaxis"],
+            yaxis=self.settings["yaxis"],
+            yaxis2=self.settings["yaxis"],
+            yaxis3=self.settings["yaxis"],
+            yaxis4=self.settings["yaxis"],
+        )
 
-
-    def save_html(self, filename = 'plot.html'):
+    def save_html(self, filename="plot.html"):
         """
         Definition to save the plot as HTML to a file.
 
@@ -475,12 +476,13 @@ class plot2dshow():
         result          : str
                           Results as HTML div.
         """
-        plotly.offline.plot(self.fig, filename = filename)
-        result = plotly.offline.plot(self.fig, include_plotlyjs = False, output_type = 'div')
+        plotly.offline.plot(self.fig, filename=filename)
+        result = plotly.offline.plot(
+            self.fig, include_plotlyjs=False, output_type="div"
+        )
         return result
 
-
-    def save_markdown(self, filename = 'plot.md'):
+    def save_markdown(self, filename="plot.md"):
         """
         Definition to save the plot as Markdown to a file.
 
@@ -494,11 +496,10 @@ class plot2dshow():
         result          : str
                           Results as a markdown.
         """
-        html = plotly.offline.plot(self.fig, include_plotlyjs = False, output_type = 'div')
-        markdown_file = open(filename, 'w')
+        html = plotly.offline.plot(self.fig, include_plotlyjs=False, output_type="div")
+        markdown_file = open(filename, "w")
         markdown_file.write(html)
         markdown_file.close()
-
 
     def show(self):
         """
@@ -506,7 +507,6 @@ class plot2dshow():
         """
         self.update_layout()
         self.fig.show()
-
 
     def save_image(self, filename):
         """
@@ -520,21 +520,15 @@ class plot2dshow():
         self.update_layout()
         self.fig.write_image(filename)
 
-
     def add_field(
-                  self,
-                  field,
-                  zoomed_inset = None,
-                  zoomed_inset_settings = {
-                                           'x' : 0,
-                                           'y' : 150,
-                                           'sizex' : 150,
-                                           'sizey' : 150
-                                          },
-                  row = 1,
-                  col = 1,
-                  showscale = False
-                 ):
+        self,
+        field,
+        zoomed_inset=None,
+        zoomed_inset_settings={"x": 0, "y": 150, "sizex": 150, "sizey": 150},
+        row=1,
+        col=1,
+        showscale=False,
+    ):
         """
         Definition to add a point to the figure.
 
@@ -556,46 +550,43 @@ class plot2dshow():
         if isinstance(field, type(torch.tensor([]))):
             field = field.detach().cpu().numpy()
         self.fig.add_trace(
-                           go.Heatmap(
-                                      z = field,
-                                      colorscale = self.settings['color scale'],
-                                      showscale = showscale
-                                     ),
-                           row = row,
-                           col = col,
-                          )
+            go.Heatmap(
+                z=field, colorscale=self.settings["color scale"], showscale=showscale
+            ),
+            row=row,
+            col=col,
+        )
         if not isinstance(zoomed_inset, type(None)):
             zoomed_inset = Image.open(zoomed_inset)
             self.fig.add_layout_image(
-                                      source = zoomed_inset,
-                                      x = zoomed_inset_settings['x'],
-                                      y = zoomed_inset_settings['y'],
-                                      sizex = zoomed_inset_settings['sizex'],
-                                      sizey = zoomed_inset_settings['sizey'],
-                                      row = row,
-                                      col = col
-                                     )
+                source=zoomed_inset,
+                x=zoomed_inset_settings["x"],
+                y=zoomed_inset_settings["y"],
+                sizex=zoomed_inset_settings["sizex"],
+                sizey=zoomed_inset_settings["sizey"],
+                row=row,
+                col=col,
+            )
 
 
-
-class detectorshow():
+class detectorshow:
     """
     A class for visualizing detectors using plotly.
     """
 
     def __init__(
-                 self,
-                 row_titles = ['Field 1'],
-                 subplot_titles = ['Amplitude', 'Phase', 'Intensity'],
-                 title = 'detector',
-                 rows = 1,
-                 cols = 1,
-                 show_intensity = False,
-                 show_amplitude = True,
-                 show_phase = True,
-                 shape = [1000, 1000],
-                 margin = [65, 50, 65, 90]
-                ):
+        self,
+        row_titles=["Field 1"],
+        subplot_titles=["Amplitude", "Phase", "Intensity"],
+        title="detector",
+        rows=1,
+        cols=1,
+        show_intensity=False,
+        show_amplitude=True,
+        show_phase=True,
+        shape=[1000, 1000],
+        margin=[65, 50, 65, 90],
+    ):
         """
         Class for plotting detectors.
 
@@ -623,19 +614,19 @@ class detectorshow():
             m += 1
 
         self.settings = {
-            'title': title,
-            'subplot titles': subplot_titles,
-            'row titles': row_titles,
-            'color scale': 'Portland',
-            'sub column no': m,
-            'column number': cols*m,
-            'row number': rows,
-            'show amplitude': show_amplitude,
-            'show phase': show_phase,
-            'show intensity': show_intensity,
-            'width': shape[0],
-            'height': shape[1],
-            'margin': margin
+            "title": title,
+            "subplot titles": subplot_titles,
+            "row titles": row_titles,
+            "color scale": "Portland",
+            "sub column no": m,
+            "column number": cols * m,
+            "row number": rows,
+            "show amplitude": show_amplitude,
+            "show phase": show_phase,
+            "show intensity": show_intensity,
+            "width": shape[0],
+            "height": shape[1],
+            "margin": margin,
         }
         specs = []
         for i in range(0, self.settings["row number"]):
@@ -644,13 +635,12 @@ class detectorshow():
                 new_row.append({"type": "heatmap"})
             specs.append(new_row)
         self.fig = plotly.subplots.make_subplots(
-                                                 rows = self.settings["row number"],
-                                                 cols = self.settings["column number"],
-                                                 specs = specs,
-                                                 subplot_titles = self.settings["subplot titles"],
-                                                 row_titles = self.settings["row titles"]
-                                                )
-
+            rows=self.settings["row number"],
+            cols=self.settings["column number"],
+            specs=specs,
+            subplot_titles=self.settings["subplot titles"],
+            row_titles=self.settings["row titles"],
+        )
 
     def show(self):
         """
@@ -658,21 +648,20 @@ class detectorshow():
         """
         self.fig.update_layout(
             autosize=True,
-            width=self.settings['width'],
-            height=self.settings['height'],
+            width=self.settings["width"],
+            height=self.settings["height"],
             scene=dict(
-                aspectmode='manual',
-                aspectratio=dict(x=1., y=1., z=1.),
+                aspectmode="manual",
+                aspectratio=dict(x=1.0, y=1.0, z=1.0),
             ),
             margin=dict(
-                l=self.settings['margin'][0],
-                r=self.settings['margin'][1],
-                b=self.settings['margin'][2],
-                t=self.settings['margin'][3]
+                l=self.settings["margin"][0],
+                r=self.settings["margin"][1],
+                b=self.settings["margin"][2],
+                t=self.settings["margin"][3],
             ),
         )
         self.fig.show()
-
 
     def save_image(self, filename):
         """
@@ -684,7 +673,6 @@ class detectorshow():
                       Filename.
         """
         self.fig.write_image(filename)
-
 
     def add_field(self, field, row=1, col=1, showscale=False):
         """
@@ -704,59 +692,59 @@ class detectorshow():
         amplitude = calculate_amplitude(field)
         phase = calculate_phase(field, deg=True)
         intensity = calculate_intensity(field)
-        col = (col-1)*(self.settings["sub column no"])+1
+        col = (col - 1) * (self.settings["sub column no"]) + 1
         if self.settings["show amplitude"] == True:
             self.fig.add_trace(
                 go.Heatmap(
                     z=amplitude,
-                    colorscale=self.settings['color scale'],
-                    showscale=showscale
+                    colorscale=self.settings["color scale"],
+                    showscale=showscale,
                 ),
                 row=row,
-                col=col
+                col=col,
             )
             col += 1
 
         if self.settings["show phase"] == True:
             self.fig.add_trace(
                 go.Heatmap(
-                    z = phase,
-                    colorscale = self.settings['color scale'],
-                    showscale = showscale
+                    z=phase,
+                    colorscale=self.settings["color scale"],
+                    showscale=showscale,
                 ),
                 row=row,
-                col=col
+                col=col,
             )
             col += 1
 
         if self.settings["show intensity"] == True:
             self.fig.add_trace(
-                               go.Heatmap(
-                                          z = intensity,
-                                          colorscale = self.settings['color scale'],
-                                          showscale = showscale
-                                         ),
-                               row = row,
-                               col = col
-                              )
+                go.Heatmap(
+                    z=intensity,
+                    colorscale=self.settings["color scale"],
+                    showscale=showscale,
+                ),
+                row=row,
+                col=col,
+            )
             col += 1
 
 
-class rayshow():
+class rayshow:
     """
     A class for visualizing rays using plotly.
     """
 
     def __init__(
-                 self, 
-                 rows = 1, 
-                 columns = 1, 
-                 subplot_titles = ["Ray visualization"], 
-                 opacity = 0.5,
-                 line_width = 1., 
-                 marker_size = 1., 
-                 color_scale = 'Inferno'
-                ):
+        self,
+        rows=1,
+        columns=1,
+        subplot_titles=["Ray visualization"],
+        opacity=0.5,
+        line_width=1.0,
+        marker_size=1.0,
+        color_scale="Inferno",
+    ):
         """
         Class for plotting rays.
 
@@ -775,36 +763,33 @@ class rayshow():
         marker_size    : float
                          Marker size of the markers.
         color_scale    : str
-                         Color scale to be used. 
+                         Color scale to be used.
         """
         self.settings = {
-                         'rows': rows,
-                         'color scale': color_scale,
-                         'columns': columns,
-                         'subplot titles': subplot_titles,
-                         'opacity': opacity,
-                         'line width': line_width,
-                         'marker size': marker_size
-                        }
+            "rows": rows,
+            "color scale": color_scale,
+            "columns": columns,
+            "subplot titles": subplot_titles,
+            "opacity": opacity,
+            "line width": line_width,
+            "marker size": marker_size,
+        }
         specs = []
         for i in range(0, rows):
             new_row = []
             for j in range(0, columns):
-                new_row.append({"type": "scene"},)
+                new_row.append(
+                    {"type": "scene"},
+                )
             specs.append(new_row)
         self.fig = plotly.subplots.make_subplots(
-                                                 rows = self.settings['rows'],
-                                                 cols = self.settings['columns'],
-                                                 subplot_titles = self.settings['subplot titles'],
-                                                 specs = specs
-                                                )
+            rows=self.settings["rows"],
+            cols=self.settings["columns"],
+            subplot_titles=self.settings["subplot titles"],
+            specs=specs,
+        )
 
-
-    def get_scene_number(
-                         self,
-                         row = 1,
-                         column = 1
-                        ):
+    def get_scene_number(self, row=1, column=1):
         """
         Calculate the scene number based on the given row and column indices.
 
@@ -813,26 +798,25 @@ class rayshow():
         row     : int, optional
                   The row index (starting from 1). Defaults to 1.
         column  : int, optional
-                  The column index within the specified row (starting from 1). 
+                  The column index within the specified row (starting from 1).
                   Defaults to 1.
 
         Returns
         -------
         number : int
                  The calculated scene number based on the input indices.
-        """        
-        number = self.settings['columns'] * (row - 1) + column
+        """
+        number = self.settings["columns"] * (row - 1) + column
         return number
 
-
     def set_axis_limits(
-                        self,
-                        row = 1,
-                        column = 1,
-                        x_limits = [-1., 1.],
-                        y_limits = [-1., 1.],
-                        z_limits = [-1., 1.],
-                       ):
+        self,
+        row=1,
+        column=1,
+        x_limits=[-1.0, 1.0],
+        y_limits=[-1.0, 1.0],
+        z_limits=[-1.0, 1.0],
+    ):
         """
         Set the axis limits for a specific scene in the figure layout.
 
@@ -845,7 +829,7 @@ class rayshow():
         x_limits : list or array-like, shape (2,)
                    The new range for the x-axis. Should contain two elements: [min, max].
         y_limits : list or array-like, shape (2,), optional
-                   The new range for the y-axis. Should contain two elements: [min, max]. 
+                   The new range for the y-axis. Should contain two elements: [min, max].
         z_limits : list or array-like, shape (2,), optional
                    The new range for the z-axis. Should contain two elements: [min, max].
 
@@ -854,21 +838,19 @@ class rayshow():
         This function updates the axis limits of a specific subplot in the figure layout.
         The `row` and `column` parameters are used to determine which scene/subplot to modify.
         """
-        number = self.get_scene_number(row = row, column = column)
-        self.fig.layout[f'scene{number}']['xaxis']['range'] = x_limits
-        self.fig.layout[f'scene{number}']['yaxis']['range'] = y_limits
-        self.fig.layout[f'scene{number}']['zaxis']['range'] = z_limits
-
+        number = self.get_scene_number(row=row, column=column)
+        self.fig.layout[f"scene{number}"]["xaxis"]["range"] = x_limits
+        self.fig.layout[f"scene{number}"]["yaxis"]["range"] = y_limits
+        self.fig.layout[f"scene{number}"]["zaxis"]["range"] = z_limits
 
     def set_camera(
-                   self,
-                   row = 1,
-                   column = 1,
-                   x = 0.,
-                   y = 0.,
-                   z = 1.,
-                  ):
-
+        self,
+        row=1,
+        column=1,
+        x=0.0,
+        y=0.0,
+        z=1.0,
+    ):
         """
         Set the camera position for a specific scene.
 
@@ -899,19 +881,18 @@ class rayshow():
         To adjust the camera's eye position:
 
         >>> obj.set_camera(x=2., y=-1., z=3.)
-        """        
-        number = self.get_scene_number(row = row, column = column)
-        self.fig.layout[f'scene{number}']['camera']['eye'] = dict(
-                                                                  x = x,
-                                                                  y = y,
-                                                                  z = z,
-                                                                 )
-
+        """
+        number = self.get_scene_number(row=row, column=column)
+        self.fig.layout[f"scene{number}"]["camera"]["eye"] = dict(
+            x=x,
+            y=y,
+            z=z,
+        )
 
     def show(
-             self,
-             aspect_ratio = [1., 1., 1.],
-            ):
+        self,
+        aspect_ratio=[1.0, 1.0, 1.0],
+    ):
         """
         Definition to show the plot.
 
@@ -921,19 +902,16 @@ class rayshow():
                            Aspect ratio of the plot.
         """
         self.fig.update_layout(
-                               scene = dict(
-                                            aspectmode = 'manual',
-                                            aspectratio = dict(
-                                                               x = aspect_ratio[0], 
-                                                               y = aspect_ratio[1],
-                                                               z = aspect_ratio[2]
-                                                              ),
-                                           ),
-                              )
+            scene=dict(
+                aspectmode="manual",
+                aspectratio=dict(
+                    x=aspect_ratio[0], y=aspect_ratio[1], z=aspect_ratio[2]
+                ),
+            ),
+        )
         self.fig.show()
 
-
-    def save_offline(self, filename = 'plot.html'):
+    def save_offline(self, filename="plot.html"):
         """
         Definition to save the plot as HTML to a file.
 
@@ -947,10 +925,11 @@ class rayshow():
         result          : str
                           Results as HTML div.
         """
-        plotly.offline.plot(self.fig, filename = filename, auto_open = False)
-        result = plotly.offline.plot(self.fig, include_plotlyjs = False, output_type = 'div', auto_open = False)
+        plotly.offline.plot(self.fig, filename=filename, auto_open=False)
+        result = plotly.offline.plot(
+            self.fig, include_plotlyjs=False, output_type="div", auto_open=False
+        )
         return result
-
 
     def save_image(self, filename):
         """
@@ -963,16 +942,9 @@ class rayshow():
         """
         self.fig.write_image(filename)
 
-
     def add_point(
-                  self,
-                  point,
-                  row = 1,
-                  column = 1,
-                  color = 'red',
-                  opacity = 1.,
-                  show_legend = False
-                 ):
+        self, point, row=1, column=1, color="red", opacity=1.0, show_legend=False
+    ):
         """
         Definition to add a point to the figure.
 
@@ -998,26 +970,27 @@ class rayshow():
         if len(point.shape) == 1:
             point = np.expand_dims(point, axis=0)
         self.fig.add_trace(
-                           go.Scatter3d(
-                                        x = point[:, 0].flatten(),
-                                        y = point[:, 1].flatten(),
-                                        z = point[:, 2].flatten(),
-                                        mode = 'markers',
-                                        marker = dict(
-                                                      size = self.settings["marker size"],
-                                                      color = color,
-                                                      opacity = opacity,
-                                                      colorscale = self.settings["color scale"]
-                                                     ),
-                                       showlegend = show_legend  
-                                      ),
-                           row = row,
-                           col = column
-                          )
-        logger.info('odak.visualize.plotly.rayshow.add_point')
+            go.Scatter3d(
+                x=point[:, 0].flatten(),
+                y=point[:, 1].flatten(),
+                z=point[:, 2].flatten(),
+                mode="markers",
+                marker=dict(
+                    size=self.settings["marker size"],
+                    color=color,
+                    opacity=opacity,
+                    colorscale=self.settings["color scale"],
+                ),
+                showlegend=show_legend,
+            ),
+            row=row,
+            col=column,
+        )
+        logger.info("odak.visualize.plotly.rayshow.add_point")
 
-
-    def add_sphere(self, sphere, row = 1, column = 1, dash = None, color = 'red', show_legend = False):
+    def add_sphere(
+        self, sphere, row=1, column=1, dash=None, color="red", show_legend=False
+    ):
         """
         Definition to add a triangle to the figure.
 
@@ -1046,22 +1019,22 @@ class rayshow():
         y = np.outer(np.sin(theta), np.sin(phi)) * sphere[:, 3] + sphere[:, 1]
         z = np.outer(np.ones(100), np.cos(phi)) * sphere[:, 3] + sphere[:, 2]
         self.fig.add_trace(
-                           go.Surface(
-                                      x = x,
-                                      y = y,
-                                      z = z,
-                                    #  color = color,
-                                      opacity = self.settings["opacity"],
-                                      showlegend = show_legend
-                                     ),
-                           row = row,
-                           col = column,
-                          )            
-        logger.info('odak.visualize.plotly.rayshow.add_sphere')
+            go.Surface(
+                x=x,
+                y=y,
+                z=z,
+                #  color = color,
+                opacity=self.settings["opacity"],
+                showlegend=show_legend,
+            ),
+            row=row,
+            col=column,
+        )
+        logger.info("odak.visualize.plotly.rayshow.add_sphere")
 
-
-
-    def add_triangle(self, triangle, row = 1, column = 1, dash = None, color = 'red', show_legend = False):
+    def add_triangle(
+        self, triangle, row=1, column=1, dash=None, color="red", show_legend=False
+    ):
         """
         Definition to add a triangle to the figure.
 
@@ -1087,21 +1060,29 @@ class rayshow():
             triangle = np.expand_dims(triangle, axis=0)
         current_triangle = triangle.reshape(-1, 3)
         self.fig.add_trace(
-                           go.Mesh3d(
-                                     x = current_triangle[:, 0],
-                                     y = current_triangle[:, 1],
-                                     z = current_triangle[:, 2],
-                                     color = color,
-                                     opacity = self.settings["opacity"],
-                                     showlegend = show_legend
-                                    ),
-                           row = row,
-                           col = column,
-                          )            
-        logger.info('odak.visualize.plotly.rayshow.add_triangle')
+            go.Mesh3d(
+                x=current_triangle[:, 0],
+                y=current_triangle[:, 1],
+                z=current_triangle[:, 2],
+                color=color,
+                opacity=self.settings["opacity"],
+                showlegend=show_legend,
+            ),
+            row=row,
+            col=column,
+        )
+        logger.info("odak.visualize.plotly.rayshow.add_triangle")
 
-
-    def add_line(self, point_start, point_end, row = 1, column = 1, dash = None, color = 'red', show_legend = False):
+    def add_line(
+        self,
+        point_start,
+        point_end,
+        row=1,
+        column=1,
+        dash=None,
+        color="red",
+        show_legend=False,
+    ):
         """
         Definition to add a ray to the figure.
 
@@ -1131,50 +1112,45 @@ class rayshow():
         if len(point_end.shape) == 1:
             point_end = np.expand_dims(point_end, axis=0)
         if point_start.shape != point_end.shape:
-            print('Size mismatch in line plot. Sizes are {} and {}.'.format(
-                point_start.shape, point_end.shape))
+            print(
+                "Size mismatch in line plot. Sizes are {} and {}.".format(
+                    point_start.shape, point_end.shape
+                )
+            )
             sys.exit()
         for point_id in range(0, point_start.shape[0]):
-            points = np.array(
-                              [
-                               point_start[point_id],
-                               point_end[point_id]
-                              ]
-                             )
+            points = np.array([point_start[point_id], point_end[point_id]])
             points = points.reshape((2, 3))
             self.fig.add_trace(
-                               go.Scatter3d(
-                                            x = points[:, 0],
-                                            y = points[:, 1],
-                                            z = points[:, 2],
-                                            mode = 'lines',
-                                            line = dict(
-                                                        width = self.settings["line width"],
-                                                        color  = color,
-                                                        dash = dash
-                                                       ),
-                                            opacity = self.settings["opacity"],
-                                            showlegend = show_legend
-                                           ),
-                               row = row,
-                               col = column,
-                              )
-        logger.info('odak.visualize.plotly.rayshow.add_line')
-
+                go.Scatter3d(
+                    x=points[:, 0],
+                    y=points[:, 1],
+                    z=points[:, 2],
+                    mode="lines",
+                    line=dict(
+                        width=self.settings["line width"], color=color, dash=dash
+                    ),
+                    opacity=self.settings["opacity"],
+                    showlegend=show_legend,
+                ),
+                row=row,
+                col=column,
+            )
+        logger.info("odak.visualize.plotly.rayshow.add_line")
 
     def add_surface(
-                    self,
-                    data_x,
-                    data_y,
-                    data_z,
-                    surface_color,
-                    row = 1,
-                    column = 1,
-                    label = '',
-                    mode = 'lines+markers',
-                    opacity = 1.,
-                    contour = False
-                   ):
+        self,
+        data_x,
+        data_y,
+        data_z,
+        surface_color,
+        row=1,
+        column=1,
+        label="",
+        mode="lines+markers",
+        opacity=1.0,
+        contour=False,
+    ):
         """
         Definition to add data to the plot.
 
@@ -1189,43 +1165,41 @@ class rayshow():
         surface_color : ndarray
                         Colors of the surface.
         label         : str
-                        Label of the plot.  
+                        Label of the plot.
         mode          : str
                         Mode for the plot, it can be either lines+markers, lines or markers.
         opacity       : float
                         Opacity of the plot. The value must be between one to zero. Zero is fully trasnparent, while one is opaque.
         """
         self.fig.add_trace(
-                           go.Surface(
-                                      x = data_x,
-                                      y = data_y,
-                                      z = data_z,
-                                      surfacecolor = surface_color,
-                                      colorscale = self.settings['color scale'],
-                                      opacity = opacity,
-                                      contours={
-                                                'z': {
-                                                      'show': contour,
-                                                     },
-                                               }
-                                     ),
-                           row = row,
-                           col = column,
-                          )
-        logger.info('odak.visualize.plotly.rayshow.add_surface')
-
+            go.Surface(
+                x=data_x,
+                y=data_y,
+                z=data_z,
+                surfacecolor=surface_color,
+                colorscale=self.settings["color scale"],
+                opacity=opacity,
+                contours={
+                    "z": {
+                        "show": contour,
+                    },
+                },
+            ),
+            row=row,
+            col=column,
+        )
+        logger.info("odak.visualize.plotly.rayshow.add_surface")
 
     def add_volume(
-                   self,
-                   points,
-                   values,
-                   limits = [0., 1.],
-                   row = 1,
-                   column = 1,
-                   opacity = 1.,
-                   surface_count = 17,
-
-                  ):
+        self,
+        points,
+        values,
+        limits=[0.0, 1.0],
+        row=1,
+        column=1,
+        opacity=1.0,
+        surface_count=17,
+    ):
         """
         Definition to add data to the plot.
 
@@ -1247,17 +1221,17 @@ class rayshow():
                         Integer to decide on the quality of the volume rendering. For more details, see `plotly.grap_objects.Volume`.
         """
         self.fig.add_trace(
-                           go.Volume(
-                                     x = points[:, 0],
-                                     y = points[:, 1],
-                                     z = points[:, 2],
-                                     value = values,
-                                     isomin = limits[0],
-                                     isomax = limits[1],
-                                     opacity = opacity,
-                                     surface_count = surface_count,
-                                    ),
-                           row = row,
-                           col = column,
-                          )
-        logger.info('odak.visualize.plotly.rayshow.volume')
+            go.Volume(
+                x=points[:, 0],
+                y=points[:, 1],
+                z=points[:, 2],
+                value=values,
+                isomin=limits[0],
+                isomax=limits[1],
+                opacity=opacity,
+                surface_count=surface_count,
+            ),
+            row=row,
+            col=column,
+        )
+        logger.info("odak.visualize.plotly.rayshow.volume")

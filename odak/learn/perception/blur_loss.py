@@ -4,8 +4,8 @@ from .radially_varying_blur import RadiallyVaryingBlur
 from .util import check_loss_inputs
 
 
-class BlurLoss():
-    """ 
+class BlurLoss:
+    """
 
     `BlurLoss` implements two different blur losses. When `blur_source` is set to `False`, it implements blur_match, trying to match the input image to the blurred target image. This tries to match the source input image to a blurred version of the target.
 
@@ -14,22 +14,29 @@ class BlurLoss():
     The interface is similar to other `pytorch` loss functions, but note that the gaze location must be provided in addition to the source and target images.
     """
 
-
-    def __init__(self, device=torch.device("cpu"),
-                 alpha=0.2, real_image_width=0.2, real_viewing_distance=0.7, mode="quadratic", blur_source=False, equi=False):
+    def __init__(
+        self,
+        device=torch.device("cpu"),
+        alpha=0.2,
+        real_image_width=0.2,
+        real_viewing_distance=0.7,
+        mode="quadratic",
+        blur_source=False,
+        equi=False,
+    ):
         """
         Parameters
         ----------
 
         alpha                   : float
                                     parameter controlling foveation - larger values mean bigger pooling regions.
-        real_image_width        : float 
+        real_image_width        : float
                                     The real width of the image as displayed to the user.
                                     Units don't matter as long as they are the same as for real_viewing_distance.
-        real_viewing_distance   : float 
+        real_viewing_distance   : float
                                     The real distance of the observer's eyes to the image plane.
                                     Units don't matter as long as they are the same as for real_image_width.
-        mode                    : str 
+        mode                    : str
                                     Foveation mode, either "quadratic" or "linear". Controls how pooling regions grow
                                     as you move away from the fovea. We got best results with "quadratic".
         blur_source             : bool
@@ -54,10 +61,18 @@ class BlurLoss():
     def blur_image(self, image, gaze):
         if self.blur is None:
             self.blur = RadiallyVaryingBlur()
-        return self.blur.blur(image, self.alpha, self.real_image_width, self.real_viewing_distance, gaze, self.mode, self.equi)
+        return self.blur.blur(
+            image,
+            self.alpha,
+            self.real_image_width,
+            self.real_viewing_distance,
+            gaze,
+            self.mode,
+            self.equi,
+        )
 
     def __call__(self, image, target, gaze=[0.5, 0.5]):
-        """ 
+        """
         Calculates the Blur Loss.
 
         Parameters

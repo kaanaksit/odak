@@ -24,16 +24,16 @@ def double_convergence(nx, ny, k, r, dx):
                  Generated phase pattern for a Gerchberg-Saxton method.
     """
     size = [ny, nx]
-    x = np.linspace(-size[0]*dx/2, size[0]*dx/2, size[0])
-    y = np.linspace(-size[1]*dx/2, size[1]*dx/2, size[1])
+    x = np.linspace(-size[0] * dx / 2, size[0] * dx / 2, size[0])
+    y = np.linspace(-size[1] * dx / 2, size[1] * dx / 2, size[1])
     X, Y = np.meshgrid(x, y)
-    Z = X**2+Y**2
-    w = np.exp(1j*k*Z/r)
+    Z = X**2 + Y**2
+    w = np.exp(1j * k * Z / r)
     return w
 
 
 def quadratic_phase_function(nx, ny, k, focal=0.4, dx=0.001, offset=[0, 0]):
-    """ 
+    """
     A definition to generate 2D quadratic phase function, which is typically use to represent lenses.
 
     Parameters
@@ -57,15 +57,15 @@ def quadratic_phase_function(nx, ny, k, focal=0.4, dx=0.001, offset=[0, 0]):
                  Generated quadratic phase function.
     """
     size = [nx, ny]
-    x = np.linspace(-size[0]*dx/2, size[0]*dx/2, size[0])-offset[1]*dx
-    y = np.linspace(-size[1]*dx/2, size[1]*dx/2, size[1])-offset[0]*dx
+    x = np.linspace(-size[0] * dx / 2, size[0] * dx / 2, size[0]) - offset[1] * dx
+    y = np.linspace(-size[1] * dx / 2, size[1] * dx / 2, size[1]) - offset[0] * dx
     X, Y = np.meshgrid(x, y)
-    Z = X**2+Y**2
-    qwf = np.exp(1j*k*0.5*np.sin(Z/focal))
+    Z = X**2 + Y**2
+    qwf = np.exp(1j * k * 0.5 * np.sin(Z / focal))
     return qwf
 
 
-def prism_phase_function(nx, ny, k, angle, dx=0.001, axis='x'):
+def prism_phase_function(nx, ny, k, angle, dx=0.001, axis="x"):
     """
     A definition to generate 2D phase function that represents a prism. See Goodman's Introduction to Fourier Optics book for more.
 
@@ -91,17 +91,17 @@ def prism_phase_function(nx, ny, k, angle, dx=0.001, axis='x'):
     """
     angle = np.radians(angle)
     size = [ny, nx]
-    x = np.linspace(-size[0]*dx/2, size[0]*dx/2, size[0])
-    y = np.linspace(-size[1]*dx/2, size[1]*dx/2, size[1])
+    x = np.linspace(-size[0] * dx / 2, size[0] * dx / 2, size[0])
+    y = np.linspace(-size[1] * dx / 2, size[1] * dx / 2, size[1])
     X, Y = np.meshgrid(x, y)
-    if axis == 'y':
-        prism = np.exp(-1j*k*np.sin(angle)*Y)
-    elif axis == 'x':
-        prism = np.exp(-1j*k*np.sin(angle)*X)
+    if axis == "y":
+        prism = np.exp(-1j * k * np.sin(angle) * Y)
+    elif axis == "x":
+        prism = np.exp(-1j * k * np.sin(angle) * X)
     return prism
 
 
-def linear_grating(nx, ny, every=2, add=3.14, axis='x'):
+def linear_grating(nx, ny, every=2, add=3.14, axis="x"):
     """
     A definition to generate a linear grating.
 
@@ -124,13 +124,13 @@ def linear_grating(nx, ny, every=2, add=3.14, axis='x'):
                  Linear grating term.
     """
     grating = np.zeros((nx, ny), dtype=np.complex64)
-    if axis == 'x':
-        grating[::every, :] = np.exp(1j*add)
-    if axis == 'y':
-        grating[:, ::every] = np.exp(1j*add)
-    if axis == 'xy':
+    if axis == "x":
+        grating[::every, :] = np.exp(1j * add)
+    if axis == "y":
+        grating[:, ::every] = np.exp(1j * add)
+    if axis == "xy":
         checker = np.indices((nx, ny)).sum(axis=0) % every
         checker += 1
         checker = checker % 2
-        grating = np.exp(1j*checker*add)
+        grating = np.exp(1j * checker * add)
     return grating

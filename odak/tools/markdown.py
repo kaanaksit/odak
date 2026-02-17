@@ -1,14 +1,12 @@
 from .file import read_text_file
 
 
-class markdown():
+class markdown:
     """
     A class to work with markdown documents.
     """
-    def __init__(
-                 self,
-                 filename
-                ):
+
+    def __init__(self, filename):
         """
         Parameters
         ----------
@@ -19,18 +17,17 @@ class markdown():
         self.content = read_text_file(self.filename)
         self.content_type = []
         self.markdown_dictionary = [
-                                     '#',
-                                   ]
+            "#",
+        ]
         self.markdown_begin_dictionary = [
-                                          '```bash',
-                                          '```python',
-                                          '```',
-                                         ]
+            "```bash",
+            "```python",
+            "```",
+        ]
         self.markdown_end_dictionary = [
-                                        '```',
-                                       ]
+            "```",
+        ]
         self._label_lines()
-
 
     def set_dictonaries(self, begin_dictionary, end_dictionary, syntax_dictionary):
         """
@@ -52,36 +49,34 @@ class markdown():
         self.markdown_dictionary = syntax_dictionary
         self._label_lines
 
-
     def _label_lines(self):
         """
         Internal function for labelling lines.
         """
         content_type_flag = False
         for line_id, line in enumerate(self.content):
-            while len(line) > 0 and line[0] == ' ':
-                 line = line[1::]
+            while len(line) > 0 and line[0] == " ":
+                line = line[1::]
             self.content[line_id] = line
             if len(line) == 0:
-                content_type = 'empty'
-            elif line[0] == '%':
-                content_type = 'comment'
+                content_type = "empty"
+            elif line[0] == "%":
+                content_type = "comment"
             else:
-                content_type = 'text'
+                content_type = "text"
             for syntax in self.markdown_begin_dictionary:
                 if line.find(syntax) != -1:
                     content_type_flag = True
-                    content_type = 'markdown'
+                    content_type = "markdown"
             for syntax in self.markdown_dictionary:
                 if line.find(syntax) != -1:
-                    content_type = 'markdown'
+                    content_type = "markdown"
             if content_type_flag == True:
-                content_type = 'markdown'
+                content_type = "markdown"
                 for syntax in self.markdown_end_dictionary:
                     if line.find(syntax) != -1:
-                         content_type_flag = False
+                        content_type_flag = False
             self.content_type.append(content_type)
-
 
     def get_line_count(self):
         """
@@ -96,8 +91,7 @@ class markdown():
         self.line_count = len(self.content)
         return self.line_count
 
-
-    def get_line(self, line_id = 0):
+    def get_line(self, line_id=0):
         """
         Definition to get a specific line by inputting a line nunber.
 

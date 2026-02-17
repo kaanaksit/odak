@@ -19,10 +19,10 @@ def rotmatx(angle):
                    Rotation matrix along X axis.
     """
     angle = torch.deg2rad(angle)
-    rotx = torch.zeros(angle.shape[0], 3, 3, device = angle.device)
-    rotx[:, 0, 0] = 1.
+    rotx = torch.zeros(angle.shape[0], 3, 3, device=angle.device)
+    rotx[:, 0, 0] = 1.0
     rotx[:, 1, 1] = torch.cos(angle)
-    rotx[:, 1, 2] = - torch.sin(angle)
+    rotx[:, 1, 2] = -torch.sin(angle)
     rotx[:, 2, 1] = torch.sin(angle)
     rotx[:, 2, 2] = torch.cos(angle)
     if rotx.shape[0] == 1:
@@ -45,11 +45,11 @@ def rotmaty(angle):
                    Rotation matrix along Y axis.
     """
     angle = torch.deg2rad(angle)
-    roty = torch.zeros(angle.shape[0], 3, 3, device = angle.device)
+    roty = torch.zeros(angle.shape[0], 3, 3, device=angle.device)
     roty[:, 0, 0] = torch.cos(angle)
     roty[:, 0, 2] = torch.sin(angle)
-    roty[:, 1, 1] = 1.
-    roty[:, 2, 0] = - torch.sin(angle)
+    roty[:, 1, 1] = 1.0
+    roty[:, 2, 0] = -torch.sin(angle)
     roty[:, 2, 2] = torch.cos(angle)
     if roty.shape[0] == 1:
         roty = roty.squeeze(0)
@@ -71,18 +71,18 @@ def rotmatz(angle):
                    Rotation matrix along Z axis.
     """
     angle = torch.deg2rad(angle)
-    rotz = torch.zeros(angle.shape[0], 3, 3, device = angle.device)
+    rotz = torch.zeros(angle.shape[0], 3, 3, device=angle.device)
     rotz[:, 0, 0] = torch.cos(angle)
-    rotz[:, 0, 1] = - torch.sin(angle)
+    rotz[:, 0, 1] = -torch.sin(angle)
     rotz[:, 1, 0] = torch.sin(angle)
     rotz[:, 1, 1] = torch.cos(angle)
-    rotz[:, 2, 2] = 1.
+    rotz[:, 2, 2] = 1.0
     if rotz.shape[0] == 1:
         rotz = rotz.squeeze(0)
     return rotz
 
 
-def get_rotation_matrix(tilt_angles = [0., 0., 0.], tilt_order = 'XYZ'):
+def get_rotation_matrix(tilt_angles=[0.0, 0.0, 0.0], tilt_order="XYZ"):
     """
     Function to generate rotation matrix for given tilt angles and tilt order.
 
@@ -102,26 +102,26 @@ def get_rotation_matrix(tilt_angles = [0., 0., 0.], tilt_order = 'XYZ'):
     rotx = rotmatx(tilt_angles[0])
     roty = rotmaty(tilt_angles[1])
     rotz = rotmatz(tilt_angles[2])
-    if tilt_order =='XYZ':
-        rotmat = torch.mm(rotz,torch.mm(roty, rotx))
-    elif tilt_order == 'XZY':
-        rotmat = torch.mm(roty,torch.mm(rotz, rotx))
-    elif tilt_order == 'ZXY':
-        rotmat = torch.mm(roty,torch.mm(rotx, rotz))
-    elif tilt_order == 'YXZ':
-        rotmat = torch.mm(rotz,torch.mm(rotx, roty))
-    elif tilt_order == 'ZYX':
-         rotmat = torch.mm(rotx,torch.mm(roty, rotz))
+    if tilt_order == "XYZ":
+        rotmat = torch.mm(rotz, torch.mm(roty, rotx))
+    elif tilt_order == "XZY":
+        rotmat = torch.mm(roty, torch.mm(rotz, rotx))
+    elif tilt_order == "ZXY":
+        rotmat = torch.mm(roty, torch.mm(rotx, rotz))
+    elif tilt_order == "YXZ":
+        rotmat = torch.mm(rotz, torch.mm(rotx, roty))
+    elif tilt_order == "ZYX":
+        rotmat = torch.mm(rotx, torch.mm(roty, rotz))
     return rotmat
 
 
 def rotate_points(
-                 point,
-                 angles = torch.zeros(1, 3), 
-                 mode = 'XYZ', 
-                 origin = torch.zeros(1, 3), 
-                 offset = torch.zeros(1, 3),
-                ):
+    point,
+    angles=torch.zeros(1, 3),
+    mode="XYZ",
+    origin=torch.zeros(1, 3),
+    offset=torch.zeros(1, 3),
+):
     """
     Definition to rotate a given point. Note that rotation is always with respect to 0,0,0.
 
@@ -130,7 +130,7 @@ def rotate_points(
     point        : torch.tensor
                    A point with size of [3] or [1, 3] or [m, 3].
     angles       : torch.tensor
-                   Rotation angles in degrees. 
+                   Rotation angles in degrees.
     mode         : str
                    Rotation mode determines ordering of the rotations at each axis.
                    There are XYZ,YXZ,ZXY and ZYX modes.
@@ -163,7 +163,7 @@ def rotate_points(
     if len(origin.shape) == 1:
         origin = origin.unsqueeze(0)
     if len(offset.shape) == 1:
-        offset = offset.unsqueeze(0)        
+        offset = offset.unsqueeze(0)
 
     rotx = rotmatx(angles[:, 0]).unsqueeze(0)
     roty = rotmaty(angles[:, 1]).unsqueeze(0)
@@ -171,19 +171,19 @@ def rotate_points(
 
     new_points = (point.unsqueeze(1) - origin.unsqueeze(0)).unsqueeze(-1)
 
-    if mode == 'XYZ':
-        result = (rotz @ (roty @ (rotx @ new_points)))
-    elif mode == 'XZY':
-        result = (roty @ (rotz @ (rotx @ new_points)))
-    elif mode == 'YXZ':
-        result = (rotz @ (rotx @ (roty @ new_points)))
-    elif mode == 'ZXY':
-        result = (roty @ (rotx @ (rotz @ new_points)))
-    elif mode == 'ZYX':
-        result = (rotx @ (roty @ (rotz @ new_points)))
+    if mode == "XYZ":
+        result = rotz @ (roty @ (rotx @ new_points))
+    elif mode == "XZY":
+        result = roty @ (rotz @ (rotx @ new_points))
+    elif mode == "YXZ":
+        result = rotz @ (rotx @ (roty @ new_points))
+    elif mode == "ZXY":
+        result = roty @ (rotx @ (rotz @ new_points))
+    elif mode == "ZYX":
+        result = rotx @ (roty @ (rotz @ new_points))
 
     result = result.squeeze(-1)
-    result = result + origin.unsqueeze(0) 
+    result = result + origin.unsqueeze(0)
     result = result + offset.unsqueeze(0)
     if result.shape[1] == 1:
         result = result.squeeze(1)
@@ -209,7 +209,7 @@ def tilt_towards(location, lookat):
     dx = location[0] - lookat[0]
     dy = location[1] - lookat[1]
     dz = location[2] - lookat[2]
-    dist = torch.sqrt(torch.tensor(dx ** 2 + dy ** 2 + dz ** 2))
+    dist = torch.sqrt(torch.tensor(dx**2 + dy**2 + dz**2))
     phi = torch.atan2(torch.tensor(dy), torch.tensor(dx))
     theta = torch.arccos(dz / dist)
     angles = [0, float(torch.rad2deg(theta)), float(torch.rad2deg(phi))]
@@ -217,9 +217,9 @@ def tilt_towards(location, lookat):
 
 
 def point_cloud_to_voxel(
-                         points,
-                         voxel_size = [0.1, 0.1, 0.1],
-                        ):
+    points,
+    voxel_size=[0.1, 0.1, 0.1],
+):
     """
     Convert a point cloud to a voxel grid representation.
 
@@ -244,33 +244,33 @@ def point_cloud_to_voxel(
     - Only voxels containing at least one point are marked as 1.
     - The output grid is of type float32 and resides on the same device as the input points.
     """
-    voxel_size = torch.as_tensor(voxel_size, device = points.device)
+    voxel_size = torch.as_tensor(voxel_size, device=points.device)
 
-    min_coords = points.min(dim = 0).values
-    max_coords = points.max(dim = 0).values
+    min_coords = points.min(dim=0).values
+    max_coords = points.max(dim=0).values
     grid_size = ((max_coords - min_coords) / voxel_size).ceil().int()
     points = points - min_coords
 
-    x = torch.linspace(min_coords[0], max_coords[0], grid_size[0], device = points.device)
-    y = torch.linspace(min_coords[1], max_coords[1], grid_size[1], device = points.device)
-    z = torch.linspace(min_coords[2], max_coords[2], grid_size[2], device = points.device)
-    X, Y, Z = torch.meshgrid(x, y, z, indexing='ij')
+    x = torch.linspace(min_coords[0], max_coords[0], grid_size[0], device=points.device)
+    y = torch.linspace(min_coords[1], max_coords[1], grid_size[1], device=points.device)
+    z = torch.linspace(min_coords[2], max_coords[2], grid_size[2], device=points.device)
+    X, Y, Z = torch.meshgrid(x, y, z, indexing="ij")
     locations = torch.stack([X, Y, Z], dim=-1)
 
     voxel_indices = (points / voxel_size).floor().int()
     mask = (voxel_indices >= 0).all(dim=1) & (voxel_indices < grid_size).all(dim=1)
     voxel_indices = voxel_indices[mask]
-    grid = torch.zeros(grid_size.tolist(), dtype=torch.float32, device = points.device)
-    grid[voxel_indices[:, 0], voxel_indices[:, 1], voxel_indices[:, 2]] = 1.
+    grid = torch.zeros(grid_size.tolist(), dtype=torch.float32, device=points.device)
+    grid[voxel_indices[:, 0], voxel_indices[:, 1], voxel_indices[:, 2]] = 1.0
 
     return locations, grid
 
 
 def load_voxelized_PLY(
-                       ply_filename,
-                       voxel_size = [0.05, 0.05, 0.05],
-                       device = torch.device('cpu'),
-                      ):
+    ply_filename,
+    voxel_size=[0.05, 0.05, 0.05],
+    device=torch.device("cpu"),
+):
     """
     Load a point cloud from a PLY file and convert it into a voxel grid representation.
 
@@ -299,11 +299,14 @@ def load_voxelized_PLY(
     """
     triangles = read_PLY(ply_filename)
     points = center_of_triangle(triangles)
-    points = torch.as_tensor(points, device = device)
+    points = torch.as_tensor(points, device=device)
     points = points - points.mean()
     points = points / torch.amax(points)
-    ground_truth = torch.ones(points.shape[0], device = device)
-    voxel_locations, voxel_grid = point_cloud_to_voxel(points = points, voxel_size = voxel_size,)
+    ground_truth = torch.ones(points.shape[0], device=device)
+    voxel_locations, voxel_grid = point_cloud_to_voxel(
+        points=points,
+        voxel_size=voxel_size,
+    )
     points = voxel_locations.reshape(-1, 3)
     ground_truth = voxel_grid.reshape(-1)
     return points, ground_truth

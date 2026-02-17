@@ -9,27 +9,23 @@ def test():
     wavelength = 532e-9
     pixeltom = 8e-6
     distance = 10.0
-    propagation_type = 'Fraunhofer'
+    propagation_type = "Fraunhofer"
     k = wavenumber(wavelength)
     sample_field = np.random.rand(150, 150).astype(np.complex64)
     lens_field = quadratic_phase_function(
-                                          sample_field.shape[0],
-                                          sample_field.shape[1],
-                                          k,
-                                          focal = 0.3,
-                                          dx = pixeltom
-                                         )
+        sample_field.shape[0], sample_field.shape[1], k, focal=0.3, dx=pixeltom
+    )
     prism_field = prism_phase_function(
-                                       sample_field.shape[0],
-                                       sample_field.shape[1],
-                                       k,
-                                       angle = 0.1,
-                                       dx = pixeltom,
-                                       axis = 'x'
-                                      )
+        sample_field.shape[0],
+        sample_field.shape[1],
+        k,
+        angle=0.1,
+        dx=pixeltom,
+        axis="x",
+    )
     sample_field = sample_field * lens_field
     assert True == True
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(test())

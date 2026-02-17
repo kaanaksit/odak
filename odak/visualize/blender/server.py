@@ -6,13 +6,14 @@ import os
 import socket
 import traceback
 import sys
-sys.path.append('%s' % os.path.dirname(os.path.realpath(__file__)))
+
+sys.path.append("%s" % os.path.dirname(os.path.realpath(__file__)))
 
 execution_queue = queue.Queue()
 
 
 class whisper2blender(threading.Thread):
-    def __init__(self, port=8082, host='127.0.0.1', path_max=4096):
+    def __init__(self, port=8082, host="127.0.0.1", path_max=4096):
         threading.Thread.__init__(self)
         self.port = port
         self.host = host
@@ -26,13 +27,13 @@ class whisper2blender(threading.Thread):
         while True:
             connection, address = serversocket.accept()
             buf = connection.recv(self.path_max)
-            for cmd in buf.split(b'\x00'):
+            for cmd in buf.split(b"\x00"):
                 if cmd:
                     try:
                         cmd = cmd.decode()
-#                        print(cmd)
+                        #                        print(cmd)
                         run_in_main_thread(cmd)
-    #                    exec(cmd)
+                    #                    exec(cmd)
                     except:
                         traceback.print_exc()
 

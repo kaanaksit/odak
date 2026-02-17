@@ -19,6 +19,6 @@ import torch
 import numpy as np
 
 version_info = 0, 2, 7
-__version__ = '.'.join(map(str, version_info))
+__version__ = ".".join(map(str, version_info))
 
 pi = np.pi
