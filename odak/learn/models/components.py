@@ -1164,7 +1164,7 @@ class spatially_adaptive_convolution(torch.nn.Module):
 
         # Resize weight to match the input channels and kernel size
         si_kernel = self.weight.reshape(
-            self.weight_output_channels,
+            self.output_channels,
             self.input_channels * self.kernel_size * self.kernel_size,
         )
 
@@ -1174,7 +1174,7 @@ class spatially_adaptive_convolution(torch.nn.Module):
         # Perform matrix multiplication
         sa_output = torch.matmul(si_kernel, sv_feature).reshape(
             1,
-            self.weight_output_channels,
+            self.output_channels,
             (x.size(-2) // self.stride),
             (x.size(-1) // self.stride),
         )
@@ -1227,10 +1227,10 @@ class spatially_adaptive_module(torch.nn.Module):
         self.output_channels = output_channels
         self.stride = stride
         self.padding = padding
-        self.weight_output_channels = self.output_channels - 1
+        self.output_channels_for_weight = self.output_channels - 1
         self.standard_convolution = torch.nn.Conv2d(
             in_channels=input_channels,
-            out_channels=self.weight_output_channels,
+            out_channels=self.output_channels_for_weight,
             kernel_size=kernel_size,
             stride=stride,
             padding=padding,
@@ -1301,14 +1301,14 @@ class spatially_adaptive_module(torch.nn.Module):
 
         # Reshape weight for spatially adaptive convolution
         si_kernel = self.weight.reshape(
-            self.weight_output_channels,
+            self.output_channels_for_weight,
             self.input_channels * self.kernel_size * self.kernel_size,
         )
 
         # Apply si_kernel on sv convolution output
         sa_output = torch.matmul(si_kernel, sv_feature).reshape(
             1,
-            self.weight_output_channels,
+            self.output_channels_for_weight,
             (x.size(-2) // self.stride),
             (x.size(-1) // self.stride),
         )

@@ -19,26 +19,26 @@ class multi_layer_perceptron(torch.nn.Module):
         """
         Parameters
         ----------
-        dimensions        : list
-                            List of integers representing the dimensions of each layer (e.g., [2, 10, 1], where the first layer has two channels and last one has one channel.).
-        activation        : torch.nn
-                            Nonlinear activation function.
-                            Default is `torch.nn.ReLU()`.
-        bias              : bool
-                            If set to True, linear layers will include biases.
-        siren_multiplier  : float
-                            When using `SIREN` model type, this parameter functions as a hyperparameter.
-                            The original SIREN work uses 30.
-                            You can bypass this parameter by providing input that are not normalized and larger then one.
-        input_multiplier  : float
-                            Initial value of the input multiplier before the very first layer.
-        model_type        : str
-                            Model type: `conventional`, `swish`, `SIREN`, `FILM SIREN`, `Gaussian`.
-                            `conventional` refers to a standard multi layer perceptron.
-                            For `SIREN,` see: Sitzmann, Vincent, et al. "Implicit neural representations with periodic activation functions." Advances in neural information processing systems 33 (2020): 7462-7473.
-                            For `Swish,` see: Ramachandran, Prajit, Barret Zoph, and Quoc V. Le. "Searching for activation functions." arXiv preprint arXiv:1710.05941 (2017).
-                            For `FILM SIREN,` see: Chan, Eric R., et al. "pi-gan: Periodic implicit generative adversarial networks for 3d-aware image synthesis." Proceedings of the IEEE/CVF conference on computer vision and pattern recognition. 2021.
-                            For `Gaussian,` see: Ramasinghe, Sameera, and Simon Lucey. "Beyond periodicity: Towards a unifying framework for activations in coordinate-mlps." In European Conference on Computer Vision, pp. 142-158. Cham: Springer Nature Switzerland, 2022.
+        dimensions          : list
+                              List of integers representing the dimensions of each layer (e.g., [2, 10, 1], where the first layer has two channels and last one has one channel.).
+        activation          : torch.nn
+                              Nonlinear activation function.
+                              Default is `torch.nn.ReLU()`.
+        bias                : bool
+                              If set to True, linear layers will include biases.
+        siren_multiplier    : float
+                              When using `SIREN` model type, this parameter functions as a hyperparameter.
+                              The original SIREN work uses 30.
+                              You can bypass this parameter by providing input that are not normalized and larger than one.
+        input_multiplier    : float
+                              Initial value of the input multiplier before the very first layer.
+        model_type          : str
+                              Model type: `conventional`, `swish`, `SIREN`, `FILM SIREN`, `Gaussian`.
+                              `conventional` refers to a standard multi layer perceptron.
+                              For `SIREN`, see: Sitzmann, Vincent, et al. "Implicit neural representations with periodic activation functions." Advances in neural information processing systems 33 (2020): 7462-7473.
+                              For `Swish`, see: Ramachandran, Prajit, Barret Zoph, and Quoc V. Le. "Searching for activation functions." arXiv preprint arXiv:1710.05941 (2017).
+                              For `FILM SIREN`, see: Chan, Eric R., et al. "pi-gan: Periodic implicit generative adversarial networks for 3d-aware image synthesis." Proceedings of the IEEE/CVF conference on computer vision and pattern recognition. 2021.
+                              For `Gaussian`, see: Ramasinghe, Sameera, and Simon Lucey. "Beyond periodicity: Towards a unifying framework for activations in coordinate-mlps." In European Conference on Computer Vision, pp. 142-158. Cham: Springer Nature Switzerland, 2022.
         """
         super(multi_layer_perceptron, self).__init__()
         self.activation = activation
