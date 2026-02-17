@@ -1,6 +1,6 @@
 ??? quote end "Narrate section"
     <audio controls="controls">
-         <source type="audio/mp3" src="../media/geometric_optics.mp3"></source>
+        <source type="audio/mp3" src="../media/geometric_optics.mp3"></source>
     </audio>
 
 

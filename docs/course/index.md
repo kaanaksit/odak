@@ -1,6 +1,6 @@
 ??? quote end "Narrate section"
     <audio controls="controls">
-         <source type="audio/mp3" src="media/index.mp3"></source>
+        <source type="audio/mp3" src="media/index.mp3"></source>
     </audio>
 
 
@@ -12,7 +12,6 @@ This page is the starting point for the **Computational Light** course.
 Readers can follow the course material found on these pages to learn more about the field of **Computational Light**.
 I encourage readers to carefully read this page to decide if they want to continue with the course.
 
-
 ## Brief course description
 
 :octicons-info-24: Informative
@@ -21,39 +20,31 @@ Computational Light is a term that brings the concepts in computational methods 
 So more specifically, wherever we can program the qualities of light, such as intensity or direction, this will bring us into the topics of Computational Light.
 Some well-known subfields of Computational Light are Computer Graphics, Computational Displays, Computational Photography, Computational Imaging and Sensing, Computational Optics and Fabrication, Optical Communication, and All-optical Machine Learning.
 
-
 <figure markdown>
   ![Image title](media/telelife.png){ width="600" }
   Future is yet to be decided. Will you help me build it? A rendering from <a href="https://kaanaksit.com/assets/pdf/OrloskyEtAl_FrontiersInVirtualReality2021_Telelife_the_future_of_remote_living.pdf">Telelife vision paper</a> [@orlosky2021telelife].
 </figure>
 
-
 Computational Light Course bridges the gap between Computer Science and physics. In other words, Computational Light Course offers students a gateway to get familiar with various aspects of the physics of light, the human visual system, computational methods in designing light-based devices, and applications of light. Precisely, students will familiarize themselves with designing and implementing graphics, display, sensor, and camera systems using state-of-the-art deep learning and optimization methods. A deep understanding of these topics can help students become experts in the computational design of new graphics, displays, sensors, and camera systems.
-
 
 ## What is Computational Light?
 
-
 :octicons-info-24: Informative
-
 
 Computational light is a term that brings the concepts in computational methods with the characteristics of light.
 In other words, wherever we can program the qualities of light, this will get us into the topics of computational light.
 Programming light may sound unconventional, but I invite you to consider how we program current computers.
 These conventional computers interpret voltage levels in an electric signal as ones and zeros.
-Color, $\lambda$, propagation direction, $\vec{r}$, amplitude, $A$, phase, $\phi$, polarization, diffraction, and interference are all qualities that could help us program light to achieve tasks for specific applications. For now, many of these suggested programable qualities of light may be unknown to you. We will cover all these qualities in this course, so please patient in terms of growing your understanding on the topic.
+Color, $\lambda$, propagation direction, $\vec{r}$, amplitude, $A$, phase, $\phi$, polarization, diffraction, and interference are all qualities that could help us program light to achieve tasks for specific applications. For now, many of these suggested programable qualities of light may be unknown to you. We will cover all these qualities in this course, so please be patient in terms of growing your understanding on the topic.
 
 ## Applications of Computational Light
-
 
 :octicons-info-24: Informative ·
 :octicons-eye-24: Media
 
-
 There are enormous amounts of applications of light.
 Let us glance at some of the important ones to get a sense of possibilities for people studying the topics of computational light.
 For each topic highlighted below, please click on the box to discover more about that specific subfield of computational light.
-
 
 ??? success end "Computer Graphics"
     Computer Graphics deals with generating synthetic images using computers and simulations of light.
@@ -66,7 +57,6 @@ For each topic highlighted below, please click on the box to discover more about
     * **Did you know?** The lecturer of the Computational Light Course, [Kaan Akşit](https://kaanaksit.com), is actively researching topics of Computer Graphics (e.g., [Beyond blur: Real-time ventral metamers for foveated rendering](https://kaanaksit.com/assets/pdf/WaltonEtAl_SIGGRAPH2021_Beyond_blur_real_time_ventral_metamers_for_foveated_rendering.pdf)[@walton2021beyond]).
     * **Want to learn more?** Although we will cover a great deal of Computer Graphics in this course, you may want to dig deeper with a dedicated course, which you can follow online:
     <center><iframe width="560" height="315" src="https://www.youtube.com/embed/-LqUu61oRdk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></center>
-
 
 ??? success end "Computational Displays"
     Computational Displays topic deals with inventing next-generation display technology for the future of human-computer interaction.
@@ -81,7 +71,6 @@ For each topic highlighted below, please click on the box to discover more about
     * **Want to learn more?** Although we will cover a great deal of Computational Displays in this course, you may want to dig deeper with a dedicated course, which you can follow online [@kavakli2022optimizing]:
     <center> <iframe width="560" height="315" src="https://www.youtube.com/embed/z_AtSgct6_I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center>
 
-
 ??? success end "Computational Photography"
     Computational Photography topic deals with digital image capture based on optical hardware such as cameras.
     Common examples of emerging Computational Photography are smartphone applications such as shooting in the dark or capturing selfies.
@@ -92,7 +81,6 @@ For each topic highlighted below, please click on the box to discover more about
     * **Successful products.** Here are a few examples of successful outcomes from the field of Computational Displays: [Google's Night Sight](https://support.google.com/googlecamera/answer/9708795?hl=en) and [Samsung Camera modes](https://www.samsung.com/uk/support/mobile-devices/what-is-panorama-mode-and-how-do-i-use-it/).
     * **Want to learn more?** Although we will cover relevant information for Computational Photography in this course, you may want to dig deeper with a dedicated course, which you can follow online:
     <center> <iframe width="560" height="315" src="https://www.youtube.com/embed/y7HrM-fk_Rc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center>
-
 
 ??? success end "Computational Imaging and Sensing"
     Computational Imaging and Sensing topic deal with imaging and sensing certain scene qualities.
@@ -106,7 +94,6 @@ For each topic highlighted below, please click on the box to discover more about
     * **Want to learn more?** Although we will cover a great deal of Computational Imaging and Sensing in this course, you may want to dig deeper with a dedicated course, which you can follow online:
     <center> <iframe width="560" height="315" src="https://www.youtube.com/embed/5AWx_FLVpmk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center>
 
-
 ??? success end "Computational Optics and Fabrication"
     The Computational Optics and Fabrication topic deals with designing and fabricating optical components such as lenses, mirrors, diffraction gratings, holographic optical elements, and metasurfaces.
      There is a little bit of Computational Optics and Fabrication in every sector of Computational Light, especially when there is a need for custom optical design.
@@ -116,7 +103,6 @@ For each topic highlighted below, please click on the box to discover more about
     * **Did you know?** The lecturer of the Computational Light Course, [Kaan Akşit](https://kaanaksit.com), is actively researching topics of Computational Optics and Fabrication (e.g., [Manufacturing application-driven foveated near-eye displays](https://kaanaksit.com/assets/pdf/AksitEtAl_IEEEVR2019_manufacturing_application_driven_foveated_near_eye_displays.pdf) [@akcsit2019manufacturing]).
     * **Want to learn more?** Although we will cover a great deal of Computational Imaging and Sensing in this course, you may want to dig deeper with a dedicated course, which you can follow online:
     <center> <iframe width="560" height="315" src="https://www.youtube.com/embed/cEzVhisjFn0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> </center>
-
 
 ??? success end "Optical Communication"
     Optical Communication deals with using light as a medium for telecommunication applications.
@@ -128,7 +114,6 @@ For each topic highlighted below, please click on the box to discover more about
     * **Did you know?** The lecturer of the Computational Light Course, [Kaan Akşit](https://kaanaksit.com), was researching topics of Optical Communication (e.g., [From sound to sight: Using audio processing to enable visible light communication](https://kaanaksit.com/assets/pdf/SchmidEtAl_WoOWC2014_From_sound_to_sight_using_audio_processing_to_enable_visible_light_communication.pdf) [@schmid2014sound]).
     * **Want to learn more?** Although we will cover relevant information for Optical Communication in this course, you may want to dig deeper and could start with this online video:
     <center><iframe width="560" height="315" src="https://www.youtube.com/embed/6-0fhUMaZ5I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></center>
-
 
 ??? success end "All-optical Machine Learning"
     All-optical Machine Learning deals with building neural networks and computers running solely based on light.
@@ -160,7 +145,6 @@ Your favorite search engine is your friend to find out more in this case.
 ## Prerequisites
 These are the prerequisites of **Computational Light** course:
 
-
 - **Background knowledge.** First and foremost being fluent in programming with [Python programming language](https://www.python.org/) and a graduate-level understanding of `Linear Algebra,` and  `Deep Learning` are highly required.
 - **Skills and abilities.** Throughout the entire course, three libraries will be used, and these libraries include [`odak`](https://github.com/kaanaksit/odak), [`numpy`](https://numpy.org/), and [`torch`](https://pytorch.org/).
 Familiarity with these libraries is a big plus.
@@ -171,10 +155,8 @@ Note that at each section of the course, you will be provided with relevant read
 In other terms, you are someone motivated to create a positive impact in the society with light related innovations. 
 You can also be someone eager to understand and learn physics behind light and how you can simulate light related phenomena.
 
-
 ## Questions and Answers
 Here are some questions and answers related to the course that readers may ask:
-
 
 ??? question end "What is the overarching rationale for the module?"
     Historically, physics and electronics departments in various universities study and teach the physics of light.
@@ -182,22 +164,18 @@ Here are some questions and answers related to the course that readers may ask:
     However, emerging topics from mathematics and computer science departments, such as deep learning and advanced optimization methods, unlocked new capabilities for existing light-based devices and started to play a crucial role in designing the next generation of these devices.
     The Computational Light Course aims to bridge this gap between Computer Science and physics by providing a fundamental understanding of light and computational methods that helps to explore new possibilities with light.
 
-
 ??? question end "Who is the target audience of Computational Light course?"
     The Computational Light course is designed for individuals willing to learn how to develop and invent light-based practical systems for next-generation human-computer interfaces.
     This course targets a graduate-level audience in Computer Science, Physics and Electrical and Electronics Engineering departments. 
     However, you do not have to be strictly from one of the highlighted targeted audiences.
     Simply put, if you think you can learn and are eager to learn, no one will stop you.
 
-
 ??? question end "How can I learn Python programming, linear Algebra and machine learning?"
     There isn't a point in providing references on how to learn `Python programming,` `Linear Algebra,` and `Deep Learning` as there is a vast amount of resources online or in your previous university courses.
     Your favorite search engine is your friend in this case.
 
-
 ??? question end "How do I install Python, numpy and torch?"
     The installation guide for [python](https://www.python.org/), [numpy](https://numpy.org/) and [torch](https://pytorch.org/) is also available on their websites.
-
 
 ??? question end "How do I install odak?"
       Odak's [installation page](https://kaanaksit.com/odak/installation/) and [README](https://github.com/kaanaksit/odak) provide the most up-to-date information on installing odak.
@@ -208,7 +186,6 @@ Here are some questions and answers related to the course that readers may ask:
     Again, there isn't no one correct answer here for everyone.
     You can use any operating system (e.g., Windows, Mac) and Python distribution (e.g., conda).
 
-
 ??? question end "Which text editor should I use for programming?"
     I use [vim](https://www.vim.org/) as my text editor.
     However, I understand that `vim` could be challenging to adopt, especially as a newcomer.
@@ -217,12 +194,10 @@ Here are some questions and answers related to the course that readers may ask:
     Please also remember that I am only making suggestions here.
     If another text editor works better for you, please use that one (e.g., nano, Sublime Text, Atom, Notepad++, Jupyter Notebooks).
 
-
 ??? question end "Which terminal program to use?"
     You are highly encouraged to use the terminal that you feel most comfortable with.
     This terminal could be the default terminal in your operating system.
     I use [terminator](https://gnome-terminator.org/) as it enables my workflow with incredible features and is open source.
-
 
 ??? question end "What is the method of delivery?"
     The proposed course, Computational Light Course, comprises multiple elements in delivery. We list these elements as the followings:
@@ -239,15 +214,14 @@ Here are some questions and answers related to the course that readers may ask:
 
 ??? question end "What is the aim of this course?"
     Computational Light Course aims to train individuals that could potentially help invent and develop the next generation of light-based devices, systems and software. To achieve this goal, Computational Light Course, will aim:
-    
+
     - To educate students on physics of light, human visual system and computational methods relevant to physics of light based on optimizations and machine learning techniques,
     - To enable students the right set of practical skills in coding and design for the next generation of light-based systems,
     - And to increase literacy on light-based technologies among students and professionals.
 
-
 ??? question end "What are the intended learning outcomes of this course?"
     Students who have completed Computational Light Course successfully will have literacy and practical skills on the following items:
-    
+
     - Physics of Light and applications of Computational Light,
     - Fundamental knowledge of managing a software project (e.g., version and authoring tools, unit tests, coding style, and grammar),
     - Fundamental knowledge of optimization methods and state-of-the-art libraries aiming at relevant topics,
@@ -256,9 +230,8 @@ Here are some questions and answers related to the course that readers may ask:
     - Simulating imaging and displays systems, including Computer-Generated Holography,
     - Designing and optimizing imaging and display systems,
     - Designing and optimizing all-optical machine learning systems.
-    
-    Note that the above list is always subject to change in order or topic as society's needs move in various directions.
 
+    Note that the above list is always subject to change in order or topic as society's needs move in various directions.
 
 ???+ question end "How to cite this course?"
     For citing using latex's bibtex bibliography system:
@@ -270,8 +243,7 @@ Here are some questions and answers related to the course that readers may ask:
       year = {2024}
     }
     ```
-    For plain text citation: `Kaan Akşit and Henry Kam, "Computational Light Course", 2024.` 
-
+    For plain text citation: `Kaan Akşit and Henry Kam, "Computational Light Course", 2024.`
 
 ## Team
 
@@ -279,28 +251,21 @@ Here are some questions and answers related to the course that readers may ask:
 <img align='left' src="https://kaanaksit.com/assets/img/kaan_aksit.png" width="120" alt/>
 </div>
 [Kaan Akşit](https://kaanaksit.com)
-
 Instructor
-
 :material-email: [E-mail](mailto:k.aksit@ucl.ac.uk)
 <br clear="left"/>
-
 
 <div style="float: left; height:120px;" class="boxed">
 <img align='left' src="https://complightlab.com/people/henry_kam.png" width="120" alt/>
 </div>
 [Henry Kam](http://gulpinhenry.github.io/)
-
 Contributor
-
 :material-email: [E-mail](mailto:h3nrykam@gmail.com)
 <br clear="left"/>
-
 
 !!! Warning end "Contact Us"
     The preferred way of communication is through the [discussions section of odak](https://github.com/kaanaksit/odak/discussions).
     Please only reach us through email if the thing you want to achieve, establish, or ask is not possible through the suggested route.
-
 
 ## Outreach
 We host a Slack group with more than 300 members.
@@ -308,15 +273,11 @@ This Slack group focuses on the topics of rendering, perception, displays and ca
 The group is open to public and you can become a member by following [this link](https://complightlab.com/outreach/).
 Readers can get in-touch with the wider community using this public group.
 
-
-
 ## Acknowledgements
-
 
 !!! success end "Acknowledgements"
     We thank our readers.
     We also thank Yicheng Zhan for his feedback.
-
 
 !!! information end "Interested in supporting?"
     Enjoyed our course material and want us to do better in the future?

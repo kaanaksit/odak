@@ -1,19 +1,16 @@
 ??? quote end "Narrate section"
     <audio controls="controls">
-         <source type="audio/mp3" src="../media/computer_generated_holography.mp3"></source>
+        <source type="audio/mp3" src="../media/computer_generated_holography.mp3"></source>
     </audio>
 
 
 # Computer-Generated Holography
 
-
 In this section, we introduce Computer-Generated Holography (CGH) [@born2013principles, @goodman2005introduction] as another emerging method to simulate light.
 CGH offers an upgraded but more computationally expensive way to simulating light concerning the raytracing method described in the previous section.
 This section dives deep into CGH and will explain how CGH differs from raytracing as we go.
 
-
 ## What is holography?
-
 
 :octicons-info-24: Informative 
 
@@ -24,7 +21,6 @@ Unlike classical raytracing, holography also includes diffraction and interferen
 In raytracing, the smallest building block that defines light is a ray, whereas, in holography, the building block is a light distribution over surfaces.
 In other terms, while raytracing traces rays, holography deals with surface-to-surface light transfer.
 
-
 ??? tip end "Did you know this source?"
     There is an active repository on GitHub, where latest CGH papers relevant to display technologies are listed.
     Visit [GitHub:bchao1/awesome-holography](https://github.com/bchao1/awesome-holography) for more.
@@ -32,24 +28,18 @@ In other terms, while raytracing traces rays, holography deals with surface-to-s
 
 ### What is a hologram?
 
-
 :octicons-info-24: Informative 
-
 
 Hologram is either a surface or a volume that modifies the light distribution of incoming light in terms of phase and amplitude.
 Diffraction gratings, Holographic Optical Elements, or Metasurfaces are good examples of holograms.
 Within this section, we also use the term hologram as a means to describe a lightfield or a slice of a lightfield.
 
-
 ### What is Computer-Generated Holography?
-
 
 :octicons-info-24: Informative 
 
-
 It is the computerized version (discrete sampling) of holography.
 In other terms, whenever you can program the phase or amplitude of light, this will get us to Computer-Generated Holography.
-
 
 ??? question end "Where can I find an extensive summary on CGH?"
     You may be wondering about the greater physical details of CGH.
