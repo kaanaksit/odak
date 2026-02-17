@@ -1,4 +1,4 @@
-# Installation
+# Installation 🛠️
 We encourage users to use virtual environments in their development pipeline when working with or developing odak.
 You can simply create and activate a virtual environment by using the following syntax:
 
@@ -38,7 +38,7 @@ pip3 install -e .
 ```
 
 
-## Uninstalling the Development version
+## Uninstalling the Development version 🗑️
 If you have to remove the development version of `odak`, you can first try:
 
 ```bash
@@ -51,13 +51,13 @@ In that file, if you see odak's directory listed, delete it.
 This will help you remove development version of `odak`.
 
 
-## Notes before running
+## Notes before running ⚠️
 Some notes should be highlighted to users, and these include:
 
 * Odak installs `PyTorch` that only uses `CPU`. 
 To properly install `PyTorch` with GPU support, please consult [PyTorch website](https://pytorch.org).
 
-## Testing an installation
+## Testing an installation ✅
 After installing Odak, one can test if Odak has been appropriately installed with its dependencies by running the unit tests.
 To be able to run unit tests, make sure to have `pytest` installed:
 
@@ -73,9 +73,3 @@ pytest
 ```
 The tests should return no error.
 However, if an error is encountered, please [start a new issue](https://github.com/kaanaksit/odak/issues) to help us be aware of the issue.
-
-## Notes before running
-Some notes should be highlighted to users, and these include:
-
-* Odak installs `PyTorch` that only uses `CPU`. 
-To properly install `PyTorch` with GPU support, please consult [PyTorch website](https://pytorch.org).
