@@ -79,24 +79,42 @@ Here is a simple example of `raytracing` with odak, and there is also more [here
 import odak
 import torch
 
-starting_point = torch.tensor([0., 0., 0.])
-end_point = torch.tensor([1., 1., 5.])
+starting_point = torch.tensor([0.0, 0.0, 0.0])
+end_point = torch.tensor([1.0, 1.0, 5.0])
 rays = odak.learn.raytracing.create_ray_from_two_points(
-                                                        starting_point,
-                                                        end_point
-                                                       )
+    starting_point,
+    end_point,
+)
 
-triangle = torch.tensor([[
-                          [-5., -5., 5.],
-                          [ 5., -5., 5.],
-                          [ 0.,  5., 5.]
-                         ]])
+triangle = torch.tensor(
+    [
+        [
+            -5.0,
+            -5.0,
+            5.0,
+        ],
+        [
+            5.0,
+            -5.0,
+            5.0,
+        ],
+        [
+            0.0,
+            5.0,
+            5.0,
+        ],
+    ],
+)
 
 normals, distance, _, _, check = odak.learn.raytracing.intersect_w_triangle(
-                                                                             rays,
-                                                                             triangle
-                                                                            )
-print('intersection point is {}. Surface normal cosines are {}.'.format(normals[0, 0], normals[0, 1]))
+    rays,
+    triangle,
+)
+print(
+    "intersection point is {}. Surface normal cosines are {}.".format(
+        normals[0, 0], normals[0, 1]
+    )
+)
 ```
 
 Here is a simple example of `computer-generated holography` with odak, and there is also more [here](https://www.kaanaksit.com/odak/course/computer_generated_holography/):
@@ -105,32 +123,32 @@ import odak
 import torch
 
 wavelength = 532e-9
-pixel_pitch = 8e-6 
+pixel_pitch = 8e-6
 distance = 5e-3
-propagation_type = 'Angular Spectrum'
+propagation_type = "Angular Spectrum"
 k = odak.learn.wave.wavenumber(wavelength)
 
 amplitude = torch.zeros(500, 500)
-amplitude[200:300, 200:300 ] = 1.
+amplitude[200:300, 200:300] = 1.0
 phase = torch.randn_like(amplitude) * 2 * odak.pi
 hologram = odak.learn.wave.generate_complex_field(amplitude, phase)
 
 image_plane = odak.learn.wave.propagate_beam(
-                                             hologram,
-                                             k,
-                                             distance,
-                                             pixel_pitch,
-                                             wavelength,
-                                             propagation_type,
-                                             zero_padding = [True, False, True]
-                                            )
-image_intensity = odak.learn.wave.calculate_amplitude(image_plane) ** 2 
+    hologram,
+    k,
+    distance,
+    pixel_pitch,
+    wavelength,
+    propagation_type,
+    zero_padding=[True, False, True],
+)
+image_intensity = odak.learn.wave.calculate_amplitude(image_plane) ** 2
 odak.learn.tools.save_image(
-                            'image_intensity.png', 
-                            image_intensity, 
-                            cmin = 0., 
-                            cmax = 1.
-                           )
+    "image_intensity.png",
+    image_intensity,
+    cmin=0.0,
+    cmax=1.0,
+)
 ```
 
 Here is a simple example of `color conversion` with odak, and there is also more [here](https://www.kaanaksit.com/odak/course/visual_perception/):
@@ -148,30 +166,34 @@ Here is a simple example on `deep learning` methods with odak:
 import odak
 import torch
 
-x1 = torch.arange(10).unsqueeze(-1) * 30.
-pos_x1 = torch.arange(x1.shape[0]).unsqueeze(-1) * 1.
+x1 = torch.arange(10).unsqueeze(-1) * 30.0
+pos_x1 = torch.arange(x1.shape[0]).unsqueeze(-1) * 1.0
 model_mlp = odak.learn.models.multi_layer_perceptron(
-                                                     dimensions = [1, 5, 1],
-                                                     bias = False,
-                                                     model_type = 'conventional'
-                                                    )
+    dimensions=[1, 5, 1],
+    bias=False,
+    model_type="conventional",
+)
 
-optimizer = torch.optim.AdamW(model_mlp.parameters(), lr = 1e-3)
+optimizer = torch.optim.AdamW(model_mlp.parameters(), lr=1e-3)
 loss_function = torch.nn.MSELoss()
 for epoch in range(10000):
     optimizer.zero_grad()
     estimation = model_mlp(pos_x1)
     ground_truth = x1
     loss = loss_function(estimation, ground_truth)
-    loss.backward(retain_graph = True)
+    loss.backward(retain_graph=True)
     optimizer.step()
-print('Training loss: {}'.format(loss.item()))
+print("Training loss: {}".format(loss.item()))
 
 for item_id, item in enumerate(pos_x1):
     torch.no_grad()
     ground_truth = x1[item_id]
     estimation = model_mlp(item)
-    print('Input: {}, Ground truth: {}, Estimation: {}'.format(item, ground_truth, estimation))
+    print(
+        "Input: {}, Ground truth: {}, Estimation: {}".format(
+            item, ground_truth, estimation
+        )
+    )
 ```
 
 For more of these examples, you can either check our [course documentation](https://kaanaksit.com/odak/course) or visit our [unit tests](https://github.com/kaanaksit/odak/tree/master/test) to get inspired.
