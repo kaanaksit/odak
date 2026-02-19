@@ -4,19 +4,22 @@ from .file import resize
 
 def multi_scale_total_variation_loss(frame, levels=3):
     """
-    Function for evaluating a frame against a target using multi scale total variation approach. Here, multi scale refers to image pyramid of an input frame, where at each level image resolution is half of the previous level.
+    Calculates multi-scale total variation loss for an input frame.
+
+    This function computes the total variation loss at multiple scales by creating
+    an image pyramid where each level has half the resolution of the previous level.
 
     Parameters
     ----------
-    frame         : torch.tensor
-                    Input frame [1 x 3 x m x n] or [3 x m x n] or [m x n].
-    levels        : int
-                    Number of levels to go in the image pyriamid.
+    frame : torch.Tensor
+        Input frame with shape [1 x 3 x m x n], [3 x m x n], or [m x n].
+    levels : int, optional
+        Number of scales in the image pyramid (default: 3).
 
     Returns
     -------
-    loss          : float
-                    Loss from evaluation.
+    torch.Tensor
+        Total variation loss value.
     """
     if len(frame.shape) == 2:
         frame = frame.unsqueeze(0)
@@ -34,17 +37,20 @@ def multi_scale_total_variation_loss(frame, levels=3):
 
 def total_variation_loss(frame):
     """
-    Function for evaluating a frame against a target using total variation approach.
+    Calculates total variation loss for an input frame.
+
+    This function computes the total variation loss by calculating spatial gradients
+    in both x and y directions and averaging their squared values.
 
     Parameters
     ----------
-    frame         : torch.tensor
-                    Input frame [1 x 3 x m x n] or [3 x m x n] or [m x n].
+    frame : torch.Tensor
+        Input frame with shape [1 x 3 x m x n], [3 x m x n], or [m x n].
 
     Returns
     -------
-    loss          : float
-                    Loss from evaluation.
+    torch.Tensor
+        Total variation loss value.
     """
     if len(frame.shape) == 2:
         frame = frame.unsqueeze(0)
@@ -58,19 +64,20 @@ def total_variation_loss(frame):
 
 def spatial_gradient(frame):
     """
-    Function to calculate the spatial gradient of a given frame.
+    Calculates the spatial gradient of a given frame.
+
+    This function computes the gradient of the input frame in both x and y directions
+    by differencing adjacent pixels.
 
     Parameters
     ----------
-    frame         : torch.tensor
-                    Input frame [1 x 3 x m x n] or [3 x m x n] or [m x n].
+    frame : torch.Tensor
+        Input frame with shape [1 x 3 x m x n], [3 x m x n], or [m x n].
 
     Returns
     -------
-    diff_x        : float
-                    Spatial gradient along X.
-    diff_y        : float
-                    Spatial gradient along Y.
+    tuple
+        Tuple of (diff_x, diff_y) representing spatial gradients along x and y axes.
     """
     if len(frame.shape) == 2:
         frame = frame.unsqueeze(0)
@@ -83,19 +90,21 @@ def spatial_gradient(frame):
 
 def radial_basis_function(value, epsilon=0.5):
     """
-    Function to pass a value into radial basis function with Gaussian description.
+    Applies radial basis function with Gaussian description to input values.
+
+    This function applies the Gaussian radial basis function: y = e^(-ε² * x²)
 
     Parameters
     ----------
-    value            : torch.tensor
-                       Value(s) to pass to the radial basis function.
-    epsilon          : float
-                       Epsilon used in the Gaussian radial basis function (e.g., y=e^(-(epsilon x value)^2).
+    value : torch.Tensor
+        Value(s) to pass to the radial basis function.
+    epsilon : float, optional
+        Epsilon parameter used in the Gaussian radial basis function (default: 0.5).
 
     Returns
     -------
-    output           : torch.tensor
-                       Output values.
+    torch.Tensor
+        Output values after applying the radial basis function.
     """
     output = torch.exp((-((epsilon * value) ** 2)))
     return output
@@ -103,23 +112,26 @@ def radial_basis_function(value, epsilon=0.5):
 
 def histogram_loss(frame, ground_truth, bins=32, limits=[0.0, 1.0]):
     """
-    Function for evaluating a frame against a target using histogram.
+    Calculates histogram loss between input frame and ground truth.
+
+    This function computes the MSE loss between histograms of the input frame
+    and ground truth images, divided into specified number of bins.
 
     Parameters
     ----------
-    frame            : torch.tensor
-                       Input frame [1 x 3 x m x n]  or [3 x m x n] or [1 x m x n] or [m x n].
-    ground_truth     : torch.tensor
-                       Ground truth [1 x 3 x m x n] or  [3 x m x n] or [1 x m x n] or  [m x n].
-    bins             : int
-                       Number of bins.
-    limits           : list
-                       Limits.
+    frame : torch.Tensor
+        Input frame with shape [1 x 3 x m x n], [3 x m x n], [1 x m x n], or [m x n].
+    ground_truth : torch.Tensor
+        Ground truth with shape [1 x 3 x m x n], [3 x m x n], [1 x m x n], or [m x n].
+    bins : int, optional
+        Number of bins for histogram calculation (default: 32).
+    limits : list, optional
+        Histogram limits as [min, max] (default: [0.0, 1.0]).
 
     Returns
     -------
-    loss             : float
-                       Loss from evaluation.
+    torch.Tensor
+        Histogram loss value.
     """
     if len(frame.shape) == 2:
         frame = frame.unsqueeze(0).unsqueeze(0)
@@ -151,21 +163,24 @@ def histogram_loss(frame, ground_truth, bins=32, limits=[0.0, 1.0]):
 
 def weber_contrast(image, roi_high, roi_low):
     """
-    A function to calculate weber contrast ratio of given region of interests of the image.
+    Calculates Weber contrast ratio for given regions of an image.
+
+    This function computes the Weber contrast ratio for high and low intensity regions
+    using the formula: (mean_high - mean_low) / mean_low.
 
     Parameters
     ----------
-    image         : torch.tensor
-                    Image to be tested [1 x 3 x m x n] or [3 x m x n] or [1 x m x n] or [m x n].
-    roi_high      : torch.tensor
-                    Corner locations of the roi for high intensity area [m_start, m_end, n_start, n_end].
-    roi_low       : torch.tensor
-                    Corner locations of the roi for low intensity area [m_start, m_end, n_start, n_end].
+    image : torch.Tensor
+        Input image with shape [1 x 3 x m x n], [3 x m x n], [1 x m x n], or [m x n].
+    roi_high : torch.Tensor
+        Corner locations of the high intensity region [m_start, m_end, n_start, n_end].
+    roi_low : torch.Tensor
+        Corner locations of the low intensity region [m_start, m_end, n_start, n_end].
 
     Returns
     -------
-    result        : torch.tensor
-                    Weber contrast for given regions. [1] or [3] depending on input image.
+    torch.Tensor
+        Weber contrast for the given regions. Shape is [1] or [3] depending on input.
     """
     if len(image.shape) == 2:
         image = image.unsqueeze(0)
@@ -181,21 +196,24 @@ def weber_contrast(image, roi_high, roi_low):
 
 def michelson_contrast(image, roi_high, roi_low):
     """
-    A function to calculate michelson contrast ratio of given region of interests of the image.
+    Calculates Michelson contrast ratio for given regions of an image.
+
+    This function computes the Michelson contrast ratio for high and low intensity regions
+    using the formula: (mean_high - mean_low) / (mean_high + mean_low).
 
     Parameters
     ----------
-    image         : torch.tensor
-                    Image to be tested [1 x 3 x m x n] or [3 x m x n] or [m x n].
-    roi_high      : torch.tensor
-                    Corner locations of the roi for high intensity area [m_start, m_end, n_start, n_end].
-    roi_low       : torch.tensor
-                    Corner locations of the roi for low intensity area [m_start, m_end, n_start, n_end].
+    image : torch.Tensor
+        Input image with shape [1 x 3 x m x n], [3 x m x n], or [m x n].
+    roi_high : torch.Tensor
+        Corner locations of the high intensity region [m_start, m_end, n_start, n_end].
+    roi_low : torch.Tensor
+        Corner locations of the low intensity region [m_start, m_end, n_start, n_end].
 
     Returns
     -------
-    result        : torch.tensor
-                    Michelson contrast for the given regions. [1] or [3] depending on input image.
+    torch.Tensor
+        Michelson contrast for the given regions. Shape is [1] or [3] depending on input.
     """
     if len(image.shape) == 2:
         image = image.unsqueeze(0)
@@ -211,21 +229,29 @@ def michelson_contrast(image, roi_high, roi_low):
 
 def wrapped_mean_squared_error(image, ground_truth, reduction="mean"):
     """
-    A function to calculate the wrapped mean squared error between predicted and target angles.
+    Calculates wrapped mean squared error between predicted and target angles.
+
+    This function computes the mean squared error for angular data, accounting for
+    the wrap-around property of angles (e.g., 359° and 1° are close).
 
     Parameters
     ----------
-    image         : torch.tensor
-                    Image to be tested [1 x 3 x m x n]  or [3 x m x n] or [1 x m x n] or [m x n].
-    ground_truth  : torch.tensor
-                    Ground truth to be tested [1 x 3 x m x n]  or [3 x m x n] or [1 x m x n] or [m x n].
-    reduction     : str
-                    Specifies the reduction to apply to the output: 'mean' (default) or 'sum'.
+    image : torch.Tensor
+        Predicted image with shape [1 x 3 x m x n], [3 x m x n], [1 x m x n], or [m x n].
+    ground_truth : torch.Tensor
+        Ground truth image with shape [1 x 3 x m x n], [3 x m x n], [1 x m x n], or [m x n].
+    reduction : str, optional
+        Specifies the reduction to apply to the output: 'mean' (default) or 'sum'.
 
     Returns
     -------
-    wmse        : torch.tensor
-                  The calculated wrapped mean squared error.
+    torch.Tensor
+        The calculated wrapped mean squared error.
+
+    Raises
+    ------
+    ValueError
+        If an invalid reduction type is specified.
     """
     sin_diff = torch.sin(image) - torch.sin(ground_truth)
     cos_diff = torch.cos(image) - torch.cos(ground_truth)
