@@ -4,45 +4,52 @@ import torch.nn
 
 def quantize(image_field, bits=8, limits=[0.0, 1.0]):
     """
-    Definition to quantize a image field (0-255, 8 bit) to a certain bits level.
+    Quantize an image field to a specified number of bits.
+    
+    This function maps the input image field from its original range to a quantized 
+    representation with the specified number of bits.
 
     Parameters
     ----------
     image_field : torch.tensor
                   Input image field between any range.
     bits        : int
-                  A value in between one to eight.
+                  Number of bits for quantization (1-8).
     limits      : list
                   The minimum and maximum of the image_field variable.
 
     Returns
     ----------
-    new_field   : torch.tensor
-                  Quantized image field.
+    quantized_field   : torch.tensor
+                        Quantized image field.
     """
     normalized_field = (image_field - limits[0]) / (limits[1] - limits[0])
     divider = 2**bits
-    new_field = normalized_field * divider
-    new_field = new_field.int()
-    return new_field
+    quantized_field = normalized_field * divider
+    quantized_field = quantized_field.int()
+    return quantized_field
 
 
 def zero_pad(field, size=None, method="center"):
     """
-    Definition to zero pad a MxN array to 2Mx2N array.
-
+    Zero pad a field to double its size or specified size.
+    
+    This function pads a field with zeros to either double its size (default) 
+    or to a specified size. The input can be 2D, 3D or 4D tensors.
+    
     Parameters
     ----------
-    field             : ndarray
+    field             : torch.tensor
                         Input field MxN or KxJxMxN or KxMxNxJ array.
     size              : list
-                        Size to be zeropadded (e.g., [m, n], last two dimensions only).
+                        Size to be zeropadded (e.g., [m, n], last two dimensions only). 
+                        If None, doubles the last two dimensions.
     method            : str
                         Zeropad either by placing the content to center or to the left.
 
     Returns
     ----------
-    field_zero_padded : ndarray
+    field_zero_padded : torch.tensor
                         Zeropadded version of the input field.
     """
     orig_resolution = field.shape
@@ -54,7 +61,7 @@ def zero_pad(field, size=None, method="center"):
     if field.shape[-1] < 5:
         permute_flag = True
         field = field.permute(0, 3, 1, 2)
-    if type(size) == type(None):
+    if size is None:
         resolution = [
             field.shape[0],
             field.shape[1],
@@ -77,7 +84,7 @@ def zero_pad(field, size=None, method="center"):
         ] = field
     elif method == "left":
         field_zero_padded[:, :, 0 : field.shape[-2], 0 : field.shape[-1]] = field
-    if permute_flag == True:
+    if permute_flag:
         field_zero_padded = field_zero_padded.permute(0, 2, 3, 1)
     if len(orig_resolution) == 2:
         field_zero_padded = field_zero_padded.squeeze(0).squeeze(0)
@@ -88,18 +95,22 @@ def zero_pad(field, size=None, method="center"):
 
 def crop_center(field, size=None):
     """
-    Definition to crop the center of a field with 2Mx2N size. The outcome is a MxN array.
-
+    Crop the center of a field to specified size or half of current size.
+    
+    This function crops the center of a field to either half of its current size (default) 
+    or to a specified size. The input can be 2D, 3D or 4D tensors.
+    
     Parameters
     ----------
-    field       : ndarray
+    field       : torch.tensor
                   Input field 2M x 2N or K x L x 2M x 2N or K x 2M x 2N x L array.
     size        : list
                   Dimensions to crop with respect to center of the image (e.g., M x N or 1 x 1 x M x N).
+                  If None, crops to half of the current size.
 
     Returns
     ----------
-    cropped     : ndarray
+    cropped     : torch.tensor
                   Cropped version of the input field.
     """
     orig_resolution = field.shape
@@ -111,7 +122,7 @@ def crop_center(field, size=None):
     if field.shape[-1] < 5:
         permute_flag = True
         field = field.permute(0, 3, 1, 2)
-    if type(size) == type(None):
+    if size is None:
         qx = int(field.shape[-2] // 4)
         qy = int(field.shape[-1] // 4)
         cropped_padded = field[
@@ -135,8 +146,11 @@ def crop_center(field, size=None):
 
 def convolve2d(field, kernel):
     """
-    Definition to convolve a field with a kernel by multiplying in frequency space.
-
+    Convolve a field with a kernel using frequency domain multiplication.
+    
+    This function performs 2D convolution by transforming both the field and kernel 
+    to frequency domain, multiplying them, and transforming back to spatial domain.
+    
     Parameters
     ----------
     field       : torch.tensor
@@ -146,24 +160,27 @@ def convolve2d(field, kernel):
 
     Returns
     ----------
-    new_field   : torch.tensor
-                  Convolved field.
+    convolved_field   : torch.tensor
+                        Convolved field.
     """
     fr = torch.fft.fft2(field)
     fr2 = torch.fft.fft2(torch.flip(torch.flip(kernel, [1, 0]), [0, 1]))
     m, n = fr.shape
-    new_field = torch.real(torch.fft.ifft2(fr * fr2))
-    new_field = torch.roll(new_field, shifts=(int(n / 2 + 1), 0), dims=(1, 0))
-    new_field = torch.roll(new_field, shifts=(int(m / 2 + 1), 0), dims=(0, 1))
-    return new_field
+    convolved_field = torch.real(torch.fft.ifft2(fr * fr2))
+    convolved_field = torch.roll(convolved_field, shifts=(int(n / 2 + 1), 0), dims=(1, 0))
+    convolved_field = torch.roll(convolved_field, shifts=(int(m / 2 + 1), 0), dims=(0, 1))
+    return convolved_field
 
 
 def generate_2d_gaussian(
     kernel_length=[21, 21], nsigma=[3, 3], mu=[0, 0], normalize=False
 ):
     """
-    Generate 2D Gaussian kernel. Inspired from https://stackoverflow.com/questions/29731726/how-to-calculate-a-gaussian-kernel-matrix-efficiently-in-numpy
-
+    Generate 2D Gaussian kernel.
+    
+    This function creates a 2D Gaussian kernel with specified dimensions and parameters.
+    Inspired from https://stackoverflow.com/questions/29731726/how-to-calculate-a-gaussian-kernel-matrix-efficiently-in-numpy
+    
     Parameters
     ----------
     kernel_length : list
@@ -173,7 +190,7 @@ def generate_2d_gaussian(
     mu            : list
                     Mu of the Gaussian kernel along X and Y axes.
     normalize     : bool
-                    If set True, normalize the output.
+                    If set True, normalize the output to maximum value of 1.
 
     Returns
     ----------
@@ -210,9 +227,12 @@ def generate_2d_dirac_delta(
     kernel_length=[21, 21], a=[3, 3], mu=[0, 0], theta=0, normalize=False
 ):
     """
-    Generate 2D Dirac delta function by using Gaussian distribution.
+    Generate 2D Dirac delta function using Gaussian approximation.
+    
+    This function creates a 2D Dirac delta function by using a Gaussian distribution 
+    with very small standard deviations (a values) to approximate the behavior.
     Inspired from https://en.wikipedia.org/wiki/Dirac_delta_function
-
+    
     Parameters
     ----------
     kernel_length : list
@@ -225,7 +245,7 @@ def generate_2d_dirac_delta(
     theta         : float
                     The rotation angle of the 2D Dirac delta function.
     normalize     : bool
-                    If set True, normalize the output.
+                    If set True, normalize the output to maximum value of 1.
 
     Returns
     ----------
@@ -254,12 +274,15 @@ def generate_2d_dirac_delta(
 
 def blur_gaussian(field, kernel_length=[21, 21], nsigma=[3, 3], padding="same"):
     """
-    A definition to blur a field using a Gaussian kernel.
-
+    Blur a field using a Gaussian kernel.
+    
+    This function applies Gaussian blur to the input field using convolution with 
+    a Gaussian kernel in the frequency domain.
+    
     Parameters
     ----------
     field         : torch.tensor
-                    MxN field.
+                    MxN field to be blurred.
     kernel_length : list
                     Length of the Gaussian kernel along X and Y axes.
     nsigma        : list
@@ -286,8 +309,12 @@ def blur_gaussian(field, kernel_length=[21, 21], nsigma=[3, 3], padding="same"):
 
 def correlation_2d(first_tensor, second_tensor):
     """
-    Definition to calculate the correlation between two tensors.
-
+    Calculate the correlation between two tensors using FFT.
+    
+    This function computes the 2D correlation between two tensors using 
+    frequency domain multiplication. It's equivalent to computing 
+    cross-correlation using FFT techniques.
+    
     Parameters
     ----------
     first_tensor  : torch.tensor
