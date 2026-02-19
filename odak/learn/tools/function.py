@@ -27,7 +27,7 @@ def evaluate_3d_gaussians(
 
     Returns
     -------
-    intensities : torch.Tensor, shape [n, 3]
+    intensities : torch.Tensor, shape [n, 1]
                   The evaluated Gaussian intensities at each point.
     """
     points_rotated, _, _, _ = rotate_points(point=points, angles=angles, origin=centers)
@@ -57,9 +57,9 @@ def zernike_polynomial(
     n          : int
                  Radial degree of the polynomial (n >= 0).
     m          : int
-                 Azimuthal frequency of the polynomial.
+                 Azimuthal frequency of the polynomial. Must satisfy |m| <= n and (n - |m|) % 2 == 0.
     rho        : torch.Tensor
-                 Radial distance from the origin (0 to 1).
+                 Radial distance from the origin (0 to 1). Shape (H, W).
     theta      : torch.Tensor
                  Azimuthal angle in radians. Shape (H, W).
 
