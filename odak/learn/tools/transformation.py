@@ -6,17 +6,17 @@ from ...tools import read_PLY
 
 def rotmatx(angle):
     """
-    Definition to generate a rotation matrix along X axis.
+    Generate a rotation matrix along the X axis.
 
     Parameters
     ----------
-    angle        : torch.tensor
-                   Rotation angles in degrees.
+    angle : torch.Tensor
+        Rotation angles in degrees.
 
     Returns
-    ----------
-    rotx         : torch.tensor
-                   Rotation matrix along X axis.
+    -------
+    torch.Tensor
+        Rotation matrix along the X axis.
     """
     angle = torch.deg2rad(angle)
     rotx = torch.zeros(angle.shape[0], 3, 3, device=angle.device)
@@ -32,17 +32,17 @@ def rotmatx(angle):
 
 def rotmaty(angle):
     """
-    Definition to generate a rotation matrix along Y axis.
+    Generate a rotation matrix along the Y axis.
 
     Parameters
     ----------
-    angle        : torch.tensor
-                   Rotation angles in degrees.
+    angle : torch.Tensor
+        Rotation angles in degrees.
 
     Returns
-    ----------
-    roty         : torch.tensor
-                   Rotation matrix along Y axis.
+    -------
+    torch.Tensor
+        Rotation matrix along the Y axis.
     """
     angle = torch.deg2rad(angle)
     roty = torch.zeros(angle.shape[0], 3, 3, device=angle.device)
@@ -58,17 +58,17 @@ def rotmaty(angle):
 
 def rotmatz(angle):
     """
-    Definition to generate a rotation matrix along Z axis.
+    Generate a rotation matrix along the Z axis.
 
     Parameters
     ----------
-    angle        : torch.tensor
-                   Rotation angles in degrees.
+    angle : torch.Tensor
+        Rotation angles in degrees.
 
     Returns
-    ----------
-    rotz         : torch.tensor
-                   Rotation matrix along Z axis.
+    -------
+    torch.Tensor
+        Rotation matrix along the Z axis.
     """
     angle = torch.deg2rad(angle)
     rotz = torch.zeros(angle.shape[0], 3, 3, device=angle.device)
@@ -84,20 +84,19 @@ def rotmatz(angle):
 
 def get_rotation_matrix(tilt_angles=[0.0, 0.0, 0.0], tilt_order="XYZ"):
     """
-    Function to generate rotation matrix for given tilt angles and tilt order.
-
+    Generate rotation matrix for given tilt angles and tilt order.
 
     Parameters
     ----------
-    tilt_angles        : list
-                         Tilt angles in degrees along XYZ axes.
-    tilt_order         : str
-                         Rotation order (e.g., XYZ, XZY, ZXY, YXZ, ZYX).
+    tilt_angles : list
+        Tilt angles in degrees along XYZ axes.
+    tilt_order : str
+        Rotation order (e.g., XYZ, XZY, ZXY, YXZ, ZYX).
 
     Returns
     -------
-    rotmat             : torch.tensor
-                         Rotation matrix.
+    torch.Tensor
+        Rotation matrix.
     """
     rotx = rotmatx(tilt_angles[0])
     roty = rotmaty(tilt_angles[1])
@@ -123,34 +122,30 @@ def rotate_points(
     offset=torch.zeros(1, 3),
 ):
     """
-    Definition to rotate a given point. Note that rotation is always with respect to 0,0,0.
+    Rotate a given point and return the result along with rotation matrices.
+
+    Note that rotation is always with respect to 0,0,0.
 
     Parameters
     ----------
-    point        : torch.tensor
-                   A point with size of [3] or [1, 3] or [m, 3].
-    angles       : torch.tensor
-                   Rotation angles in degrees.
-    mode         : str
-                   Rotation mode determines ordering of the rotations at each axis.
-                   There are XYZ,YXZ,ZXY and ZYX modes.
-    origin       : torch.tensor
-                   Reference point for a rotation.
-                   Expected size is [3] or [1, 3].
-    offset       : torch.tensor
-                   Shift with the given offset.
-                   Expected size is [3] or [1, 3] or [m, 3].
+    point : torch.Tensor
+        A point with size of [3] or [1, 3] or [m, 3].
+    angles : torch.Tensor
+        Rotation angles in degrees.
+    mode : str
+        Rotation mode determines ordering of the rotations at each axis.
+        There are XYZ,YXZ,ZXY and ZYX modes.
+    origin : torch.Tensor
+        Reference point for a rotation.
+        Expected size is [3] or [1, 3].
+    offset : torch.Tensor
+        Shift with the given offset.
+        Expected size is [3] or [1, 3] or [m, 3].
 
     Returns
-    ----------
-    result       : torch.tensor
-                   Result of the rotation [1 x 3] or [m x 3].
-    rotx         : torch.tensor
-                   Rotation matrix along X axis [3 x 3].
-    roty         : torch.tensor
-                   Rotation matrix along Y axis [3 x 3].
-    rotz         : torch.tensor
-                   Rotation matrix along Z axis [3 x 3].
+    -------
+    tuple
+        Result of the rotation [1 x 3] or [m x 3], and rotation matrices along each axis.
     """
     origin = origin.to(point.device)
     offset = offset.to(point.device)
@@ -192,19 +187,19 @@ def rotate_points(
 
 def tilt_towards(location, lookat):
     """
-    Definition to tilt surface normal of a plane towards a point.
+    Tilt surface normal of a plane towards a point.
 
     Parameters
     ----------
-    location     : list
-                   Center of the plane to be tilted.
-    lookat       : list
-                   Tilt towards this point.
+    location : list
+        Center of the plane to be tilted.
+    lookat : list
+        Tilt towards this point.
 
     Returns
-    ----------
-    angles       : list
-                   Rotation angles in degrees.
+    -------
+    list
+        Rotation angles in degrees.
     """
     dx = location[0] - lookat[0]
     dy = location[1] - lookat[1]
@@ -225,17 +220,17 @@ def point_cloud_to_voxel(
 
     Parameters
     ----------
-    points     : torch.Tensor, shape (N, 3)
-                 The input point cloud, where each row is a 3D point.
+    points : torch.Tensor, shape (N, 3)
+        The input point cloud, where each row is a 3D point.
     voxel_size : list or torch.Tensor, shape (3,), optional
-                 The size of each voxel in the x, y, and z directions. Default is [0.1, 0.1, 0.1].
+        The size of each voxel in the x, y, and z directions. Default is [0.1, 0.1, 0.1].
 
     Returns
     -------
-    locations  : torch.Tensor, shape (Gx, Gy, Gz, 3)
-                 The coordinates of each voxel center in the grid.
-    grid       : torch.Tensor, shape (Gx, Gy, Gz)
-                 A binary voxel grid where 1 indicates the presence of at least one point.
+    locations : torch.Tensor, shape (Gx, Gy, Gz, 3)
+        The coordinates of each voxel center in the grid.
+    grid : torch.Tensor, shape (Gx, Gy, Gz)
+        A binary voxel grid where 1 indicates the presence of at least one point.
 
     Notes
     -----
@@ -277,18 +272,18 @@ def load_voxelized_PLY(
     Parameters
     ----------
     ply_filename : str or Path
-                   The path to the input PLY file containing triangle data.
-    voxel_size   : list or tuple, shape (3,), optional
-                   The size of each voxel in the x, y, and z directions. Default is [0.05, 0.05, 0.05].
-    device       : torch.device, optional
-                   The device on which to perform computations. Default is CPU.
+        The path to the input PLY file containing triangle data.
+    voxel_size : list or tuple, shape (3,), optional
+        The size of each voxel in the x, y, and z directions. Default is [0.05, 0.05, 0.05].
+    device : torch.device, optional
+        The device on which to perform computations. Default is CPU.
 
     Returns
     -------
-    points      : torch.Tensor, shape (N, 3)
-                  A tensor containing the coordinates of the voxel centers.
-    ground_truth: torch.Tensor, shape (Gx * Gy * Gz,)
-                  A binary tensor where each element indicates whether a corresponding voxel contains at least one point.
+    points : torch.Tensor, shape (N, 3)
+        A tensor containing the coordinates of the voxel centers.
+    ground_truth : torch.Tensor, shape (Gx * Gy * Gz,)
+        A binary tensor where each element indicates whether a corresponding voxel contains at least one point.
 
     Notes
     -----
