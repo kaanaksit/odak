@@ -10,28 +10,44 @@ def resize(image, multiplier=0.5, mode="nearest"):
 
     Parameters
     ----------
-    image         : torch.tensor
-                    Image with MxNx3 resolution.
-    multiplier    : float
-                    Multiplier used in resizing operation (e.g., 0.5 is half size in one axis).
-    mode          : str
-                    Mode to be used in scaling, nearest, bilinear, etc.
+    image       : torch.tensor
+                  Image with MxNx3 resolution.
+    multiplier  : float
+                  Multiplier used in resizing operation (e.g., 0.5 is half size in one axis).
+    mode        : str
+                  Mode to be used in scaling, nearest, bilinear, etc.
 
     Returns
     -------
-    new_image     : torch.tensor
-                    Resized image.
-
+    new_image   : torch.tensor
+                  Resized image.
     """
-    scale = torch.nn.Upsample(scale_factor=multiplier, mode=mode)
-    new_image = torch.zeros(
-        (int(image.shape[0] * multiplier), int(image.shape[1] * multiplier), 3)
-    ).to(image.device)
-    for i in range(3):
-        cache = image[:, :, i].unsqueeze(0)
-        cache = cache.unsqueeze(0)
-        new_cache = scale(cache).unsqueeze(0)
-        new_image[:, :, i] = new_cache.unsqueeze(0)
+    # Handle the case where image needs to be in the right format for torch.nn.Upsample
+    if len(image.shape) == 3:
+        # Add batch dimension: (H, W, C) -> (1, H, W, C)
+        image = image.unsqueeze(0)
+    elif len(image.shape) == 4:
+        # Image is already in batch format
+        pass
+    else:
+        raise ValueError("Image must have 3 or 4 dimensions")
+    
+    # Use torch.nn.functional.interpolate for resizing
+    if mode not in ["nearest", "bilinear", "bicubic", "area"]:
+        raise ValueError("Mode must be one of: nearest, bilinear, bicubic, area")
+    
+    # Resize the image
+    new_image = torch.nn.functional.interpolate(
+        image, 
+        scale_factor=multiplier, 
+        mode=mode,
+        align_corners=None if mode in ["nearest", "area"] else False
+    )
+    
+    # Remove batch dimension if it was added
+    if new_image.shape[0] == 1:
+        new_image = new_image.squeeze(0)
+    
     return new_image
 
 
@@ -50,9 +66,8 @@ def load_image(fn, normalizeby=0.0, torch_style=False):
 
     Returns
     -------
-    image        :  ndarray
-                    Image loaded as a Numpy array.
-
+    image        : torch.tensor
+                   Image loaded as a torch tensor.
     """
     image = odak.tools.load_image(fn, normalizeby=normalizeby, torch_style=torch_style)
     image = torch.from_numpy(image).float()
@@ -67,8 +82,8 @@ def save_image(fn, img, cmin=0, cmax=255, color_depth=8):
     ----------
     fn           : str
                    Filename.
-    img          : ndarray
-                   A numpy array with NxMx3 or NxMx1 shapes.
+    img          : torch.tensor
+                   A torch tensor with NxMx3 or NxMx1 shapes.
     cmin         : int
                    Minimum value that will be interpreted as 0 level in the final image.
     cmax         : int
@@ -76,16 +91,15 @@ def save_image(fn, img, cmin=0, cmax=255, color_depth=8):
     color_depth  : int
                    Color depth of an image. Default is eight.
 
-
     Returns
-    ----------
-    bool         :  bool
-                    True if successful.
-
+    -------
+    bool         : bool
+                   True if successful.
     """
     if len(img.shape) == 4:
         img = img.squeeze(0)
     if len(img.shape) > 2 and torch.argmin(torch.tensor(img.shape)) == 0:
+        # Transpose from (C, H, W) to (H, W, C) 
         new_img = torch.zeros(img.shape[1], img.shape[2], img.shape[0]).to(img.device)
         for i in range(img.shape[0]):
             new_img[:, :, i] = img[i].detach().clone()
@@ -98,13 +112,12 @@ def save_torch_tensor(fn, tensor):
     """
     Definition to save a torch tensor.
 
-
     Parameters
     ----------
-    fn           : str
-                   Filename.
-    tensor       : torch.tensor
-                   Torch tensor to be saved.
+    fn       : str
+               Filename.
+    tensor   : torch.tensor
+               Torch tensor to be saved.
     """
     torch.save(tensor, expanduser(fn))
 
