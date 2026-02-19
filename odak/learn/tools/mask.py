@@ -1,23 +1,23 @@
 import torch
+from typing import Union
 
-
-def circular_binary_mask(px, py, r):
+def circular_binary_mask(px: int, py: int, r: Union[int, float]) -> torch.Tensor:
     """
-    Definition to generate a 2D circular binary mask.
-
-    Parameter
-    ---------
-    px           : int
-                   Pixel count in x.
-    py           : int
-                   Pixel count in y.
-    r            : int
-                   Radius of the circle.
-
+    Generate a 2D circular binary mask.
+    
+    Parameters
+    ----------
+    px : int
+        Pixel count in x dimension.
+    py : int
+        Pixel count in y dimension.
+    r : Union[int, float]
+        Radius of the circle.
+        
     Returns
     -------
-    mask         : torch.tensor
-                   Mask [1 x 1 x m x n].
+    torch.Tensor
+        Binary mask of shape [1, 1, px, py].
     """
     x = torch.linspace(-px / 2.0, px / 2.0, px)
     y = torch.linspace(-py / 2.0, py / 2.0, py)
@@ -25,4 +25,4 @@ def circular_binary_mask(px, py, r):
     Z = (X**2 + Y**2) ** 0.5
     mask = torch.zeros_like(Z)
     mask[Z < r] = 1
-    return mask
+    return mask.unsqueeze(0).unsqueeze(0)
