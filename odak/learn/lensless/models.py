@@ -11,12 +11,14 @@ class spec_track(nn.Module):
     """
     The learned holography model used in the paper, Ziyang Chen and Mustafa Dogan and Josef Spjut and Kaan Akşit. "SpecTrack: Learned Multi-Rotation Tracking via Speckle Imaging." In SIGGRAPH Asia 2024 Posters (SA Posters '24).
 
+    This model performs multi-rotation tracking via speckle imaging using a deep convolutional neural network architecture.
+
     Parameters
     ----------
-    reduction : str
-                Reduction used for torch.nn.MSELoss and torch.nn.L1Loss. The default is 'sum'.
-    device    : torch.device
-                Device to run the model on. Default is CPU.
+    reduction : str, optional
+        Reduction method for torch.nn.MSELoss and torch.nn.L1Loss. Default is 'sum'.
+    device : torch.device, optional
+        Device to run the model on. Default is CPU.
     """
 
     def __init__(self, reduction="sum", device=torch.device("cpu")):
@@ -32,6 +34,11 @@ class spec_track(nn.Module):
     def init_layers(self):
         """
         Initialize the layers of the network.
+
+        The network architecture consists of:
+        - Three convolutional layers with batch normalization and ReLU activation
+        - Three max pooling layers
+        - Five fully connected layers ending with a 3-dimensional output
         """
         # Convolutional layers with batch normalization and pooling
         self.network = nn.Sequential(
@@ -74,32 +81,32 @@ class spec_track(nn.Module):
         Parameters
         ----------
         x : torch.Tensor
-            Input tensor.
+            Input tensor of shape (batch_size, 5, height, width).
 
         Returns
         -------
         torch.Tensor
-            Output tensor.
+            Output tensor of shape (batch_size, 3) representing the predicted rotation angles.
         """
         return self.network(x)
 
     def evaluate(self, input_data, ground_truth, weights=[100.0, 1.0]):
         """
-        Evaluate the model's performance.
+        Evaluate the model's performance using weighted L1 and L2 losses.
 
         Parameters
         ----------
-        input_data    : torch.Tensor
-                        Predicted data from the model.
-        ground_truth  : torch.Tensor
-                        Ground truth data.
-        weights       : list
-                        Weights for L2 and L1 losses. Default is [100., 1.].
+        input_data : torch.Tensor
+            Predicted data from the model.
+        ground_truth : torch.Tensor
+            Ground truth data.
+        weights : list, optional
+            Weights for L2 and L1 losses. Default is [100.0, 1.0].
 
         Returns
         -------
         torch.Tensor
-            Combined weighted loss.
+            Combined weighted loss value.
         """
         loss = weights[0] * self.l2(input_data, ground_truth) + weights[1] * self.l1(
             input_data, ground_truth
@@ -116,22 +123,22 @@ class spec_track(nn.Module):
         directory="./output",
     ):
         """
-        Train the model.
+        Train the model using the provided data loaders.
 
         Parameters
         ----------
-        trainloader      : torch.utils.data.DataLoader
-                           Training data loader.
-        testloader       : torch.utils.data.DataLoader
-                           Testing data loader.
-        number_of_epochs : int
-                           Number of epochs to train for. Default is 100.
-        learning_rate    : float
-                           Learning rate for the optimizer. Default is 1e-5.
-        weight_decay     : float
-                           Weight decay for the optimizer. Default is 1e-5.
-        directory        : str
-                           Directory to save the model weights. Default is './output'.
+        trainloader : torch.utils.data.DataLoader
+            Training data loader.
+        testloader : torch.utils.data.DataLoader
+            Testing data loader.
+        number_of_epochs : int, optional
+            Number of epochs to train for. Default is 100.
+        learning_rate : float, optional
+            Learning rate for the optimizer. Default is 1e-5.
+        weight_decay : float, optional
+            Weight decay for the optimizer. Default is 1e-5.
+        directory : str, optional
+            Directory to save the model weights and logs. Default is './output'.
         """
         makedirs(directory, exist_ok=True)
         makedirs(join(directory, "log"), exist_ok=True)
@@ -214,8 +221,8 @@ class spec_track(nn.Module):
 
         Parameters
         ----------
-        filename : str
-                   Path to save the weights. Default is './weights.pt'.
+        filename : str, optional
+            Path to save the weights. Default is './weights.pt'.
         """
         torch.save(self.network.state_dict(), os.path.expanduser(filename))
 
@@ -225,8 +232,8 @@ class spec_track(nn.Module):
 
         Parameters
         ----------
-        filename : str
-                   Path to load the weights from. Default is './weights.pt'.
+        filename : str, optional
+            Path to load the weights from. Default is './weights.pt'.
         """
         self.network.load_state_dict(
             torch.load(os.path.expanduser(filename), weights_only=True)
