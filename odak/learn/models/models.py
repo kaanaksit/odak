@@ -17,28 +17,30 @@ class multi_layer_perceptron(torch.nn.Module):
         input_multiplier=None,
     ):
         """
+        Initialize the multi-layer perceptron.
+
         Parameters
         ----------
-        dimensions          : list
-                              List of integers representing the dimensions of each layer (e.g., [2, 10, 1], where the first layer has two channels and last one has one channel.).
-        activation          : torch.nn
-                              Nonlinear activation function.
-                              Default is `torch.nn.ReLU()`.
-        bias                : bool
-                              If set to True, linear layers will include biases.
-        siren_multiplier    : float
-                              When using `SIREN` model type, this parameter functions as a hyperparameter.
-                              The original SIREN work uses 30.
-                              You can bypass this parameter by providing input that are not normalized and larger than one.
-        input_multiplier    : float
-                              Initial value of the input multiplier before the very first layer.
-        model_type          : str
-                              Model type: `conventional`, `swish`, `SIREN`, `FILM SIREN`, `Gaussian`.
-                              `conventional` refers to a standard multi layer perceptron.
-                              For `SIREN`, see: Sitzmann, Vincent, et al. "Implicit neural representations with periodic activation functions." Advances in neural information processing systems 33 (2020): 7462-7473.
-                              For `Swish`, see: Ramachandran, Prajit, Barret Zoph, and Quoc V. Le. "Searching for activation functions." arXiv preprint arXiv:1710.05941 (2017).
-                              For `FILM SIREN`, see: Chan, Eric R., et al. "pi-gan: Periodic implicit generative adversarial networks for 3d-aware image synthesis." Proceedings of the IEEE/CVF conference on computer vision and pattern recognition. 2021.
-                              For `Gaussian`, see: Ramasinghe, Sameera, and Simon Lucey. "Beyond periodicity: Towards a unifying framework for activations in coordinate-mlps." In European Conference on Computer Vision, pp. 142-158. Cham: Springer Nature Switzerland, 2022.
+        dimensions : list of int
+            List of integers representing the dimensions of each layer (e.g., [2, 10, 1], where the first layer has two channels and last one has one channel).
+        activation : torch.nn.Module, optional
+            Nonlinear activation function. Default is `torch.nn.ReLU()`.
+        bias : bool, optional
+            If set to True, linear layers will include biases. Default is False.
+        siren_multiplier : float, optional
+            When using `SIREN` model type, this parameter functions as a hyperparameter.
+            The original SIREN work uses 30.
+            You can bypass this parameter by providing input that are not normalized and larger than one. Default is 1.0.
+        input_multiplier : float, optional
+            Initial value of the input multiplier before the very first layer.
+        model_type : str, optional
+            Model type: `conventional`, `swish`, `SIREN`, `FILM SIREN`, `Gaussian`.
+            `conventional` refers to a standard multi layer perceptron.
+            For `SIREN`, see: Sitzmann, Vincent, et al. "Implicit neural representations with periodic activation functions." Advances in neural information processing systems 33 (2020): 7462-7473.
+            For `Swish`, see: Ramachandran, Prajit, Barret Zoph, and Quoc V. Le. "Searching for activation functions." arXiv preprint arXiv:1710.05941 (2017).
+            For `FILM SIREN`, see: Chan, Eric R., et al. "pi-gan: Periodic implicit generative adversarial networks for 3d-aware image synthesis." Proceedings of the IEEE/CVF conference on computer vision and pattern recognition. 2021.
+            For `Gaussian`, see: Ramasinghe, Sameera, and Simon Lucey. "Beyond periodicity: Towards a unifying framework for activations in coordinate-mlps." In European Conference on Computer Vision, pp. 142-158. Cham: Springer Nature Switzerland, 2022.
+            Default is "conventional".
         """
         super(multi_layer_perceptron, self).__init__()
         self.activation = activation
@@ -69,18 +71,17 @@ class multi_layer_perceptron(torch.nn.Module):
 
     def forward(self, x):
         """
-        Forward model.
+        Forward pass of the multi-layer perceptron.
 
         Parameters
         ----------
-        x             : torch.tensor
-                        Input data.
-
+        x : torch.Tensor
+            Input data.
 
         Returns
-        ----------
-        result        : torch.tensor
-                        Estimated output.
+        -------
+        result : torch.Tensor
+            Estimated output.
         """
         if hasattr(self, "input_multiplier"):
             result = x * self.input_multiplier[0]
@@ -120,24 +121,26 @@ class unet(torch.nn.Module):
         activation=torch.nn.ReLU(inplace=True),
     ):
         """
-        U-Net model.
+        Initialize the U-Net model.
 
         Parameters
         ----------
-        depth             : int
-                            Number of upsampling and downsampling
-        dimensions        : int
-                            Number of dimensions.
-        input_channels    : int
-                            Number of input channels.
-        output_channels   : int
-                            Number of output channels.
-        bilinear          : bool
-                            Uses bilinear upsampling in upsampling layers when set True.
-        bias              : bool
-                            Set True to let convolutional layers learn a bias term.
-        activation        : torch.nn
-                            Non-linear activation layer to be used (e.g., torch.nn.ReLU(), torch.nn.Sigmoid().
+        depth : int, optional
+            Number of upsampling and downsampling layers. Default is 4.
+        dimensions : int, optional
+            Number of dimensions. Default is 64.
+        input_channels : int, optional
+            Number of input channels. Default is 2.
+        output_channels : int, optional
+            Number of output channels. Default is 1.
+        bilinear : bool, optional
+            Uses bilinear upsampling in upsampling layers when set True. Default is False.
+        kernel_size : int, optional
+            Kernel size for convolutional layers. Default is 3.
+        bias : bool, optional
+            Set True to let convolutional layers learn a bias term. Default is False.
+        activation : torch.nn.Module, optional
+            Non-linear activation layer to be used (e.g., torch.nn.ReLU(), torch.nn.Sigmoid()). Default is torch.nn.ReLU(inplace=True).
         """
         super(unet, self).__init__()
         self.inc = double_convolution(
@@ -185,18 +188,17 @@ class unet(torch.nn.Module):
 
     def forward(self, x):
         """
-        Forward model.
+        Forward pass of the U-Net.
 
         Parameters
         ----------
-        x             : torch.tensor
-                        Input data.
-
+        x : torch.Tensor
+            Input data.
 
         Returns
-        ----------
-        result        : torch.tensor
-                        Estimated output.
+        -------
+        result : torch.Tensor
+            Estimated output.
         """
         downsampling_outputs = [self.inc(x)]
         for down_layer in self.downsampling_layers:
@@ -229,22 +231,24 @@ class spatially_varying_kernel_generation_model(torch.nn.Module):
         activation=torch.nn.LeakyReLU(0.2, inplace=True),
     ):
         """
-        U-Net model.
+        Initialize the spatially varying kernel generation model.
 
         Parameters
         ----------
-        depth          : int
-                         Number of upsampling and downsampling layers.
-        dimensions     : int
-                         Number of dimensions.
-        input_channels : int
-                         Number of input channels.
-        bias           : bool
-                         Set to True to let convolutional layers learn a bias term.
-        normalization  : bool
-                         If True, adds a Batch Normalization layer after the convolutional layer.
-        activation     : torch.nn
-                         Non-linear activation layer (e.g., torch.nn.ReLU(), torch.nn.Sigmoid()).
+        depth : int, optional
+            Number of upsampling and downsampling layers. Default is 3.
+        dimensions : int, optional
+            Number of dimensions. Default is 8.
+        input_channels : int, optional
+            Number of input channels. Default is 7.
+        kernel_size : int, optional
+            Kernel size for convolutional layers. Default is 3.
+        bias : bool, optional
+            Set to True to let convolutional layers learn a bias term. Default is True.
+        normalization : bool, optional
+            If True, adds a Batch Normalization layer after the convolutional layer. Default is False.
+        activation : torch.nn.Module, optional
+            Non-linear activation layer (e.g., torch.nn.ReLU(), torch.nn.Sigmoid()). Default is torch.nn.LeakyReLU(0.2, inplace=True).
         """
         super().__init__()
         self.depth = depth
@@ -360,25 +364,25 @@ class spatially_varying_kernel_generation_model(torch.nn.Module):
 
     def forward(self, focal_surface, field):
         """
-        Forward model.
+        Forward pass of the spatially varying kernel generation model.
 
         Parameters
         ----------
-        focal_surface : torch.tensor
-                        Input focal surface data.
-                        Dimension: (1, 1, H, W)
+        focal_surface : torch.Tensor
+            Input focal surface data.
+            Dimension: (1, 1, H, W)
 
-        field         : torch.tensor
-                        Input field data.
-                        Dimension: (1, 6, H, W)
+        field : torch.Tensor
+            Input field data.
+            Dimension: (1, 6, H, W)
 
         Returns
         -------
-        sv_kernel : list of torch.tensor
-                    Learned spatially varying kernels.
-                    Dimension of each element in the list: (1, C_i * kernel_size * kernel_size, H_i, W_i),
-                    where C_i, H_i, and W_i represent the channel, height, and width
-                    of each feature at a certain scale.
+        sv_kernel : list of torch.Tensor
+            Learned spatially varying kernels.
+            Dimension of each element in the list: (1, C_i * kernel_size * kernel_size, H_i, W_i),
+            where C_i, H_i, and W_i represent the channel, height, and width
+            of each feature at a certain scale.
         """
         x = self.inc(torch.cat((focal_surface, field), dim=1))
         downsampling_outputs = [focal_surface]
@@ -439,9 +443,42 @@ class spatially_adaptive_unet(torch.nn.Module):
 
     References
     ----------
-
     Chuanjun Zheng, Yicheng Zhan, Liang Shi, Ozan Cakmakci, and Kaan Akşit, "Focal Surface Holographic Light Transport using Learned Spatially Adaptive Convolutions," SIGGRAPH Asia 2024 Technical Communications (SA Technical Communications '24), December, 2024.
     """
+
+    def __init__(
+        self,
+        depth=3,
+        dimensions=8,
+        input_channels=6,
+        out_channels=6,
+        kernel_size=3,
+        bias=True,
+        normalization=False,
+        activation=torch.nn.LeakyReLU(0.2, inplace=True),
+    ):
+        """
+        Initialize the spatially adaptive U-Net model.
+
+        Parameters
+        ----------
+        depth : int, optional
+            Number of upsampling and downsampling layers. Default is 3.
+        dimensions : int, optional
+            Number of dimensions. Default is 8.
+        input_channels : int, optional
+            Number of input channels. Default is 6.
+        out_channels : int, optional
+            Number of output channels. Default is 6.
+        kernel_size : int, optional
+            Kernel size for convolutional layers. Default is 3.
+        bias : bool, optional
+            Set to True to let convolutional layers learn a bias term. Default is True.
+        normalization : bool, optional
+            If True, adds a Batch Normalization layer after the convolutional layer. Default is False.
+        activation : torch.nn.Module, optional
+            Non-linear activation layer (e.g., torch.nn.ReLU(), torch.nn.Sigmoid()). Default is torch.nn.LeakyReLU(0.2, inplace=True).
+        """
 
     def __init__(
         self,
@@ -585,25 +622,25 @@ class spatially_adaptive_unet(torch.nn.Module):
 
     def forward(self, sv_kernel, field):
         """
-        Forward model.
+        Forward pass of the spatially adaptive U-Net.
 
         Parameters
         ----------
-        sv_kernel : list of torch.tensor
-                    Learned spatially varying kernels.
-                    Dimension of each element in the list: (1, C_i * kernel_size * kernel_size, H_i, W_i),
-                    where C_i, H_i, and W_i represent the channel, height, and width
-                    of each feature at a certain scale.
+        sv_kernel : list of torch.Tensor
+            Learned spatially varying kernels.
+            Dimension of each element in the list: (1, C_i * kernel_size * kernel_size, H_i, W_i),
+            where C_i, H_i, and W_i represent the channel, height, and width
+            of each feature at a certain scale.
 
-        field     : torch.tensor
-                    Input field data.
-                    Dimension: (1, 6, H, W)
+        field : torch.Tensor
+            Input field data.
+            Dimension: (1, 6, H, W)
 
         Returns
         -------
-        target_field : torch.tensor
-                       Estimated output.
-                       Dimension: (1, 6, H, W)
+        target_field : torch.Tensor
+            Estimated output.
+            Dimension: (1, 6, H, W)
         """
         x = self.inc(field)
         downsampling_outputs = [x]
