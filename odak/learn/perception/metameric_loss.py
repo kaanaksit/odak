@@ -164,9 +164,20 @@ class MetamericLoss:
             image, self.n_pyramid_levels
         )
         means, variances = find_stats(image_pyramid[0]["h"], self.blurs[0])
+
+        # Initialize periphery_mask properly
+        periphery_mask = None
+
         if self.use_l2_foveal_loss:
-            base_mask = 1.0 - (self.blurs[0].lod_map / torch.max(self.blurs[0].lod_map))
-            base_mask[self.blurs[0].lod_map < 1e-6] = 1.0
+            # Handle potential None values in lod_map
+            lod_map = self.blurs[0].lod_map
+            if lod_map is not None:
+                base_mask = 1.0 - (lod_map / torch.max(lod_map))
+                base_mask[lod_map < 1e-6] = 1.0
+            else:
+                # Create default mask if lod_map is None
+                base_mask = torch.ones_like(means)
+                base_mask = base_mask[:, 0:1, ...]  # Keep one channel for consistency
             self.fovea_mask = base_mask[None, None, ...].expand(image.size()).clone()
             self.fovea_mask = torch.pow(self.fovea_mask, 10.0)
             # self.fovea_mask     = torch.nn.functional.interpolate(self.fovea_mask, scale_factor=0.125, mode="area")
@@ -183,20 +194,47 @@ class MetamericLoss:
             for o in range(len(image_pyramid[l]["b"])):
                 means, variances = find_stats(image_pyramid[l]["b"][o], self.blurs[l])
                 if self.use_l2_foveal_loss:
+                    # Align periphery_mask with current pyramid level dimensions
+                    current_means_shape = means.shape
+                    if (
+                        periphery_mask is not None
+                        and periphery_mask.shape[-2:] != current_means_shape[-2:]
+                    ):
+                        periphery_mask = torch.nn.functional.interpolate(
+                            periphery_mask,
+                            size=(current_means_shape[-2], current_means_shape[-1]),
+                            mode="bilinear",
+                            align_corners=False,
+                            recompute_scale_factor=False,
+                        )
                     output_stats.append(means * periphery_mask)
                     output_stats.append(variances * periphery_mask)
                 else:
                     output_stats.append(means)
                     output_stats.append(variances)
             if self.use_l2_foveal_loss:
+                # Only interpolate periphery_mask if we're using l2 foveal loss
+                if periphery_mask is not None:
+                    periphery_mask = torch.nn.functional.interpolate(
+                        periphery_mask,
+                        scale_factor=0.5,
+                        mode="area",
+                        recompute_scale_factor=False,
+                    )
+
+        # Final handling for the lowpass residual - align it to the original image size
+        if self.use_l2_foveal_loss and periphery_mask is not None:
+            # For the final pyramid level, ensure we resize periphery_mask to match the pyramid's final dimensions
+            final_pyramid_shape = image_pyramid[-1]["l"].shape
+            if periphery_mask.shape[-2:] != final_pyramid_shape[-2:]:
+                # Interpolate the final periphery mask to match the pyramid output size
                 periphery_mask = torch.nn.functional.interpolate(
                     periphery_mask,
-                    scale_factor=0.5,
-                    mode="area",
+                    size=(final_pyramid_shape[-2], final_pyramid_shape[-1]),
+                    mode="bilinear",
+                    align_corners=False,
                     recompute_scale_factor=False,
                 )
-
-        if self.use_l2_foveal_loss:
             output_stats.append(image_pyramid[-1]["l"] * periphery_mask)
         elif self.use_fullres_l0:
             output_stats.append(
