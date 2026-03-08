@@ -7,6 +7,7 @@
 - Run a single test file: `pytest test/test_import.py`
 - Run a specific test function: `pytest test/test_import.py::test`
 - Run with verbose output: `pytest -v`
+- Run tests for perception modules: `pytest test/test_learn_perception_*.py`
 
 ### Linting
 - Check code style with flake8: `flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics`
@@ -66,3 +67,10 @@ This project uses a modular structure:
 - Visualization: Plotly
 - Scientific computing: NumPy
 - Progress bars: Tqdm
+
+## Cursor/Copilot Rules
+- When implementing new components, always check existing code for consistent usage patterns
+- For perceptual loss functions, maintain backward compatibility with all existing parameters
+- All tensor operations should handle device placement explicitly (CPU vs CUDA)
+- When fixing dimension mismatches in image processing, ensure handling of irregular dimensions like 2400×4094
+- Always perform parameter validation and use defensive coding practices for mathematical operations
