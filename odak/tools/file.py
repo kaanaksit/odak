@@ -53,9 +53,11 @@ def resize_image(img, target_size):
                     Resized image.
 
     """
+    logger.debug("Resizing image to {}".format(target_size))
     img = cv2.resize(
         img, dsize=(target_size[0], target_size[1]), interpolation=cv2.INTER_AREA
     )
+    logger.debug("Image resized to {}".format(target_size))
     return img
 
 
@@ -67,15 +69,15 @@ def save_image(fn, img, cmin=0, cmax=255, color_depth=8):
     Parameters
     ----------
     fn           : str
-                   Filename.
+                    Filename.
     img          : ndarray
-                   A numpy array with NxMx3 or NxMx1 shapes.
+                    A numpy array with NxMx3 or NxMx1 shapes.
     cmin         : int
-                   Minimum value that will be interpreted as 0 level in the final image.
+                    Minimum value that will be interpreted as 0 level in the final image.
     cmax         : int
-                   Maximum value that will be interpreted as 255 level in the final image.
+                    Maximum value that will be interpreted as 255 level in the final image.
     color_depth  : int
-                   Pixel color depth in bits, default is eight bits.
+                    Pixel color depth in bits, default is eight bits.
 
 
     Returns
@@ -84,6 +86,7 @@ def save_image(fn, img, cmin=0, cmax=255, color_depth=8):
                     True if successful.
 
     """
+    logger.info("Saving image: {}".format(fn))
     input_img = np.copy(img).astype(np.float32)
     cmin = float(cmin)
     cmax = float(cmax)
@@ -114,11 +117,11 @@ def load_image(fn, normalizeby=0.0, torch_style=False):
     Parameters
     ----------
     fn           : str
-                   Filename.
+                    Filename.
     normalizeby  : float
-                   Value to to normalize images with. Default value of zero will lead to no normalization.
+                    Value to to normalize images with. Default value of zero will lead to no normalization.
     torch_style  : bool
-                   If set True, it will load an image mxnx3 as 3xmxn.
+                    If set True, it will load an image mxnx3 as 3xmxn.
 
 
     Returns
@@ -127,6 +130,7 @@ def load_image(fn, normalizeby=0.0, torch_style=False):
                     Image loaded as a Numpy array.
 
     """
+    logger.info("Loading image: {}".format(fn))
     image = cv2.imread(expanduser(fn), cv2.IMREAD_UNCHANGED)
     if isinstance(image, type(None)):
         logger.warning("Image not properly loaded. Check filename or image type.")
@@ -194,9 +198,12 @@ def check_directory(directory):
     directory     : str
                     Full directory path.
     """
+    logger.debug("Checking directory: {}".format(directory))
     if not os.path.exists(expanduser(directory)):
         os.makedirs(expanduser(directory))
+        logger.info("Created directory: {}".format(expanduser(directory)))
         return False
+    logger.info("Directory already exists: {}".format(expanduser(directory)))
     return True
 
 
@@ -212,6 +219,7 @@ def save_dictionary(settings, filename):
     filename      : str
                     Filename.
     """
+    logger.info("Saving dictionary: {}".format(filename))
     with open(expanduser(filename), "w", encoding="utf-8") as f:
         json.dump(settings, f, ensure_ascii=False, indent=4)
     logger.info("Saved dictionary: {}".format(expanduser(filename)))
@@ -235,6 +243,7 @@ def load_dictionary(filename):
                     Dictionary read from the file.
 
     """
+    logger.info("Loading dictionary: {}".format(filename))
     settings = json.load(open(expanduser(filename)))
     logger.info("Loaded dictionary: {}".format(expanduser(filename)))
     return settings
