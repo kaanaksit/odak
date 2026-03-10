@@ -1,7 +1,7 @@
 import numpy as np
 from ..tools import nufft2, nuifft2, zero_pad
 from .lens import quadratic_phase_function
-from .__init__ import (
+from . import (
     wavenumber,
     calculate_amplitude,
     calculate_phase,
@@ -85,9 +85,9 @@ def adaptive_sampling_angular_spectrum(field, k, distance, dx, wavelength):
     iflag = -1
     eps = 10 ** (-12)
     nv, nu = field.shape
-    l = nu * dx
-    x = np.linspace(-l / 2, l / 2, nu)
-    y = np.linspace(-l / 2, l / 2, nv)
+    length = nu * dx
+    x = np.linspace(-length / 2, length / 2, nu)
+    y = np.linspace(-length / 2, length / 2, nv)
     X, Y = np.meshgrid(x, y)
     fx = np.linspace(-1.0 / 2.0 / dx, 1.0 / 2.0 / dx, nu)
     fy = np.linspace(-1.0 / 2.0 / dx, 1.0 / 2.0 / dx, nv)

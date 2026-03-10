@@ -1,9 +1,8 @@
 """
 ``odak.wave``
 
-Provides necessary definitions for merging geometric optics with wave theory and classical approaches in the wave theory as well.
-See "Introduction to Fourier Optcs" from Joseph Goodman for the theoratical explanation.
-
+Provides necessary definitions for merging geometric optics with wave theory and classical approaches
+in the wave theory as well. See "Introduction to Fourier Optcs" from Joseph Goodman for the theoratical explanation.
 """
 
 # To get sub-modules.
@@ -12,6 +11,7 @@ from .utils import *
 from .classical import *
 from .lens import *
 from ..tools import save_image
+import numpy as np
 
 
 def rayleigh_resolution(diameter, focal=None, wavelength=0.0005):
@@ -34,7 +34,7 @@ def rayleigh_resolution(diameter, focal=None, wavelength=0.0005):
 
     """
     resolution = 1.22 * wavelength / diameter
-    if type(focal) != type(None):
+    if focal is not None:
         resolution *= focal
     return resolution
 
@@ -92,7 +92,7 @@ def rotationspeed(wavelength, c=3 * 10**11):
                    Rotation speed.
 
     """
-    f = c * wavelength
+    f = c / wavelength
     w = 2 * np.pi * f
     return w
 
@@ -239,11 +239,11 @@ def produce_phase_only_slm_pattern(
     hologram_phase *= 2**bits
     hologram_phase = hologram_phase.astype(np.int32)
     hologram_digital = np.copy(hologram_phase)
-    if type(filename) != type(None):
+    if filename is not None:
         save_image(filename, hologram_phase, cmin=0, cmax=2**bits)
     hologram_phase = hologram_phase.astype(np.float64)
     hologram_phase *= slm_range / 2**bits
-    if type(illumination) == type(None):
+    if illumination is None:
         A = 1.0
     else:
         A = illumination

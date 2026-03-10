@@ -18,7 +18,7 @@ def calculate_phase(field, deg=False):
                    Phase or phases of electric field(s) in radians.
     """
     phase = np.angle(field)
-    if deg == True:
+    if deg:
         phase *= 180.0 / np.pi
     return phase
 
