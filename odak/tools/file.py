@@ -102,6 +102,7 @@ def save_image(fn, img, cmin=0, cmax=255, color_depth=8):
             cache_img[:, :, 2] = input_img[:, :, 0]
             input_img = cache_img
     cv2.imwrite(expanduser(fn), input_img)
+    logger.info("Saved image: {}".format(expanduser(fn)))
     return True
 
 
@@ -139,6 +140,7 @@ def load_image(fn, normalizeby=0.0, torch_style=False):
         image = image * 1.0 / normalizeby
     if torch_style == True and len(image.shape) > 2:
         image = np.moveaxis(image, -1, 0)
+    logger.info("Loaded image: {}".format(expanduser(fn)))
     return image.astype(float)
 
 
@@ -212,6 +214,7 @@ def save_dictionary(settings, filename):
     """
     with open(expanduser(filename), "w", encoding="utf-8") as f:
         json.dump(settings, f, ensure_ascii=False, indent=4)
+    logger.info("Saved dictionary: {}".format(expanduser(filename)))
     return settings
 
 
@@ -233,6 +236,7 @@ def load_dictionary(filename):
 
     """
     settings = json.load(open(expanduser(filename)))
+    logger.info("Loaded dictionary: {}".format(expanduser(filename)))
     return settings
 
 
