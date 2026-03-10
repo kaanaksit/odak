@@ -1,5 +1,5 @@
 import numpy as np
-
+from ..tools import save_image
 
 def rayleigh_resolution(diameter, focal=None, wavelength=0.0005):
     """
