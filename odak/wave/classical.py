@@ -1,7 +1,7 @@
 import numpy as np
 from ..tools import nufft2, nuifft2, zero_pad
 from .lens import quadratic_phase_function
-from . import (
+from .utils import (
     wavenumber,
     calculate_amplitude,
     calculate_phase,
