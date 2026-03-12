@@ -9,7 +9,9 @@ def test():
     target[500::600, :] = 1
     depth = target
     loss_function = multiplane_loss(
-        target_image=target.unsqueeze(0),
+        target_image=target.unsqueeze(0).unsqueeze(
+            0
+        ),  # Add batch dimension correctly: [B, C, H, W]
         target_depth=depth,
         target_blur_size=20,
         number_of_planes=8,
@@ -36,8 +38,7 @@ def test():
         loss_function=loss_function,
     )
     phase, amplitude, reconstructions = optimizer.optimize()
-    assert True == True
 
 
 if __name__ == "__main__":
-    sys.exit(test())
+    test()
