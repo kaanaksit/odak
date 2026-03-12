@@ -37,6 +37,29 @@ class gaussian_3d_volume(torch.nn.Module):
         initial_scales=None,
         initial_alphas=None,
     ):
+        """
+        Initialize the 3D Gaussian volume model.
+
+        Parameters
+        ----------
+        number_of_elements : int
+                            Number of Gaussian elements in the volume (default: 10).
+        initial_centers    : torch.Tensor or None
+                            Initial centers of the Gaussians (shape: [N, 3]).
+        initial_angles     : torch.Tensor or None
+                            Initial angles for orientation.
+        initial_scales     : torch.Tensor or None
+                            Initial scales for variance.
+        initial_alphas     : torch.Tensor or None
+                            Initial alphas for blending.
+
+        Device Placement
+        ----------- --
+        All parameters are initialized on CPU by default. For GPU acceleration,
+        call .to(device) after initializing this model.
+        Example:
+            model = gaussian_3d_volume().cuda()  # or .to('cuda')
+        """
         super(gaussian_3d_volume, self).__init__()
         self.number_of_elements = number_of_elements
         self.initialize_parameters(

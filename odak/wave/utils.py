@@ -1,25 +1,38 @@
 import numpy as np
 from ..tools import save_image
 
+
 def rayleigh_resolution(diameter, focal=None, wavelength=0.0005):
     """
-    Definition to calculate rayleigh resolution limit of a lens with a certain focal length and an aperture. Lens is assumed to be focusing a plane wave at a focal distance.
+    Definition to calculate rayleigh resolution limit of a lens with a certain focal length and an aperture.
 
-    Parameter
-    ---------
+    Parameters
+    ----------
     diameter    : float
-                  Diameter of a lens.
-    focal       : float
-                  Focal length of a lens, when focal length is provided, spatial resolution is provided at the focal plane. When focal length isn't provided angular resolution is provided.
+                  Diameter of a lens (must be > 0).
+    focal       : float or None
+                  Focal length. If provided, returns spatial resolution; otherwise angular.
     wavelength  : float
-                  Wavelength of light.
+                  Wavelength of light (must be > 0). Default: 0.0005 mm.
 
     Returns
     --------
     resolution  : float
-                  Resolvable angular or spatial spot size, see focal in parameters to know what to expect.
+                  Resolvable angular or spatial spot size.
 
+    Raises
+    ------
+    ValueError   : If diameter or wavelength are zero or negative.
     """
+    if not isinstance(diameter, (int, float)):
+        raise TypeError(f"diameter must be numeric, got {type(diameter).__name__}")
+    if diameter <= 0:
+        raise ValueError(f"diameter must be positive, got {diameter}")
+    if not isinstance(wavelength, (int, float)):
+        raise TypeError(f"wavelength must be numeric")
+    if wavelength <= 0:
+        raise ValueError(f"wavelength must be positive, got {wavelength}")
+
     resolution = 1.22 * wavelength / diameter
     if focal is not None:
         resolution *= focal
@@ -51,13 +64,27 @@ def wavenumber(wavelength):
     Parameters
     ----------
     wavelength   : float
-                   Wavelength of a wave in mm.
+                   Wavelength of a wave in mm (must be > 0).
 
     Returns
-    -------
+    ----- --
     k            : float
                    Wave number for a given wavelength.
+
+    Raises
+    ------
+    ValueError   : If wavelength is zero or negative.
+
+    Notes
+    -----
+    Wavenumber formula: k = 2*pi / lambda
+    Zero wavelength causes division error.
     """
+    if not isinstance(wavelength, (int, float)):
+        raise TypeError(f"wavelength must be numeric, got {type(wavelength).__name__}")
+    if wavelength <= 0:
+        raise ValueError(f"wavelength must be positive, got {wavelength}")
+
     k = 2 * np.pi / wavelength
     return k
 
@@ -69,16 +96,24 @@ def rotationspeed(wavelength, c=3 * 10**11):
     Parameters
     ----------
     wavelength   : float
-                   Wavelength of a wave in mm.
+                   Wavelength of a wave in mm (must be > 0).
     c            : float
-                   Speed of wave in mm/seconds. Default is the speed of light in the void!
+                   Speed of wave in mm/seconds. Default is the speed of light!
 
     Returns
-    -------
+    ----- --
     w            : float
                    Rotation speed.
 
+    Raises
+    ------
+    ValueError   : If wavelength is zero or negative.
     """
+    if not isinstance(wavelength, (int, float)):
+        raise TypeError(f"wavelength must be numeric, got {type(wavelength).__name__}")
+    if wavelength <= 0:
+        raise ValueError(f"wavelength must be positive, got {wavelength}")
+
     f = c / wavelength
     w = 2 * np.pi * f
     return w
@@ -238,6 +273,7 @@ def produce_phase_only_slm_pattern(
         A * np.cos(hologram_phase) + A * 1j * np.sin(hologram_phase),
         hologram_digital,
     )
+
 
 def calculate_phase(field, deg=False):
     """
