@@ -649,8 +649,6 @@ def copy_file(source, destination, follow_symlinks=True):
     """
     Definition to copy a file from one location to another.
 
-
-
     Parameters
     ----------
     source          : str
@@ -662,13 +660,37 @@ def copy_file(source, destination, follow_symlinks=True):
 
     Returns
     -------
-    None           : On success, raises ValueError if validation fails.
+    str            : The absolute path of the destination file on success.
+
+    Raises
+    ------
+    ValueError     : If source doesn't exist, destination is a directory,
+                     or copy fails due to permissions/disk space.
+    TypeError      : If source or destination are not strings.
     """
+    # Validate both paths for security (path traversal, null bytes, etc.)
     safe_source = validate_path(source)
     safe_destination = validate_path(destination)
-    return shutil.copyfile(
-        safe_source, safe_destination, follow_symlinks=follow_symlinks
-    )
+
+    # Verify source file exists
+    if not os.path.exists(safe_source):
+        raise ValueError(f"Source file does not exist: {safe_source}")
+
+    # Verify source is a file, not a directory
+    if not os.path.isfile(safe_source):
+        raise ValueError(f"Source is not a file: {safe_source}")
+
+    # Check if destination is an existing directory
+    if os.path.isdir(safe_destination):
+        raise ValueError(f"Destination is a directory, not a file: {safe_destination}")
+
+    try:
+        # Use copy2 to preserve file metadata (timestamps, permissions)
+        return shutil.copy2(safe_source, safe_destination)
+    except OSError as e:
+        raise ValueError(
+            f"Failed to copy '{safe_source}' to '{safe_destination}': {str(e)}"
+        )
 
 
 def write_to_text_file(content, filename, write_flag="w"):
