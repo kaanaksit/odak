@@ -5,13 +5,14 @@
 ### Running Tests
 - Run all tests: `pytest`
 - Run a single test file: `pytest test/test_import.py`
-- Run a specific test function: `pytest test/test_import.py::test`
+- Run a specific test function: `pytest test/test_import.py::test_function_name`
 - Run with verbose output: `pytest -v`
 - Run tests for perception modules: `pytest test/test_learn_perception_*.py`
+- Run tests with coverage: `pytest --cov=odak`
 
 ### Linting
-- Check code style with flake8: `flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics`
-- Check with warnings as errors: `flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics`
+- Check critical errors only: `flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics`
+- Full check with warnings: `flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics`
 
 ### Build Process
 - Install dependencies: `pip install -r requirements.txt`
@@ -22,55 +23,92 @@
 
 ### General Python Style
 - Use PEP 8 style conventions
-- Lines should not exceed 127 characters
-- Maximum complexity per function is 10
+- Lines should not exceed **127 characters**
+- Maximum complexity (McCabe) per function is **10**
 - Use meaningful variable and function names with descriptive docstrings
-- Follow the existing codebase structure and naming convention
+- Follow existing codebase patterns for consistency
 
-### Imports
-- Standard library imports first (e.g., `import os`, `import sys`)
-- Third-party library imports next (e.g., `import torch`, `import numpy`)
-- Local package imports last (e.g., `import odak`)
+### Imports (Order Matters)
+1. Standard library: `import os`, `import sys`, `import numpy as np`
+2. Third-party: `import torch`, `import cv2`, `import plotly`
+3. Local package: `from ..log import logger`, `from odak.tools import ...`
 
 ### Naming Conventions
-- Use snake_case for functions and variables
-- Use PascalCase for classes
-- Use ALL_CAPS for constants
-- Use descriptive names that explain intent clearly
-
-### Error Handling
-- Use try/except blocks for error handling where appropriate
-- Validate inputs with descriptive error messages
-- Log important events using `odak.log.logger` when available
+- Functions/variables: **snake_case** (e.g., `validate_positive_parameter`)
+- Classes: **PascalCase** (e.g., `MultiLayerPerceptron`)
+- Constants: **ALL_CAPS** (e.g., `ALLOWED_COMMANDS`, `DANGEROUS_PATTERNS`)
+- Test functions: `test_<function_name>` (e.g., `test_validate_positive_parameter`)
 
 ### Documentation
-- All functions should have docstrings in NumPy style
-- Class documentation should include class purpose and key methods
-- Module-level documentation should be included in __init__.py when applicable
+- All functions must have **NumPy-style docstrings** with Parameters, Returns, Raises sections
+- Class documentation should include purpose and key methods
+- Use `...` in Returns/Raises when appropriate
+- Include Examples section when useful: `>>> function_call()`
 
-### Testing
-- Test files are located in the `/test/` directory
-- Each test file should be named `test_<module_or_function>.py`
-- Tests should follow the pattern: `def test_<function_name>()`
-- Tests can use pytest fixtures for common setup operations
-- All tests should pass before committing code
+### Error Handling & Security
+- Always validate inputs (paths, tensors, parameters)
+- Use `raise ValueError("descriptive message")` for invalid inputs
+- Use `raise TypeError("expected type, got {type(value).__name__}")` for wrong types
+- For torch.load(): **ALWAYS use `weights_only=True`** for security
+- Use `odak.log.logger` for logging (info, debug, warning levels)
+- Block path traversal (`../`), null bytes (`\x00`), and URL protocols in file paths
 
-### Project Structure
-This project uses a modular structure:
-- Main odak module in `odak/` directory
-- Submodules in `odak/learn/`, `odak/tools/`, `odak/wave/`, `odak/raytracing/`, etc.
-- Data files in `test/data/` for test fixtures
+### Type Safety & Validation
+- Validate all function parameters at the start of functions
+- For tensor operations: handle device placement explicitly (CPU/CUDA) with `validate_device()`
+- Use `validate_path()` for file/directory paths (blocks traversal, null bytes, UNC paths)
+- Use `validate_positive_parameter()` for numeric parameters (supports int, float, numpy arrays, torch Tensors)
 
-### Frameworks and Libraries
-- Primary framework: PyTorch
-- Image processing: OpenCV, Pillow
-- Visualization: Plotly
-- Scientific computing: NumPy
-- Progress bars: Tqdm
+### Test Structure
+- Location: `/test/` directory
+- Naming: `test_<module_or_function>.py`
+- Pattern: `def test_<function_name>()` or `class TestSomething(unittest.TestCase)`
+- Use temporary directories/files for filesystem operations (`tempfile`, `shutil.rmtree()`)
+- All tests must pass before committing code
 
-## Cursor/Copilot Rules
-- When implementing new components, always check existing code for consistent usage patterns
-- For perceptual loss functions, maintain backward compatibility with all existing parameters
-- All tensor operations should handle device placement explicitly (CPU vs CUDA)
-- When fixing dimension mismatches in image processing, ensure handling of irregular dimensions like 2400×4094
-- Always perform parameter validation and use defensive coding practices for mathematical operations
+### Project Structure (Modular)
+```
+odak/
+├── tools/          # General utility functions (path validation, file ops)
+├── learn/          # Learning components (models, losses, optimization)
+├── wave/           # Wave optics and propagation
+├── raytracing/     # Ray tracing operations
+├── catalog/        # Component catalogs (lenses, diffusers)
+├── measurement/    # Image quality metrics
+├── log/            # Logging utilities
+└── visualize/      # Visualization tools (plotly)
+```
+
+### Frameworks & Libraries
+- Primary: **PyTorch** for tensor operations and neural networks
+- Image processing: **OpenCV** (cv2), Pillow
+- Scientific computing: **NumPy**
+- Visualization: **Plotly**
+- Progress tracking: **Tqdm**
+- File validation: Use `validate_path()` before any file operations
+
+## Implementation Patterns
+
+### Security Checklist for File Operations
+Before writing code that handles files/paths:
+1. ✅ Call `validate_path(path)` or `validate_path(path, allowed_extensions=[...])`
+2. ✅ Check file existence before reading (`os.path.exists`, `os.path.isfile`)
+3. ✅ Validate directory is actual directory (`os.path.isdir`)
+4. ✅ Use `weights_only=True` in all `torch.load()` calls
+5. ✅ Handle exceptions with descriptive error messages
+
+### When Adding New Functions
+1. Check existing patterns in same module for consistency
+2. Add comprehensive docstring with Parameters/Returns/Raises
+3. Include type hints in docstring (not Python hints - follow NumPy style)
+4. Add corresponding test in `/test/test_<function>.py`
+5. Run `pytest test/test_<function>.py` before committing
+
+### Agent-Specific Guidelines
+- Always load AGENTS.md context before implementing new features
+- Use ContextScout for discovering project standards and existing patterns
+- Check where functions are used (grep) before modifying/deleting
+- Ensure backward compatibility when modifying existing functions
+- All tensor operations must handle device placement explicitly
+- When fixing dimensions, handle irregular sizes (e.g., 2400×4094)
+- Maintain parameter validation and defensive coding throughout
