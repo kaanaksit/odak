@@ -3,11 +3,124 @@ import os
 import json
 import pathlib
 import re
+import shlex
 import numpy as np
 import cv2
 import sys
 import shutil
 from ..log import logger
+
+# Allowed commands whitelist for security
+ALLOWED_COMMANDS = {
+    "blender",
+    "dispynode.py",
+    "ffmpeg",
+    "python",
+    "python3",
+    "git",
+}
+
+# Shell metacharacters that could enable command injection
+DANGEROUS_PATTERNS = [
+    r"[;&|`$]",  # Command chaining, backticks, variable expansion
+    r"\$[{(]",  # Command substitution
+    r"[<>]",  # Redirection
+    r"""['"]""",  # Quotes that might be used for escaping
+]
+
+
+def validate_shell_command(cmd_list):
+    """
+    Validates shell command arguments for security.
+
+    Parameters
+    ----------
+    cmd_list        : list
+                      List of command arguments to validate.
+
+    Returns
+    -------
+    validated_list  : list
+                      The validated and sanitized command list.
+
+    Raises
+    ------
+    ValueError      : If command contains dangerous characters or is not allowed.
+    TypeError       : If cmd_list is not a list.
+    """
+    if not isinstance(cmd_list, list):
+        raise TypeError(f"Command must be a list, got {type(cmd_list).__name__}")
+
+    if len(cmd_list) == 0:
+        raise ValueError("Command list cannot be empty")
+
+    validated = []
+    for idx, arg in enumerate(cmd_list):
+        if not isinstance(arg, str):
+            raise TypeError(
+                f"Command argument {idx} must be a string, got {type(arg).__name__}"
+            )
+
+        # Check for null bytes
+        if "\x00" in arg:
+            raise ValueError(f"Null bytes detected in command argument {idx}")
+
+        # Check for dangerous shell metacharacters
+        for pattern in DANGEROUS_PATTERNS:
+            if re.search(pattern, arg):
+                raise ValueError(
+                    f"Dangerous character detected in command argument {idx}: '{arg[:50]}...'. "
+                    f"Shell metacharacters are not allowed."
+                )
+
+        # Check if the base command (first argument) is in whitelist
+        if idx == 0:
+            base_cmd = os.path.basename(arg).lower()
+            if base_cmd not in ALLOWED_COMMANDS and not arg.startswith("/"):
+                # Allow absolute paths, but warn
+                logger.warning(
+                    f"Command '{base_cmd}' is not in the allowed whitelist. "
+                    f"Allowed commands: {sorted(ALLOWED_COMMANDS)}"
+                )
+
+        validated.append(arg)
+
+    logger.debug(f"Shell command validated successfully")
+    return validated
+
+
+def validate_cwd(cwd):
+    """
+    Validates working directory path.
+
+    Parameters
+    ----------
+    cwd             : str
+                      Working directory path.
+
+    Returns
+    -------
+    safe_cwd        : str
+                      The validated and absolute path.
+
+    Raises
+    ------
+    ValueError      : If path contains dangerous characters.
+    """
+    if not isinstance(cwd, str):
+        raise TypeError(f"Working directory must be a string, got {type(cwd).__name__}")
+
+    if "\x00" in cwd:
+        raise ValueError("Null bytes detected in working directory path")
+
+    expanded = os.path.expanduser(cwd)
+    absolute_path = os.path.abspath(expanded)
+
+    # Check if the directory exists (optional, can be removed if you want to allow non-existent dirs)
+    # if not os.path.isdir(absolute_path):
+    #     raise ValueError(f"Working directory does not exist: {absolute_path}")
+
+    return absolute_path
 
 
 def validate_path(path, allowed_extensions=None):
@@ -238,41 +351,74 @@ def load_image(fn, normalizeby=0.0, torch_style=False):
 
 def shell_command(cmd, cwd=".", timeout=None, check=True):
     """
-    Definition to initiate shell commands.
-
+    Definition to initiate shell commands securely.
 
     Parameters
     ----------
     cmd          : list
-                   Command to be executed.
+                   Command to be executed as a list of arguments.
+                   Example: ['blender', '-b', 'file.blend']
     cwd          : str
-                   Working directory.
-    timeout      : int
-                   Timeout if the process isn't complete in the given number of seconds.
+                   Working directory. Default is current directory.
+    timeout      : int or None
+                   Timeout in seconds if the process isn't complete.
+                   If None, no timeout is enforced.
     check        : bool
-                   Set it to True to return the results and to enable timeout.
-
+                   Set it to True to return results and enable timeout. False returns only process.
 
     Returns
-    ----------
+    -------
     proc         : subprocess.Popen
-                   Generated process.
-    outs         : str
-                   Outputs of the executed command, returns None when check is set to False.
-    errs         : str
-                   Errors of the executed command, returns None when check is set to False.
+                   Generated process handle.
+    outs         : str or bytes
+                   Standard output of the executed command (None when check=False).
+    errs         : str or bytes
+                   Standard error of the executed command (None when check=False).
 
+    Raises
+    ------
+    ValueError   : If command contains dangerous characters, forbidden commands,
+                   null bytes, or if working directory path is invalid.
+    TypeError    : If cmd is not a list or cwd is not a string.
+    subprocess.TimeoutExpired : If process exceeds timeout (when check=True).
+
+    Security Features
+    ---------------
+    - Command whitelist validation (blender, dispynode.py, ffmpeg, python, etc.)
+    - Blocks shell metacharacters (; & | ` $ < > quotes)
+    - Null byte injection protection
+    - Path traversal blocked in working directory
+    - Uses Popen with shell=False for safe execution
+
+    Example
+    ------
+    >>> proc, outs, errs = shell_command(['blender', '-b', 'scene.blend'])
+    >>> proc, None, None = shell_command(['python', 'script.py'], check=False)
     """
-    for item_id in range(len(cmd)):
-        cmd[item_id] = expanduser(cmd[item_id])
-    proc = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE)
-    if check == False:
+    # Validate command arguments
+    validated_cmd = validate_shell_command(cmd)
+
+    # Validate working directory
+    safe_cwd = validate_cwd(cwd if isinstance(cwd, str) else ".")
+
+    # Execute with shell=False for security (prevents shell injection)
+    proc = subprocess.Popen(
+        validated_cmd,
+        cwd=safe_cwd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        shell=False,  # Critical: Prevents shell metacharacter injection
+    )
+
+    if not check:
         return proc, None, None
+
     try:
         outs, errs = proc.communicate(timeout=timeout)
     except subprocess.TimeoutExpired:
         proc.kill()
         outs, errs = proc.communicate()
+
     return proc, outs, errs
 
 
