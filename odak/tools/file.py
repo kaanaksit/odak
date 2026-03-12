@@ -2,11 +2,78 @@ import subprocess
 import os
 import json
 import pathlib
+import re
 import numpy as np
 import cv2
 import sys
 import shutil
 from ..log import logger
+
+
+def validate_path(path, allowed_extensions=None):
+    """
+    Validates a file path for security safety.
+
+    Parameters
+    ----------
+    path            : str
+                      Path to validate.
+    allowed_extensions : list, optional
+                          List of allowed extensions (e.g., ['.png', '.jpg']).
+                          If None, all extensions are allowed.
+
+    Returns
+    -------
+    safe_path       : str
+                      The validated and secured path (with tilde expanded).
+
+    Raises
+    ------
+    ValueError      : If path traversal attempt detected or extension not allowed.
+    TypeError       : If path is not a string.
+    """
+    if not isinstance(path, str):
+        raise TypeError(f"Path must be a string, got {type(path).__name__}")
+
+    # Check for null bytes before expanding user (Windows path injection)
+    if "\x00" in path:
+        raise ValueError("Null bytes not allowed in path")
+
+    # Check for path traversal patterns BEFORE expanding
+    if ".." in path.split(os.sep) or ".." in path.replace(os.sep, "/").split("/"):
+        if re.search(r"(^|[/\\])\.\.([/\\]|$)", path):
+            raise ValueError("Path traversal detected: '..' not allowed in path")
+
+    # Check for URL protocols before expanding
+    path_lower = path.lower()
+    if re.search(r"https?://|ftp://", path_lower):
+        raise ValueError("URL protocols not allowed in file paths")
+
+    path = os.path.expanduser(path)
+    resolved_path = os.path.abspath(path)
+
+    # Check for UNC or device paths on Windows
+    if re.match(r"\\\\\\\|\\\\\\?\.\\", path) or path.startswith("//."):
+        raise ValueError("UNC/device paths not allowed")
+
+    if len(resolved_path) > 260:  # Windows MAX_PATH limit
+        raise ValueError("Path exceeds maximum allowed length (260 characters)")
+
+    if allowed_extensions is not None:
+        _, file_ext = os.path.splitext(path)
+        ext_lower = file_ext.lower()
+        allowed_normalized = [
+            ext.lower() if ext.startswith(".") else f".{ext}"
+            for ext in allowed_extensions
+        ]
+        if ext_lower not in allowed_normalized:
+            raise ValueError(
+                f"File extension '{file_ext}' is not allowed. "
+                f"Allowed: {allowed_extensions}"
+            )
+
+    logger.debug(f"Path validated: {path}")
+    return resolved_path
 
 
 def get_base_filename(filename):
@@ -104,8 +171,11 @@ def save_image(fn, img, cmin=0, cmax=255, color_depth=8):
             cache_img[:, :, 0] = input_img[:, :, 2]
             cache_img[:, :, 2] = input_img[:, :, 0]
             input_img = cache_img
-    cv2.imwrite(expanduser(fn), input_img)
-    logger.info("Saved image: {}".format(expanduser(fn)))
+    safe_path = validate_path(
+        fn, allowed_extensions=[".png", ".jpg", ".jpeg", ".bmp", ".tiff", ".tif"]
+    )
+    cv2.imwrite(safe_path, input_img)
+    logger.info("Saved image: {}".format(safe_path))
     return True
 
 
@@ -131,7 +201,25 @@ def load_image(fn, normalizeby=0.0, torch_style=False):
 
     """
     logger.info("Loading image: {}".format(fn))
-    image = cv2.imread(expanduser(fn), cv2.IMREAD_UNCHANGED)
+    safe_path = validate_path(
+        fn,
+        allowed_extensions=[
+            ".png",
+            ".jpg",
+            ".jpeg",
+            ".bmp",
+            ".tiff",
+            ".tif",
+            ".gif",
+            ".webp",
+            ".pbm",
+            ".pgm",
+            ".ppm",
+            ".sr",
+            ".ras",
+        ],
+    )
+    image = cv2.imread(safe_path, cv2.IMREAD_UNCHANGED)
     if isinstance(image, type(None)):
         logger.warning("Image not properly loaded. Check filename or image type.")
         sys.exit()
@@ -144,7 +232,7 @@ def load_image(fn, normalizeby=0.0, torch_style=False):
         image = image * 1.0 / normalizeby
     if torch_style == True and len(image.shape) > 2:
         image = np.moveaxis(image, -1, 0)
-    logger.info("Loaded image: {}".format(expanduser(fn)))
+    logger.info("Loaded image: {}".format(safe_path))
     return image.astype(float)
 
 
@@ -197,13 +285,25 @@ def check_directory(directory):
     ----------
     directory     : str
                     Full directory path.
+
+    Returns
+    -------
+    bool         :  bool
+                   Returns True if directory already exists, False if created.
+
+    Raises
+    ------
+    ValueError   : If path traversal attempt detected or invalid characters found.
     """
     logger.debug("Checking directory: {}".format(directory))
-    if not os.path.exists(expanduser(directory)):
-        os.makedirs(expanduser(directory))
-        logger.info("Created directory: {}".format(expanduser(directory)))
+    safe_path = validate_path(
+        directory + "/"
+    )  # Directory paths typically don't have extensions
+    if not os.path.exists(safe_path):
+        os.makedirs(safe_path)
+        logger.info("Created directory: {}".format(safe_path))
         return False
-    logger.info("Directory already exists: {}".format(expanduser(directory)))
+    logger.info("Directory already exists: {}".format(safe_path))
     return True
 
 
@@ -220,9 +320,10 @@ def save_dictionary(settings, filename):
                     Filename.
     """
     logger.info("Saving dictionary: {}".format(filename))
-    with open(expanduser(filename), "w", encoding="utf-8") as f:
+    safe_path = validate_path(filename, allowed_extensions=[".json"])
+    with open(safe_path, "w", encoding="utf-8") as f:
         json.dump(settings, f, ensure_ascii=False, indent=4)
-    logger.info("Saved dictionary: {}".format(expanduser(filename)))
+    logger.info("Saved dictionary: {}".format(safe_path))
     return settings
 
 
@@ -244,8 +345,10 @@ def load_dictionary(filename):
 
     """
     logger.info("Loading dictionary: {}".format(filename))
-    settings = json.load(open(expanduser(filename)))
-    logger.info("Loaded dictionary: {}".format(expanduser(filename)))
+    safe_path = validate_path(filename, allowed_extensions=[".json"])
+    with open(safe_path, "r", encoding="utf-8") as f:
+        settings = json.load(f)
+    logger.info("Loaded dictionary: {}".format(safe_path))
     return settings
 
 
@@ -265,15 +368,16 @@ def list_files(path, key="*.*", recursive=True):
 
 
     Returns
-    ----------
+    -------
     files_list  : ndarray
                   list of files found in a given path.
     """
+    safe_path = validate_path(path + "/")
     search_result = None
     if recursive == True:
-        search_result = pathlib.Path(expanduser(path)).rglob(key)
+        search_result = pathlib.Path(safe_path).rglob(key)
     elif recursive == False:
-        search_result = pathlib.Path(expanduser(path)).glob(key)
+        search_result = pathlib.Path(safe_path).glob(key)
     if search_result is None:
         return []
     files_list = [str(item) for item in search_result]
@@ -295,19 +399,18 @@ def list_directories(path, recursive=True):
     -------
     list
                 A list of directory names.
-
     """
     directories = []
-    path = expanduser(path)
+    safe_path = validate_path(path + "/")
     if recursive:
-        for entry in os.listdir(path):
-            full_path = os.path.join(path, entry)
+        for entry in os.listdir(safe_path):
+            full_path = os.path.join(safe_path, entry)
             if os.path.isdir(full_path):
                 directories.append(entry)
                 directories.extend(list_directories(full_path, recursive=True))
     else:
-        contents = os.listdir(path)
-        directories = [f for f in contents if os.path.isdir(os.path.join(path, f))]
+        contents = os.listdir(safe_path)
+        directories = [f for f in contents if os.path.isdir(os.path.join(safe_path, f))]
     return sorted(directories)
 
 
@@ -395,9 +498,15 @@ def copy_file(source, destination, follow_symlinks=True):
                       Destination filename.
     follow_symlinks : bool
                       Set to True to follow the source of symbolic links.
+
+    Returns
+    -------
+    None           : On success, raises ValueError if validation fails.
     """
+    safe_source = validate_path(source)
+    safe_destination = validate_path(destination)
     return shutil.copyfile(
-        expanduser(source), expanduser(destination), follow_symlinks=follow_symlinks
+        safe_source, safe_destination, follow_symlinks=follow_symlinks
     )
 
 
@@ -416,8 +525,18 @@ def write_to_text_file(content, filename, write_flag="w"):
                       Defines the interaction with the file.
                       The default is "w" (overwrite any existing content).
                       For more see: https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files
+
+    Returns
+    -------
+    bool           : True if successful.
     """
-    with open(expanduser(filename), write_flag) as f:
+    allowed_write_flags = {"w", "a", "x", "r+", "w+", "a+"}
+    if write_flag not in allowed_write_flags:
+        raise ValueError(
+            f"Write flag must be one of {allowed_write_flags}, got '{write_flag}'"
+        )
+    safe_path = validate_path(filename)
+    with open(safe_path, write_flag) as f:
         for line in content:
             f.write("{}\n".format(line))
     return True
@@ -438,9 +557,14 @@ def read_text_file(filename):
     -------
     content         : list
                       Pythonic string list containing the text from the file provided.
+
+    Raises
+    ------
+    ValueError     : If path validation fails or unsafe characters detected.
     """
     content = []
-    loaded_file = open(expanduser(filename))
-    while line := loaded_file.readline():
-        content.append(line.rstrip())
+    safe_path = validate_path(filename)
+    with open(safe_path, "r", encoding="utf-8") as f:
+        for line in f:
+            content.append(line.rstrip())
     return content

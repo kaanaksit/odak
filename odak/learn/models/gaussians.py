@@ -1,7 +1,9 @@
-from ..tools import evaluate_3d_gaussians, expanduser
+from ..tools import evaluate_3d_gaussians
+from ...tools.file import validate_path
 from ...log import logger
 import torch
 import os
+from pathlib import Path
 from tqdm import tqdm
 
 
@@ -352,8 +354,8 @@ class gaussian_3d_volume(torch.nn.Module):
         Parameters
         ----------
         weights_filename : str
-                           Path or filename where the weights will be saved. The path can include
-                           relative paths and tilde notation (~), which will be expanded by `expanduser`.
+                            Path or filename where the weights will be saved. The path can include
+                            relative paths and tilde notation (~), which will be expanded by `validate_path`.
 
 
         Example:
@@ -363,12 +365,16 @@ class gaussian_3d_volume(torch.nn.Module):
 
         # Save model weights to home directory using ~ notation
         save_weights('~/.weights.pth')
+
+        Raises
+        ------
+        ValueError : If path validation fails or extension is not allowed.
         """
-        weights_filename = expanduser(weights_filename)
-        torch.save(self.state_dict(), weights_filename)
-        logger.info(
-            "gaussian_3d_volume model weights saved: {}".format(weights_filename)
+        safe_path = validate_path(
+            weights_filename, allowed_extensions=[".pth", ".pt", ".bin"]
         )
+        torch.save(self.state_dict(), safe_path)
+        logger.info("gaussian_3d_volume model weights saved: {}".format(safe_path))
 
     def load_weights(self, weights_filename=None, device=torch.device("cpu")):
         """
@@ -377,25 +383,30 @@ class gaussian_3d_volume(torch.nn.Module):
         Parameters
         ----------
         weights_filename : str
-                           Path to the weights file. If None, no weights are loaded.
+                            Path to the weights file. If None, no weights are loaded.
         device           : torch.device, optional
-                           Device to load the weights onto (default: 'cpu').
+                            Device to load the weights onto (default: 'cpu').
+
+        Raises
+        ------
+        ValueError       : If path validation fails or extension is not allowed.
+        FileNotFoundError: If file does not exist after validation.
 
         Notes
         -----
         - If `weights_filename` is a valid file, the model state is updated and set to eval mode.
-        - The file path is expanded (e.g., '~' is resolved).
+        - The file path is validated for security (tilde expanded, path traversal blocked).
         - A log message is emitted upon successful loading.
         """
         if not isinstance(weights_filename, type(None)):
-            weights_filename = expanduser(weights_filename)
-            if os.path.isfile(weights_filename):
+            safe_path = validate_path(
+                weights_filename, allowed_extensions=[".pth", ".pt", ".bin"]
+            )
+            if os.path.isfile(safe_path):
                 self.load_state_dict(
-                    torch.load(weights_filename, weights_only=True, map_location=device)
+                    torch.load(safe_path, weights_only=True, map_location=device)
                 )
                 self.eval()
                 logger.info(
-                    "gaussian_3d_volume model weights loaded: {}".format(
-                        weights_filename
-                    )
+                    "gaussian_3d_volume model weights loaded: {}".format(safe_path)
                 )

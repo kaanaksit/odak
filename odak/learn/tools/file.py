@@ -1,7 +1,12 @@
 import torch
 import os
-import odak.tools
-from ...tools import expanduser
+import re
+from pathlib import Path
+from ...tools.file import (
+    validate_path,
+    save_image as tools_save_image,
+    load_image as tools_load_image,
+)
 
 
 def resize(image, multiplier=0.5, mode="nearest"):
@@ -31,23 +36,23 @@ def resize(image, multiplier=0.5, mode="nearest"):
         pass
     else:
         raise ValueError("Image must have 3 or 4 dimensions")
-    
+
     # Use torch.nn.functional.interpolate for resizing
     if mode not in ["nearest", "bilinear", "bicubic", "area"]:
         raise ValueError("Mode must be one of: nearest, bilinear, bicubic, area")
-    
+
     # Resize the image
     new_image = torch.nn.functional.interpolate(
-        image, 
-        scale_factor=multiplier, 
+        image,
+        scale_factor=multiplier,
         mode=mode,
-        align_corners=None if mode in ["nearest", "area"] else False
+        align_corners=None if mode in ["nearest", "area"] else False,
     )
-    
+
     # Remove batch dimension if it was added
     if new_image.shape[0] == 1:
         new_image = new_image.squeeze(0)
-    
+
     return new_image
 
 
@@ -69,7 +74,7 @@ def load_image(fn, normalizeby=0.0, torch_style=False):
     image        : torch.tensor
                    Image loaded as a torch tensor.
     """
-    image = odak.tools.load_image(fn, normalizeby=normalizeby, torch_style=torch_style)
+    image = tools_load_image(fn, normalizeby=normalizeby, torch_style=torch_style)
     image = torch.from_numpy(image).float()
     return image
 
@@ -99,13 +104,13 @@ def save_image(fn, img, cmin=0, cmax=255, color_depth=8):
     if len(img.shape) == 4:
         img = img.squeeze(0)
     if len(img.shape) > 2 and torch.argmin(torch.tensor(img.shape)) == 0:
-        # Transpose from (C, H, W) to (H, W, C) 
+        # Transpose from (C, H, W) to (H, W, C)
         new_img = torch.zeros(img.shape[1], img.shape[2], img.shape[0]).to(img.device)
         for i in range(img.shape[0]):
             new_img[:, :, i] = img[i].detach().clone()
         img = new_img.detach().clone()
     img = img.cpu().detach().numpy()
-    return odak.tools.save_image(fn, img, cmin=cmin, cmax=cmax, color_depth=color_depth)
+    return tools_save_image(fn, img, cmin=cmin, cmax=cmax, color_depth=color_depth)
 
 
 def save_torch_tensor(fn, tensor):
@@ -114,12 +119,17 @@ def save_torch_tensor(fn, tensor):
 
     Parameters
     ----------
-    fn       : str
+    fn           : str
                Filename.
     tensor   : torch.tensor
                Torch tensor to be saved.
+
+    Raises
+    ------
+    ValueError : If path validation fails or extension is not allowed.
     """
-    torch.save(tensor, expanduser(fn))
+    safe_path = validate_path(fn, allowed_extensions=[".pt", ".pth", ".pkl"])
+    torch.save(tensor, safe_path)
 
 
 def torch_load(fn, weights_only=True, map_location=None):
@@ -140,9 +150,14 @@ def torch_load(fn, weights_only=True, map_location=None):
     -------
     data         : any
                    See torch.load() for more.
+
+    Raises
+    ------
+    ValueError   : If path validation fails or unsafe characters detected.
     """
+    safe_path = validate_path(fn, allowed_extensions=[".pt", ".pth", ".pkl"])
     data = torch.load(
-        expanduser(fn),
+        safe_path,
         weights_only=weights_only,
         map_location=map_location,
     )
