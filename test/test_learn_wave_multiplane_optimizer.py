@@ -5,13 +5,11 @@ from odak.learn.wave import multiplane_hologram_optimizer, multiplane_loss
 
 def test():
     resolution = [1080, 1920]
-    target = torch.zeros(resolution[0], resolution[1])
-    target[500::600, :] = 1
+    target = torch.zeros(1, resolution[0], resolution[1])
+    target[:, 500::600, :] = 1
     depth = target
     loss_function = multiplane_loss(
-        target_image=target.unsqueeze(0).unsqueeze(
-            0
-        ),  # Add batch dimension correctly: [B, C, H, W]
+        target_image=target,
         target_depth=depth,
         target_blur_size=20,
         number_of_planes=8,
