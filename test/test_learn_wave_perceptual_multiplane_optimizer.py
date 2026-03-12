@@ -9,7 +9,7 @@ def test():
     target[500::600, :] = 1
     depth = target
     loss_function = perceptual_multiplane_loss(
-        target_image=target.unsqueeze(0).unsqueeze(0),  # Shape: [B=1, C=1, H, W]
+        target_image=target.unsqueeze(0),
         target_depth=depth,
         target_blur_size=20,
         number_of_planes=8,
