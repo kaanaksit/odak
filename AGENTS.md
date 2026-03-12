@@ -12,7 +12,6 @@
 ### Linting
 - Check code style with flake8: `flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics`
 - Check with warnings as errors: `flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics`
-- Format code with black: `black .`
 
 ### Build Process
 - Install dependencies: `pip install -r requirements.txt`
@@ -75,8 +74,3 @@ This project uses a modular structure:
 - All tensor operations should handle device placement explicitly (CPU vs CUDA)
 - When fixing dimension mismatches in image processing, ensure handling of irregular dimensions like 2400×4094
 - Always perform parameter validation and use defensive coding practices for mathematical operations
-
-## Logging Guidelines
-- Use the `logger` object from `odak.log` throughout the codebase for consistent logging
-- Add informative log messages to key operations in file handling, image processing, directory management, etc.
-- Use appropriate logging levels: `debug`, `info`, `warning`

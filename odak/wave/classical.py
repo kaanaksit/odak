@@ -1,11 +1,10 @@
 import numpy as np
 from ..tools import nufft2, nuifft2, zero_pad
 from .lens import quadratic_phase_function
-from .__init__ import (
+from .utils import (
     wavenumber,
     calculate_amplitude,
     calculate_phase,
-    set_amplitude,
     generate_complex_field,
     add_random_phase,
     add_phase,
@@ -85,9 +84,9 @@ def adaptive_sampling_angular_spectrum(field, k, distance, dx, wavelength):
     iflag = -1
     eps = 10 ** (-12)
     nv, nu = field.shape
-    l = nu * dx
-    x = np.linspace(-l / 2, l / 2, nu)
-    y = np.linspace(-l / 2, l / 2, nv)
+    length = nu * dx
+    x = np.linspace(-length / 2, length / 2, nu)
+    y = np.linspace(-length / 2, length / 2, nv)
     X, Y = np.meshgrid(x, y)
     fx = np.linspace(-1.0 / 2.0 / dx, 1.0 / 2.0 / dx, nu)
     fy = np.linspace(-1.0 / 2.0 / dx, 1.0 / 2.0 / dx, nv)
@@ -525,7 +524,7 @@ def gerchberg_saxton(
     target = calculate_amplitude(field)
     hologram = generate_complex_field(np.ones(field.shape), 0)
     hologram = zero_pad(hologram)
-    if type(initial_phase) == type(None):
+    if initial_phase is None:
         hologram = add_random_phase(hologram)
     else:
         initial_phase = zero_pad(initial_phase)
@@ -627,7 +626,7 @@ def gerchberg_saxton_3d(
                 hologram, k, distance, dx, wavelength, propagation_type
             )
             if target_type == "double constraint":
-                if type(coefficients) == type(None):
+                if coefficients is None:
                     raise Exception(
                         "Provide coeeficients of alpha,beta and gamma for double constraint."
                     )
