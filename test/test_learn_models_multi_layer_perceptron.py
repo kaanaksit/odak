@@ -53,7 +53,7 @@ def test(
     loss_function = torch.nn.MSELoss(reduction="mean")
     epochs = tqdm(range(no_epochs), leave=False, dynamic_ncols=True)
     if os.path.isfile(weights_filename):
-        model.load_state_dict(torch.load(weights_filename))
+        model.load_state_dict(torch.load(weights_filename, weights_only=True))
         model.eval()
         odak.log.logger.info(
             "{} -> Model weights loaded: {}".format(header, weights_filename)

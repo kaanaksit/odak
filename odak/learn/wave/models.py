@@ -138,7 +138,9 @@ class holobeam_multiholo(torch.nn.Module):
         filename        : str
                           Filename.
         """
-        self.network.load_state_dict(torch.load(os.path.expanduser(filename)))
+        self.network.load_state_dict(
+            torch.load(os.path.expanduser(filename), weights_only=True)
+        )
         self.network.eval()
 
 
