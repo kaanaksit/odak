@@ -422,15 +422,17 @@ def shell_command(cmd, cwd=".", timeout=None, check=True):
     return proc, outs, errs
 
 
-def check_directory(directory):
+def check_directory(directory, validate=True):
     """
     Definition to check if a directory exist. If it doesn't exist, this definition will create one.
-
 
     Parameters
     ----------
     directory     : str
                     Full directory path.
+    validate      : bool
+                    Whether to validate the path for security (default: True).
+                    When True, checks for path traversal, null bytes, and other unsafe patterns.
 
     Returns
     -------
@@ -439,16 +441,29 @@ def check_directory(directory):
 
     Raises
     ------
-    ValueError   : If path traversal attempt detected or invalid characters found.
+    ValueError   : If path traversal attempt detected, invalid characters found,
+                   or directory creation fails due to permissions/invalid path.
+    TypeError    : If directory is not a string.
     """
-    logger.debug("Checking directory: {}".format(directory))
-    safe_path = validate_path(
-        directory + "/"
-    )  # Directory paths typically don't have extensions
+    if validate:
+        logger.debug("Checking directory: {}".format(directory))
+        safe_path = validate_path(directory + "/")
+    else:
+        # Bypass validation for internal use only
+        safe_path = os.path.abspath(os.path.expanduser(directory))
+
     if not os.path.exists(safe_path):
-        os.makedirs(safe_path)
-        logger.info("Created directory: {}".format(safe_path))
-        return False
+        try:
+            os.makedirs(safe_path)
+            logger.info("Created directory: {}".format(safe_path))
+            return False
+        except Exception as e:
+            raise ValueError(f"Failed to create directory '{safe_path}': {str(e)}")
+
+    # Verify it's actually a directory, not a file with the same name
+    if not os.path.isdir(safe_path):
+        raise ValueError(f"Path exists but is not a directory: {safe_path}")
+
     logger.info("Directory already exists: {}".format(safe_path))
     return True
 
