@@ -1,6 +1,7 @@
 from plyfile import PlyData, PlyElement
 import numpy as np
 from .transformation import rotate_point
+from .file import validate_path
 
 
 def read_PLY(fn, offset=[0, 0, 0], angles=[0.0, 0.0, 0.0], mode="XYZ"):
@@ -21,13 +22,19 @@ def read_PLY(fn, offset=[0, 0, 0], angles=[0.0, 0.0, 0.0], mode="XYZ"):
     Returns
     ----------
     triangles    : ndarray
-                  Triangles from a given PLY file. Note that the triangles coming out of this function isn't always structured in the right order and with the size of (MxN)x3. You can use numpy's reshape to restructure it to mxnx3 if you know what you are doing.
+                   Triangles from a given PLY file. Note that the triangles coming out of this function isn't always structured in the right order and with the size of (MxN)x3. You can use numpy's reshape to restructure it to mxnx3 if you know what you are doing.
+
+    Raises
+    ------
+    ValueError   : If path validation fails or extension is not allowed.
+    TypeError    : If fn is not a string.
     """
     if np.__name__ != "numpy":
         import numpy as np_ply
     else:
         np_ply = np
-    with open(fn, "rb") as f:
+    safe_path = validate_path(fn, allowed_extensions=[".ply"])
+    with open(safe_path, "rb") as f:
         plydata = PlyData.read(f)
     triangle_ids = np_ply.vstack(plydata["face"].data["vertex_indices"])
     triangles = []
@@ -69,8 +76,14 @@ def read_PLY_point_cloud(filename):
     ----------
     point_cloud  : ndarray
                    An array filled with poitns from the PLY file.
+
+    Raises
+    ------
+    ValueError   : If path validation fails or extension is not allowed.
+    TypeError    : If filename is not a string.
     """
-    plydata = PlyData.read(filename)
+    safe_path = validate_path(filename, allowed_extensions=[".ply"])
+    plydata = PlyData.read(safe_path)
     if np.__name__ != "numpy":
         import numpy as np_ply
 
@@ -97,7 +110,13 @@ def write_PLY(triangles, savefn="output.ply"):
                   List of triangles with the size of Mx3x3.
     savefn      : string
                   Filename for a PLY file.
+
+    Raises
+    ------
+    ValueError  : If path validation fails or extension is not allowed.
+    TypeError   : If savefn is not a string.
     """
+    safe_path = validate_path(savefn, allowed_extensions=[".ply"])
     tris = []
     pnts = []
     color = [255, 255, 255]
@@ -126,7 +145,7 @@ def write_PLY(triangles, savefn="output.ply"):
     # Save mesh.
     el1 = PlyElement.describe(pnts, "vertex", comments=["Vertex data"])
     el2 = PlyElement.describe(tris, "face", comments=["Face data"])
-    PlyData([el1, el2], text="True").write(savefn)
+    PlyData([el1, el2], text="True").write(safe_path)
 
 
 def write_PLY_from_points(points, savefn="output.ply"):
@@ -140,7 +159,12 @@ def write_PLY_from_points(points, savefn="output.ply"):
     savefn      : string
                   Filename for a PLY file.
 
+    Raises
+    ------
+    ValueError  : If path validation fails or extension is not allowed.
+    TypeError   : If savefn is not a string.
     """
+    safe_path = validate_path(savefn, allowed_extensions=[".ply"])
     if np.__name__ != "numpy":
         import numpy as np_ply
     else:
@@ -194,4 +218,4 @@ def write_PLY_from_points(points, savefn="output.ply"):
     # Save mesh.
     el1 = PlyElement.describe(pnts, "vertex", comments=["Vertex data"])
     el2 = PlyElement.describe(tris, "face", comments=["Face data"])
-    PlyData([el1, el2], text="True").write(savefn)
+    PlyData([el1, el2], text="True").write(safe_path)
