@@ -5,6 +5,7 @@ import numpy as np
 from tqdm import tqdm
 from ..models import *
 from .util import generate_complex_field, wavenumber, calculate_amplitude
+from ...tools.file import validate_path
 
 
 class holobeam_multiholo(torch.nn.Module):
@@ -123,24 +124,36 @@ class holobeam_multiholo(torch.nn.Module):
     def save_weights(self, filename="./weights.pt"):
         """
         Function to save the current weights of the multi layer perceptron to a file.
+
         Parameters
         ----------
         filename        : str
                           Filename.
+
+        Raises
+        ------
+        ValueError      : If path validation fails or extension is not allowed.
+        TypeError       : If filename is not a string.
         """
-        torch.save(self.network.state_dict(), os.path.expanduser(filename))
+        safe_path = validate_path(filename, allowed_extensions=[".pt", ".pth"])
+        torch.save(self.network.state_dict(), safe_path)
 
     def load_weights(self, filename="./weights.pt"):
         """
         Function to load weights for this multi layer perceptron from a file.
+
         Parameters
         ----------
         filename        : str
                           Filename.
+
+        Raises
+        ------
+        ValueError      : If path validation fails or extension is not allowed.
+        TypeError       : If filename is not a string.
         """
-        self.network.load_state_dict(
-            torch.load(os.path.expanduser(filename), weights_only=True)
-        )
+        safe_path = validate_path(filename, allowed_extensions=[".pt", ".pth"])
+        self.network.load_state_dict(torch.load(safe_path, weights_only=True))
         self.network.eval()
 
 
@@ -262,14 +275,25 @@ class focal_surface_light_propagation(torch.nn.Module):
                                Path to the old model's weight file.
         key_mapping_filename : str
                                Path to the JSON file containing the key mappings.
+
+        Raises
+        ------
+        ValueError      : If path validation fails or extension is not allowed.
+        TypeError       : If filenames are not strings.
         """
-        # Load old model weights
+        # Validate and load old model weights
+        safe_weight_path = validate_path(
+            weight_filename, allowed_extensions=[".pt", ".pth"]
+        )
         old_model_weights = torch.load(
-            weight_filename, map_location=self.device, weights_only=True
+            safe_weight_path, map_location=self.device, weights_only=True
         )
 
-        # Load key mappings from JSON file
-        with open(key_mapping_filename, "r") as json_file:
+        # Validate and load key mappings from JSON file
+        safe_key_map_path = validate_path(
+            key_mapping_filename, allowed_extensions=[".json"]
+        )
+        with open(safe_key_map_path, "r") as json_file:
             key_mappings = json.load(json_file)
 
         # Extract the key mappings for sv_kernel_generation and light_prop

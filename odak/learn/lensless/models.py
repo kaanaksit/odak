@@ -5,6 +5,7 @@ import torch.nn as nn
 from os.path import join
 from os import makedirs
 from collections import OrderedDict
+from ...tools.file import validate_path
 
 
 class spec_track(nn.Module):
@@ -155,7 +156,7 @@ class spec_track(nn.Module):
             train_batches = 0
             train_pbar = tqdm(
                 trainloader,
-                desc=f"Epoch {epoch+1}/{number_of_epochs} [Train]",
+                desc=f"Epoch {epoch + 1}/{number_of_epochs} [Train]",
                 leave=False,
                 dynamic_ncols=True,
             )
@@ -181,7 +182,7 @@ class spec_track(nn.Module):
             val_batches = 0
             val_pbar = tqdm(
                 testloader,
-                desc=f"Epoch {epoch+1}/{number_of_epochs} [Val]",
+                desc=f"Epoch {epoch + 1}/{number_of_epochs} [Val]",
                 leave=False,
                 dynamic_ncols=True,
             )
@@ -201,18 +202,24 @@ class spec_track(nn.Module):
 
             # Print epoch summary
             print(
-                f"Epoch {epoch+1}/{number_of_epochs} - Train Loss: {avg_train_loss:.4f}, Val Loss: {avg_val_loss:.4f}"
+                f"Epoch {epoch + 1}/{number_of_epochs} - Train Loss: {avg_train_loss:.4f}, Val Loss: {avg_val_loss:.4f}"
             )
 
             # Save best model
             if avg_val_loss < best_val_loss:
                 best_val_loss = avg_val_loss
-                self.save_weights(join(directory, f"best_model_epoch_{epoch+1}.pt"))
-                print(f"Best model saved at epoch {epoch+1}")
+                self.save_weights(join(directory, f"best_model_epoch_{epoch + 1}.pt"))
+                print(f"Best model saved at epoch {epoch + 1}")
 
-        # Save training history
-        torch.save(self.train_history, join(directory, "log", "train_log.pt"))
-        torch.save(self.validation_history, join(directory, "log", "validation_log.pt"))
+        # Save training history with path validation
+        train_log_path = validate_path(
+            join(directory, "log", "train_log.pt"), allowed_extensions=[".pt"]
+        )
+        val_log_path = validate_path(
+            join(directory, "log", "validation_log.pt"), allowed_extensions=[".pt"]
+        )
+        torch.save(self.train_history, train_log_path)
+        torch.save(self.validation_history, val_log_path)
         print("Training completed. History saved.")
 
     def save_weights(self, filename="./weights.pt"):
@@ -223,8 +230,14 @@ class spec_track(nn.Module):
         ----------
         filename : str, optional
             Path to save the weights. Default is './weights.pt'.
+
+        Raises
+        ------
+        ValueError    : If path validation fails or extension is not allowed.
+        TypeError     : If filename is not a string.
         """
-        torch.save(self.network.state_dict(), os.path.expanduser(filename))
+        safe_path = validate_path(filename, allowed_extensions=[".pt", ".pth"])
+        torch.save(self.network.state_dict(), safe_path)
 
     def load_weights(self, filename="./weights.pt"):
         """
@@ -234,8 +247,12 @@ class spec_track(nn.Module):
         ----------
         filename : str, optional
             Path to load the weights from. Default is './weights.pt'.
+
+        Raises
+        ------
+        ValueError    : If path validation fails or extension is not allowed.
+        TypeError     : If filename is not a string.
         """
-        self.network.load_state_dict(
-            torch.load(os.path.expanduser(filename), weights_only=True)
-        )
+        safe_path = validate_path(filename, allowed_extensions=[".pt", ".pth"])
+        self.network.load_state_dict(torch.load(safe_path, weights_only=True))
         self.network.eval()
