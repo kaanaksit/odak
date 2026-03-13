@@ -1,6 +1,7 @@
 # Agent
 .opencode
 report.md
+*.swp
 
 # Unit tests
 output/
