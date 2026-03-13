@@ -334,8 +334,10 @@ def load_image(fn, normalizeby=0.0, torch_style=False):
     )
     image = cv2.imread(safe_path, cv2.IMREAD_UNCHANGED)
     if isinstance(image, type(None)):
-        logger.warning("Image not properly loaded. Check filename or image type.")
-        sys.exit()
+        raise ValueError(
+            f"Failed to load image from '{safe_path}'. "
+            f"Check file format, permissions, and that the file exists."
+        )
     if len(image.shape) > 2:
         new_image = np.copy(image)
         new_image[:, :, 0] = image[:, :, 2]
