@@ -76,3 +76,50 @@ If you encounter any bugs or issues please check if the issue has already been r
 - A detailed explanation of the problem 💬
 - Steps to reproduce the issue 🔄
 - Information about your environment (OS, Python version, etc.) 🖥️
+
+## Security Guidelines 🔒
+
+When contributing code to Odak, please follow these security best practices:
+
+### File Path Validation
+All file paths from user input must be validated using `validate_path()` from `odak.tools.file`:
+
+```python
+from odak.tools.file import validate_path
+
+# Validate with extension restrictions
+safe_path = validate_path(user_path, allowed_extensions=[".pt", ".pth"])
+data = torch.load(safe_path, weights_only=True)
+```
+
+This validates against:
+- Path traversal attacks (`../`)
+- Null byte injection
+- URL protocol bypass
+- UNC/device paths
+- Excessive path lengths
+
+### Secure Model Loading
+Always use `weights_only=True` when loading PyTorch models to prevent arbitrary code execution via pickle deserialization:
+
+```python
+# ✅ Correct
+weights = torch.load(path, weights_only=True)
+
+# ❌ Dangerous - never do this
+weights = torch.load(path, weights_only=False)
+```
+
+### Shell Command Safety
+When executing shell commands:
+- Use `shell=False` in subprocess calls
+- Validate commands against the whitelist (`ALLOWED_COMMANDS`)
+- Never pass unsanitized user input to shell commands
+
+See `odak.tools.file.validate_shell_command()` for reference.
+
+### Avoid Dangerous Functions
+Do not use:
+- `eval()` or `exec()` with user input
+- `pickle.load()` without extreme caution
+- Dynamic imports from user-controlled sources
