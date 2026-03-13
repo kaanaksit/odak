@@ -5,7 +5,8 @@ import numpy as np
 from tqdm import tqdm
 from ..models import *
 from .util import generate_complex_field, wavenumber, calculate_amplitude
-from ...tools.file import validate_path
+from ...tools.file import validate_path, check_directory
+from os.path import join
 
 
 class holobeam_multiholo(torch.nn.Module):
@@ -95,10 +96,17 @@ class holobeam_multiholo(torch.nn.Module):
         learning_rate    : float
                            Learning rate of the optimizer.
         directory        : str
-                           Output directory.
+                            Output directory.
         save_at_every    : int
-                           Save the model at every given epoch count.
+                            Save the model at every epoch count.
+
+        Raises
+        ------
+        ValueError    : If directory path contains dangerous patterns (traversal, null bytes, etc.).
+        TypeError     : If directory is not a string.
         """
+        safe_directory = validate_path(directory)
+        check_directory(safe_directory, validate=True)
         t_epoch = tqdm(range(number_of_epochs), leave=False, dynamic_ncols=True)
         self.optimizer = torch.optim.Adam(self.parameters(), lr=learning_rate)
         for i in t_epoch:
@@ -117,8 +125,10 @@ class holobeam_multiholo(torch.nn.Module):
             description = "Epoch Loss:{:.4f}".format(epoch_loss)
             t_epoch.set_description(description)
             if i % save_at_every == 0:
-                self.save_weights(filename="{}/weights_{:04d}.pt".format(directory, i))
-        self.save_weights(filename="{}/weights.pt".format(directory))
+                weight_file = join(safe_directory, f"weights_{i:04d}.pt")
+                self.save_weights(filename=weight_file)
+        final_weight_file = join(safe_directory, "weights.pt")
+        self.save_weights(filename=final_weight_file)
         print(description)
 
     def save_weights(self, filename="./weights.pt"):
