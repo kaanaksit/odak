@@ -5,7 +5,7 @@ import torch.nn as nn
 from os.path import join
 from os import makedirs
 from collections import OrderedDict
-from ...tools.file import validate_path
+from ...tools.file import validate_path, check_directory
 
 
 class spec_track(nn.Module):
@@ -140,9 +140,15 @@ class spec_track(nn.Module):
             Weight decay for the optimizer. Default is 1e-5.
         directory : str, optional
             Directory to save the model weights and logs. Default is './output'.
+
+        Raises
+        ------
+        ValueError    : If directory path contains dangerous patterns (traversal, null bytes, etc.).
+        TypeError     : If directory is not a string.
         """
-        makedirs(directory, exist_ok=True)
-        makedirs(join(directory, "log"), exist_ok=True)
+        safe_directory = validate_path(directory)
+        check_directory(safe_directory, validate=True)
+        check_directory(join(safe_directory, "log"), validate=True)
 
         self.optimizer = torch.optim.Adam(
             self.parameters(), lr=learning_rate, weight_decay=weight_decay
