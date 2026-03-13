@@ -7,6 +7,7 @@ import plotly.subplots
 from PIL import Image
 from ...wave import calculate_phase, calculate_amplitude, calculate_intensity
 from ...log import logger
+from ...tools.file import validate_path
 
 
 class surfaceshow:
@@ -497,7 +498,8 @@ class plot2dshow:
                           Results as a markdown.
         """
         html = plotly.offline.plot(self.fig, include_plotlyjs=False, output_type="div")
-        markdown_file = open(filename, "w")
+        safe_path = validate_path(filename, allowed_extensions=[".md"])
+        markdown_file = open(safe_path, "w")
         markdown_file.write(html)
         markdown_file.close()
 
@@ -557,7 +559,8 @@ class plot2dshow:
             col=col,
         )
         if not isinstance(zoomed_inset, type(None)):
-            zoomed_inset = Image.open(zoomed_inset)
+            safe_path = validate_path(zoomed_inset, allowed_extensions=[".png", ".jpg", ".jpeg", ".gif", ".bmp"])
+            zoomed_inset = Image.open(safe_path)
             self.fig.add_layout_image(
                 source=zoomed_inset,
                 x=zoomed_inset_settings["x"],
