@@ -1,0 +1,17 @@
+{
+  "executionEnvironments": [
+    {
+      "root": ".",
+      "extraPaths": ["."]
+    }
+  ],
+  "include": [
+    "odak",
+    "test"
+  ],
+  "reportMissingImports": true,
+  "reportMissingTypeStubs": false,
+  "pythonVersion": "3.9",
+  "typeCheckingMode": "basic",
+  "useLibraryCodeForTypes": true
+}
