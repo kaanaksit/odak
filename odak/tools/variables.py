@@ -1,3 +1,5 @@
+from typing import Optional
+
 import numpy as np
 import torch
 from ..log import logger
@@ -101,8 +103,8 @@ def validate_positive_parameter(value, name="value", allow_zero=False):
 
 def create_group_tensor(
     number_of_elements: int,
-    group_percentages: list | None = None,
-    number_of_groups: int | None = None,
+    group_percentages: Optional[list] = None,
+    number_of_groups: Optional[int] = None,
 ) -> torch.Tensor:
     """
     Create a tensor assigning elements to groups based on percentages.
