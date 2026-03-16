@@ -129,6 +129,44 @@ def test():
     group_counts = [(result == i).sum() for i in range(2)]
     assert sum(group_counts) == 7  # Should be exactly 7
 
+    # Test with number_of_groups parameter (equal distribution)
+    result = odak.tools.create_group_tensor(10, number_of_groups=4)
+    assert len(result) == 10
+    assert result.dtype == torch.long
+    group_counts = [(result == i).sum() for i in range(4)]
+    assert sum(group_counts) == 10  # Total should be 10
+
+    # Test with number_of_groups parameter - exactly divisible case
+    result = odak.tools.create_group_tensor(12, number_of_groups=3)
+    assert len(result) == 12
+    assert (result == 0).sum() == 4
+    assert (result == 1).sum() == 4
+    assert (result == 2).sum() == 4
+
+    # Test with number_of_groups parameter - single group
+    result = odak.tools.create_group_tensor(10, number_of_groups=1)
+    assert len(result) == 10
+    assert all(r == 0 for r in result.tolist())
+
+    # Test with number_of_groups parameter - many groups
+    result = odak.tools.create_group_tensor(20, number_of_groups=5)
+    assert len(result) == 20
+    for i in range(5):
+        assert (result == i).sum() == 4
+
+    # Test with number_of_groups parameter - unequal distribution due to remainder
+    result = odak.tools.create_group_tensor(10, number_of_groups=3)
+    assert len(result) == 10
+    group_counts = [(result == i).sum() for i in range(3)]
+    assert sum(group_counts) == 10  # Total should be exactly 10
+
+    # Test with group_percentages=None without number_of_groups (should raise error)
+    try:
+        odak.tools.create_group_tensor(10, group_percentages=None)
+        assert False, "Should have raised ValueError"
+    except ValueError as e:
+        assert "number_of_groups must be provided" in str(e)
+
     print("All tests passed!")
 
 

@@ -101,7 +101,8 @@ def validate_positive_parameter(value, name="value", allow_zero=False):
 
 def create_group_tensor(
     number_of_elements: int,
-    group_percentages: list,
+    group_percentages: list | None = None,
+    number_of_groups: int | None = None,
 ) -> torch.Tensor:
     """
     Create a tensor assigning elements to groups based on percentages.
@@ -114,9 +115,13 @@ def create_group_tensor(
     ----------
     number_of_elements : int
         Total number of elements to distribute among groups.
-    group_percentages : list of float
+    group_percentages : list of float, optional
         List of percentages (0.0 to 1.0) specifying the proportion of elements
-        in each group. Must sum to 1.0.
+        in each group. Must sum to 1.0. If None, equal distribution is used
+        based on number_of_groups. Default: None.
+    number_of_groups : int, optional
+        Number of groups to create. Required when group_percentages is None.
+        Default: None.
 
     Returns
     -------
@@ -129,6 +134,7 @@ def create_group_tensor(
     ValueError
         If group_percentages does not sum to 1.0.
         If any percentage is outside the range [0.0, 1.0].
+        If number_of_groups is None when group_percentages is None.
     TypeError
         If number_of_elements is not an integer.
 
@@ -145,22 +151,47 @@ def create_group_tensor(
     >>> result = create_group_tensor(100, percentages)
     >>> print(len(result))
     100
+
+    >>> # Create a tensor with equal distribution using number_of_groups
+    >>> result = create_group_tensor(10, number_of_groups=4)
+    >>> print(result)
+    tensor([0, 0, 1, 1, 2, 2, 2, 3, 3, 3])
     """
     # Validate number_of_elements type
     if not isinstance(number_of_elements, int):
+        logger.error(
+            f"number_of_elements must be an integer, got {type(number_of_elements).__name__}",
+        )
         raise TypeError(
             f"number_of_elements must be an integer, got {type(number_of_elements).__name__}"
         )
 
+    # Handle None group_percentages by creating equal distribution
+    if group_percentages is None:
+        if number_of_groups is None:
+            logger.error(
+                "number_of_groups must be provided when group_percentages is None"
+            )
+            raise ValueError(
+                "number_of_groups must be provided when group_percentages is None"
+            )
+        group_percentages = [1.0 / number_of_groups] * number_of_groups
+
     # Validate input percentages sum to 1.0
     total_percentage = sum(group_percentages)
     if abs(total_percentage - 1.0) > 1e-6:
+        logger.error(
+            f"group_percentages must sum to 1.0, got {total_percentage}"
+        )
         raise ValueError(
             f"group_percentages must sum to 1.0, got {total_percentage}"
         )
 
     # Validate all percentages are within valid range
     if any(p < 0 or p > 1 for p in group_percentages):
+        logger.error(
+            "All percentages must be between 0.0 and 1.0"
+        )
         raise ValueError(
             "All percentages must be between 0.0 and 1.0"
         )
