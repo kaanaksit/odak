@@ -1,0 +1,44 @@
+name: Check Markdown Links
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  schedule:
+    # Run weekly on Sundays at 9 AM UTC
+    - cron: '0 9 * * SUN'
+
+jobs:
+  link-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install markdown-link-check
+        run: npm install -g markdown-link-check
+
+      - name: Check for broken links in Markdown files
+        run: |
+          find . -name "*.md" -not -path "./.git/*" -not -path "./node_modules/*" | head -20 | xargs -I {} markdown-link-check --config .mlc_config.json {} || true
+
+      - name: Check all Markdown files for broken links (fallback)
+        if: failure()
+        run: |
+          find . -name "*.md" -not -path "./.git/*" -not -path "./node_modules/*" | xargs -I {} markdown-link-check --config .mlc_config.json {} || true
+
+      # Alternative approach using a dedicated GitHub Action
+      - name: Markdown link check with GitHub Action (fallback)
+        if: failure()
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        with:
+          use-quiet-mode: 'no'
+          use-verbose-mode: 'yes'
+          file-extension: '.md'
+          check-modified-files-only: 'false'

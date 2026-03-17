@@ -7,6 +7,395 @@ from pathlib import Path
 from tqdm import tqdm
 
 
+class gaussian_2d(torch.nn.Module):
+    """
+    2D Gaussian model for learning image representations using 2D Gaussian primitives.
+
+    This model represents an image as a weighted sum of 2D Gaussians, each defined by:
+    - widths (std_x, std_y): Standard deviations along x and y axes
+    - offsets (offset_x, offset_y): Center positions in normalized coordinates
+    - rotations: Rotation angles for each Gaussian
+    - alphas: Opacity/weight coefficients
+
+    Parameters
+    ----------
+    number_of_elements : int, optional
+                        Number of 2D Gaussian elements to use. Default is 10.
+
+    Attributes
+    ----------
+    widths      : torch.nn.Parameter, shape (2, 1, N)
+                  Standard deviations for x and y dimensions.
+    offsets     : torch.nn.Parameter, shape (2, 1, N)
+                  Center offsets in x and y directions.
+    rotations   : torch.nn.Parameter, shape (1, N)
+                  Rotation angles in radians for each Gaussian.
+    alphas      : torch.nn.Parameter, shape (1, N)
+                  Opacity/weight coefficients blended with tanh activation.
+
+    Examples
+    --------
+    >>> model = gaussian_2d(number_of_elements=50)
+    >>> x = torch.linspace(-1, 1, 256)
+    >>> y = torch.linspace(-1, 1, 256)
+    >>> X, Y = torch.meshgrid(x, y, indexing='ij')
+    >>> output = model(X, Y)
+
+    Notes
+    -----
+    - All parameters are initialized on CPU by default. For GPU acceleration,
+      call .to(device) after initializing this model.
+    - Input coordinates x and y should typically be normalized to [-1, 1].
+    - Output is the sum of weighted Gaussians passed through tanh().
+    """
+
+    def __init__(self, number_of_elements=10):
+        """
+        Initialize the 2D Gaussian model.
+
+        Parameters
+        ----------
+        number_of_elements : int
+                            Number of Gaussian elements (default: 10).
+        """
+        super(gaussian_2d, self).__init__()
+
+        if not isinstance(number_of_elements, int) or number_of_elements <= 0:
+            raise ValueError(
+                "number_of_elements must be a positive integer, got {}".format(
+                    type(number_of_elements).__name__
+                )
+            )
+
+        self.number_of_elements = number_of_elements
+
+        # Initialize parameters as learnable tensors
+        self.widths = torch.nn.Parameter(torch.rand(2, 1, self.number_of_elements))
+        self.offsets = torch.nn.Parameter(
+            torch.randn(2, 1, self.number_of_elements)
+        )
+        self.rotations = torch.nn.Parameter(torch.randn(1, self.number_of_elements))
+        self.alphas = torch.nn.Parameter(torch.randn(1, self.number_of_elements))
+
+        # Apply uniform initialization
+        self.initialize_parameters_uniformly()
+
+    def initialize_parameters_uniformly(self, ranges=None):
+        """
+        Initialize parameters using uniform-like distributions within specified ranges.
+
+        This method re-samples the model parameters from normal distributions
+        whose mean and standard deviation are derived from the provided ranges.
+        For a range [a, b], it uses:
+            mean = (a + b) / 2
+            std  = (b - a) / 4
+
+        Parameters
+        ----------
+        ranges : dict or None, optional
+                Dictionary specifying custom initialization ranges. Keys can include:
+                - 'widths': tuple of (min, max) for Gaussian widths
+                - 'offsets': tuple of (min, max) for center offsets
+                - 'rotations': tuple of (min, max) for rotation angles in radians
+                - 'alphas': tuple of (min, max) for opacity values
+
+                If None, default ranges are used:
+                {
+                    "widths": (0.1, 0.5),
+                    "offsets": (-1.0, 1.0),
+                    "rotations": (0.0, 2*pi),
+                    "alphas": (0.1, 0.2)
+                }
+
+        Notes
+        -----
+        - Uses torch.no_grad() to avoid tracking gradients during initialization.
+        - Parameters are initialized in-place using normal_() method.
+        """
+        with torch.no_grad():
+            default_ranges = {
+                "widths": (0.1, 0.5),
+                "offsets": (-1.0, 1.0),
+                "rotations": (0.0, 2 * torch.pi),
+                "alphas": (0.1, 0.2),
+            }
+
+            if ranges is None:
+                ranges = default_ranges
+
+            # Initialize widths (std_x and std_y)
+            if "widths" in ranges:
+                self.widths.normal_(
+                    mean=(ranges["widths"][0] + ranges["widths"][1]) / 2,
+                    std=(ranges["widths"][1] - ranges["widths"][0]) / 4,
+                )
+            else:
+                self.widths.normal_(mean=0.3, std=0.1)
+
+            # Initialize offsets (offset_x and offset_y)
+            if "offsets" in ranges:
+                self.offsets.normal_(
+                    mean=(ranges["offsets"][0] + ranges["offsets"][1]) / 2,
+                    std=(ranges["offsets"][1] - ranges["offsets"][0]) / 4,
+                )
+            else:
+                self.offsets.normal_(mean=0.0, std=0.5)
+
+            # Initialize rotations
+            if "rotations" in ranges:
+                self.rotations.normal_(
+                    mean=(ranges["rotations"][0] + ranges["rotations"][1]) / 2,
+                    std=(ranges["rotations"][1] - ranges["rotations"][0]) / 4,
+                )
+            else:
+                self.rotations.normal_(mean=torch.pi, std=torch.pi / 2)
+
+            # Initialize alphas (opacity coefficients)
+            if "alphas" in ranges:
+                self.alphas.normal_(
+                    mean=(ranges["alphas"][0] + ranges["alphas"][1]) / 2,
+                    std=(ranges["alphas"][1] - ranges["alphas"][0]) / 4,
+                )
+            else:
+                self.alphas.normal_(mean=0.15, std=0.05)
+
+    def forward(self, x, y, residual=1e-6):
+        """
+        Forward pass: evaluate the 2D Gaussian model at given coordinates.
+
+        Computes a weighted sum of 2D Gaussians evaluated at the input grid
+        coordinates (x, y). Each Gaussian is rotated and translated according
+        to its learned parameters.
+
+        Parameters
+        ----------
+        x : torch.Tensor
+            X-coordinates of the evaluation grid. Shape should broadcast with y.
+        y : torch.Tensor
+            Y-coordinates of the evaluation grid. Shape should broadcast with x.
+        residual : float, optional
+                   Small constant to avoid numerical issues (default: 1e-6).
+
+        Returns
+        -------
+        results : torch.Tensor
+                  The evaluated Gaussian field at input coordinates. The output
+                  shape is determined by broadcasting x, y with the parameter shapes.
+                  Values are passed through tanh() activation and multiplied by alphas.
+
+        Notes
+        -----
+        - Coordinates are first rotated using learned rotation angles.
+        - Then translated by learned offsets for each Gaussian.
+        - The 2D Gaussian function is evaluated as exp(-(x^2 + y^2)) scaled by widths.
+        - Final output: tanh(alphas * gaussians) summed over all elements.
+
+    Notes
+    -----
+    - Supports multiple input shapes via PyTorch broadcasting
+    - For grid inputs (H, W): automatically broadcasts to (H, W, N_elements)
+    - For flattened inputs (N, 1): broadcasts directly with parameters
+    """
+        # PyTorch broadcasting handles shape alignment automatically
+        # Input shapes: x, y can be (H, W), (H*W,), or (-1, 1)
+        # Parameters are stored as (2, 1, N) for offsets/widths and (1, N) for rotations/alphas
+        
+        # Rotate coordinates according to each Gaussian's rotation angle
+        cos_rot = torch.cos(self.rotations)  # Shape: (1, N)
+        sin_rot = torch.sin(self.rotations)  # Shape: (1, N)
+        
+        # Broadcasting: x (*), y (*) automatically expand with cos_rot/sin_rot
+        x_r = x * cos_rot - y * sin_rot
+        y_r = x * sin_rot + y * cos_rot
+
+        # Translate by learned offsets (broadcasts from (2, 1, N) to input shape × (N,))
+        x_n = x_r + self.offsets[0]  # Shape: (..., N)
+        y_n = y_r + self.offsets[1]
+
+        # Evaluate 2D Gaussian function with learned widths (standard deviations)
+        r = (x_n / self.widths[0]) ** 2 + (y_n / self.widths[1]) ** 2
+        gaussians = torch.exp(-r)
+
+        # Apply alpha weights and tanh activation
+        results = self.alphas * gaussians
+        results = torch.tanh(results)
+
+        return results
+
+
+class gaussians_2d(torch.nn.Module):
+    """
+    Wrapper class for the 2D Gaussian model with loss computation and evaluation utilities.
+
+    This class wraps `gaussian_2d` and provides additional functionality:
+    - Loss functions (L1, L2) pre-initialized
+    - Weight saving/loading methods
+    - Model parameter counting
+
+    Parameters
+    ----------
+    number_of_elements : int, optional
+                        Number of 2D Gaussian primitives in the model (default: 10).
+    logger             : logging.Logger or None, optional
+                         Logger instance for tracking progress. If None, creates a new one.
+
+    Attributes
+    ----------
+    model       : gaussian_2d
+                  The underlying primitive Gaussian model.
+    l2_loss     : torch.nn.MSELoss
+                  Mean squared error loss function.
+    l1_loss     : torch.nn.L1Loss
+                  L1 absolute loss function.
+    logger      : logging.Logger
+                  Logger instance for info/debug messages.
+
+    Examples
+    --------
+    >>> model = gaussians_2d(number_of_elements=50)
+    >>> x = torch.linspace(-1, 1, 256)
+    >>> y = torch.linspace(-1, 1, 256)
+    >>> X, Y = torch.meshgrid(x, y, indexing='ij')
+    >>> output = model(X, Y, test=False)
+
+    Notes
+    -----
+    - The `test` flag in forward() controls gradient computation (not recommended use).
+    - Use standard training loop with optimizer.zero_grad(), loss.backward(), optimizer.step().
+    """
+
+    def __init__(
+        self,
+        number_of_elements=10,
+        logger=None,
+    ):
+        """
+        Initialize the gaussians_2d wrapper model.
+
+        Parameters
+        ----------
+        number_of_elements : int
+                            Number of 2D Gaussian elements (default: 10).
+        logger             : logging.Logger or None
+                             Logger instance (default: creates new logger).
+        """
+        super(gaussians_2d, self).__init__()
+
+        if not isinstance(number_of_elements, int) or number_of_elements <= 0:
+            raise ValueError(
+                "number_of_elements must be a positive integer, got {}".format(
+                    type(number_of_elements).__name__ if not isinstance(number_of_elements, int) else str(number_of_elements)
+                )
+            )
+
+        self.number_of_elements = number_of_elements
+        self.model = gaussian_2d(
+            number_of_elements=self.number_of_elements
+        )
+
+        # Count total trainable parameters
+        self.total_params = sum(p.numel() for p in self.parameters() if p.requires_grad)
+
+        # Setup logger
+        from ...log import logger as default_logger
+
+        self.logger = logger if logger is not None else default_logger
+
+    def forward(
+        self,
+        x,
+        y,
+        test=False,
+    ):
+        """
+        Forward pass through the Gaussian model.
+
+        Parameters
+        ----------
+        x      : torch.Tensor
+                 X-coordinates of evaluation grid.
+        y      : torch.Tensor
+                 Y-coordinates of evaluation grid.
+        test   : bool, optional
+                 If True, runs in no_grad mode (default: False).
+
+        Returns
+        -------
+        result : torch.Tensor
+                 The summed Gaussian field with shape matching x/y grids plus one dimension.
+
+        Notes
+        -----
+        The `test` flag is deprecated. Use standard training pattern:
+        ```python
+        model.train()  # Enable gradients
+        loss = criterion(output, target)
+        loss.backward()
+        optimizer.step()
+        ```
+        """
+        if test:
+            with torch.no_grad():
+                result = self.model(x=x, y=y)
+        else:
+            result = self.model(x=x, y=y)
+
+        # Sum over Gaussian elements and add batch dimension
+        result = torch.sum(result, dim=-1).unsqueeze(-1)
+
+        return result
+
+    def save_weights(self, weights_filename):
+        """
+        Save model weights to a file.
+
+        Parameters
+        ----------
+        weights_filename : str
+                          Path to save weights (must end with .pt, .pth, or similar).
+        """
+        from ...tools.file import validate_path
+
+        safe_path = validate_path(
+            os.path.expanduser(weights_filename), 
+            allowed_extensions=[".pt", ".pth"]
+        )
+        torch.save(self.state_dict(), safe_path)
+        self.logger.info("Model weights saved to: {}".format(safe_path))
+
+    def load_weights(
+        self, 
+        weights_filename=None,
+        device=torch.device("cpu")
+    ):
+        """
+        Load model weights from a file.
+
+        Parameters
+        ----------
+        weights_filename : str or None
+                          Path to weights file. If None, skips loading.
+        device           : torch.device, optional
+                          Device to load weights onto (default: CPU).
+        """
+        if weights_filename is not None:
+            from ...tools.file import validate_path
+
+            safe_path = validate_path(
+                os.path.expanduser(weights_filename),
+                allowed_extensions=[".pt", ".pth"]
+            )
+
+            if not os.path.isfile(safe_path):
+                raise FileNotFoundError("Weights file not found: {}".format(safe_path))
+
+            self.load_state_dict(
+                torch.load(safe_path, weights_only=True, map_location=device)
+            )
+            self.eval()  # Set to evaluation mode
+            self.logger.info("Model weights loaded from: {}".format(safe_path))
+
+
 class gaussian_3d_volume(torch.nn.Module):
     """
     Initialize the 3D Gaussian volume model. This model is useful for learning voxelized 3D volumes.

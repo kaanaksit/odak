@@ -123,3 +123,78 @@ Do not use:
 - `eval()` or `exec()` with user input
 - `pickle.load()` without extreme caution
 - Dynamic imports from user-controlled sources
+
+## Automated Security Scanning 🔍
+
+To maintain security standards, we recommend implementing continuous security scanning in the development workflow. This helps detect and prevent vulnerabilities early in the development cycle.
+
+### Bandit Security Scanner Setup
+
+[Bandit](https://github.com/PyCQA/bandit) is a tool designed to find common security issues in Python code.
+
+**Installation:**
+```bash
+pip install bandit
+```
+
+**Usage:**
+```bash
+# Run basic scan on the odak package
+bandit -r odak/ -f json -o security-report.json
+
+# Run with high severity focus 
+bandit -r odak/ -l -f json -o high-severity-report.json
+```
+
+### SonarQube Integration
+
+[SonarQube](https://www.sonarsource.com/products/sonarqube/) provides comprehensive code quality and security analysis.
+
+**Setup Steps:**
+1. Install SonarQube Server or use SonarCloud
+2. Install SonarScanner CLI
+3. Create `sonar-project.properties` configuration file:
+```properties
+sonar.projectKey=odak
+sonar.projectName=Odak
+sonar.sources=odak
+sonar.tests=test
+sonar.language=python
+```
+
+**Usage:**
+```bash
+sonar-scanner
+```
+
+### CI/CD Integration
+
+The security scanning process can be automated as part of the continuous integration pipeline. Add this to your `.github/workflows/security-scan.yml`:
+
+```yaml
+name: Security Scan
+on: [push, pull_request]
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install bandit
+      - name: Run Bandit Scan
+        run: |
+          bandit -r odak/ -f json -o bandit-report.json
+      - name: Upload Security Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report
+          path: bandit-report.json
+```
+
+These automated tools help catch potential security vulnerabilities early during development and integration, ensuring the continued security and integrity of the Odak library.
