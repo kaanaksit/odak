@@ -37,7 +37,6 @@ def test_gaussian_2d_overfit(
     learning_rate      : float, optional
                          Learning rate for AdamW optimizer (default: 1e-2).
     number_of_epochs   : int, optional
-                         Number of training epochs (default: 50).
     visualize          : bool, optional
                          Whether to visualize the optimization process (default: True).
     device             : torch.device or None, optional
@@ -54,6 +53,8 @@ def test_gaussian_2d_overfit(
 
     if device is None:
         _device = torch.device("cpu")
+    else:
+        _device = device
     
     # Load test image using odak.learn.tools.load_image (returns torch tensor)
     image = odak.learn.tools.load_image(
@@ -65,12 +66,8 @@ def test_gaussian_2d_overfit(
     # Get image dimensions directly from tensor shape
     if len(image.shape) == 3:
         height, width = image.shape[0], image.shape[1]
-        # Convert RGB to grayscale using standard formula (all in torch)
-        ground_truth = (
-            0.299 * image[:, :, 0] + 
-            0.587 * image[:, :, 1] + 
-            0.114 * image[:, :, 2]
-        )
+        # Convert RGB to grayscale using odak utility
+        ground_truth = odak.learn.perception.rgb_to_gray(image)
     else:
         height, width = image.shape[0], image.shape[1]
         ground_truth = image.clone()
@@ -85,7 +82,11 @@ def test_gaussian_2d_overfit(
     y = torch.linspace(-1.0, 1.0, height, device=_device)
     X, Y = torch.meshgrid(x, y, indexing="ij")
 
-    logger.info("Number of training pixels: {}".format(X.shape[0] * X.shape[1]))
+    # Reshape X and Y to (-1, 1) for batch processing
+    X_flat = X.reshape(-1, 1)
+    Y_flat = Y.reshape(-1, 1)
+
+    logger.info("Number of training pixels: {}".format(X_flat.shape[0]))
 
     # Initialize the wrapper model (not the primitive)
     model = odak.learn.models.gaussians_2d(number_of_elements=number_of_elements)
@@ -114,15 +115,17 @@ def test_gaussian_2d_overfit(
     for epoch_id in t_epoch:
         optimizer.zero_grad()
 
-        # Forward pass (gaussians_2d already sums and adds dimension)
-        estimates = model(X, Y)  # Shape: (height, width, 1)
+        # Forward pass: primitive receives (N, 1), returns (N, number_of_elements)
+        # but wrapper sums over elements and adds dimension → (N, 1)
+        estimates = model(X_flat, Y_flat)  # Shape: (N, 1) from wrapper
         
-        # Remove last dimension to match ground_truth shape (HxW)
-        estimates_squeezed = estimates.squeeze(-1)
+        # Remove the last dimension and reshape back to original image dimensions
+        estimates_squeezed = estimates.squeeze(-1)  # Shape: (N,)
+        estimates_reshaped = estimates_squeezed.reshape(height, width)  # Shape: (H, W)
 
-        # Compute loss
-        loss_l2 = l2_loss(estimates_squeezed, ground_truth)
-        loss_l1 = l1_loss(estimates_squeezed, ground_truth)
+        # Compute loss (both are HxW tensors now)
+        loss_l2 = l2_loss(estimates_reshaped, ground_truth)
+        loss_l1 = l1_loss(estimates_reshaped, ground_truth)
         loss = 1.0 * loss_l2 + 0.1 * loss_l1
 
         # Backward pass and optimization step
@@ -134,11 +137,9 @@ def test_gaussian_2d_overfit(
         loss_value = loss.item()
         loss_history.append(loss_value)
 
-        # Update progress bar description
+        # Update progress bar description with current L2 loss
         description = "gaussian_2d overfit - L2:{:.6f}".format(loss_l2.item())
         t_epoch.set_description(description)
-
-    logger.info("Final loss: {:.6f}".format(loss_value))
 
     # Assert that loss decreased (training made progress)
     if len(loss_history) > 1:
@@ -157,61 +158,41 @@ def test_gaussian_2d_overfit(
             )
         )
 
-    # Generate final reconstruction for visualization
+    # Generate final reconstruction for visualization (use flattened coords like training)
     with torch.no_grad():
-        final_reconstruction = model(X, Y)
-        final_reconstruction = final_reconstruction.squeeze(-1)  # Remove last dim
+        final_reconstruction = model(X_flat, Y_flat)  # Shape: (N, 1) from wrapper
+        final_reconstruction = final_reconstruction.squeeze(-1).reshape(height, width)  # Back to (H, W)
+        
+        # Clip to valid range for display
+        final_reconstruction = final_reconstruction.clamp(0, 1)
 
     if visualize:
-        import plotly.graph_objects as go
-
-        # Prepare data for visualization (keep in torch, convert only at viz time)
-        img_original = ground_truth.cpu()  # Already HxW tensor
-        reconstruction = final_reconstruction.cpu().clamp(0, 1)  # Clip to [0, 1]
-
-        fig = go.Figure()
-
-        # Add original image using Heatmap (Plotly accepts numpy arrays)
-        fig.add_trace(
-            go.Heatmap(
-                z=img_original.T.numpy(),
-                x=list(range(img_original.shape[1])),
-                y=list(range(img_original.shape[0])),
-                name="Original",
+        # Prepare visualization using odak.visualize.plotly.plot2dshow
+        fields = [ground_truth, final_reconstruction]
+        row_titles = ["Original", "Reconstructed ({} Gaussians)".format(number_of_elements)]
+        
+        diagram = odak.visualize.plotly.plot2dshow(
+            title="2D Gaussian Model Overfit Test",
+            row_titles=row_titles,
+            subplot_titles=[],
+            rows=2,
+            cols=1,
+            shape=[512, 600 * 2],
+        )
+        
+        for field_id, field in enumerate(fields):
+            diagram.add_field(
+                field=torch.flipud(field),
+                row=field_id + 1,
+                col=1,
                 showscale=True,
-                colorbar=dict(title="Original"),
-                colorscale="Greys",
-                opacity=1.0,
             )
-        )
-
-        # Add reconstructed image  
-        fig.add_trace(
-            go.Heatmap(
-                z=reconstruction.T.numpy(),
-                x=list(range(reconstruction.shape[1])),
-                y=list(range(reconstruction.shape[0])),
-                name="Reconstructed ({} Gaussians)".format(number_of_elements),
-                showscale=True,
-                colorbar=dict(title="Reconstructed"),
-                colorscale="Viridis",
-                opacity=0.6,
-            )
-        )
-
-        fig.update_layout(
-            title="2D Gaussian Model Overfit Test (Full Resolution)",
-            height=500,
-            width=1000,
-        )
-
-        # Show the figure
-        # Note: To disable visualization, run with visualize=False
-        if "pytest" in sys.modules or "pytest" in str(sys.argv):
-            # In pytest mode, skip interactive display
-            logger.info("Visualization skipped during pytest execution.")
+        
+        # Show only if not running under pytest
+        if "pytest" not in sys.modules and "pytest" not in str(sys.argv):
+            diagram.show()
         else:
-            fig.show()
+            logger.info("Visualization skipped during pytest execution.")
 
     logger.info("Test completed successfully.")
     assert True
@@ -225,8 +206,9 @@ if __name__ == "__main__":
 
     # Run the test
     test_gaussian_2d_overfit(
-        number_of_elements=15,
-        learning_rate=0.05,
-        number_of_epochs=100,
-        visualize=False,  # Disable visualization when running as script to simplify logs
+        number_of_elements=900,
+        learning_rate=5e-3,
+        number_of_epochs=10, # Set it to 10000 for a full optimization
+        visualize=True,
+        device=torch.device('cuda'),
     )

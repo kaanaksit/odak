@@ -2,6 +2,7 @@
 .opencode
 report.md
 *.swp
+tmp/
 
 # Unit tests
 output/

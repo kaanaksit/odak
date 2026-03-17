@@ -800,3 +800,66 @@ def color_map(input_image, target_image, model="Lab Stats"):
         ) + target_mean_b
         mapped_image = lab_to_srgb(lab_input.permute(1, 2, 0))
         return mapped_image
+
+
+def rgb_to_gray(image):
+    """
+    Convert RGB image to grayscale using standard luminance formula.
+
+    Applies the formula: gray = 0.299*R + 0.587*G + 0.114*B
+    which is based on human perception of color brightness (Rec. 601).
+
+    Parameters
+    ----------
+    image : torch.Tensor
+            Input RGB image tensor. Supports multiple shapes:
+            - (3, H, W): Channel-first format
+            - (H, W, 3): Channel-last format
+            
+            Values should be in range [0, 1].
+
+    Returns
+    -------
+    gray_image : torch.Tensor
+                 Grayscale image tensor with shape:
+                 - (1, H, W) if input was (3, H, W)
+                 - (H, W) if input was (H, W, 3)
+                 
+                 Values are in range [0, 1].
+
+    Examples
+    --------
+    >>> gray = rgb_to_gray(rgb_image)  # Works with both (3,H,W) and (H,W,3)
+    >>> gray.shape                      # Will be (H,W) or (1,H,W) depending on input
+
+    Notes
+    -----
+    - Based on ITU-R BT.601 standard for luminance calculation
+    - Uses standard coefficients: R=0.299, G=0.587, B=0.114
+    - All operations performed in PyTorch for GPU compatibility
+    """
+    # Check input shape and handle accordingly
+    if image.dim() == 3:
+        if image.shape[0] == 3:
+            # Channel-first format (C, H, W)
+            R = image[0:1, :, :]  # Keep batch dim for broadcasting
+            G = image[1:2, :, :]
+            B = image[2:3, :, :]
+            gray_image = 0.299 * R + 0.587 * G + 0.114 * B  # Shape: (1, H, W)
+        else:
+            # Channel-last format (H, W, C)
+            H, W, C = image.shape
+            if C != 3:
+                raise ValueError(
+                    "Expected 3 channels for RGB, got {}".format(C)
+                )
+            R = image[:, :, 0]
+            G = image[:, :, 1]
+            B = image[:, :, 2]
+            gray_image = 0.299 * R + 0.587 * G + 0.114 * B  # Shape: (H, W)
+    else:
+        raise ValueError(
+            "Expected 3D tensor with shape (C, H, W) or (H, W, C), got {}".format(image.shape)
+        )
+
+    return gray_image
