@@ -206,7 +206,7 @@ if __name__ == "__main__":
 
     # Run the test
     test_gaussian_2d_overfit(
-        number_of_elements=900,
+        number_of_elements=2000,
         learning_rate=5e-3,
         number_of_epochs=10, # Set it to 10000 for a full optimization
         visualize=True,
