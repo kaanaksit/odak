@@ -338,6 +338,10 @@ class propagator:
             torch.no_grad()
         if len(hologram_phases.shape) > 3:
             hologram_phases = hologram_phases.squeeze(0)
+            logger.warning("hologram_phases shape is squeeed to 1 x M x N")
+        if len(hologram_phases.shape) == 2:
+            hologram_phases = hologram_phases.unsqueeze(0)
+            logger.warning("hologram_phases shape is M x N, unsqueezed to 1 x M x N")
         if get_complex == True:
             reconstruction_type = torch.complex64
         else:
@@ -365,6 +369,9 @@ class propagator:
                 device=self.device,
             )
             amplitude[:, :: self.resolution_factor, :: self.resolution_factor] = 1.0
+        elif len(amplitude.shape) == 2:
+            amplitude = amplitude.unsqueeze(0)
+            logger.warning("amplitude shape is M x N, unsqueezed to 1 x M x N")
         if self.resolution_factor != 1:
             hologram_phases_scaled = torch.zeros_like(amplitude)
             hologram_phases_scaled[
