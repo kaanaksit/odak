@@ -215,7 +215,7 @@ If you have used `odak` in your research project, please consider citing any of 
 ## ⚙️ Sample Projects that use Odak
 Here are some sample projects that use `odak`:
 
-
+* [Complex-Valued Holographic Radiance Fields](https://complightlab.com/publications/complex_valued_holographic_radiance_fields/)
 * [Learned Display Radiance Fields with Lensless Cameras](https://complightlab.com/publications/lensless_display_radiance_field/)
 * [Foveation Improves Payload Capacity in Steganography](https://complightlab.com/publications/foveated_steganography/)
 * [Learned Single-Pass Multitasking Perceptual Graphics for Immersive Displays](https://complightlab.com/publications/multitasking_perceptual_graphics/)
