@@ -42,31 +42,6 @@ pip3 install -r requirements.txt
 pip3 install -e .
 ```
 
-Once activated, in the first usage, you can install odak using the previous instructions.
-To deactivate the virtual environment, you can always use `deactivate` command in your terminal.
-Once you have an activated virtual environment, please consider following any of the highlighted installation methods below.
-
-For the most recent guidance on installing Odak, please consult [installation documentation](https://kaanaksit.com/odak/installation/).
-Odak can be installed using [pip](https://pypi.org/project/pip):
-
-```bash
-pip3 install odak
-```
-or you can follow this, but remember that it will install the latest version in the repository this way:
-
-```bash
-pip3 install git+https://github.com/kaanaksit/odak --upgrade
-```
-
-or this:
-
-```bash
-git clone git@github.com:kaanaksit/odak.git
-cd odak
-pip3 install -r requirements.txt
-pip3 install -e .
-```
-
 ## 📚 Usage and examples
 
 You can import Odak and start designing your next in Optics, Computer Graphics, or Perception! 
