@@ -310,6 +310,34 @@ class multiplane_loss:
                 self.targets[i, ch] = defocus
         self.targets = self.targets.detach().clone() * self.multiplier
 
+    def _normalize_dimensions(self, tensor):
+        """
+        Normalize tensor dimensions to ensure compatibility with loss calculations.
+
+        Parameters
+        ----------
+        tensor : torch.tensor
+                 Input tensor to normalize.
+
+        Returns
+        -------
+        tensor  : torch.tensor
+                  Tensor with normalized dimensions (squeezed singleton leading dims).
+
+        Notes
+        --- -
+        This method removes leading singleton dimensions to ensure tensors have
+        consistent shapes for loss calculation. For example:
+        - [1, 1, C, H, W] -> [C, H, W]
+        - [1, C, H, W] -> [C, H, W]
+
+        This prevents PyTorch broadcasting warnings during loss computation.
+        """
+        # Remove leading singleton dimensions (e.g., [1, 1, C, H, W] -> [C, H, W])
+        while tensor.ndim > 3 and tensor.shape[0] == 1:
+            tensor = tensor.squeeze(0)
+        return tensor
+
     def __call__(
         self, image, target, plane_id=None, inject_noise=False, noise_ratio=1e-3
     ):
@@ -330,10 +358,14 @@ class multiplane_loss:
                         Noise ratio.
 
         Returns
-        -------
+        ----- -
         loss          : torch.tensor
                         Computed loss.
         """
+        # Normalize dimensions to prevent broadcasting warnings
+        image = self._normalize_dimensions(image)
+        target = self._normalize_dimensions(target)
+
         l2 = self.weights[0] * self.loss_function(image, target)
         if isinstance(plane_id, type(None)):
             mask = self.masks
@@ -526,6 +558,34 @@ class perceptual_multiplane_loss:
                 self.targets[i, ch] = defocus
         self.targets = self.targets.detach().clone() * self.multiplier
 
+    def _normalize_dimensions(self, tensor):
+        """
+        Normalize tensor dimensions to ensure compatibility with loss calculations.
+
+        Parameters
+        ----------
+        tensor : torch.tensor
+                 Input tensor to normalize.
+
+        Returns
+        ----- -
+        tensor  : torch.tensor
+                  Tensor with normalized dimensions (squeezed singleton leading dims).
+
+        Notes
+        -----
+        This method removes leading singleton dimensions to ensure tensors have
+        consistent shapes for loss calculation. For example:
+        - [1, 1, C, H, W] -> [C, H, W]
+        - [1, C, H, W] -> [C, H, W]
+
+        This prevents PyTorch broadcasting warnings during loss computation.
+        """
+        # Remove leading singleton dimensions (e.g., [1, 1, C, H, W] -> [C, H, W])
+        while tensor.ndim > 3 and tensor.shape[0] == 1:
+            tensor = tensor.squeeze(0)
+        return tensor
+
     def __call__(
         self, image, target, plane_id=None, inject_noise=False, noise_ratio=1e-3
     ):
@@ -547,10 +607,14 @@ class perceptual_multiplane_loss:
 
 
         Returns
-        -------
+        ----- -
         loss          : torch.tensor
                         Computed loss.
         """
+        # Normalize dimensions to prevent broadcasting warnings
+        image = self._normalize_dimensions(image)
+        target = self._normalize_dimensions(target)
+
         loss_components = {}
         if isinstance(plane_id, type(None)):
             mask = self.masks

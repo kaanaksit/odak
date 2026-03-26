@@ -5,9 +5,10 @@ from odak.learn.wave import multiplane_hologram_optimizer, multiplane_loss
 
 def test():
     resolution = [1080, 1920]
+    # Create grayscale target (single channel) for single-wavelength optimization
     target = torch.zeros(1, resolution[0], resolution[1])
     target[:, 500::600, :] = 1
-    depth = target
+    depth = target  # Use same as depth (grayscale)
     loss_function = multiplane_loss(
         target_image=target,
         target_depth=depth,
