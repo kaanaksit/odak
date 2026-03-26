@@ -2,9 +2,10 @@ import sys
 import torch
 import plotly
 import numpy as np
+import base64
+import cv2
 import plotly.graph_objects as go
 import plotly.subplots
-from PIL import Image
 from ...wave import calculate_phase, calculate_amplitude, calculate_intensity
 from ...log import logger
 from ...tools.file import validate_path
@@ -560,9 +561,27 @@ class plot2dshow:
         )
         if not isinstance(zoomed_inset, type(None)):
             safe_path = validate_path(zoomed_inset, allowed_extensions=[".png", ".jpg", ".jpeg", ".gif", ".bmp"])
-            zoomed_inset = Image.open(safe_path)
+            
+            # Load image with cv2 (BGR format)
+            img = cv2.imread(safe_path, cv2.IMREAD_UNCHANGED)
+            if img is None:
+                raise ValueError(f"Failed to load inset image from '{safe_path}'")
+            
+            # Convert BGR to RGB for correct display
+            if len(img.shape) == 3 and img.shape[2] == 3:
+                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            elif len(img.shape) == 3 and img.shape[2] == 4:  # BGRA
+                img = cv2.cvtColor(img, cv2.COLOR_BGRA2RGBA)
+            
+            # Encode as PNG in memory
+            _, buffer = cv2.imencode('.png', img)
+            
+            # Convert to base64 data URL for plotly
+            base64_string = base64.b64encode(buffer).decode('utf-8')
+            data_url = f"data:image/png;base64,{base64_string}"
+            
             self.fig.add_layout_image(
-                source=zoomed_inset,
+                source=data_url,
                 x=zoomed_inset_settings["x"],
                 y=zoomed_inset_settings["y"],
                 sizex=zoomed_inset_settings["sizex"],

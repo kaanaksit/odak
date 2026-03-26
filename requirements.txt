@@ -4,4 +4,3 @@ torch>=2.8.0
 plyfile>=1.1.3
 tqdm>=4.67.3
 plotly>=6.5.2
-pillow>=11.3.0
