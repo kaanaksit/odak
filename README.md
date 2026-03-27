@@ -173,7 +173,7 @@ for item_id, item in enumerate(pos_x1):
 
 For more of these examples, you can either check our [course documentation](https://kaanaksit.com/odak/course) or visit our [unit tests](https://github.com/kaanaksit/odak/tree/master/test) to get inspired.
 
-## ✍ How to cite
+## ✍️ How to cite
 To add the link to this repository in your publication, please use [Zenodo's citation](https://zenodo.org/badge/latestdoi/3987171). 
 If you have used `odak` in your research project, please consider citing any of the following works:
 
@@ -215,6 +215,7 @@ If you have used `odak` in your research project, please consider citing any of 
 ## ⚙️ Sample Projects that use Odak
 Here are some sample projects that use `odak`:
 
+* [Compressing Double Phase Holograms using 2D Gaussians](https://complightlab.com/publications/compressing_double_phase_gs/)
 * [Complex-Valued Holographic Radiance Fields](https://complightlab.com/publications/complex_valued_holographic_radiance_fields/)
 * [Learned Display Radiance Fields with Lensless Cameras](https://complightlab.com/publications/lensless_display_radiance_field/)
 * [Foveation Improves Payload Capacity in Steganography](https://complightlab.com/publications/foveated_steganography/)
