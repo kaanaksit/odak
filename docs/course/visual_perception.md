@@ -172,15 +172,6 @@ TODO: add some more stuff here
 -->
 
 
-### Closing remarks
-As we dive deeper into light and color perception, it becomes evident that the task of replicating the natural spectrum of colors in technology is still an evolving journey.
-This exploration into the nature of color sets the stage for a deeper examination of how our biological systems perceive color and how technology strives to emulate that perception.
-
-
-??? tip end "Consider revisiting this chapter"
-    Remember that you can always revisit this chapter as you progress with the course and as you need it.
-    This chapter is vital for establishing a means to complete your assignments and could help formulate a suitable base to collaborate and work with [my research group](https://complightlab.com) in the future or other experts in the field.
-
 !!! warning end "Reminder"
     We host a Slack group with more than 300 members.
     This Slack group focuses on the topics of rendering, perception, displays and cameras.
@@ -193,7 +184,18 @@ This exploration into the nature of color sets the stage for a deeper examinatio
 :octicons-info-24: Informative ·
 :octicons-beaker-24: Practical
 
-When designing personalized image generation systems for individuals with Color Vision Deficiency (CVD), we need quantitative metrics to evaluate how well our generated images preserve visual information under CVD conditions. The `odak.learn.perception` module provides specialized loss functions based on the methodology from the paper "Personalized Image Generation for Color Vision Deficiency Population" (ICCV 2023).
+#### Understanding Color Vision Deficiency
+
+Color Vision Deficiency (CVD), commonly referred to as color blindness, affects approximately 1 in 12 men (8%) and 1 in 200 women worldwide. It arises when one or more types of cone cells in the retina are missing or have altered spectral sensitivity. The most common forms include:
+
+- **Protanopia/Protanomaly** (red-blind/red-weak): Reduced sensitivity to red light
+- **Deuteranopia/Deuteranomaly** (green-blind/green-weak): Reduced sensitivity to green light  
+- **Tritanopia/Tritanomaly** (blue-blind/blue-weak): Reduced sensitivity to blue light (much rarer)
+
+Individuals with CVD perceive colors differently, often experiencing reduced color discrimination or complete loss of certain color distinctions. This has significant implications for visual information access in digital content, where color is frequently used to convey meaning.
+
+When designing personalized image generation systems for individuals with CVD, we need quantitative metrics to evaluate how well our generated images preserve visual information under CVD conditions. The `odak.learn.perception` module provides specialized loss functions based on the methodology from the paper "Personalized Image Generation for Color Vision Deficiency Population" (ICCV 2023).
+
 
 These loss functions measure two critical aspects:
 
@@ -337,6 +339,20 @@ For practical applications, the combined loss allows balancing between contrast 
     5. Experiment with adjusting the loss weights (α, β) to prioritize different aspects
 
     This exercise will give you hands-on experience with perceptual optimization and help you understand the trade-offs in designing CVD-accessible content.
+
+
+### Closing Remarks
+
+As we explore color perception through both biological and computational lenses, we've journeyed from the photoreceptor cells in our eyes to the algorithms that simulate how people with Color Vision Deficiency experience the world. 
+
+The loss functions we've introduced—local contrast loss and color information loss—represent a bridge between theoretical understanding and practical application. They enable us to quantify how well digital content preserves information for individuals with CVD, making our technology more inclusive and accessible.
+
+This exploration into the nature of color and perception sets the stage for deeper examination of how we can create technology that serves a diverse population. Whether you're designing displays, developing accessibility tools, or researching computational imaging, understanding these principles will help you create more inclusive solutions.
+
+
+??? tip end "Consider revisiting this chapter"
+    Remember that you can always revisit this chapter as you progress with the course and as you need it.
+    This chapter is vital for establishing a means to complete your assignments and could help formulate a suitable base to collaborate and work with [my research group](https://complightlab.com) in the future or other experts in the field.
 
 
 <!--
