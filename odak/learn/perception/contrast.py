@@ -10,6 +10,7 @@ This module provides:
 import torch
 from typing import Dict, Tuple, Optional, Union
 import torch.nn.functional as F
+from ...log import logger
 
 
 def _validate_contrast_inputs(
@@ -137,6 +138,10 @@ def weber_contrast(
     >>> contrast = weber_contrast(image, roi_high, roi_low)
     >>> print(f"Weber contrast: {contrast.item():.4f}")
     """
+    logger.debug(
+        f"Computing Weber contrast: roi_high={roi_high}, roi_low={roi_low}, "
+        f"image_shape={image.shape}"
+    )
     image = _validate_contrast_inputs(image, roi_high, roi_low)
     
     # Extract regions
@@ -156,6 +161,7 @@ def weber_contrast(
     # Weber contrast: C_W = (I_high - I_low) / I_low
     contrast = (high - low) / low
     
+    logger.debug(f"Weber contrast computed: {contrast}")
     return contrast.squeeze(0)
 
 
@@ -215,6 +221,10 @@ def michelson_contrast(
     >>> contrast = michelson_contrast(image, roi_high, roi_low)
     >>> print(f"Michelson contrast: {contrast.item():.4f}")
     """
+    logger.debug(
+        f"Computing Michelson contrast: roi_high={roi_high}, roi_low={roi_low}, "
+        f"image_shape={image.shape}"
+    )
     image = _validate_contrast_inputs(image, roi_high, roi_low)
     
     # Extract regions
@@ -235,6 +245,7 @@ def michelson_contrast(
     # Michelson contrast: C_M = (I_high - I_low) / (I_high + I_low)
     contrast = (high - low) / denom
     
+    logger.debug(f"Michelson contrast computed: {contrast}")
     return contrast.squeeze(0)
 
 
@@ -445,6 +456,12 @@ def content_aware_contrast_ratio(
             f"pooling_percentile must be in (0, 100], got {pooling_percentile}"
         )
     
+    logger.info(
+        f"Computing Content-Aware Contrast Ratio: window_size={window_size}, "
+        f"step={step}, pooling_percentile={pooling_percentile}, "
+        f"image_shape={image.shape}"
+    )
+    
     # Handle input dimensions
     if image.ndim == 2:
         # [H, W]
@@ -477,9 +494,11 @@ def content_aware_contrast_ratio(
     
     # Extract patches using sliding window
     patches, row_idx, col_idx = _extract_patches_torch(L, window_size, step)
+    logger.debug(f"Extracted {patches.shape[0]} patches of size {window_size}x{window_size}")
     
     # Apply ISODATA thresholding
     thresholds = _isodata_threshold_torch(patches, eps, max_iter)
+    logger.debug(f"ISODATA thresholding completed with {max_iter} max iterations")
     
     # Final partition based on converged thresholds
     below = patches < thresholds.unsqueeze(1)
@@ -555,6 +574,11 @@ def content_aware_contrast_ratio(
             'step': step,
             'n_patches': num_patches,
         }
+        logger.info(
+            f"CWMC completed: n_patches={num_patches}, "
+            f"harmonic_mean={pooled_harmonic_mean.item():.4f}, "
+            f"max_contrast={max_contrast_ratio.item():.4f}"
+        )
     else:
         # Batch processing
         result = []
@@ -605,6 +629,11 @@ def content_aware_contrast_ratio(
                 'step': step,
                 'n_patches': num_patches,
             })
+            logger.debug(
+                f"Batch {b_idx}: harmonic_mean={pooled_harmonic_mean.item():.4f}, "
+                f"max_contrast={max_contrast_ratio.item():.4f}"
+            )
+        logger.info(f"CWMC batch processing completed: {B} batches, {num_patches} patches each")
         
         return result
     

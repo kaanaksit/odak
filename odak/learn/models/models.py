@@ -1,5 +1,6 @@
 import torch
 from .components import *
+from ...log import logger
 
 
 class multi_layer_perceptron(torch.nn.Module):
@@ -49,6 +50,11 @@ class multi_layer_perceptron(torch.nn.Module):
         self.layers = torch.nn.ModuleList()
         self.siren_multiplier = siren_multiplier
         self.dimensions = dimensions
+        logger.info(
+            f"Initializing multi_layer_perceptron: model_type={model_type}, "
+            f"dimensions={dimensions}, bias={bias}, "
+            f"siren_multiplier={siren_multiplier}"
+        )
         for i in range(len(self.dimensions) - 1):
             self.layers.append(
                 torch.nn.Linear(
@@ -60,14 +66,17 @@ class multi_layer_perceptron(torch.nn.Module):
             self.input_multiplier.append(
                 torch.nn.Parameter(torch.ones(1, self.dimensions[0]) * input_multiplier)
             )
+            logger.debug(f"Input multiplier initialized: {input_multiplier}")
         if self.model_type == "FILM SIREN":
             self.alpha = torch.nn.ParameterList()
             for j in self.dimensions[1::]:
                 self.alpha.append(torch.nn.Parameter(torch.randn(2, 1, j)))
+            logger.debug("FILM SIREN alpha parameters initialized")
         if self.model_type == "Gaussian":
             self.alpha = torch.nn.ParameterList()
             for j in self.dimensions[1::]:
                 self.alpha.append(torch.nn.Parameter(torch.randn(1, 1, j)))
+            logger.debug("Gaussian alpha parameters initialized")
 
     def forward(self, x):
         """
@@ -143,6 +152,11 @@ class unet(torch.nn.Module):
             Non-linear activation layer to be used (e.g., torch.nn.ReLU(), torch.nn.Sigmoid()). Default is torch.nn.ReLU(inplace=True).
         """
         super(unet, self).__init__()
+        logger.info(
+            f"Initializing U-Net: depth={depth}, dimensions={dimensions}, "
+            f"input_channels={input_channels}, output_channels={output_channels}, "
+            f"bilinear={bilinear}, kernel_size={kernel_size}"
+        )
         self.inc = double_convolution(
             input_channels=input_channels,
             mid_channels=dimensions,
@@ -165,6 +179,7 @@ class unet(torch.nn.Module):
                 activation=activation,
             )
             self.downsampling_layers.append(down_layer)
+            logger.debug(f"Added downsampling layer {i}: {in_channels} -> {out_channels}")
 
         for i in range(depth - 1, -1, -1):  # upsampling layers
             up_in_channels = dimensions * (2 ** (i + 1))
@@ -178,6 +193,7 @@ class unet(torch.nn.Module):
                 bilinear=bilinear,
             )
             self.upsampling_layers.append(up_layer)
+            logger.debug(f"Added upsampling layer: {up_in_channels} -> {up_out_channels}")
         self.outc = torch.nn.Conv2d(
             dimensions,
             output_channels,
@@ -185,6 +201,7 @@ class unet(torch.nn.Module):
             padding=kernel_size // 2,
             bias=bias,
         )
+        logger.info("U-Net initialization completed")
 
     def forward(self, x):
         """
@@ -252,6 +269,11 @@ class spatially_varying_kernel_generation_model(torch.nn.Module):
         """
         super().__init__()
         self.depth = depth
+        logger.info(
+            f"Initializing spatially_varying_kernel_generation_model: "
+            f"depth={depth}, dimensions={dimensions}, input_channels={input_channels}, "
+            f"kernel_size={kernel_size}, bias={bias}, normalization={normalization}"
+        )
         self.inc = convolution_layer(
             input_channels=input_channels,
             output_channels=dimensions,
@@ -260,6 +282,7 @@ class spatially_varying_kernel_generation_model(torch.nn.Module):
             normalization=normalization,
             activation=activation,
         )
+
         self.encoder = torch.nn.ModuleList()
         for i in range(depth + 1):  # downsampling layers
             if i == 0:
@@ -283,6 +306,8 @@ class spatially_varying_kernel_generation_model(torch.nn.Module):
             )
             self.encoder.append(pooling_layer)
             self.encoder.append(double_convolution_layer)
+            logger.debug(f"Added encoder block {i}: {in_channels} -> {out_channels}")
+
         self.spatially_varying_feature = torch.nn.ModuleList()  # for kernel generation
         for i in range(depth, -1, -1):
             if i == 1:
@@ -322,6 +347,8 @@ class spatially_varying_kernel_generation_model(torch.nn.Module):
             )
             spatially_varying_kernel_generation.append(kernel_generation_block)
             self.spatially_varying_feature.append(spatially_varying_kernel_generation)
+            logger.debug(f"Added SVF block {i}: {svf_in_channels} -> {svf_out_channels}")
+
         self.decoder = torch.nn.ModuleList()
         global_feature_layer = global_feature_module(  # global feature layer
             input_channels=dimensions * (2 ** (depth - 1)),
@@ -361,6 +388,8 @@ class spatially_varying_kernel_generation_model(torch.nn.Module):
                 activation=activation,
             )
             self.decoder.append(torch.nn.ModuleList([upsample_layer, conv_layer]))
+            logger.debug(f"Added decoder block {i}: {up_in_channels} -> {up_out_channels}")
+        logger.info("spatially_varying_kernel_generation_model initialization completed")
 
     def forward(self, focal_surface, field):
         """
@@ -479,41 +508,15 @@ class spatially_adaptive_unet(torch.nn.Module):
         activation : torch.nn.Module, optional
             Non-linear activation layer (e.g., torch.nn.ReLU(), torch.nn.Sigmoid()). Default is torch.nn.LeakyReLU(0.2, inplace=True).
         """
-
-    def __init__(
-        self,
-        depth=3,
-        dimensions=8,
-        input_channels=6,
-        out_channels=6,
-        kernel_size=3,
-        bias=True,
-        normalization=False,
-        activation=torch.nn.LeakyReLU(0.2, inplace=True),
-    ):
-        """
-        U-Net model.
-
-        Parameters
-        ----------
-        depth          : int
-                         Number of upsampling and downsampling layers.
-        dimensions     : int
-                         Number of dimensions.
-        input_channels : int
-                         Number of input channels.
-        out_channels   : int
-                         Number of output channels.
-        bias           : bool
-                         Set to True to let convolutional layers learn a bias term.
-        normalization  : bool
-                         If True, adds a Batch Normalization layer after the convolutional layer.
-        activation     : torch.nn
-                         Non-linear activation layer (e.g., torch.nn.ReLU(), torch.nn.Sigmoid()).
-        """
         super().__init__()
         self.depth = depth
         self.out_channels = out_channels
+        logger.info(
+            f"Initializing spatially_adaptive_unet: "
+            f"depth={depth}, dimensions={dimensions}, input_channels={input_channels}, "
+            f"out_channels={out_channels}, kernel_size={kernel_size}, "
+            f"bias={bias}, normalization={normalization}"
+        )
         self.inc = convolution_layer(
             input_channels=input_channels,
             output_channels=dimensions,
@@ -547,6 +550,7 @@ class spatially_adaptive_unet(torch.nn.Module):
             self.encoder.append(
                 torch.nn.ModuleList([pooling_layer, double_convolution_layer, sam])
             )
+            logger.debug(f"Added encoder block {i}: {down_in_channels} -> {down_out_channels}")
         self.global_feature_module = torch.nn.ModuleList()
         double_convolution_layer = double_convolution(
             input_channels=dimensions * (2 ** (depth + 1)),
@@ -568,7 +572,62 @@ class spatially_adaptive_unet(torch.nn.Module):
         self.global_feature_module.append(
             torch.nn.ModuleList([double_convolution_layer, global_feature_layer])
         )
+        logger.debug("Added global feature module")
+
         self.decoder = torch.nn.ModuleList()
+        for i in range(depth, -1, -1):
+            up_in_channels = dimensions * (2 ** (i + 1))
+            up_mid_channels = up_in_channels // 2
+            if i == 0:
+                up_out_channels = self.out_channels
+                upsample_layer = upsample_convtranspose2d_layer(
+                    input_channels=up_in_channels,
+                    output_channels=up_mid_channels,
+                    kernel_size=2,
+                    stride=2,
+                    bias=bias,
+                )
+                conv_layer = torch.nn.Sequential(
+                    convolution_layer(
+                        input_channels=up_mid_channels,
+                        output_channels=up_mid_channels,
+                        kernel_size=kernel_size,
+                        bias=bias,
+                        normalization=normalization,
+                        activation=activation,
+                    ),
+                    convolution_layer(
+                        input_channels=up_mid_channels,
+                        output_channels=up_out_channels,
+                        kernel_size=1,
+                        bias=bias,
+                        normalization=normalization,
+                        activation=None,
+                    ),
+                )
+                self.decoder.append(torch.nn.ModuleList([upsample_layer, conv_layer]))
+                logger.debug(f"Added decoder block {i}: {up_in_channels} -> {up_out_channels}")
+            else:
+                up_out_channels = up_in_channels // 2
+                upsample_layer = upsample_convtranspose2d_layer(
+                    input_channels=up_in_channels,
+                    output_channels=up_mid_channels,
+                    kernel_size=2,
+                    stride=2,
+                    bias=bias,
+                )
+                conv_layer = double_convolution(
+                    input_channels=up_mid_channels,
+                    mid_channels=up_mid_channels,
+                    output_channels=up_out_channels,
+                    kernel_size=kernel_size,
+                    bias=bias,
+                    normalization=normalization,
+                    activation=activation,
+                )
+                self.decoder.append(torch.nn.ModuleList([upsample_layer, conv_layer]))
+                logger.debug(f"Added decoder block {i}: {up_in_channels} -> {up_out_channels}")
+        logger.info("spatially_adaptive_unet initialization completed")
         for i in range(depth, -1, -1):
             up_in_channels = dimensions * (2 ** (i + 1))
             up_mid_channels = up_in_channels // 2

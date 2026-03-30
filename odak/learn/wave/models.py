@@ -6,6 +6,7 @@ from tqdm import tqdm
 from ..models import *
 from .util import generate_complex_field, wavenumber, calculate_amplitude
 from ...tools.file import validate_path, check_directory
+from ...log import logger
 from os.path import join
 
 
@@ -45,6 +46,10 @@ class holobeam_multiholo(torch.nn.Module):
         self.n_input = n_input
         self.n_hidden = n_hidden
         self.n_output = n_output
+        logger.info(
+            f"Initializing holobeam_multiholo: n_input={n_input}, n_hidden={n_hidden}, "
+            f"n_output={n_output}, device={device}, reduction={reduction}"
+        )
         self.network = unet(
             dimensions=self.n_hidden,
             input_channels=self.n_input,
@@ -107,6 +112,10 @@ class holobeam_multiholo(torch.nn.Module):
         """
         safe_directory = validate_path(directory)
         check_directory(safe_directory, validate=True)
+        logger.info(
+            f"Starting training: epochs={number_of_epochs}, lr={learning_rate}, "
+            f"directory={safe_directory}, save_interval={save_at_every}"
+        )
         t_epoch = tqdm(range(number_of_epochs), leave=False, dynamic_ncols=True)
         self.optimizer = torch.optim.Adam(self.parameters(), lr=learning_rate)
         for i in t_epoch:
@@ -127,9 +136,11 @@ class holobeam_multiholo(torch.nn.Module):
             if i % save_at_every == 0:
                 weight_file = join(safe_directory, f"weights_{i:04d}.pt")
                 self.save_weights(filename=weight_file)
+                logger.info(f"Model saved at epoch {i}: {weight_file}")
         final_weight_file = join(safe_directory, "weights.pt")
         self.save_weights(filename=final_weight_file)
-        print(description)
+        logger.info(f"Training completed. Final model saved: {final_weight_file}")
+        logger.warning(description)
 
     def save_weights(self, filename="./weights.pt"):
         """
@@ -147,6 +158,7 @@ class holobeam_multiholo(torch.nn.Module):
         """
         safe_path = validate_path(filename, allowed_extensions=[".pt", ".pth"])
         torch.save(self.network.state_dict(), safe_path)
+        logger.debug(f"Model weights saved: {safe_path}")
 
     def load_weights(self, filename="./weights.pt"):
         """
@@ -165,6 +177,7 @@ class holobeam_multiholo(torch.nn.Module):
         safe_path = validate_path(filename, allowed_extensions=[".pt", ".pth"])
         self.network.load_state_dict(torch.load(safe_path, weights_only=True))
         self.network.eval()
+        logger.info(f"Model weights loaded from: {safe_path}")
 
 
 class focal_surface_light_propagation(torch.nn.Module):
@@ -213,6 +226,11 @@ class focal_surface_light_propagation(torch.nn.Module):
         super().__init__()
         self.depth = depth
         self.device = device
+        logger.info(
+            f"Initializing focal_surface_light_propagation: depth={depth}, "
+            f"dimensions={dimensions}, input_channels={input_channels}, "
+            f"out_channels={out_channels}, kernel_size={kernel_size}, device={device}"
+        )
         self.sv_kernel_generation = spatially_varying_kernel_generation_model(
             depth=depth,
             dimensions=dimensions,
@@ -291,6 +309,9 @@ class focal_surface_light_propagation(torch.nn.Module):
         ValueError      : If path validation fails or extension is not allowed.
         TypeError       : If filenames are not strings.
         """
+        logger.info(
+            f"Loading weights from {weight_filename} with key mapping {key_mapping_filename}"
+        )
         # Validate and load old model weights
         safe_weight_path = validate_path(
             weight_filename, allowed_extensions=[".pt", ".pth"]
@@ -325,6 +346,9 @@ class focal_surface_light_propagation(torch.nn.Module):
 
         self.sv_kernel_generation.to(self.device)
         self.sv_kernel_generation.load_state_dict(sv_kernel_generation_new_state_dict)
+        logger.debug(
+            f"Loaded {len(sv_kernel_generation_new_state_dict)} keys for sv_kernel_generation"
+        )
 
         # Map and load light_prop model weights
         for old_key, value in old_model_weights.items():
@@ -334,3 +358,7 @@ class focal_surface_light_propagation(torch.nn.Module):
                 light_prop_new_state_dict[new_key] = value
         self.light_propagation.to(self.device)
         self.light_propagation.load_state_dict(light_prop_new_state_dict)
+        logger.debug(
+            f"Loaded {len(light_prop_new_state_dict)} keys for light_propagation"
+        )
+        logger.info("Weights successfully loaded and mapped to both sub-models")
