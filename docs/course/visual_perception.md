@@ -179,6 +179,156 @@ TODO: add some more stuff here
     Readers can get in-touch with the wider community using this public group.
 
 
+### Quantitative Contrast Metrics for Image Quality Assessment
+
+:octicons-info-24: Informative ·
+:octicons-beaker-24: Practical
+
+Contrast is a fundamental property of visual perception that describes the difference in luminance or color that makes an object distinguishable from other objects and its background. In computational imaging and visual perception research, quantifying contrast is essential for evaluating image quality, designing display systems, and developing accessibility features.
+
+The `odak.learn.perception.contrast` module provides three complementary contrast metrics that capture different aspects of image contrast:
+
+#### Weber Contrast
+
+Weber contrast is one of the oldest and most intuitive contrast measures, defined as:
+
+$$
+C_W = \frac{I_{max} - I_{min}}{I_{min}}
+$$
+
+where $I_{max}$ and $I_{min}$ are the mean intensities of the foreground (target) and background regions, respectively. Weber contrast is particularly useful for:
+- Images with uniform backgrounds and localized features
+- Situations where the background intensity is well-defined
+- Applications where relative changes in intensity matter
+
+The Weber contrast can take values from 0 (no contrast) to infinity, with higher values indicating greater contrast.
+
+=== ":octicons-file-code-16: `weber_contrast` Usage"
+
+    ```python
+    from odak.learn.perception import weber_contrast
+    import torch
+
+    # Load or create an image (2D, 3D, or 4D tensor)
+    image = torch.ones(1, 1, 64, 64) * 0.3  # Dark background
+    image[:, :, 0:20, 0:20] = 0.9  # Bright target region
+
+    # Define regions of interest (row_start, row_end, col_start, col_end)
+    roi_high = [0, 20, 0, 20]  # Bright region
+    roi_low = [32, 52, 32, 52]  # Background region
+
+    # Compute Weber contrast
+    contrast = weber_contrast(image, roi_high, roi_low)
+    print(f"Weber contrast: {contrast.item():.4f}")
+    # Expected: (0.9 - 0.3) / 0.3 = 2.0
+    ```
+
+
+#### Michelson Contrast
+
+Michelson contrast is defined as:
+
+$$
+C_M = \frac{I_{max} - I_{min}}{I_{max} + I_{min}}
+$$
+
+This metric produces values in the bounded range [0, 1], making it particularly suitable for:
+- Periodic patterns and sinusoidal gratings
+- Comparing contrast across different images or conditions
+- Applications where normalized contrast values are preferred
+- Situations where both bright and dark regions are equally important
+
+A Michelson contrast of 0 indicates no contrast (uniform intensity), while 1 represents maximum contrast (one region is completely black).
+
+=== ":octicons-file-code-16: `michelson_contrast` Usage"
+
+    ```python
+    from odak.learn.perception import michelson_contrast
+    import torch
+
+    # Create a pattern with bright and dark regions
+    image = torch.zeros(1, 3, 128, 128)
+    image[:, :, 0:64, :] = 0.8  # Bright half
+    image[:, :, 64:128, :] = 0.2  # Dark half
+
+    # Define regions
+    roi_high = [0, 64, 0, 128]  # Bright region
+    roi_low = [64, 128, 0, 128]  # Dark region
+
+    # Compute Michelson contrast
+    contrast = michelson_contrast(image, roi_high, roi_low)
+    print(f"Michelson contrast: {contrast.item():.4f}")
+    # Expected: (0.8 - 0.2) / (0.8 + 0.2) = 0.6
+    ```
+
+
+#### Content-Aware Contrast Ratio (CWMC)
+
+The Content-Aware Contrast Ratio Measure (CWMC) is a more sophisticated metric that evaluates contrast locally across the entire image using a sliding window approach. Based on the methodology by Ortiz-Jaramillo et al. (2018), CWMC:
+
+1. Extracts overlapping patches across the image
+2. Applies ISODATA clustering to find optimal thresholds for each patch
+3. Partitions pixels into foreground and background within each patch
+4. Computes Weber contrast for each local region
+5. Aggregates results using percentile pooling and harmonic mean
+
+CWMC is particularly useful for:
+- Natural images with varying local contrast
+- Evaluating overall image quality without predefined regions
+- Applications requiring a single global contrast score that accounts for content distribution
+
+=== ":octicons-file-code-16: `content_aware_contrast_ratio` Usage"
+
+    ```python
+    from odak.learn.perception import content_aware_contrast_ratio
+    import torch
+
+    # Create a test image with varying contrast regions
+    image = torch.rand(1, 1, 256, 256)
+
+    # Compute CWMC with default parameters
+    result = content_aware_contrast_ratio(
+        image,
+        window_size=15,    # Patch size
+        step=3,            # Sliding window step
+        pooling_percentile=75.0  # Keep top 25% of local contrasts
+    )
+
+    print(f"Global CWMC score: {result['pooled_harmonic_mean']:.4f}")
+    print(f"Maximum local contrast: {result['max_contrast_ratio']:.4f}")
+    print(f"Number of patches evaluated: {result['n_patches']}")
+
+    # Access contrast maps
+    contrast_map = result['contrast_map']  # Full image contrast map
+    threshold_map = result['threshold_map']  # Optimal thresholds per patch
+    ```
+
+
+#### Choosing the Right Contrast Metric
+
+| Metric | Range | Best For | Complexity |
+|--------|-------|----------|------------|
+| Weber Contrast | [0, ∞) | Local regions, uniform backgrounds | Low |
+| Michelson Contrast | [0, 1] | Periodic patterns, normalized comparison | Low |
+| CWMC | [0, 1] | Natural images, global assessment | Medium |
+
+**Practical Considerations:**
+- **Weber contrast** is sensitive to low background values (can produce very high values)
+- **Michelson contrast** is bounded and symmetric but requires both bright and dark regions
+- **CWMC** provides a comprehensive assessment but is computationally more intensive
+
+All three functions support batch processing, GPU acceleration, and comprehensive error handling for invalid inputs.
+
+??? question end "How do these metrics relate to human perception?"
+    Each contrast metric captures different aspects of human visual perception:
+    
+    - **Weber's Law**: Human contrast sensitivity follows Weber's law for many conditions, making Weber contrast perceptually meaningful.
+    - **Spatial frequency**: Michelson contrast is particularly relevant for understanding sensitivity to sinusoidal gratings, a classic stimulus in vision science.
+    - **Natural scenes**: CWMC approximates how humans assess overall image quality by considering local variations in contrast.
+    
+    For accessibility applications, combining these metrics can provide a more complete picture of visual information availability.
+
+
 ### Loss Functions for Color Vision Deficiency Simulation
 
 :octicons-info-24: Informative ·
