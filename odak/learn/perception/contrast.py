@@ -138,6 +138,10 @@ def weber_contrast(
     >>> contrast = weber_contrast(image, roi_high, roi_low)
     >>> print(f"Weber contrast: {contrast.item():.4f}")
     """
+    # Validate input type first (before any other operations)
+    if not isinstance(image, torch.Tensor):
+        raise TypeError(f"image must be torch.Tensor, got {type(image)}")
+    
     logger.debug(
         f"Computing Weber contrast: roi_high={roi_high}, roi_low={roi_low}, "
         f"image_shape={image.shape}"
@@ -221,6 +225,10 @@ def michelson_contrast(
     >>> contrast = michelson_contrast(image, roi_high, roi_low)
     >>> print(f"Michelson contrast: {contrast.item():.4f}")
     """
+    # Validate input type first (before any other operations)
+    if not isinstance(image, torch.Tensor):
+        raise TypeError(f"image must be torch.Tensor, got {type(image)}")
+    
     logger.debug(
         f"Computing Michelson contrast: roi_high={roi_high}, roi_low={roi_low}, "
         f"image_shape={image.shape}"

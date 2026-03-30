@@ -124,6 +124,8 @@ class holobeam_multiholo(torch.nn.Module):
             for j, data in enumerate(t_data):
                 self.optimizer.zero_grad()
                 images, holograms = data
+                images = images.to(self.device, non_blocking=True)
+                holograms = holograms.to(self.device, non_blocking=True)
                 estimates = self.forward(images)
                 loss = self.evaluate(estimates, holograms)
                 loss.backward(retain_graph=True)
@@ -288,7 +290,9 @@ class focal_surface_light_propagation(torch.nn.Module):
         """
         [b, c, h, w] = phase_only_hologram.size()
         input_phase = phase_only_hologram * 2 * np.pi
-        hologram_amplitude = torch.ones(b, c, h, w, requires_grad=False).to(self.device)
+        hologram_amplitude = torch.ones(
+            b, c, h, w, requires_grad=False, device=phase_only_hologram.device
+        )
         field = generate_complex_field(hologram_amplitude, input_phase)
         input_field = torch.cat((field.real, field.imag), dim=1)
         return input_field

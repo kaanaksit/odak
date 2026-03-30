@@ -628,56 +628,6 @@ class spatially_adaptive_unet(torch.nn.Module):
                 self.decoder.append(torch.nn.ModuleList([upsample_layer, conv_layer]))
                 logger.debug(f"Added decoder block {i}: {up_in_channels} -> {up_out_channels}")
         logger.info("spatially_adaptive_unet initialization completed")
-        for i in range(depth, -1, -1):
-            up_in_channels = dimensions * (2 ** (i + 1))
-            up_mid_channels = up_in_channels // 2
-            if i == 0:
-                up_out_channels = self.out_channels
-                upsample_layer = upsample_convtranspose2d_layer(
-                    input_channels=up_in_channels,
-                    output_channels=up_mid_channels,
-                    kernel_size=2,
-                    stride=2,
-                    bias=bias,
-                )
-                conv_layer = torch.nn.Sequential(
-                    convolution_layer(
-                        input_channels=up_mid_channels,
-                        output_channels=up_mid_channels,
-                        kernel_size=kernel_size,
-                        bias=bias,
-                        normalization=normalization,
-                        activation=activation,
-                    ),
-                    convolution_layer(
-                        input_channels=up_mid_channels,
-                        output_channels=up_out_channels,
-                        kernel_size=1,
-                        bias=bias,
-                        normalization=normalization,
-                        activation=None,
-                    ),
-                )
-                self.decoder.append(torch.nn.ModuleList([upsample_layer, conv_layer]))
-            else:
-                up_out_channels = up_in_channels // 2
-                upsample_layer = upsample_convtranspose2d_layer(
-                    input_channels=up_in_channels,
-                    output_channels=up_mid_channels,
-                    kernel_size=2,
-                    stride=2,
-                    bias=bias,
-                )
-                conv_layer = double_convolution(
-                    input_channels=up_mid_channels,
-                    mid_channels=up_mid_channels,
-                    output_channels=up_out_channels,
-                    kernel_size=kernel_size,
-                    bias=bias,
-                    normalization=normalization,
-                    activation=activation,
-                )
-                self.decoder.append(torch.nn.ModuleList([upsample_layer, conv_layer]))
 
     def forward(self, sv_kernel, field):
         """

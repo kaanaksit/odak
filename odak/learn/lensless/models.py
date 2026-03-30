@@ -169,7 +169,8 @@ class spec_track(nn.Module):
 
             for batch, labels in train_pbar:
                 self.optimizer.zero_grad()
-                batch, labels = batch.to(self.device), labels.to(self.device)
+                batch = batch.to(self.device, non_blocking=True)
+                labels = labels.to(self.device, non_blocking=True)
                 predicts = torch.squeeze(self.forward(batch))
                 loss = self.evaluate(predicts, labels)
                 loss.backward()
@@ -195,7 +196,8 @@ class spec_track(nn.Module):
 
             with torch.no_grad():
                 for batch, labels in val_pbar:
-                    batch, labels = batch.to(self.device), labels.to(self.device)
+                    batch = batch.to(self.device, non_blocking=True)
+                    labels = labels.to(self.device, non_blocking=True)
                     predicts = torch.squeeze(self.forward(batch), dim=1)
                     loss = self.evaluate(predicts, labels)
 
