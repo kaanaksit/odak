@@ -1,7 +1,7 @@
 """
 ``odak.learn.perception``
 
-Defines a number of different perceptual loss functions, which can be used to optimise images where gaze location is known.
+Defines a number of different perceptual loss functions, which can be used to optimize images perceptually.
 """
 
 from .color_conversion import *
@@ -15,11 +15,5 @@ from .metamer_mse_loss import *
 from .blur_loss import *
 from .image_quality_losses import *
 from .learned_perceptual_losses import *
-from .cvd_loss_functions import (
-    extract_local_patches,
-    compute_local_contrast_similarity,
-    local_contrast_loss,
-    color_information_loss,
-    cvd_loss,
-    _validate_image_pair,
-)
+from .cvd_loss_functions import *
+from .contrast import *
