@@ -1,17 +1,241 @@
 """
-Content-Aware Contrast Ratio Measure (CWMC) for Image Quality Assessment
-
-Implements the Weber-based CWMC from:
-Ortiz-Jaramillo et al., "Content-aware contrast ratio measure for images" (2018)
+Content-Aware Contrast Ratio Measure (CWMC) and Image Contrast Metrics
 
 This module provides:
-- content_aware_contrast_ratio: Full implementation using ISODATA clustering
-- compute_contrast_map: Utility for computing local contrast maps
+- content_aware_contrast_ratio: Full CWMC implementation using ISODATA clustering
+- weber_contrast: Weber contrast ratio for specified image regions
+- michelson_contrast: Michelson contrast ratio for specified image regions
 """
 
 import torch
-from typing import Dict, Tuple, Optional
+from typing import Dict, Tuple, Optional, Union
 import torch.nn.functional as F
+
+
+def _validate_contrast_inputs(
+    image: torch.Tensor,
+    roi_high: list,
+    roi_low: list
+) -> torch.Tensor:
+    """
+    Validate inputs for contrast ratio functions.
+    
+    Parameters
+    ----------
+    image      : torch.Tensor
+                 Input image tensor
+    roi_high   : list
+                 High ROI coordinates [m_start, m_end, n_start, n_end]
+    roi_low    : list
+                 Low ROI coordinates [m_start, m_end, n_start, n_end]
+    
+    Returns
+    -------
+    image_normalized : torch.Tensor
+                      Normalized and reshaped image tensor [B, C, H, W]
+    
+    Raises
+    ------
+    TypeError
+        If image is not a torch.Tensor
+    ValueError
+        If ROI coordinates are invalid or out of bounds
+    """
+    if not isinstance(image, torch.Tensor):
+        raise TypeError(f"image must be torch.Tensor, got {type(image)}")
+    
+    # Validate ROI coordinates
+    if len(roi_high) != 4 or len(roi_low) != 4:
+        raise ValueError("roi_high and roi_low must have 4 elements [m_start, m_end, n_start, n_end]")
+    
+    if not all(isinstance(x, (int, torch.Tensor)) for x in roi_high + roi_low):
+        raise ValueError("ROI coordinates must be integers or 0-dim tensors")
+    
+    roi_high = [int(x) for x in roi_high]
+    roi_low = [int(x) for x in roi_low]
+    
+    # Validate ROI bounds
+    if len(image.shape) == 2:
+        H, W = image.shape
+        image = image.unsqueeze(0).unsqueeze(0)
+    elif len(image.shape) == 3:
+        C, H, W = image.shape
+        image = image.unsqueeze(0)
+    elif len(image.shape) == 4:
+        B, C, H, W = image.shape
+    else:
+        raise ValueError(f"image must be 2D, 3D, or 4D tensor, got {len(image.shape)}D")
+    
+    # Validate ROI coordinates are within bounds
+    for name, roi in [("roi_high", roi_high), ("roi_low", roi_low)]:
+        if roi[0] < 0 or roi[1] > H or roi[2] < 0 or roi[3] > W:
+            raise ValueError(
+                f"{name} coordinates [{roi[0]}, {roi[1]}, {roi[2]}, {roi[3]}] "
+                f"out of bounds for image size {H}x{W}"
+            )
+        if roi[0] >= roi[1] or roi[2] >= roi[3]:
+            raise ValueError(
+                f"{name} has invalid coordinates: start must be < end "
+                f"(got [{roi[0]}, {roi[1]}, {roi[2]}, {roi[3]}])"
+            )
+    
+    return image
+
+
+def weber_contrast(
+    image: torch.Tensor,
+    roi_high: Union[list, Tuple[int, int, int, int]],
+    roi_low: Union[list, Tuple[int, int, int, int]]
+) -> torch.Tensor:
+    """
+    Calculate Weber contrast ratio for specified image regions.
+    
+    Weber contrast is defined as: C_W = (I_max - I_min) / I_min
+    where I_max and I_min are the mean intensities of the high and low regions,
+    respectively. This metric is particularly useful for images with uniform
+    background and localized features.
+    
+    Parameters
+    ----------
+    image         : torch.Tensor
+                    Input image with shape [H, W], [C, H, W], or [B, C, H, W].
+                    Values should be in a meaningful intensity range.
+    roi_high      : list or tuple
+                    Corner locations of the high intensity region in the format
+                    [m_start, m_end, n_start, n_end] where m is the row (spatial)
+                    dimension and n is the column (spatial) dimension.
+    roi_low       : list or tuple
+                    Corner locations of the low intensity region in the same format
+                    as roi_high.
+    
+    Returns
+    -------
+    contrast      : torch.Tensor
+                    Weber contrast value(s). Shape is [1] for grayscale or 
+                    [C] for multi-channel images, squeezed to scalar if single channel.
+    
+    Raises
+    ------
+    TypeError
+        If image is not a torch.Tensor
+    ValueError
+        If ROI coordinates are invalid, out of bounds, or if I_min is zero/negative
+    
+    Example
+    -------
+    >>> import torch
+    >>> from odak.learn.perception import weber_contrast
+    >>> 
+    >>> # Create test image
+    >>> image = torch.rand(1, 3, 64, 64)
+    >>> 
+    >>> # Define regions (row_start, row_end, col_start, col_end)
+    >>> roi_high = [0, 32, 0, 32]  # Top-left quadrant
+    >>> roi_low = [32, 64, 32, 64]  # Bottom-right quadrant
+    >>> 
+    >>> # Compute Weber contrast
+    >>> contrast = weber_contrast(image, roi_high, roi_low)
+    >>> print(f"Weber contrast: {contrast.item():.4f}")
+    """
+    image = _validate_contrast_inputs(image, roi_high, roi_low)
+    
+    # Extract regions
+    region_low = image[:, :, roi_low[0]:roi_low[1], roi_low[2]:roi_low[3]]
+    region_high = image[:, :, roi_high[0]:roi_high[1], roi_high[2]:roi_high[3]]
+    
+    # Compute mean intensities
+    high = torch.mean(region_high, dim=(2, 3))
+    low = torch.mean(region_low, dim=(2, 3))
+    
+    # Avoid division by zero
+    if torch.any(low <= 0):
+        raise ValueError(
+            f"Low region mean intensity must be positive (got {low[low <= 0]})"
+        )
+    
+    # Weber contrast: C_W = (I_high - I_low) / I_low
+    contrast = (high - low) / low
+    
+    return contrast.squeeze(0)
+
+
+def michelson_contrast(
+    image: torch.Tensor,
+    roi_high: Union[list, Tuple[int, int, int, int]],
+    roi_low: Union[list, Tuple[int, int, int, int]]
+) -> torch.Tensor:
+    """
+    Calculate Michelson contrast ratio for specified image regions.
+    
+    Michelson contrast is defined as: C_M = (I_max - I_min) / (I_max + I_min)
+    where I_max and I_min are the mean intensities of the high and low regions.
+    This metric produces values in the range [0, 1] and is commonly used for
+    periodic patterns and sinusoidal gratings.
+    
+    Parameters
+    ----------
+    image         : torch.Tensor
+                    Input image with shape [H, W], [C, H, W], or [B, C, H, W].
+                    Values should be in a meaningful intensity range.
+    roi_high      : list or tuple
+                    Corner locations of the high intensity region in the format
+                    [m_start, m_end, n_start, n_end] where m is the row (spatial)
+                    dimension and n is the column (spatial) dimension.
+    roi_low       : list or tuple
+                    Corner locations of the low intensity region in the same format
+                    as roi_high.
+    
+    Returns
+    -------
+    contrast      : torch.Tensor
+                    Michelson contrast value(s). Values are in range [0, 1].
+                    Shape is [1] for grayscale or [C] for multi-channel images,
+                    squeezed to scalar if single channel.
+    
+    Raises
+    ------
+    TypeError
+        If image is not a torch.Tensor
+    ValueError
+        If ROI coordinates are invalid, out of bounds, or if sum of means is zero
+    
+    Example
+    -------
+    >>> import torch
+    >>> from odak.learn.perception import michelson_contrast
+    >>> 
+    >>> # Create test image
+    >>> image = torch.rand(1, 3, 64, 64)
+    >>> 
+    >>> # Define regions (row_start, row_end, col_start, col_end)
+    >>> roi_high = [0, 32, 0, 32]  # Top-left quadrant
+    >>> roi_low = [32, 64, 32, 64]  # Bottom-right quadrant
+    >>> 
+    >>> # Compute Michelson contrast
+    >>> contrast = michelson_contrast(image, roi_high, roi_low)
+    >>> print(f"Michelson contrast: {contrast.item():.4f}")
+    """
+    image = _validate_contrast_inputs(image, roi_high, roi_low)
+    
+    # Extract regions
+    region_low = image[:, :, roi_low[0]:roi_low[1], roi_low[2]:roi_low[3]]
+    region_high = image[:, :, roi_high[0]:roi_high[1], roi_high[2]:roi_high[3]]
+    
+    # Compute mean intensities
+    high = torch.mean(region_high, dim=(2, 3))
+    low = torch.mean(region_low, dim=(2, 3))
+    
+    # Avoid division by zero
+    denom = high + low
+    if torch.any(denom <= 0):
+        raise ValueError(
+            f"Sum of high and low means must be positive (got {denom[denom <= 0]})"
+        )
+    
+    # Michelson contrast: C_M = (I_high - I_low) / (I_high + I_low)
+    contrast = (high - low) / denom
+    
+    return contrast.squeeze(0)
 
 
 def _extract_patches_torch(

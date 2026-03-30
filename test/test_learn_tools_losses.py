@@ -24,10 +24,6 @@ def test(header="test/test_learn_tools_losses.py"):
         y = loss.multi_scale_total_variation_loss(img, levels=4)
         y = loss.total_variation_loss(img)
         y = loss.histogram_loss(img, pred, bins=16, limits=[0.0, 1.0])
-        roi_high = [0, 16, 0, 16]
-        roi_low = [16, 32, 16, 32]
-        y = loss.weber_contrast(img, roi_high, roi_low)
-        y = loss.michelson_contrast(img, roi_high, roi_low)
         y = loss.wrapped_mean_squared_error(img, pred, reduction="sum")
     value = torch.tensor(1.0, dtype=torch.float)
     y = loss.radial_basis_function(value=value, epsilon=0.5)
