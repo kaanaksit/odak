@@ -188,5 +188,160 @@ This exploration into the nature of color sets the stage for a deeper examinatio
     Readers can get in-touch with the wider community using this public group.
 
 
-# Future improvements
-- Figure 1 of [this paper](https://royalsocietypublishing.org/doi/full/10.1098/rstb.2021.0280) provides sensitivity curves of various animals.
+### Loss Functions for Color Vision Deficiency Simulation
+
+:octicons-info-24: Informative ·
+:octicons-beaker-24: Practical
+
+When designing personalized image generation systems for individuals with Color Vision Deficiency (CVD), we need quantitative metrics to evaluate how well our generated images preserve visual information under CVD conditions. The `odak.learn.perception` module provides specialized loss functions based on the methodology from the paper "Personalized Image Generation for Color Vision Deficiency Population" (ICCV 2023).
+
+These loss functions measure two critical aspects:
+
+1. **Local Contrast Loss ($L_{LC}$)**: Measures the decay of local contrast between an original image and its CVD simulation. This ensures that edges and boundaries remain distinguishable under CVD conditions.
+
+2. **Color Information Loss ($L_{CI}$)**: Measures the L1 distance between primary colors after applying Gaussian blur to both images. This focuses on preserving the main color information while avoiding excessive detail.
+
+The combined CVD loss is formulated as:
+
+$$
+L_{CVD} = \alpha \cdot L_{LC} + \beta \cdot L_{CI}
+$$
+
+where $\alpha = 15.0$ and $\beta = 1.0$ are the default weighting parameters determined by the authors.
+
+
+=== ":octicons-file-code-16: `test_learn_perception_cvd_loss.py`"
+
+    ```python 
+    --8<-- "test/test_learn_perception_cvd_loss.py"
+    ```
+
+    1. Required imports for CVD loss computation.
+    2. Generate synthetic RGB images [B, C, H, W] for testing.
+    3. Create a CVD-simulated version of the image (scaled by 0.8).
+    4. Compute the combined CVD loss with default weights (α=15.0, β=1.0).
+    5. Access individual component losses: local contrast and color information.
+    6. Verify gradient flow through the loss computation for optimization.
+
+
+In practice, you would use these losses during training to optimize image generation networks. The local contrast loss encourages preservation of structural information, while the color information loss ensures that primary colors remain distinguishable under CVD simulation.
+
+
+#### Local Contrast Loss
+
+The local contrast loss evaluates how well local contrast patterns are preserved between the original image and its CVD simulation:
+
+$$
+L_{LC}(I, \delta_s) = 1 - \frac{1}{N} \sum_{j=1}^{N} \frac{\min(C_{ori}, C_{sim})}{\max(C_{ori}, C_{sim})}
+$$
+
+where $C_{ori}$ and $C_{sim}$ are the contrasts of corresponding patches in the original and simulated images, respectively. A value close to 0 indicates good contrast preservation.
+
+=== ":octicons-file-code-16: `local_contrast_loss` Usage"
+
+    ```python
+    from odak.learn.perception import local_contrast_loss
+    import torch
+
+    # Original and CVD-simulated images
+    original = torch.rand(1, 3, 128, 128)
+    simulated = torch.rand_like(original) * 0.9  # Simulated CVD version
+
+    # Compute local contrast loss
+    loss = local_contrast_loss(original, simulated)
+    print(f"Local contrast loss: {loss.item():.4f}")
+    ```
+
+
+#### Color Information Loss
+
+The color information loss focuses on primary colors by applying Gaussian blur before comparison:
+
+$$
+L_{CI}(I, \delta_s) = \|\Phi(I) - \Phi(\text{Sim}(I, \delta_s))\|_1
+$$
+
+where $\Phi(\cdot)$ denotes a Gaussian blur operator that extracts the primary color information while suppressing excessive detail.
+
+
+=== ":octicons-file-code-16: `color_information_loss` Usage"
+
+    ```python
+    from odak.learn.perception import color_information_loss
+    import torch
+
+    # Original and CVD-simulated images
+    original = torch.rand(2, 3, 256, 256)
+    simulated = torch.rand_like(original) * 0.85
+
+    # Compute color information loss with custom blur parameters
+    loss = color_information_loss(original, simulated, kernel_size=7, sigma=1.5)
+    print(f"Color information loss: {loss.item():.4f}")
+    ```
+
+
+#### Combined CVD Loss
+
+For practical applications, the combined loss allows balancing between contrast preservation and color information retention:
+
+=== ":octicons-file-code-16: `cvd_loss` Complete Workflow"
+
+    ```python
+    from odak.learn.perception import cvd_loss
+    import torch
+
+    # Training data
+    original_images = torch.rand(4, 3, 128, 128)
+    cvd_simulated = original_images * 0.8  # Simplified CVD simulation
+
+    # Compute combined loss
+    total_loss, local_contrast, color_info = cvd_loss(
+        original_images, 
+        cvd_simulated,
+        alpha=15.0,  # Weight for local contrast
+        beta=1.0     # Weight for color information
+    )
+
+    print(f"Total CVD loss: {total_loss.item():.4f}")
+    print(f"  Local contrast component: {local_contrast.item():.4f}")
+    print(f"  Color information component: {color_info.item():.4f}")
+    ```
+
+
+??? question end "How are the weighting parameters (α, β) determined?"
+    The default values α=15.0 and β=1.0 were empirically determined by the authors to balance the importance of contrast preservation against color information retention. In practice, you may need to adjust these weights based on:
+
+    - The severity of CVD (protanopia, deuteranopia, tritanopia)
+    - The specific application (medical imaging, display design, accessibility testing)
+    - Subjective user studies with CVD individuals
+
+
+??? abstract end "[Challenge: Implement CVD-aware image generation](https://github.com/kaanaksit/odak/discussions/76)"
+    Using the loss functions provided, implement a complete image generation pipeline optimized for CVD accessibility:
+
+    1. Create a simple generator network that transforms input images
+    2. Use the combined CVD loss as your objective function
+    3. Train your generator to produce images that maintain information under CVD simulation
+    4. Evaluate your results using standard metrics and potentially user studies
+
+    To add these to `odak`, you can rely on the `pull request` feature on GitHub. You can also create a new `engineering note` for CVD-aware generation in `docs/notes/cvd_image_generation.md`.
+
+
+??? tip end "Lab Exercise: Optimizing Display Colors for CVD"
+    As a practical exercise, try the following:
+
+    1. Generate a set of test images with various color palettes
+    2. Apply CVD simulation to each image
+    3. Compute the CVD loss for different color combinations
+    4. Identify which color combinations minimize the loss (are most CVD-friendly)
+    5. Experiment with adjusting the loss weights (α, β) to prioritize different aspects
+
+    This exercise will give you hands-on experience with perceptual optimization and help you understand the trade-offs in designing CVD-accessible content.
+
+
+<!--
+### Future improvements
+- Implement additional CVD types (protanopia, deuteranopia, tritanopia)
+- Add support for adaptive loss weighting based on image content
+- Incorporate user feedback loops for personalized optimization
+-->
