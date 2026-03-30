@@ -15,3 +15,11 @@ from .metamer_mse_loss import *
 from .blur_loss import *
 from .image_quality_losses import *
 from .learned_perceptual_losses import *
+from .cvd_loss_functions import (
+    extract_local_patches,
+    compute_local_contrast_similarity,
+    local_contrast_loss,
+    color_information_loss,
+    cvd_loss,
+    _validate_image_pair,
+)
