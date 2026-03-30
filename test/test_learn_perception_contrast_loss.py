@@ -298,7 +298,7 @@ def run_all_tests():
         test_local_contrast_loss_wrong_dimensions()
         test_local_contrast_loss_gradient_flow()
         test_local_contrast_loss_perfect_preservation()
-        test_local_contrast_loss_inverted_contrast()
+        test_local_contrast_loss_different_contrast_patterns()
         test_local_contrast_loss_different_channel_counts()
         test_local_contrast_loss_epsilon_parameter()
         
