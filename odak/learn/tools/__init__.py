@@ -14,3 +14,4 @@ from .sample import *
 from .loss import *
 from .mask import *
 from .models import *
+from .camera import *

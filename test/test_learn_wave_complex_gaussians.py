@@ -6,7 +6,7 @@ import torch
 
 def test_quaternion_to_rotation_matrix():
     """Test that quaternion_to_rotation_matrix produces valid rotation matrices."""
-    from odak.learn.wave.complex_gaussians import quaternion_to_rotation_matrix
+    from odak.learn.tools import quaternion_to_rotation_matrix
 
     # Identity quaternion (w=1, x=0, y=0, z=0) should give identity matrix
     identity_quat = torch.tensor([[1.0, 0.0, 0.0, 0.0]])
@@ -43,7 +43,7 @@ def test_quaternion_to_rotation_matrix():
 
 def test_perspective_camera():
     """Test PerspectiveCamera world-to-camera transform and camera center."""
-    from odak.learn.wave.complex_gaussians import PerspectiveCamera
+    from odak.learn.tools import PerspectiveCamera
 
     R = torch.eye(3).unsqueeze(0)
     T = torch.tensor([[1.0, 2.0, 3.0]])
@@ -269,7 +269,8 @@ def test_projection():
 
 def test_scene_render_shapes():
     """Test that Scene.render produces correct output shapes."""
-    from odak.learn.wave.complex_gaussians import Gaussians, PerspectiveCamera, Scene
+    from odak.learn.tools import PerspectiveCamera
+    from odak.learn.wave.complex_gaussians import Gaussians, Scene
 
     num_points = 32
     num_planes = 2

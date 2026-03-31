@@ -19,6 +19,7 @@ from typing import Optional, Tuple
 import odak
 import torch
 import torch.nn.functional as F
+<<<<<<< HEAD
 from odak.learn.tools import circular_binary_mask, crop_center, zero_pad
 
 
@@ -143,6 +144,19 @@ class PerspectiveCamera:
 
 
 def bandlimited_angular_spectrum_propagation(
+=======
+
+from ..tools import (
+    circular_binary_mask,
+    crop_center,
+    PerspectiveCamera,
+    quaternion_to_rotation_matrix,
+    zero_pad,
+)
+
+
+def _bandlimited_angular_spectrum_propagation(
+>>>>>>> cfec7d4 (Add complex_gaussians module to odak.learn.wave)
     field,
     wavelength,
     pixel_pitch,
@@ -1091,7 +1105,11 @@ class Scene:
             plane_hologram = []
             for c, plane_field_c in enumerate(plane_fields[p]):
                 wavelength_val = float(wavelengths[c].cpu().item())
+<<<<<<< HEAD
                 hologram_complex_c = bandlimited_angular_spectrum_propagation(
+=======
+                hologram_complex_c = _bandlimited_angular_spectrum_propagation(
+>>>>>>> cfec7d4 (Add complex_gaussians module to odak.learn.wave)
                     plane_field_c,
                     wavelength=wavelength_val,
                     pixel_pitch=self.args_prop.pixel_pitch,
