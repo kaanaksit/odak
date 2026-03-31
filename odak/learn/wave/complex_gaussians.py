@@ -19,132 +19,6 @@ from typing import Optional, Tuple
 import odak
 import torch
 import torch.nn.functional as F
-<<<<<<< HEAD
-from odak.learn.tools import circular_binary_mask, crop_center, zero_pad
-
-
-def quaternion_to_rotation_matrix(quaternions):
-    """
-    Convert rotations given as unit quaternions to rotation matrices.
-
-    This is a pure PyTorch replacement for ``pytorch3d.transforms.quaternion_to_matrix``.
-
-    Parameters
-    ----------
-    quaternions : torch.Tensor
-                  Quaternions with real part first, shape ``(*, 4)``
-                  in ``(w, x, y, z)`` convention.
-
-    Returns
-    -------
-    rotation_matrices : torch.Tensor
-                        Rotation matrices, shape ``(*, 3, 3)``.
-    """
-    quaternions = F.normalize(quaternions, dim=-1)
-    w, x, y, z = quaternions.unbind(-1)
-
-    two_s = 2.0 / (quaternions * quaternions).sum(-1)
-
-    rotation_matrices = torch.stack(
-        [
-            1 - two_s * (y * y + z * z),
-            two_s * (x * y - w * z),
-            two_s * (x * z + w * y),
-            two_s * (x * y + w * z),
-            1 - two_s * (x * x + z * z),
-            two_s * (y * z - w * x),
-            two_s * (x * z - w * y),
-            two_s * (y * z + w * x),
-            1 - two_s * (x * x + y * y),
-        ],
-        dim=-1,
-    )
-
-    return rotation_matrices.reshape(quaternions.shape[:-1] + (3, 3))
-
-
-class PerspectiveCamera:
-    """
-    A lightweight perspective camera model.
-
-    Replacement for ``pytorch3d.renderer.cameras.PerspectiveCameras``
-    that stores camera intrinsics and extrinsics and provides
-    coordinate-transform utilities.
-
-    Parameters
-    ----------
-    R              : torch.Tensor
-                     Rotation matrix, shape ``(3, 3)`` or ``(1, 3, 3)``.
-    T              : torch.Tensor
-                     Translation vector, shape ``(3,)`` or ``(1, 3)``.
-    focal_length   : torch.Tensor
-                     Focal lengths ``(fx, fy)``, shape ``(2,)`` or ``(1, 2)``.
-    principal_point: torch.Tensor
-                     Principal point ``(px, py)``, shape ``(2,)`` or ``(1, 2)``.
-    device         : torch.device or str, optional
-                     Device for all tensors (default: ``"cpu"``).
-    """
-
-    def __init__(self, R, T, focal_length, principal_point, device="cpu"):
-        self.device = torch.device(device)
-        self.R = (
-            R.to(self.device)
-            if isinstance(R, torch.Tensor)
-            else torch.tensor(R, dtype=torch.float32, device=self.device)
-        )
-        self.T = (
-            T.to(self.device)
-            if isinstance(T, torch.Tensor)
-            else torch.tensor(T, dtype=torch.float32, device=self.device)
-        )
-        self.focal_length = (
-            focal_length.to(self.device)
-            if isinstance(focal_length, torch.Tensor)
-            else torch.tensor(focal_length, dtype=torch.float32, device=self.device)
-        )
-        self.principal_point = (
-            principal_point.to(self.device)
-            if isinstance(principal_point, torch.Tensor)
-            else torch.tensor(principal_point, dtype=torch.float32, device=self.device)
-        )
-
-    def transform_world_to_camera_space(self, points):
-        """
-        Transform world-space points into camera space.
-
-        Follows the pytorch3d convention: ``X_cam = X_world @ R + T``.
-
-        Parameters
-        ----------
-        points : torch.Tensor
-                 World-space points, shape ``(N, 3)``.
-
-        Returns
-        -------
-        cam_points : torch.Tensor
-                     Camera-space points, shape ``(N, 3)``.
-        """
-        R = self.R[0] if self.R.dim() == 3 else self.R
-        T = self.T[0] if self.T.dim() == 2 else self.T
-        return points @ R + T
-
-    def get_camera_center(self):
-        """
-        Compute the camera centre in world coordinates.
-
-        Returns
-        -------
-        center : torch.Tensor
-                 Camera centre, shape ``(1, 3)``.
-        """
-        R = self.R[0] if self.R.dim() == 3 else self.R
-        T = self.T[0] if self.T.dim() == 2 else self.T
-        center = -T @ R.transpose(0, 1)
-        return center.unsqueeze(0)
-
-
-def bandlimited_angular_spectrum_propagation(
-=======
 
 from ..tools import (
     circular_binary_mask,
@@ -156,7 +30,6 @@ from ..tools import (
 
 
 def _bandlimited_angular_spectrum_propagation(
->>>>>>> cfec7d4 (Add complex_gaussians module to odak.learn.wave)
     field,
     wavelength,
     pixel_pitch,
@@ -1105,11 +978,7 @@ class Scene:
             plane_hologram = []
             for c, plane_field_c in enumerate(plane_fields[p]):
                 wavelength_val = float(wavelengths[c].cpu().item())
-<<<<<<< HEAD
-                hologram_complex_c = bandlimited_angular_spectrum_propagation(
-=======
                 hologram_complex_c = _bandlimited_angular_spectrum_propagation(
->>>>>>> cfec7d4 (Add complex_gaussians module to odak.learn.wave)
                     plane_field_c,
                     wavelength=wavelength_val,
                     pixel_pitch=self.args_prop.pixel_pitch,
