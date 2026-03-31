@@ -69,14 +69,17 @@ def _bandlimited_angular_spectrum_propagation(
     original_shape = field.shape
     field = zero_pad(field, padded_size)
 
-    aperture = (
-        circular_binary_mask(
-            padded_size[0],
-            padded_size[1],
-            aperture_size,
-        ).to(field.device)
-        * 1.0
-    )
+    if aperture_size > 0:
+        aperture = (
+            circular_binary_mask(
+                padded_size[0],
+                padded_size[1],
+                aperture_size,
+            ).to(field.device)
+            * 1.0
+        )
+    else:
+        aperture = 1.0
 
     field_f = torch.fft.fftshift(torch.fft.fft2(field))
 
