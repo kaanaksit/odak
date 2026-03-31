@@ -1,7 +1,48 @@
 import math
+
 import torch
+import torch.nn.functional as F
+
 from ...raytracing import center_of_triangle
 from ...tools import read_PLY
+
+
+def quaternion_to_rotation_matrix(quaternions):
+    """
+    Convert rotations given as unit quaternions to rotation matrices.
+
+    Parameters
+    ----------
+    quaternions : torch.Tensor
+                  Quaternions with real part first, shape ``(*, 4)``
+                  in ``(w, x, y, z)`` convention.
+
+    Returns
+    -------
+    rotation_matrices : torch.Tensor
+                        Rotation matrices, shape ``(*, 3, 3)``.
+    """
+    quaternions = F.normalize(quaternions, dim=-1)
+    w, x, y, z = quaternions.unbind(-1)
+
+    two_s = 2.0 / (quaternions * quaternions).sum(-1)
+
+    rotation_matrices = torch.stack(
+        [
+            1 - two_s * (y * y + z * z),
+            two_s * (x * y - w * z),
+            two_s * (x * z + w * y),
+            two_s * (x * y + w * z),
+            1 - two_s * (x * x + z * z),
+            two_s * (y * z - w * x),
+            two_s * (x * z - w * y),
+            two_s * (y * z + w * x),
+            1 - two_s * (x * x + y * y),
+        ],
+        dim=-1,
+    )
+
+    return rotation_matrices.reshape(quaternions.shape[:-1] + (3, 3))
 
 
 def rotmatx(angle):
