@@ -77,6 +77,8 @@ We keep the example brief so that first-time readers can follow each step.
         )
 
         # 2. Create randomly initialised Gaussians.
+        #    We place them in a small box in front of the camera
+        #    so they project within the image.
         from odak.learn.wave.complex_gaussians import Gaussians, Scene
         gaussians = Gaussians(
             init_type="random",
@@ -84,6 +86,11 @@ We keep the example brief so that first-time readers can follow each step.
             num_points=num_points,
             args_prop=args,
         )
+
+        # Override positions to a visible volume in front of the camera.
+        with torch.no_grad():
+            gaussians.means.data = torch.rand(num_points, 3) * 0.2 - 0.1 # (1)
+            gaussians.means.data[:, 2] = gaussians.means.data[:, 2].abs() + 2.0
         print(f"Initialised {len(gaussians)} Gaussians")
 
         # 3. Set up a perspective camera looking at the origin.
@@ -108,34 +115,32 @@ We keep the example brief so that first-time readers can follow each step.
         amplitude = odak.learn.wave.calculate_amplitude(hologram[0])
         phase = odak.learn.wave.calculate_phase(hologram[0])
 
-        # 6. Visualise the Gaussian positions as a 3D point cloud.
+        # 6. Visualise the results.
         positions = gaussians.means.detach().cpu().numpy()
         colors = gaussians.colours.detach().cpu().numpy()
 
-        visualize = False # (1)
+        visualize = True
         if visualize:
+            # 3D point cloud of Gaussian positions.
             diagram = odak.visualize.plotly.rayshow(
-                columns=3,
-                marker_size=3.0,
-                subplot_titles=[
-                    "<b>Gaussian positions</b>",
-                    "<b>Hologram amplitude</b>",
-                    "<b>Hologram phase</b>",
-                ],
+                columns=1,
+                marker_size=5.0,
+                subplot_titles=["<b>Gaussian positions</b>"],
             )
             diagram.add_point(positions, color=colors, column=1)
-
-            amplitude_np = amplitude.detach().cpu().numpy()
-            phase_np = phase.detach().cpu().numpy()
-
-            # Show amplitude and phase as heatmap-like 2D plots.
-            import plotly.express as px
-            fig_amp = px.imshow(amplitude_np, color_continuous_scale="hot", title="Amplitude")
-            fig_phase = px.imshow(phase_np, color_continuous_scale="twilight", title="Phase")
-            fig_amp.show()
-            fig_phase.show()
-
             diagram.show()
+
+            # Hologram amplitude and phase as 2D images.
+            amplitude_image = amplitude.detach().unsqueeze(0).unsqueeze(0)
+            phase_image = phase.detach().unsqueeze(0).unsqueeze(0)
+
+            detector_amp = odak.visualize.plotly.detectorshow()
+            detector_amp.add_field(amplitude_image)
+            detector_amp.show()
+
+            detector_phase = odak.visualize.plotly.detectorshow()
+            detector_phase.add_field(phase_image)
+            detector_phase.show()
 
         assert hologram.shape[0] == len(wavelengths)
         print("Done.")
@@ -145,7 +150,7 @@ We keep the example brief so that first-time readers can follow each step.
         sys.exit(main())
     ```
 
-    1. Set `visualize = True` and install `plotly` (`pip install plotly`) to see the interactive 3D point cloud of Gaussian positions and the rendered hologram amplitude and phase.
+    1. Positions are overridden to a small box (x, y in [-0.1, 0.1], z in [2.0, 2.2]) so that they fall within the camera frustum and produce a visible hologram. With `focal_length=500` and `principal_point=(32, 32)`, these Gaussians project near the center of the 64×64 image.
 
 
 The code above follows a simple pipeline:
