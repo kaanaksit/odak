@@ -52,7 +52,7 @@ def test_gaussian_2d_overfit(
     from odak.log import logger
 
     if device is None:
-        _device = torch.device("cpu")
+        _device = torch.device("cuda" if torch.cuda.is_available() else "cpu") 
     else:
         _device = device
     
@@ -210,5 +210,4 @@ if __name__ == "__main__":
         learning_rate=5e-3,
         number_of_epochs=10, # Set it to 10000 for a full optimization
         visualize=True,
-        device=torch.device('cuda'),
     )
