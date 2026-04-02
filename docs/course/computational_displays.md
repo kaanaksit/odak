@@ -64,14 +64,14 @@ We keep the example brief so that first-time readers can follow each step.
         # 1. Define scene parameters.
         num_points = 128       # number of Gaussian primitives
         num_planes = 1         # number of hologram planes
-        img_size = (64, 64)    # rendered image resolution (W, H)
+        img_size = (128, 128)    # rendered image resolution (W, H)
         wavelengths = [633e-9] # red laser wavelength in metres
 
         args = Namespace(
             num_planes=num_planes,
             wavelengths=wavelengths,
             pixel_pitch=8e-6,           # 8 micron pixel pitch
-            distances=[0.02],           # propagation distance to hologram plane
+            distances=[0.002],           # propagation distance to hologram plane
             pad_size=list(img_size),
             aperture_size=-1,           # no aperture
         )
@@ -111,11 +111,7 @@ We keep the example brief so that first-time readers can follow each step.
         )
         print(f"Hologram shape: {hologram.shape}, dtype: {hologram.dtype}")
 
-        # 5. Extract amplitude and phase from the complex hologram.
-        amplitude = odak.learn.wave.calculate_amplitude(hologram[0])
-        phase = odak.learn.wave.calculate_phase(hologram[0])
-
-        # 6. Visualise the results.
+        # 5. Visualise the results.
         positions = gaussians.means.detach().cpu().numpy()
         colors = gaussians.colours.detach().cpu().numpy()
 
@@ -130,17 +126,14 @@ We keep the example brief so that first-time readers can follow each step.
             diagram.add_point(positions, color=colors, column=1)
             diagram.show()
 
-            # Hologram amplitude and phase as 2D images.
-            amplitude_image = amplitude.detach().unsqueeze(0).unsqueeze(0)
-            phase_image = phase.detach().unsqueeze(0).unsqueeze(0)
+            # Hologram amplitude and phase as 2D heatmaps.
+            # detectorshow.add_field() expects a 2D complex field;
+            # it computes amplitude and phase internally.
+            hologram_field = hologram[0].detach().cpu().numpy()
 
-            detector_amp = odak.visualize.plotly.detectorshow()
-            detector_amp.add_field(amplitude_image)
-            detector_amp.show()
-
-            detector_phase = odak.visualize.plotly.detectorshow()
-            detector_phase.add_field(phase_image)
-            detector_phase.show()
+            detector = odak.visualize.plotly.detectorshow()
+            detector.add_field(hologram_field)
+            detector.show()
 
         assert hologram.shape[0] == len(wavelengths)
         print("Done.")
