@@ -561,25 +561,25 @@ class plot2dshow:
         )
         if not isinstance(zoomed_inset, type(None)):
             safe_path = validate_path(zoomed_inset, allowed_extensions=[".png", ".jpg", ".jpeg", ".gif", ".bmp"])
-            
+
             # Load image with cv2 (BGR format)
             img = cv2.imread(safe_path, cv2.IMREAD_UNCHANGED)
             if img is None:
                 raise ValueError(f"Failed to load inset image from '{safe_path}'")
-            
+
             # Convert BGR to RGB for correct display
             if len(img.shape) == 3 and img.shape[2] == 3:
                 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             elif len(img.shape) == 3 and img.shape[2] == 4:  # BGRA
                 img = cv2.cvtColor(img, cv2.COLOR_BGRA2RGBA)
-            
+
             # Encode as PNG in memory
             _, buffer = cv2.imencode('.png', img)
-            
+
             # Convert to base64 data URL for plotly
             base64_string = base64.b64encode(buffer).decode('utf-8')
             data_url = f"data:image/png;base64,{base64_string}"
-            
+
             self.fig.add_layout_image(
                 source=data_url,
                 x=zoomed_inset_settings["x"],
@@ -672,10 +672,6 @@ class detectorshow:
             autosize=True,
             width=self.settings["width"],
             height=self.settings["height"],
-            scene=dict(
-                aspectmode="manual",
-                aspectratio=dict(x=1.0, y=1.0, z=1.0),
-            ),
             margin=dict(
                 l=self.settings["margin"][0],
                 r=self.settings["margin"][1],
@@ -683,6 +679,12 @@ class detectorshow:
                 t=self.settings["margin"][3],
             ),
         )
+        total = self.settings["row number"] * self.settings["column number"]
+        for i in range(total):
+            suffix = "" if i == 0 else str(i + 1)
+            self.fig.update_layout(**{
+                f"yaxis{suffix}": dict(scaleanchor=f"x{suffix}", scaleratio=1),
+            })
         self.fig.show()
 
     def save_image(self, filename):
@@ -965,7 +967,7 @@ class rayshow:
         self.fig.write_image(filename)
 
     def add_point(
-        self, point, row=1, column=1, color="red", opacity=1.0, show_legend=False
+        self, point, row=1, column=1, color="red", opacity=1.0, show_legend=False, label=None
     ):
         """
         Definition to add a point to the figure.
@@ -984,6 +986,8 @@ class rayshow:
                          Opacity of the point(s). `1` refers to opaque and `0` refers to fully transparent.
         show_legend    : bool
                          Set True to enable legend for the line.
+        label          : str or None
+                         Legend label for this trace.
         """
         if torch.is_tensor(point) == True:
             point = point.detach().cpu().numpy()
@@ -1004,6 +1008,7 @@ class rayshow:
                     colorscale=self.settings["color scale"],
                 ),
                 showlegend=show_legend,
+                name=label,
             ),
             row=row,
             col=column,

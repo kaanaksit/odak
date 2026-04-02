@@ -55,31 +55,38 @@ We keep the example brief so that first-time readers can follow each step.
 
     ```python
     import sys
-    import torch
     from argparse import Namespace
+
+    import numpy as np
     import odak
+    import plotly.graph_objects as go
+    from plotly.subplots import make_subplots
+    import torch
 
 
     def main():
         # 1. Define scene parameters.
-        num_points = 128       # number of Gaussian primitives
-        num_planes = 1         # number of hologram planes
-        img_size = (128, 128)    # rendered image resolution (W, H)
-        wavelengths = [633e-9] # red laser wavelength in metres
+        num_points = 256
+        distances=[0.03, 0.02, 0.01]
+        num_planes=len(distances)
+        img_size = (512, 512)
+        focal_length = (500.0, 500.0)
+        z_depth = 2.0
+        coverage = 0.6
+        wavelengths = [633e-9, 532e-9, 450e-9]
 
         args = Namespace(
             num_planes=num_planes,
             wavelengths=wavelengths,
-            pixel_pitch=8e-6,           # 8 micron pixel pitch
-            distances=[0.002],           # propagation distance to hologram plane
+            pixel_pitch=8e-6,
+            distances=distances,
             pad_size=list(img_size),
-            aperture_size=-1,           # no aperture
+            aperture_size=-1,
         )
 
         # 2. Create randomly initialised Gaussians.
-        #    We place them in a small box in front of the camera
-        #    so they project within the image.
         from odak.learn.wave.complex_gaussians import Gaussians, Scene
+
         gaussians = Gaussians(
             init_type="random",
             device="cpu",
@@ -87,22 +94,54 @@ We keep the example brief so that first-time readers can follow each step.
             args_prop=args,
         )
 
-        # Override positions to a visible volume in front of the camera.
         with torch.no_grad():
-            gaussians.means.data = torch.rand(num_points, 3) * 0.2 - 0.1 # (1)
-            gaussians.means.data[:, 2] = gaussians.means.data[:, 2].abs() + 2.0
+            # Positions: adaptive to resolution so Gaussians cover 60% of the image.
+            # From pinhole model u = fx*X/Z + px, the half-extent for the desired
+            # coverage is: x_half = (coverage/2) * img_size[0] * z_depth / fx.
+            x_half = (coverage / 2) * img_size[0] * z_depth / focal_length[0]
+            y_half = (coverage / 2) * img_size[1] * z_depth / focal_length[1]
+            gaussians.means.data[:, 0] = torch.rand(num_points) * 2 * x_half - x_half
+            gaussians.means.data[:, 1] = torch.rand(num_points) * 2 * y_half - y_half
+            gaussians.means.data[:, 2] = z_depth + torch.rand(num_points) * 0.2
+
+            # Colours / amplitude weights: random RGB in [0, 1) per channel.
+            gaussians.colours.data = torch.rand(num_points, 3)
+
+            # Rotations: random quaternions for varied orientations.
+            # Normalized to unit quaternion at render time via F.normalize().
+            gaussians.pre_act_quats.data = torch.randn(num_points, 4)
+
+            # Scales (log-space): independent per axis for anisotropic (stretched)
+            # Gaussians. exp() is applied at render time.
+            gaussians.pre_act_scales.data = torch.log(
+                torch.rand(num_points, 3) * 0.03 + 1e-6
+            )
+
+            # Phases: random per-channel, wrapped to [0, 2*pi) at render time.
+            gaussians.pre_act_phase.data = torch.randn(num_points, 3)
+
+            # Opacities (logit-space): sigmoid(1.0) ≈ 0.73 opacity.
+            gaussians.pre_act_opacities.data = torch.ones(num_points)
+
+            # Plane assignment logits: high variance for near-deterministic
+            # one-hot assignment via StraightThroughEstimator at render time.
+            gaussians.pre_act_plane_assignment.data = (
+                torch.randn(num_points, num_planes) * 10.0
+            )
+
         print(f"Initialised {len(gaussians)} Gaussians")
 
-        # 3. Set up a perspective camera looking at the origin.
+        # 3. Set up a perspective camera.
         from odak.learn.tools import PerspectiveCamera
+
         camera = PerspectiveCamera(
             R=torch.eye(3).unsqueeze(0),
             T=torch.tensor([[0.0, 0.0, 0.0]]),
-            focal_length=torch.tensor([500.0, 500.0]),
-            principal_point=torch.tensor([32.0, 32.0]),
+            focal_length=torch.tensor(list(focal_length)),
+            principal_point=torch.tensor([img_size[0] / 2.0, img_size[1] / 2.0]),
         )
 
-        # 4. Create a Scene and render the hologram.
+        # 4. Render.
         scene = Scene(gaussians, args)
         hologram, plane_field = scene.render(
             camera=camera,
@@ -113,27 +152,79 @@ We keep the example brief so that first-time readers can follow each step.
 
         # 5. Visualise the results.
         positions = gaussians.means.detach().cpu().numpy()
-        colors = gaussians.colours.detach().cpu().numpy()
 
-        visualize = True
-        if visualize:
-            # 3D point cloud of Gaussian positions.
-            diagram = odak.visualize.plotly.rayshow(
-                columns=1,
-                marker_size=5.0,
-                subplot_titles=["<b>Gaussian positions</b>"],
-            )
-            diagram.add_point(positions, color=colors, column=1)
-            diagram.show()
+        # Plane index per Gaussian (argmax of assignment logits).
+        plane_ids = gaussians.pre_act_plane_assignment.data.argmax(dim=1)
 
-            # Hologram amplitude and phase as 2D heatmaps.
-            # detectorshow.add_field() expects a 2D complex field;
-            # it computes amplitude and phase internally.
-            hologram_field = hologram[0].detach().cpu().numpy()
+        # Distinct colours for each plane (works for N planes).
+        plane_colors = [
+            "red", "blue", "green", "orange", "purple",
+            "cyan", "magenta", "yellow", "lime", "pink",
+        ]
 
-            detector = odak.visualize.plotly.detectorshow()
-            detector.add_field(hologram_field)
-            detector.show()
+        # 3D point cloud of Gaussian positions, coloured by plane index.
+        diagram = odak.visualize.plotly.rayshow(
+            columns=1,
+            marker_size=5.0,
+            subplot_titles=["<b>Gaussian positions (colour = plane index)</b>"],
+        )
+        for p in range(num_planes):
+            mask = (plane_ids == p).numpy()
+            if mask.any():
+                color = plane_colors[p % len(plane_colors)]
+                diagram.add_point(
+                    positions[mask],
+                    color=color,
+                    column=1,
+                    show_legend=True,
+                    label=f"Plane {p}",
+                )
+        diagram.show()
+
+        def complex_field_to_rgb(field_chw):
+            """Convert (C, H, W) complex field to amplitude and phase RGB images (H, W, 3) uint8."""
+            amp = np.abs(field_chw)
+            phase = np.angle(field_chw)
+            # Normalize amplitude to [0, 255].
+            a_min, a_max = amp.min(), amp.max()
+            if a_max > a_min:
+                amp = (amp - a_min) / (a_max - a_min)
+            amp_rgb = (amp.transpose(1, 2, 0) * 255).astype(np.uint8)
+            # Normalize phase from [-pi, pi] to [0, 255].
+            phase = (phase + np.pi) / (2 * np.pi)
+            phase_rgb = (phase.transpose(1, 2, 0) * 255).astype(np.uint8)
+            return amp_rgb, phase_rgb
+
+        # Full-colour RGB images: one row per plane field + one row for the final hologram.
+        total_rows = num_planes + 1
+
+        subplot_titles = []
+        row_titles = []
+        for p in range(num_planes):
+            subplot_titles.extend([f"Plane {p} Amplitude", f"Plane {p} Phase"])
+            row_titles.append(f"Plane {p} (d={args.distances[p]} m)")
+        subplot_titles.extend(["Hologram Amplitude", "Hologram Phase"])
+        row_titles.append("Final Hologram")
+
+        fig = make_subplots(
+            rows=total_rows,
+            cols=2,
+            subplot_titles=subplot_titles,
+            row_titles=row_titles,
+            vertical_spacing=0.02,
+            horizontal_spacing=0.02,
+        )
+        for p in range(num_planes):
+            field = plane_field[p].detach().cpu().numpy()
+            amp_rgb, phase_rgb = complex_field_to_rgb(field)
+            fig.add_trace(go.Image(z=amp_rgb), row=p + 1, col=1)
+            fig.add_trace(go.Image(z=phase_rgb), row=p + 1, col=2)
+        holo = hologram.detach().cpu().numpy()
+        amp_rgb, phase_rgb = complex_field_to_rgb(holo)
+        fig.add_trace(go.Image(z=amp_rgb), row=total_rows, col=1)
+        fig.add_trace(go.Image(z=phase_rgb), row=total_rows, col=2)
+        fig.update_layout(width=1200, height=600 * total_rows)
+        fig.show()
 
         assert hologram.shape[0] == len(wavelengths)
         print("Done.")
@@ -141,15 +232,16 @@ We keep the example brief so that first-time readers can follow each step.
 
     if __name__ == "__main__":
         sys.exit(main())
+
     ```
 
-    1. Positions are overridden to a small box (x, y in [-0.1, 0.1], z in [2.0, 2.2]) so that they fall within the camera frustum and produce a visible hologram. With `focal_length=500` and `principal_point=(32, 32)`, these Gaussians project near the center of the 64×64 image.
+    1. All Gaussian parameters are explicitly overridden here for a controlled demo. **Positions** are placed adaptively based on the image resolution: from the pinhole model `u = fx·X/Z + px`, the half-extent is `(coverage/2) · img_size · z_depth / focal_length`, so the Gaussians always cover 60% of the image regardless of resolution. The `principal_point` is derived from `img_size` (`img_size[0]/2, img_size[1]/2`) so the projection is always centred. **Colours** are uniform random in [0, 1). **Rotations** are fully random quaternions (normalized at render time), giving varied orientations so the projected Gaussians appear stretched rather than circular. **Scales** are independent per axis (anisotropic) in log-space, so each Gaussian has different x/y/z extents. **Phases** are standard-normal (wrapped to [0, 2π) at render time). **Opacities** are set to logit 1.0, i.e. `sigmoid(1.0) ≈ 0.73`. **Plane assignments** use high-variance logits (σ = 10) for near-deterministic one-hot assignment via the Straight-Through Estimator.
 
 
 The code above follows a simple pipeline:
 
 1. **Define parameters** – number of Gaussians, image size, wavelength, pixel pitch, and propagation distance.
-2. **Initialise Gaussians** – `Gaussians(init_type="random", ...)` creates randomly placed primitives with random colours, phases, and opacities.
+2. **Initialise Gaussians** – `Gaussians(init_type="random", ...)` creates primitives, then all seven parameter groups are explicitly overridden: positions (means), colours, rotations (quaternions), scales, phases, opacities, and plane assignments.
 3. **Set up the camera** – `PerspectiveCamera` from `odak.learn.tools` defines the view with rotation, translation, focal length, and principal point.
 4. **Render** – `Scene.render()` performs depth-sorted tile-based splatting followed by band-limited angular spectrum propagation to produce a complex hologram.
 5. **Analyse** – `odak.learn.wave.calculate_amplitude` and `odak.learn.wave.calculate_phase` extract the amplitude and phase from the complex field.
