@@ -16,6 +16,7 @@ def test_gaussian_2d_overfit(
     number_of_epochs=50,
     visualize=True,
     device=None,
+    output_directory="test_output",
 ):
     """
     Test the gaussian_2d model by overfitting to sampled pixel locations from an image.
@@ -166,6 +167,13 @@ def test_gaussian_2d_overfit(
         # Clip to valid range for display
         final_reconstruction = final_reconstruction.clamp(0, 1)
 
+    odak.learn.tools.save_image(
+        "{}/gaussians_2d_output.png".format(output_directory),
+        final_reconstruction,
+        cmin=0.0,
+        cmax=1.0,
+    )
+
     if visualize:
         # Prepare visualization using odak.visualize.plotly.plot2dshow
         fields = [ground_truth, final_reconstruction]
@@ -202,12 +210,14 @@ if __name__ == "__main__":
     import odak
 
     # Initialize test output directory  
-    odak.tools.check_directory("test_output")
+    output_directory = "test_output"
+    odak.tools.check_directory(output_directory)
 
     # Run the test
     test_gaussian_2d_overfit(
         number_of_elements=2700,
         learning_rate=5e-3,
-        number_of_epochs=10, # Set it to 10000 for a full optimization
-        visualize=True,
+        number_of_epochs=1, # Set it to 10000 for a full optimization
+        output_directory=output_directory,
+        visualize=False,
     )
