@@ -341,7 +341,7 @@ class multi_color_hologram_optimizer:
                             hologram, channel_id, depth_id
                         )
                         intensity = calculate_amplitude(reconstruction_field) ** 2
-                        reconstruction_intensities[frame_id, channel_id] += intensity
+                        reconstruction_intensities[frame_id, channel_id] += intensity.squeeze(0).squeeze(0)
                     hologram_phases[frame_id] = phase.detach().clone()
                 loss_laser = self.l2_loss(
                     torch.amax(depth_target, dim=(1, 2)) * self.peak_amplitude,
