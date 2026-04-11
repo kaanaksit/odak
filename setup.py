@@ -42,7 +42,6 @@ setup(
         "Intended Audience :: Developers",
         "Topic :: Scientific/Engineering :: Physics",
         "Programming Language :: Python",
-        "License :: OSI Approved :: MPL-2.0",
     ],
     python_requires=">=3.9",
 )
