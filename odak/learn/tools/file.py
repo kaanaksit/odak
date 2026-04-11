@@ -115,14 +115,14 @@ def save_image(fn, img, cmin=0, cmax=255, color_depth=8):
 
 def save_torch_tensor(fn, tensor):
     """
-    Definition to save a torch tensor.
+    Definition to save a torch tensor or dictionary.
 
     Parameters
     ----------
     fn           : str
-               Filename.
-    tensor   : torch.tensor
-               Torch tensor to be saved.
+                Filename.
+    tensor       : torch.tensor or dict
+                Torch tensor or dictionary to be saved.
 
     Raises
     ------
