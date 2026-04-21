@@ -6,25 +6,6 @@ import odak
 from odak.learn.wave import decompose_double_phase, compose_double_phase
 
 
-def create_test_tensor(shape):
-    """
-    Create a tensor where each 2x2 patch has:
-    [0,0] = 1, [0,1] = 0
-    [1,0] = 0, [1,1] = 1
-    """
-    h, w = shape
-    tensor = torch.zeros(h, w)
-
-    # [0,0] positions (even rows, even cols) -> 1
-    tensor[0::2, 0::2] = 1.0
-    # [1,1] positions (odd rows, odd cols) -> 1
-    tensor[1::2, 1::2] = 1.0
-    # [0,1] positions (even rows, odd cols) -> 0 (already zero)
-    # [1,0] positions (odd rows, even cols) -> 0 (already zero)
-
-    return tensor
-
-
 def plot_comparison(input_tensor, component_high, component_low, reconstructed,
                     output_directory="test_output"):
     """Plot visual comparison of input tensor, components, and reconstructed output."""
@@ -88,7 +69,7 @@ def test():
     output_directory = "test_output"
 
     resolution = [16, 16]
-    input_tensor = create_test_tensor(resolution).to(device)
+    input_tensor = odak.learn.tools.load_image('test/data/sample_hologram.png', normalizeby=255.0, torch_style=True)[0].to(device)
 
     print("Input tensor shape:", input_tensor.shape)
     print("Input tensor:\n", input_tensor)
