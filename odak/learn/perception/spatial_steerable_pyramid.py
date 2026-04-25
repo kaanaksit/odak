@@ -82,15 +82,14 @@ class SpatialSteerablePyramid:
             return torch.nn.ReflectionPad2d((pad_amt, pad_amt, pad_amt, pad_amt))
 
         if not self.use_bilinear_downup:
-            self.filt_l = filters["l"].to(device)
+            self.filt_l = filters["l"].clone().to(device)
             self.pad_l = make_pad(self.filt_l)
-        self.filt_l0 = filters["l0"].to(device)
+        self.filt_l0 = filters["l0"].clone().to(device)
         self.pad_l0 = make_pad(self.filt_l0)
-        self.filt_h0 = filters["h0"].to(device)
+        self.filt_h0 = filters["h0"].clone().to(device)
         self.pad_h0 = make_pad(self.filt_h0)
-        for b in range(len(filters["b"])):
-            filters["b"][b] = filters["b"][b].to(device)
-        self.band_filters = filters["b"]
+        # Create a copy of the list and move each filter to device to avoid shared reference issues
+        self.band_filters = [f.clone().to(device) for f in filters["b"]]
         self.pad_b = make_pad(self.band_filters[0])
 
         if n_channels != 1:
