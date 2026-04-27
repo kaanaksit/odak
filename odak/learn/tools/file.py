@@ -79,7 +79,7 @@ def load_image(fn, normalizeby=0.0, torch_style=False):
     return image
 
 
-def save_image(fn, img, cmin=0, cmax=255, color_depth=8):
+def save_image(fn, img, cmin=0.0, cmax=1.0, color_depth=8):
     """
     Definition to save a torch tensor as an image.
 
