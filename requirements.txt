@@ -1,4 +1,4 @@
-opencv-python>=4.10.0.84
+opencv-python>=4.13.0.92
 numpy>=2.0.2
 torch>=2.8.0
 plyfile>=1.1.3
