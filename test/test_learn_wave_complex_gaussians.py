@@ -86,14 +86,14 @@ def test_perspective_camera():
 
 
 def test_gaussians_random_init():
-    """Test Gaussians random initialization and basic operations."""
-    from odak.learn.wave.complex_gaussians import Gaussians
+    """Test complex_3d_gaussians random initialization and basic operations."""
+    from odak.learn.wave.complex_gaussians import complex_3d_gaussians
 
     num_points = 64
     num_planes = 2
     args = Namespace(num_planes=num_planes)
 
-    gaussians = Gaussians(
+    gaussians = complex_3d_gaussians(
         init_type="random",
         device="cpu",
         num_points=num_points,
@@ -111,25 +111,25 @@ def test_gaussians_random_init():
     assert gaussians.pre_act_opacities.shape == (num_points,)
     assert gaussians.pre_act_plane_assignment.shape == (num_points, num_planes)
 
-    print("  Gaussians random init: PASSED")
+    print("  complex_3d_gaussians random init: PASSED")
 
 
 def test_gaussians_activations():
     """Test that apply_activations produces valid outputs."""
-    from odak.learn.wave.complex_gaussians import Gaussians
+    from odak.learn.wave.complex_gaussians import complex_3d_gaussians
 
     num_points = 32
     num_planes = 3
     args = Namespace(num_planes=num_planes)
 
-    gaussians = Gaussians(
+    gaussians = complex_3d_gaussians(
         init_type="random",
         device="cpu",
         num_points=num_points,
         args_prop=args,
     )
 
-    quats, scales, phase, opacities, plane_probs = Gaussians.apply_activations(
+    quats, scales, phase, opacities, plane_probs = complex_3d_gaussians.apply_activations(
         gaussians.pre_act_quats,
         gaussians.pre_act_scales,
         gaussians.pre_act_phase,
@@ -162,17 +162,17 @@ def test_gaussians_activations():
         row_sums, torch.ones(num_points), atol=1e-6
     ), "Plane probs rows should sum to 1 (one-hot)"
 
-    print("  Gaussians activations: PASSED")
+    print("  complex_3d_gaussians activations: PASSED")
 
 
 def test_covariance_computation():
     """Test 3D and 2D covariance computation shapes and symmetry."""
-    from odak.learn.wave.complex_gaussians import Gaussians
+    from odak.learn.wave.complex_gaussians import complex_3d_gaussians
 
     num_points = 16
     args = Namespace(num_planes=1)
 
-    gaussians = Gaussians(
+    gaussians = complex_3d_gaussians(
         init_type="random",
         device="cpu",
         num_points=num_points,
@@ -220,10 +220,10 @@ def test_covariance_computation():
 
 def test_projection():
     """Test 3D to 2D projection and inversion."""
-    from odak.learn.wave.complex_gaussians import Gaussians
+    from odak.learn.wave.complex_gaussians import complex_3d_gaussians
 
     args = Namespace(num_planes=1)
-    gaussians = Gaussians(
+    gaussians = complex_3d_gaussians(
         init_type="random",
         device="cpu",
         num_points=8,
@@ -257,7 +257,7 @@ def test_projection():
             [[1.0, 0.0], [0.0, 1.0]],
         ]
     )
-    cov_inv = Gaussians.invert_cov_2D(cov)
+    cov_inv = complex_3d_gaussians.invert_cov_2D(cov)
     product = torch.bmm(cov, cov_inv)
     identity = torch.eye(2).unsqueeze(0).expand(2, -1, -1)
     assert torch.allclose(
@@ -270,7 +270,7 @@ def test_projection():
 def test_scene_render_shapes():
     """Test that Scene.render produces correct output shapes."""
     from odak.learn.tools import PerspectiveCamera
-    from odak.learn.wave.complex_gaussians import Gaussians, Scene
+    from odak.learn.wave.complex_gaussians import complex_3d_gaussians, Scene
 
     num_points = 32
     num_planes = 2
@@ -286,7 +286,7 @@ def test_scene_render_shapes():
         aperture_size=-1,
     )
 
-    gaussians = Gaussians(
+    gaussians = complex_3d_gaussians(
         init_type="random",
         device="cpu",
         num_points=num_points,
@@ -333,10 +333,10 @@ def test_save_load_roundtrip(tmp_path=None):
     import os
     import tempfile
 
-    from odak.learn.wave.complex_gaussians import Gaussians
+    from odak.learn.wave.complex_gaussians import complex_3d_gaussians
 
     args = Namespace(num_planes=2)
-    gaussians = Gaussians(
+    gaussians = complex_3d_gaussians(
         init_type="random",
         device="cpu",
         num_points=16,
@@ -347,7 +347,7 @@ def test_save_load_roundtrip(tmp_path=None):
         save_path = os.path.join(tmpdir, "test_gaussians.pth")
         gaussians.save_gaussians(save_path)
 
-        loaded = Gaussians(
+        loaded = complex_3d_gaussians(
             init_type="gaussians",
             device="cpu",
             load_path=save_path,
