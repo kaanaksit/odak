@@ -263,7 +263,9 @@ class multi_color_hologram_optimizer:
 
     def eyebox_constrain(self, phase, offset, diameter):
         """
-        Internal function to calculate the mean of spatial gradients of the masked FFT amplitude.
+        Internal function to constrain amplitude distribution in the eyebox region.
+        Creates homogeneous amplitude in the masked (eyebox) region and minimal amplitude
+        in unmasked regions.
 
         Parameters
         ----------
@@ -276,25 +278,36 @@ class multi_color_hologram_optimizer:
 
         Returns
         -------
-        gradient_mean              : torch.tensor
-                                     Mean of the spatial gradients of the masked FFT amplitude.
+        loss                       : torch.tensor
+                                     Combined loss for homogeneous eyebox amplitude and suppression outside.
         """
         complex_field = generate_complex_field(torch.ones_like(phase), phase)
         fft_field = torch.fft.fftshift(torch.fft.fft2(complex_field))
         fft_amplitude = torch.abs(fft_field)
         height, width = fft_amplitude.shape
         radius = diameter / 2.0
+        
         mask = circular_binary_mask(height, width, radius, offset_x=offset[0], offset_y=offset[1]).to(self.device).squeeze(0).squeeze(0)
+        
         masked_amplitude = fft_amplitude * mask
-        masked_amplitude = masked_amplitude / masked_amplitude.max()
-        masked_amplitude_std = torch.std(masked_amplitude)
-        masked_amplitude_peak = masked_amplitude.max() - masked_amplitude.mean()
         unmask = torch.abs(1.0 - mask)
         unmasked_amplitude = fft_amplitude * unmask
-        unmask_mean = unmasked_amplitude.mean()
-        gradient_mean = multi_scale_total_variation_loss(masked_amplitude, levels=3)
-        masked_amplitude_mean = (1.0 - masked_amplitude.mean())
-        loss = gradient_mean + masked_amplitude_mean + masked_amplitude_std + masked_amplitude_peak + unmask_mean * 1e-2
+        
+        masked_amplitude_squeeze = masked_amplitude[mask > 0]
+        if masked_amplitude_squeeze.numel() > 0:
+            masked_mean = masked_amplitude_squeeze.mean()
+            masked_var = masked_amplitude_squeeze.var()
+            normalized_var = masked_var / (masked_mean**2 + 1e-8)
+        else:
+            normalized_var = torch.tensor(1.0, device=self.device)
+        
+        total_amplitude = fft_amplitude.sum() + 1e-8
+        loss_sparsity = unmasked_amplitude.sum() / total_amplitude
+        
+        loss_homogeneity = normalized_var
+        loss_sparsity = loss_sparsity
+        
+        loss = loss_homogeneity + loss_sparsity
         return loss
 
     def gradient_descent(
