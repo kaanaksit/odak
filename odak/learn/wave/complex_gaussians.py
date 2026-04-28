@@ -214,7 +214,7 @@ class complex_3d_gaussians(torch.nn.Module):
         densepoint_scatter=0.01,
         img_size=None,
     ):
-        super(Gaussians, self).__init__()
+        super(complex_3d_gaussians, self).__init__()
 
         self.device = device
         self.num_planes = args_prop.num_planes
