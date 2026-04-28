@@ -249,9 +249,9 @@ The code above follows a simple pipeline:
 Let us also examine the key classes provided in `odak` for this pipeline.
 
 
-=== ":octicons-file-code-16: `odak.learn.wave.complex_gaussians.Gaussians`"
+=== ":octicons-file-code-16: `odak.learn.wave.complex_gaussians.complex_3d_gaussians`"
 
-    ::: odak.learn.wave.complex_gaussians.Gaussians
+    ::: odak.learn.wave.complex_gaussians.complex_3d_gaussians
 
 === ":octicons-file-code-16: `odak.learn.wave.complex_gaussians.Scene`"
 
