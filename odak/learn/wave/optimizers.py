@@ -175,11 +175,10 @@ class multi_color_hologram_optimizer:
         self.optimizer = torch.optim.Adam(optimization_variables, lr=self.learning_rate)
         self.scheduler = torch.optim.lr_scheduler.PolynomialLR(
             self.optimizer,
-            total_iters=number_of_iterations,
+            total_iters=number_of_iterations * 4,
             power=self.scheduler_power,
             last_epoch=-1,
         )
-
 
     def init_loss_function(self, loss_function, reduction="sum"):
         """
@@ -236,16 +235,12 @@ class multi_color_hologram_optimizer:
         phase_zero_mean = phase - torch.mean(phase)
         phase_low = torch.nan_to_num(phase_zero_mean - phase_offset, nan=2 * torch.pi)
         phase_high = torch.nan_to_num(phase_zero_mean + phase_offset, nan=2 * torch.pi)
-        loss = multi_scale_total_variation_loss(phase_low, levels=6)
-        loss += multi_scale_total_variation_loss(phase_high, levels=6)
-        loss += torch.std(phase_low)
-        loss += torch.std(phase_high)
         phase_only = torch.zeros_like(phase)
         phase_only[0::2, 0::2] = phase_low[0::2, 0::2]
         phase_only[0::2, 1::2] = phase_high[0::2, 1::2]
         phase_only[1::2, 0::2] = phase_high[1::2, 0::2]
         phase_only[1::2, 1::2] = phase_low[1::2, 1::2]
-        return phase_only, loss
+        return phase_only
 
     def direct_phase_constrain(self, phase, phase_offset):
         """
@@ -264,8 +259,7 @@ class multi_color_hologram_optimizer:
                                      Constrained output phase.
         """
         phase_only = torch.nan_to_num(phase - phase_offset, nan=2 * torch.pi)
-        loss = multi_scale_total_variation_loss(phase, levels=6)
-        return phase_only, loss
+        return phase_only
 
     def eyebox_constrain(self, phase, offset, diameter):
         """
@@ -306,7 +300,7 @@ class multi_color_hologram_optimizer:
     def gradient_descent(
         self,
         number_of_iterations=100,
-        weights=[1.0, 1.0, 0.0, 0.0],
+        weights=[1.0, 1.0, 0.0],
         inject_noise=False,
         eyebox={
             "offset" : 0.0,
@@ -359,21 +353,21 @@ class multi_color_hologram_optimizer:
                     self.resolution[1] * self.scale_factor,
                     device=self.device,
                 )
-                loss_variation_hologram = 0.0
+                loss_laser = 0.0    
                 loss_eyebox = 0.0
                 laser_powers = self.propagator.get_laser_powers()
                 for frame_id in range(self.number_of_frames):
                     self.offset[frame_id] = self.phase[frame_id].detach().clone().mean()
                     if self.double_phase:
-                        phase, loss_phase = self.double_phase_constrain(
+                        phase = self.double_phase_constrain(
                             self.phase[frame_id], self.offset[frame_id]
                         )
                     else:
-                        phase, loss_phase = self.direct_phase_constrain(
+                        phase = self.direct_phase_constrain(
                             self.phase[frame_id], self.offset[frame_id]
                         )
-                    loss_variation_hologram += loss_phase
-                    loss_eyebox += self.eyebox_constrain(phase, offset=eyebox['offset'], diameter=eyebox['diameter'])
+                    if weights[2] > 0.0:
+                        loss_eyebox += self.eyebox_constrain(phase, offset=eyebox['offset'], diameter=eyebox['diameter'])
                     phase_wrapped = phase % (2. * torch.pi)
                     for channel_id in range(self.number_of_channels):
                         phase_scaled = torch.zeros_like(self.amplitude)
@@ -389,19 +383,18 @@ class multi_color_hologram_optimizer:
                         intensity = calculate_amplitude(reconstruction_field) ** 2
                         reconstruction_intensities[frame_id, channel_id] += intensity.squeeze(0).squeeze(0)
                     hologram_phases[frame_id] = phase_wrapped.detach().clone()
-                loss_laser = self.l2_loss(
-                    torch.amax(depth_target, dim=(1, 2)) * self.peak_amplitude,
-                    torch.sum(laser_powers, dim=0),
-                )
-                loss_laser += self.l2_loss(
-                    torch.tensor([self.number_of_frames * self.peak_amplitude]).to(
-                        self.device
-                    ),
-                    torch.sum(laser_powers).view(
-                        1,
-                    ),
-                )
-                loss_laser += torch.cos(torch.min(torch.sum(laser_powers, dim=1)))
+                if weights[1] > 0.0:
+                    loss_laser += self.l2_loss(
+                        torch.amax(depth_target, dim=(1, 2)) * self.peak_amplitude,
+                        torch.sum(laser_powers, dim=0),
+                    )
+                    loss_laser += self.l2_loss(
+                        torch.tensor([self.number_of_frames * self.peak_amplitude]).to(
+                            self.device
+                        ),
+                        torch.sum(laser_powers).view(1,),
+                    )
+                    loss_laser += torch.cos(torch.min(torch.sum(laser_powers, dim=1)))
                 reconstruction_intensity = torch.sum(reconstruction_intensities, dim=0)
                 loss_image = self.evaluate(
                     reconstruction_intensity,
@@ -411,30 +404,16 @@ class multi_color_hologram_optimizer:
                     plane_id=depth_id,
                 )
                 loss = weights[0] * loss_image
-                loss += weights[1] * loss_laser
-                loss += weights[2] * loss_variation_hologram
-                loss += weights[3] * loss_eyebox
-                include_pa_loss_flag = (
-                    self.optimize_peak_amplitude and loss_image < self.img_loss_thres
-                )
-                if include_pa_loss_flag:
-                    loss -= self.peak_amplitude * 1.0
-                if self.method == "conventional":
-                    loss.backward()
-                else:
-                    loss.backward(retain_graph=True)
+                if weights[1] > 0.0:
+                    loss += weights[1] * loss_laser
+                if weights[2] > 0.0:
+                    loss += weights[3] * loss_eyebox
+                loss.backward(retain_graph=True)
                 self.optimizer.step()
                 self.scheduler.step()
-                if include_pa_loss_flag:
-                    peak_amp_cache = self.peak_amplitude.item()
-                else:
-                    with torch.no_grad():
-                        if self.optimize_peak_amplitude:
-                            self.peak_amplitude.view([1])[0] = peak_amp_cache
                 total_loss += loss.detach().item()
                 loss_image = loss_image.detach()
                 del loss_laser
-                del loss_variation_hologram
                 del loss
             description = "Loss:{:.3f} Loss Image:{:.3f} Peak Amp:{:.1f} Learning rate:{:.4f}".format(
                 total_loss, loss_image.item(), self.peak_amplitude, learning_rate
