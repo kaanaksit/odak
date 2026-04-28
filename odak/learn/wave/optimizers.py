@@ -407,7 +407,7 @@ class multi_color_hologram_optimizer:
                 if weights[1] > 0.0:
                     loss += weights[1] * loss_laser
                 if weights[2] > 0.0:
-                    loss += weights[3] * loss_eyebox
+                    loss += weights[2] * loss_eyebox
                 loss.backward(retain_graph=True)
                 self.optimizer.step()
                 self.scheduler.step()
