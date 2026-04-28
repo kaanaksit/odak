@@ -166,7 +166,7 @@ class StraightThroughEstimator(torch.nn.Module):
         return STEFunction.apply(x, self.temperature)
 
 
-class Gaussians(torch.nn.Module):
+class complex_3d_gaussians(torch.nn.Module):
     """
     Complex-valued 3-D Gaussian primitives for holographic rendering.
 

@@ -29,9 +29,9 @@ def main():
     )
 
     # 2. Create randomly initialised Gaussians.
-    from odak.learn.wave.complex_gaussians import Gaussians, Scene
+    from odak.learn.wave.complex_gaussians import complex_3d_gaussians, Scene
 
-    gaussians = Gaussians(
+    gaussians = complex_3d_gaussians(
         init_type="random",
         device="cpu",
         num_points=num_points,
