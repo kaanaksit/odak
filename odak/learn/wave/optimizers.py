@@ -26,7 +26,7 @@ class multi_color_hologram_optimizer:
         number_of_frames=3,
         number_of_depth_layers=1,
         learning_rate=2e-2,
-        learning_rate_floor=5e-3,
+        scheduler_power=1,
         double_phase=True,
         scale_factor=1,
         method="multi-color",
@@ -51,7 +51,7 @@ class multi_color_hologram_optimizer:
         self.scale_factor = scale_factor
         self.propagator = propagator
         self.learning_rate = learning_rate
-        self.learning_rate_floor = learning_rate_floor
+        self.scheduler_power = scheduler_power
         self.number_of_channels = len(self.wavelengths)
         self.number_of_frames = number_of_frames
         self.number_of_depth_layers = number_of_depth_layers
@@ -163,7 +163,7 @@ class multi_color_hologram_optimizer:
             )
         self.propagator.set_laser_powers(self.channel_power)
 
-    def init_optimizer(self):
+    def init_optimizer(self, number_of_iterations=100):
         """
         Internal function to set the optimizer.
         """
@@ -173,6 +173,13 @@ class multi_color_hologram_optimizer:
         if self.method == "multi-color":
             optimization_variables.append(self.propagator.channel_power)
         self.optimizer = torch.optim.Adam(optimization_variables, lr=self.learning_rate)
+        self.scheduler = torch.optim.lr_scheduler.PolynomialLR(
+            self.optimizer,
+            total_iters=number_of_iterations,
+            power=self.scheduler_power,
+            last_epoch=-1,
+        )
+
 
     def init_loss_function(self, loss_function, reduction="sum"):
         """
@@ -283,20 +290,17 @@ class multi_color_hologram_optimizer:
         fft_amplitude = torch.abs(fft_field)
         height, width = fft_amplitude.shape
         radius = diameter / 2.0
-        if isinstance(offset, (list, tuple)):
-            offset_x, offset_y = offset
-        else:
-            offset_x = offset
-            offset_y = offset
-        mask = circular_binary_mask(width, height, radius, offset_x=offset_x, offset_y=offset_y).to(self.device)
-        masked_amplitude = fft_amplitude * mask.squeeze(0).squeeze(0)
+        mask = circular_binary_mask(height, width, radius, offset_x=offset[0], offset_y=offset[1]).to(self.device).squeeze(0).squeeze(0)
+        masked_amplitude = fft_amplitude * mask
         masked_amplitude = masked_amplitude / masked_amplitude.max()
+        masked_amplitude_std = torch.std(masked_amplitude)
+        masked_amplitude_peak = masked_amplitude.max() - masked_amplitude.mean()
         unmask = torch.abs(1.0 - mask)
-        unmasked_amplitude = fft_amplitude * unmask.squeeze(0).squeeze(0)
+        unmasked_amplitude = fft_amplitude * unmask
         unmask_mean = unmasked_amplitude.mean()
         gradient_mean = multi_scale_total_variation_loss(masked_amplitude, levels=3)
-        intensity_mean = (1.0 - masked_amplitude.mean())
-        loss = gradient_mean + intensity_mean + unmask_mean * 1e-2
+        masked_amplitude_mean = (1.0 - masked_amplitude.mean())
+        loss = gradient_mean + masked_amplitude_mean + masked_amplitude_std + masked_amplitude_peak + unmask_mean * 1e-2
         return loss
 
     def gradient_descent(
@@ -340,11 +344,6 @@ class multi_color_hologram_optimizer:
             peak_amp_cache = self.peak_amplitude.item()
         for step in t:
             for g in self.optimizer.param_groups:
-                g["lr"] -= (
-                    self.learning_rate - self.learning_rate_floor
-                ) / number_of_iterations
-                if g["lr"] < self.learning_rate_floor:
-                    g["lr"] = self.learning_rate_floor
                 learning_rate = g["lr"]
             total_loss = 0
             t_depth = tqdm(
@@ -425,6 +424,7 @@ class multi_color_hologram_optimizer:
                 else:
                     loss.backward(retain_graph=True)
                 self.optimizer.step()
+                self.scheduler.step()
                 if include_pa_loss_flag:
                     peak_amp_cache = self.peak_amplitude.item()
                 else:
@@ -455,7 +455,7 @@ class multi_color_hologram_optimizer:
         number_of_iterations=100,
         weights=[1.0, 1.0, 1.0],
         eyebox={
-            "offset" : 0.0,
+            "offset" : [0.0, 0.0],
             "diameter" : 100
             },
         bits=8,
@@ -486,7 +486,7 @@ class multi_color_hologram_optimizer:
         reconstruction_intensities : torch.tensor
                                      Intensities of the images reconstructed at each plane with the optimized phase-only hologram.
         """
-        self.init_optimizer()
+        self.init_optimizer(number_of_iterations=number_of_iterations)
         hologram_phases = self.gradient_descent(
             number_of_iterations=number_of_iterations,
             noise_ratio=noise_ratio,
