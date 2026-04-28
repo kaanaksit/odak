@@ -765,7 +765,7 @@ class Scene:
                 ``distances``, ``pad_size``, and ``aperture_size``.
     """
 
-    def __init__(self, gaussians: Gaussians, args_prop):
+    def __init__(self, gaussians: complex_3d_gaussians, args_prop):
         self.gaussians = gaussians
         self.args_prop = args_prop
         self.device = self.gaussians.device
