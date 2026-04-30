@@ -90,31 +90,31 @@ theme:
         - python
 
 plugins:
-   - search
-   - mkdocstrings:
-       default_handler: python
-       handlers:
-          python:
-            options:
-              docstring_section_style: list
-              docstring_style: numpy
-              show_source: true
-   - autorefs
-   - glightbox:
-       touchNavigation: true
-       loop: false
-       effect: zoom
-       slide_effect: slide
-       width: 100%
-       height: auto
-       zoomable: true
-       draggable: true
-       skip_classes:
-         - custom-skip-class-name
-       auto_caption: false
-       caption_position: bottom
-   - bibtex:
-      bib_file: "docs/bibliography.bib"
+    - search
+    - mkdocstrings:
+        default_handler: python
+        handlers:
+           python:
+             options:
+               docstring_section_style: list
+               docstring_style: numpy
+               show_source: true
+    - autorefs
+    - glightbox:
+        touchNavigation: true
+        loop: false
+        effect: zoom
+        slide_effect: slide
+        width: 100%
+        height: auto
+        zoomable: true
+        draggable: true
+        skip_classes:
+          - custom-skip-class-name
+        auto_caption: false
+        caption_position: bottom
+    - bibtex:
+        bib_file: "docs/bibliography.bib"
 
 markdown_extensions:
    - abbr
