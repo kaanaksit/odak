@@ -427,7 +427,6 @@ class multi_color_hologram_optimizer:
                         phase, loss_phase = self.direct_phase_constrain(
                             self.phase[frame_id], self.offset[frame_id]
                         )
-                    phase = phase % (2.0 * torch.pi)
                     if weights[2] > 0.0:
                         loss_eyebox += self.eyebox_constrain(phase, offset=eyebox['offset'], diameter=eyebox['diameter'])
                     phase_wrapped = phase % (2. * torch.pi)
