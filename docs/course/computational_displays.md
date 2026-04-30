@@ -257,7 +257,7 @@ Let us also examine the key classes provided in `odak` for this pipeline.
 
     ::: odak.learn.wave.complex_gaussians.Scene
 
-=== ":octicons-file-code-16: `odak.learn.tools.PerspectiveCamera`"
+=== ":octicons-file-code-16: `odak.learn.tools.PerspectiveCamera`" {#perspective-camera-course}
 
     ::: odak.learn.tools.PerspectiveCamera
 
