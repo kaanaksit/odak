@@ -81,9 +81,25 @@ class propagator:
         distances               : torch.tensor
                                   Propagation distances in meters.
         method                  : str
-                                  Hologram type conventional or multi-color.
+                                   Hologram type conventional or multi-color.
         device                  : torch.device
-                                  Device to be used for computation. For more see torch.device().
+                                   Device to be used for computation. For more see torch.device().
+        vaccination_scale       : float
+                                   Scale factor for vaccination noise when vaccination is enabled.
+        vaccination             : bool
+                                   If True, adds random noise to distances during kernel generation.
+        back_and_forth_distance : float
+                                   Zero mode distance for back and forth propagation.
+        laser_channel_power     : torch.tensor
+                                   Laser channel powers for given number of frames and wavelengths.
+        aperture                : torch.tensor
+                                   Aperture at the Fourier plane.
+        aperture_size           : float
+                                   Aperture width for a circular aperture.
+        distances               : torch.tensor
+                                   Propagation distances in meters. If None, uses uniform distribution across volume_depth.
+        aperture_samples        : list
+                                   Sample counts for Impulse Response Fresnel method [hx_in, hw_in, hx_out, hw_out].
         """
         self.device = device
         self.vaccination = vaccination
