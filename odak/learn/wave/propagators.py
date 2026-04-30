@@ -39,6 +39,8 @@ class propagator:
         aperture_samples=[20, 20, 5, 5],
         method="conventional",
         device=torch.device("cpu"),
+        vaccination_scale=1.0e-4,
+        vaccination=False,
     ):
         """
         Parameters
@@ -84,6 +86,8 @@ class propagator:
                                   Device to be used for computation. For more see torch.device().
         """
         self.device = device
+        self.vaccination = vaccination
+        self.vaccination_scale = vaccination_scale
         self.pixel_pitch = pixel_pitch
         self.wavelengths = wavelengths
         self.resolution = resolution
@@ -261,6 +265,9 @@ class propagator:
                               Propagated output complex field.
         """
         distance = self.distances[depth_id]
+        vaccination_residual = 0.0
+        if self.vaccination:
+            vaccination_residual = torch.randn(1) * self.vaccination_scale
         if not self.generated_kernels[depth_id, channel_id]:
             if self.propagator_type == "forward":
                 H = get_propagation_kernel(
@@ -268,7 +275,7 @@ class propagator:
                     nv=self.resolution[1] * 2,
                     dx=self.pixel_pitch,
                     wavelength=self.wavelengths[channel_id],
-                    distance=distance,
+                    distance=distance+vaccination_residual,
                     device=self.device,
                     propagation_type=self.propagation_type,
                     samples=self.aperture_samples,
