@@ -66,7 +66,7 @@ def test():
     logger.info("{} -> Decomposing with {} scales...".format(header, n_scales))
     
     coefficients, residuals, base = decompose_wavelet_like(
-        original_phase, n_scales=n_scales, device=device
+        original_phase, n_scales=n_scales
     )
     
     reconstructed = reconstruct_wavelet_like(coefficients, residuals, base)

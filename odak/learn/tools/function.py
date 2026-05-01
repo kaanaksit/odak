@@ -210,7 +210,7 @@ def compose_bspline_2d(control_coefficients, basis_matrix, resolution):
     return reconstructed.view(H, W)
 
 
-def decompose_wavelet_like(image, n_scales=4, device=torch.device("cpu")):
+def decompose_wavelet_like(image, n_scales=4):
     """
     Decompose a 2D image into multi-scale B-spline smooths and detail residuals.
     
@@ -225,8 +225,6 @@ def decompose_wavelet_like(image, n_scales=4, device=torch.device("cpu")):
     n_scales : int
         Number of decomposition scales (default: 4). Each scale captures
         progressively finer details.
-    device : torch.device
-        Device to use for computation.
     
     Returns
     ----- --
@@ -243,7 +241,7 @@ def decompose_wavelet_like(image, n_scales=4, device=torch.device("cpu")):
     >>> reconstructed = reconstruct_wavelet_like(coeffs, residuals, base)
     """
     H, W = image.shape if image.dim() == 2 else image.shape[1:]
-    image = image.view(H, W).to(device)
+    image = image.view(H, W)
     
     coefficients = []
     residuals = []
