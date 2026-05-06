@@ -495,7 +495,7 @@ class multi_color_hologram_optimizer:
     def optimize(
         self,
         number_of_iterations=100,
-        weights=[1.0, 1.0, 1.0],
+        weights=[1.0, 1.0, 1.0, 0.0, 0.0],
         eyebox={
             "offset" : [0.0, 0.0],
             "diameter" : 100
