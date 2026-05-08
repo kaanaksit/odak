@@ -1,4 +1,6 @@
-import requests
+import json
+import urllib.request
+
 
 def query_llm(
     prompt,
@@ -63,15 +65,22 @@ def query_llm(
         },
     }
 
-    response = requests.post(
+    request = urllib.request.Request(
         url,
-        json=payload,
-        timeout=timeout,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Content-Type": "application/json",
+        },
+        method="POST",
     )
 
-    response.raise_for_status()
-
-    data = response.json()
+    with urllib.request.urlopen(
+        request,
+        timeout=timeout,
+    ) as response:
+        data = json.loads(
+            response.read().decode("utf-8")
+        )
 
     if "message" not in data:
         raise ValueError(
