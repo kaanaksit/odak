@@ -12,6 +12,7 @@ Liang Shi
 Mustafa Doğa Doğan
 Praneeth Chakravarthula
 Runze Zhu
+Servet Efe Tekin
 Weijie Xie
 Yujie Wang
 Yuta Itoh
@@ -19,4 +20,3 @@ Ziyang Chen
 Yicheng Zhan
 Yiyang Wu
 Xinge Yang
-Servet Efe Tekin
