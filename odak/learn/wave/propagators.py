@@ -262,23 +262,29 @@ class propagator:
         kernels_phase = calculate_phase(h)
         return kernels_amplitude, kernels_phase
 
-    def __call__(self, input_field, channel_id, depth_id):
+    def __call__(self, input_field, channel_id, depth_id, zero_padding_size=None):
         """
         Function that represents the forward model in hologram optimization.
 
         Parameters
         ----------
         input_field         : torch.tensor
-                              Input complex input field.
+                              Input complex field to propagate. Shape should match the resolution configured in the propagator.
         channel_id          : int
-                              Identifying the color primary to be used.
+                              Index identifying the color primary (wavelength) to use for propagation.
+                              Corresponds to the index in the wavelengths list.
         depth_id            : int
-                              Identifying the depth layer to be used.
+                              Index identifying the depth layer to propagate to.
+                              Corresponds to the index in the distances tensor.
+        zero_padding_size   : int or None
+                              Target size for zero padding. If None, uses default zero padding to 2x resolution.
+                              When specified, pads the input field to this size before propagation.
 
         Returns
         -------
         output_field        : torch.tensor
-                              Propagated output complex field.
+                              Propagated output complex field at the specified depth layer.
+                              Shape matches the original input field size (cropped from padded output).
         """
         distance = self.distances[depth_id]
         vaccination_residual = 0.0
@@ -329,9 +335,13 @@ class propagator:
         else:
             H = self.kernels[depth_id, channel_id].detach().clone()
         field_scale = input_field
-        field_scale_padded = zero_pad(field_scale)
+        if zero_padding_size is None:
+            field_scale_padded = zero_pad(field_scale)
+        else:
+            field_scale_padded = zero_pad(field_scale, size=zero_padding_size)
         output_field_padded = custom(field_scale_padded, H, aperture=self.aperture)
-        output_field = crop_center(output_field_padded)
+        field_scale_orig_size = [field_scale.shape[-2], field_scale.shape[-1]]
+        output_field = crop_center(output_field_padded, size=field_scale_orig_size)
         return output_field
 
     def reconstruct(
