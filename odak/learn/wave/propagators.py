@@ -323,7 +323,7 @@ class propagator:
                     nv=self.resolution[1] * 2,
                     dx=self.pixel_pitch,
                     wavelength=self.wavelengths[channel_id],
-                    distance=distance_back,
+                    distance=distance_back+vaccination_residual,
                     device=self.device,
                     propagation_type=self.propagation_type,
                     samples=self.aperture_samples,
