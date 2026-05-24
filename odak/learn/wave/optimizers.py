@@ -280,6 +280,8 @@ class multi_color_hologram_optimizer:
         phase_only = torch.zeros_like(phase)
         loss_phase = multi_scale_total_variation_loss(phase_low, levels=3)
         loss_phase += multi_scale_total_variation_loss(phase_high, levels=3)
+        loss_phase += torch.std(phase_low)
+        loss_phase += torch.std(phase_high)
         phase_only[0::2, 0::2] = phase_low[0::2, 0::2]
         phase_only[0::2, 1::2] = phase_high[0::2, 1::2]
         phase_only[1::2, 0::2] = phase_high[1::2, 0::2]
