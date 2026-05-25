@@ -6,6 +6,7 @@ from .util import (
     generate_complex_field,
     calculate_amplitude,
     calculate_phase,
+    decompose_double_phase,
 )
 from ..tools import torch_load, multi_scale_total_variation_loss, quantize, circular_binary_mask, spatial_gradient
 from ...log import logger
@@ -15,6 +16,63 @@ class multi_color_hologram_optimizer:
     """
     A class for optimizing single or multi color holograms.
     For more details, see Kavaklı et al., SIGGRAPH ASIA 2023, Multi-color Holograms Improve Brightness in HOlographic Displays.
+    
+    Attributes
+    ------
+    device                     : torch.device
+                                Device to run optimization on.
+    wavelengths                : list
+                                List of wavelengths for optimization.
+    resolution                 : tuple
+                                Resolution (height, width) of the hologram.
+    targets                    : torch.tensor
+                                Target images for optimization.
+    propagator                 : propagator
+                                Wave propagation object.
+    scale_factor               : int
+                                Scaling factor for hologram resolution.
+    learning_rate              : float
+                                Learning rate for the optimizer.
+    scheduler_power            : int
+                                Power for polynomial learning rate scheduler.
+    number_of_channels         : int
+                                Number of wavelength channels.
+    number_of_frames           : int
+                                Number of temporal frames.
+    number_of_depth_layers     : int
+                                Number of depth layers.
+    channel_power_filename     : str
+                                Filename to load channel powers from.
+    method                     : str
+                                Optimization method ("conventional" or "multi-color").
+    peak_amplitude             : float or torch.tensor
+                                Peak amplitude for reconstruction (learnable if optimize_peak_amplitude=True).
+    optimize_peak_amplitude    : bool
+                                Whether to optimize peak amplitude.
+    img_loss_thres             : float
+                                Image loss threshold.
+    kernels                    : list
+                                List of kernels (unused).
+    phase                      : torch.tensor
+                                Hologram phase tensor (requires_grad=True).
+    offset                     : torch.tensor
+                                Phase offset for each frame (requires_grad=True).
+    channel_power              : torch.tensor
+                                Channel power distribution.
+    phase_scale                : torch.tensor
+                                Phase scale for each wavelength channel.
+    amplitude                  : torch.tensor
+                                Amplitude distribution of the illumination source.
+    l2_loss                    : torch.nn.MSELoss
+                                L2 loss function.
+    loss_type                  : str
+                                Type of loss function ("conventional" or "custom").
+    loss_function              : callable
+                                Loss function to use.
+    optimizer                  : torch.optim.Adam
+                                Adam optimizer.
+    scheduler                  : torch.optim.lr_scheduler.PolynomialLR
+                                Learning rate scheduler.
     """
 
     def __init__(
@@ -42,7 +100,7 @@ class multi_color_hologram_optimizer:
         Initialize the multi-color hologram optimizer.
 
         Parameters
-        ----------
+        ------
         wavelengths                : list
                                       List of wavelengths for optimization.
         resolution                 : tuple
@@ -65,7 +123,9 @@ class multi_color_hologram_optimizer:
                                       Scaling factor for hologram resolution.
         method                     : str
                                       Optimization method ("conventional" or "multi-color").
-        channel_power_filename     : str
+    double_phase               : bool
+                                 Whether to use double phase encoding.
+    channel_power_filename     : str
                                       Filename to load channel powers from (optional).
         device                     : torch.device
                                       Device to run optimization on.
@@ -121,7 +181,15 @@ class multi_color_hologram_optimizer:
 
     def init_peak_amplitude_scale(self):
         """
-        Internal function to initialize the peak amplitude as a learnable parameter.
+        Internal function to initialize the starting peak amplitude as a learnable parameter.
+
+        Parameters
+        ------
+        None
+
+        Returns
+        ------
+        None
         """
         self.peak_amplitude = torch.tensor(
             self.peak_amplitude, requires_grad=True, device=self.device
@@ -129,7 +197,15 @@ class multi_color_hologram_optimizer:
 
     def init_phase_scale(self):
         """
-        Internal function to set the phase scale.
+        Internal function to set the phase scale for each wavelength channel.
+
+        Parameters
+        ------
+        None
+
+        Returns
+        ------
+        None
         """
         if self.method == "conventional":
             self.phase_scale = torch.tensor(
@@ -143,6 +219,14 @@ class multi_color_hologram_optimizer:
     def init_amplitude(self):
         """
         Internal function to set the amplitude of the illumination source.
+
+        Parameters
+        ------
+        None
+
+        Returns
+        ------
+        None
         """
         self.amplitude = torch.zeros(
             self.resolution[0] * self.scale_factor,
@@ -155,6 +239,14 @@ class multi_color_hologram_optimizer:
     def init_phase(self):
         """
         Internal function to initialize the starting phase and offset for phase-only holograms.
+
+        Parameters
+        ------
+        None
+
+        Returns
+        ------
+        None
         """
         self.phase = torch.randn(
             self.number_of_frames,
@@ -164,13 +256,19 @@ class multi_color_hologram_optimizer:
             requires_grad=False,
         ) * 2. * torch.pi
         self.phase.requires_grad = True
-        self.offset = torch.randn(
-            self.number_of_frames, requires_grad=False, device=self.device
-        )
+        self.phase_offset = torch.randn(self.number_of_frames, requires_grad=True)
 
     def init_channel_power(self):
         """
         Internal function to initialize the channel power distribution for multi-color optimization.
+
+        Parameters
+        ------
+        None
+
+        Returns
+        ------
+        None
         """
         if self.method == "conventional":
             logger.warning("Scheme: Conventional")
@@ -207,14 +305,23 @@ class multi_color_hologram_optimizer:
 
     def init_optimizer(self, number_of_iterations=100):
         """
-        Internal function to set the optimizer.
+        Internal function to set the optimizer with Adam and polynomial learning rate scheduler.
+
+        Parameters
+        ------
+        number_of_iterations       : int
+                                      Total number of optimization iterations.
+
+        Returns
+        ------
+        None
         """
         optimization_variables = [self.phase]
         if self.optimize_peak_amplitude:
             optimization_variables.append(self.peak_amplitude)
         if self.method == "multi-color":
             optimization_variables.append(self.propagator.channel_power)
-        self.optimizer = torch.optim.Adam(optimization_variables, lr=self.learning_rate)
+        self.optimizer = torch.optim.AdamW(optimization_variables, lr=self.learning_rate)
         self.scheduler = torch.optim.lr_scheduler.PolynomialLR(
             self.optimizer,
             total_iters=number_of_iterations * 4,
@@ -243,6 +350,24 @@ class multi_color_hologram_optimizer:
     ):
         """
         Internal function to evaluate the loss.
+
+        Parameters
+        ------
+        input_image                : torch.tensor
+                                      Reconstructed image(s).
+        target_image               : torch.tensor
+                                      Target image(s).
+        plane_id                   : int
+                                      Depth plane index.
+        noise_ratio                : float
+                                      Noise ratio for injection.
+        inject_noise               : bool
+                                      Whether to inject noise into target images.
+
+        Returns
+        ------
+        loss                       : torch.tensor
+                                      Calculated loss value.
         """
         if self.loss_type == "conventional":
             loss = self.loss_function(input_image, target_image)
@@ -263,29 +388,43 @@ class multi_color_hologram_optimizer:
         Internal function to constrain a given phase similarly to double phase encoding.
 
         Parameters
-        ----------
+        ------
         phase                      : torch.tensor
-                                     Input phase values to be constrained.
+                                     Input phase values to be constrained (shape: [1, height]).
         phase_offset               : torch.tensor
-                                     Input phase offset value.
+                                     Phase offset value.
 
         Returns
-        -------
+        ------
         phase_only                 : torch.tensor
-                                     Constrained output phase.
+                                     Constrained phase value (shape: [1, height]).
+        loss_phase                 : torch.tensor
+                                     Total variation loss for constrained phase (scalar).
         """
         phase_zero_mean = phase - torch.mean(phase)
-        phase_low = torch.nan_to_num(phase_zero_mean - phase_offset, nan=2 * torch.pi)
-        phase_high = torch.nan_to_num(phase_zero_mean + phase_offset, nan=2 * torch.pi)
+        phase_low = torch.nan_to_num(
+               phase_zero_mean[
+                   :, 
+                   0: phase_zero_mean.shape[-1] // 2
+                ] - phase_offset, 
+            nan=2.0*torch.pi
+        )
+        phase_high = torch.nan_to_num(
+            phase_zero_mean[
+                :, 
+                phase_zero_mean.shape[-1] // 2: phase_zero_mean.shape[-1]
+                ] + phase_offset, 
+            nan=2.0*torch.pi
+        )
         phase_only = torch.zeros_like(phase)
         loss_phase = multi_scale_total_variation_loss(phase_low, levels=3)
         loss_phase += multi_scale_total_variation_loss(phase_high, levels=3)
         loss_phase += torch.std(phase_low)
         loss_phase += torch.std(phase_high)
-        phase_only[0::2, 0::2] = phase_low[0::2, 0::2]
-        phase_only[0::2, 1::2] = phase_high[0::2, 1::2]
-        phase_only[1::2, 0::2] = phase_high[1::2, 0::2]
-        phase_only[1::2, 1::2] = phase_low[1::2, 1::2]
+        phase_only[0::2, 0::2] = phase_low[0::2]
+        phase_only[1::2, 1::2] = phase_low[1::2]
+        phase_only[0::2, 1::2] = phase_high[0::2]
+        phase_only[1::2, 0::2] = phase_high[1::2]
         return phase_only, loss_phase
 
     def direct_phase_constrain(self, phase, phase_offset):
@@ -293,18 +432,20 @@ class multi_color_hologram_optimizer:
         Internal function to constrain a given phase.
 
         Parameters
-        ----------
+        ------
         phase                      : torch.tensor
-                                     Input phase values to be constrained.
+                                     Input phase values to be constrained (shape: [1, height]).
         phase_offset               : torch.tensor
-                                     Input phase offset value.
+                                     Phase offset value.
 
         Returns
-        -------
+        ------
         phase_only                 : torch.tensor
-                                     Constrained output phase.
+                                     Constrained output phase (shape: [1, height]).
+        loss_phase                 : torch.tensor
+                                     Total variation loss for constrained phase (scalar).
         """
-        phase_only = torch.nan_to_num(phase - phase_offset, nan=2 * torch.pi)
+        phase_only = torch.nan_to_num(phase - phase_offset, nan=2.0*torch.pi)
         loss_phase = multi_scale_total_variation_loss(phase_only, levels=3)
         return phase_only, loss_phase
 
@@ -315,16 +456,16 @@ class multi_color_hologram_optimizer:
         in unmasked regions.
 
         Parameters
-        ----------
+        ------
         phase                      : torch.tensor
                                      Input phase values (shape: [height, width]).
-        offset                     : tuple or float
+        offset                     : tuple
                                      Offset (x, y) in pixel values for the circular aperture center.
         diameter                   : float
                                      Diameter of the circular aperture in pixel values.
 
         Returns
-        -------
+        ------
         loss                       : torch.tensor
                                      Combined loss for homogeneous eyebox amplitude and suppression outside.
         """
@@ -363,7 +504,7 @@ class multi_color_hologram_optimizer:
         weights=[1.0, 1.0, 0.0],
         inject_noise=False,
         eyebox={
-            "offset" : 0.0,
+            "offset": 0.0,
             "diameter" : 100
             },
         noise_ratio=1e-3,
@@ -372,7 +513,7 @@ class multi_color_hologram_optimizer:
         Function to optimize multiplane phase-only holograms using stochastic gradient descent.
 
         Parameters
-        ----------
+        ------
         number_of_iterations       : float
                                       Number of iterations.
         weights                    : list
@@ -386,8 +527,8 @@ class multi_color_hologram_optimizer:
 
         Returns
         -------
-        hologram                   : torch.tensor
-                                      Optimised hologram phases.
+        hologram_phases            : torch.tensor
+                                     Optimised hologram phases (shape: [number_of_frames, height, width]).
         """
         hologram_phases = torch.zeros(
             self.number_of_frames,
@@ -420,15 +561,15 @@ class multi_color_hologram_optimizer:
                 loss_phase = 0.0
                 laser_powers = self.propagator.get_laser_powers()
                 for frame_id in range(self.number_of_frames):
-                    self.offset[frame_id] = self.phase[frame_id].detach().clone().mean()
                     if self.double_phase:
-                        phase, loss_phase = self.double_phase_constrain(
-                            self.phase[frame_id], self.offset[frame_id]
+                        phase, loss_phase_frame = self.double_phase_constrain(
+                            self.phase[frame_id], self.phase_offset[frame_id]
                         )
                     else:
-                        phase, loss_phase = self.direct_phase_constrain(
-                            self.phase[frame_id], self.offset[frame_id]
+                        phase, loss_phase_frame = self.direct_phase_constrain(
+                            self.phase[frame_id], self.phase_offset[frame_id]
                         )
+                    loss_phase += loss_phase_frame
                     if weights[2] > 0.0:
                         loss_eyebox += self.eyebox_constrain(phase, offset=eyebox['offset'], diameter=eyebox['diameter'])
                     phase_wrapped = phase % (2. * torch.pi)
@@ -510,7 +651,7 @@ class multi_color_hologram_optimizer:
         Function to optimize multiplane phase-only holograms.
 
         Parameters
-        ----------
+        ------
         number_of_iterations       : int
                                       Number of iterations.
         weights                    : list
