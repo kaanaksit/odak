@@ -501,7 +501,7 @@ class multi_color_hologram_optimizer:
     def gradient_descent(
         self,
         number_of_iterations=100,
-        weights=[1.0, 1.0, 0.0],
+        weights=None,
         inject_noise=False,
         eyebox={
             "offset": 0.0,
@@ -516,8 +516,8 @@ class multi_color_hologram_optimizer:
         ------
         number_of_iterations       : float
                                       Number of iterations.
-        weights                    : list
-                                      Weights for loss components [image, laser, eyebox, phase].
+        weights                    : dict
+                                      Loss weights as dictionary with keys: "image", "light", "eyebox", "phase".
         inject_noise               : bool
                                       When set True, this will inject noise with the given `noise_ratio` to the target images.
         eyebox                     : dict
@@ -530,6 +530,8 @@ class multi_color_hologram_optimizer:
         hologram_phases            : torch.tensor
                                      Optimised hologram phases (shape: [number_of_frames, height, width]).
         """
+        if weights is None:
+            weights = {"image": 1.0, "light": 1.0, "eyebox": 0.0, "phase": 0.0}
         hologram_phases = torch.zeros(
             self.number_of_frames,
             self.resolution[0],
@@ -556,7 +558,7 @@ class multi_color_hologram_optimizer:
                     self.resolution[1] * self.scale_factor,
                     device=self.device,
                 )
-                loss_laser = 0.0    
+                loss_light = 0.0    
                 loss_eyebox = 0.0
                 loss_phase = 0.0
                 laser_powers = self.propagator.get_laser_powers()
@@ -570,7 +572,7 @@ class multi_color_hologram_optimizer:
                             self.phase[frame_id], self.phase_offset[frame_id]
                         )
                     loss_phase += loss_phase_frame
-                    if weights[2] > 0.0:
+                    if weights["eyebox"] > 0.0:
                         loss_eyebox += self.eyebox_constrain(phase, offset=eyebox['offset'], diameter=eyebox['diameter'])
                     phase_wrapped = phase % (2. * torch.pi)
                     for channel_id in range(self.number_of_channels):
@@ -587,18 +589,18 @@ class multi_color_hologram_optimizer:
                         intensity = calculate_amplitude(reconstruction_field) ** 2
                         reconstruction_intensities[frame_id, channel_id] += intensity.squeeze(0).squeeze(0)
                     hologram_phases[frame_id] = phase_wrapped.detach().clone()
-                if weights[1] > 0.0:
-                    loss_laser += self.l2_loss(
-                        torch.amax(depth_target, dim=(1, 2)) * self.peak_amplitude,
-                        torch.sum(laser_powers, dim=0),
-                    )
-                    loss_laser += self.l2_loss(
-                        torch.tensor([self.number_of_frames * self.peak_amplitude]).to(
-                            self.device
-                        ),
-                        torch.sum(laser_powers).view(1,),
-                    )
-                    loss_laser += torch.cos(torch.min(torch.sum(laser_powers, dim=1)))
+                    if weights["light"] > 0.0:
+                        loss_light += self.l2_loss(
+                            torch.amax(depth_target, dim=(1, 2)) * self.peak_amplitude,
+                            torch.sum(laser_powers, dim=0),
+                        )
+                        loss_light += self.l2_loss(
+                            torch.tensor([self.number_of_frames * self.peak_amplitude]).to(
+                                self.device
+                            ),
+                            torch.sum(laser_powers).view(1,),
+                        )
+                        loss_light += torch.cos(torch.min(torch.sum(laser_powers, dim=1)))
                 reconstruction_intensity = torch.sum(reconstruction_intensities, dim=0)
                 loss_image = self.evaluate(
                     reconstruction_intensity,
@@ -607,19 +609,19 @@ class multi_color_hologram_optimizer:
                     inject_noise=inject_noise,
                     plane_id=depth_id,
                 )
-                loss = weights[0] * loss_image
-                if weights[1] > 0.0:
-                    loss += weights[1] * loss_laser
-                if weights[2] > 0.0:
-                    loss += weights[2] * loss_eyebox
-                if weights[3] > 0.0:
-                    loss += weights[3] * loss_phase
+                loss = weights["image"] * loss_image
+                if weights["light"] > 0.0:
+                    loss += weights["light"] * loss_light
+                if weights["eyebox"] > 0.0:
+                    loss += weights["eyebox"] * loss_eyebox
+                if weights["phase"] > 0.0:
+                    loss += weights["phase"] * loss_phase
                 loss.backward(retain_graph=True)
                 self.optimizer.step()
                 self.scheduler.step()
                 total_loss += loss.detach().item()
                 loss_image = loss_image.detach()
-                del loss_laser
+                del loss_light
                 del loss
             description = "Loss:{:.3f} Loss Image:{:.3f} Peak Amp:{:.1f} Learning rate:{:.4f}".format(
                 total_loss, loss_image.item(), self.peak_amplitude, learning_rate
@@ -638,7 +640,7 @@ class multi_color_hologram_optimizer:
     def optimize(
         self,
         number_of_iterations=100,
-        weights=[1.0, 1.0, 1.0, 0.0, 0.0],
+        weights=None,
         eyebox={
             "offset" : [0.0, 0.0],
             "diameter" : 100
@@ -654,8 +656,8 @@ class multi_color_hologram_optimizer:
         ------
         number_of_iterations       : int
                                       Number of iterations.
-        weights                    : list
-                                      Loss weights for [image, laser, eyebox, phase].
+        weights                    : dict
+                                      Loss weights as dictionary with keys: "image", "light", "eyebox", "phase".
         eyebox                     : dict
                                       Eyebox constraint parameters.
         bits                       : int
@@ -678,6 +680,8 @@ class multi_color_hologram_optimizer:
         peak_amplitude             : float
                                       Final optimized peak amplitude.
         """
+        if weights is None:
+            weights = {"image": 1.0, "light": 1.0, "eyebox": 1.0, "phase": 0.0}
         self.init_optimizer(number_of_iterations=number_of_iterations)
         hologram_phases = self.gradient_descent(
             number_of_iterations=number_of_iterations,
