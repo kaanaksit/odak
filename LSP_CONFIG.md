@@ -63,7 +63,7 @@ Run this in terminal from project root:
 python3 -c "import odak; print(odak.__version__)"
 ```
 
-Expected output: `0.2.7`
+Expected output: `0.2.8`
 
 ## Additional Notes
 
