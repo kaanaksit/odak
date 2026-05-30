@@ -59,6 +59,24 @@ def smooth_pad(field, size=None, method="center", smooth_factor=[0.5, 0.5]):
     ----------
     field_smooth_padded : torch.tensor
                           Smoothpadded version of the input field with gradual falloff.
+    
+    Examples
+    --------
+    >>> import torch
+    >>> from odak.learn.tools.matrix import smooth_pad
+    >>> 
+    >>> # Create a 100x100 field
+    >>> field = torch.ones(100, 100)
+    >>> 
+    >>> # Double the size with default smooth factor
+    >>> padded = smooth_pad(field)  # 200x200 output
+    >>> 
+    >>> # Pad to specific size with anisotropic falloff
+    >>> padded = smooth_pad(field, size=[200, 300], smooth_factor=[0.2, 0.6])
+    >>> # 200x300 output with gentle X-axis fade (0.2) and steep Y-axis fade (0.6)
+    >>> 
+    >>> # Place content at top-left corner
+    >>> padded = smooth_pad(field, size=[200, 200], method="left")
     """
     orig_resolution = field.shape
     orig_ndim = len(orig_resolution)
@@ -329,6 +347,23 @@ def zero_pad(field, size=None, method="center"):
     ----------
     field_zero_padded : torch.tensor
                         Zeropadded version of the input field.
+    
+    Examples
+    --------
+    >>> import torch
+    >>> from odak.learn.tools.matrix import zero_pad
+    >>> 
+    >>> # Create a 100x100 field
+    >>> field = torch.ones(100, 100)
+    >>> 
+    >>> # Double the size (default)
+    >>> padded = zero_pad(field)  # 200x200 output with content centered
+    >>> 
+    >>> # Pad to specific size
+    >>> padded = zero_pad(field, size=[200, 300])  # 200x300 output
+    >>> 
+    >>> # Place content at top-left corner
+    >>> padded = zero_pad(field, size=[200, 200], method="left")
     """
     orig_resolution = field.shape
     orig_ndim = len(orig_resolution)
@@ -423,6 +458,20 @@ def crop_center(field, size=None):
     ----------
     cropped     : torch.tensor
                   Cropped version of the input field.
+    
+    Examples
+    --------
+    >>> import torch
+    >>> from odak.learn.tools.matrix import crop_center
+    >>> 
+    >>> # Create a 200x200 field
+    >>> field = torch.ones(200, 200)
+    >>> 
+    >>> # Crop to half the size (default)
+    >>> cropped = crop_center(field)  # 100x100 output
+    >>> 
+    >>> # Crop to specific size
+    >>> cropped = crop_center(field, size=[50, 150])  # 50x150 output
     """
     orig_resolution = field.shape
     orig_ndim = len(orig_resolution)
