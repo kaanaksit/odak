@@ -56,7 +56,7 @@ def resize(image, multiplier=0.5, mode="nearest"):
     return new_image
 
 
-def load_image(fn, normalizeby=0.0, torch_style=False):
+def load_image(fn, normalizeby=255.0, torch_style=False):
     """
     Definition to load an image from a given location as a torch tensor.
 
