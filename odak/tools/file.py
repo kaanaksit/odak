@@ -274,6 +274,7 @@ def save_image(fn, img, cmin=0, cmax=255, color_depth=8):
     input_img[input_img > cmax] = cmax
     input_img /= cmax
     input_img = input_img * 1.0 * (2**color_depth - 1)
+    input_img = np.nan_to_num(input_img, nan=0.0, posinf=cmax, neginf=cmin)
     if color_depth == 8:
         input_img = input_img.astype(np.uint8)
     elif color_depth == 16:
