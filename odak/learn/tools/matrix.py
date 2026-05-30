@@ -40,7 +40,7 @@ def zero_pad(field, size=None, method="center"):
     Parameters
     ----------
     field             : torch.tensor
-                        Input field MxN or KxJxMxN or KxMxNxJ array.
+                        Input field MxN, CxMxN, 1xMxN, or 1x1xMxN array.
     size              : list
                         Size to be zeropadded (e.g., [m, n], last two dimensions only). 
                         If None, doubles the last two dimensions.
@@ -53,14 +53,33 @@ def zero_pad(field, size=None, method="center"):
                         Zeropadded version of the input field.
     """
     orig_resolution = field.shape
-    if len(field.shape) < 3:
+    orig_ndim = len(orig_resolution)
+    
+    channels_first = True
+    if orig_ndim == 3 and orig_resolution[-1] == 3:
+        channels_first = False
+    elif orig_ndim == 4 and orig_resolution[-1] == 3:
+        channels_first = False
+    
+    if orig_ndim == 2:
         field = field.unsqueeze(0)
+    elif orig_ndim == 3:
+        if orig_resolution[0] == 1:
+            field = field.squeeze(0)
+            field = field.unsqueeze(0)
+        elif not channels_first:
+            field = field.permute(2, 0, 1)
+    elif orig_ndim == 4:
+        if orig_resolution[0] == 1:
+            field = field.squeeze(0)
+            if not channels_first:
+                field = field.permute(2, 0, 1)
+        elif not channels_first:
+            field = field.permute(0, 3, 1, 2)
+    
     if len(field.shape) < 4:
         field = field.unsqueeze(0)
-    permute_flag = False
-    if field.shape[-1] < 5:
-        permute_flag = True
-        field = field.permute(0, 3, 1, 2)
+    
     if size is None:
         resolution = [
             field.shape[0],
@@ -84,12 +103,26 @@ def zero_pad(field, size=None, method="center"):
         ] = field
     elif method == "left":
         field_zero_padded[:, :, 0 : field.shape[-2], 0 : field.shape[-1]] = field
-    if permute_flag:
-        field_zero_padded = field_zero_padded.permute(0, 2, 3, 1)
+    
+    if not channels_first:
+        if len(orig_resolution) == 3:
+            field_zero_padded = field_zero_padded.squeeze(0)
+            field_zero_padded = field_zero_padded.permute(1, 2, 0)
+        elif len(orig_resolution) == 4:
+            field_zero_padded = field_zero_padded.permute(0, 2, 3, 1)
+    
     if len(orig_resolution) == 2:
         field_zero_padded = field_zero_padded.squeeze(0).squeeze(0)
-    if len(orig_resolution) == 3:
-        field_zero_padded = field_zero_padded.squeeze(0)
+    elif len(orig_resolution) == 3 and channels_first:
+        if orig_resolution[0] == 3:
+            field_zero_padded = field_zero_padded.squeeze(0)
+        elif orig_resolution[0] == 1:
+            field_zero_padded = field_zero_padded.squeeze(0)
+        else:
+            field_zero_padded = field_zero_padded.squeeze(0)
+    elif len(orig_resolution) == 4 and channels_first:
+        if orig_resolution[0] == 1:
+            field_zero_padded = field_zero_padded.squeeze(0)
     return field_zero_padded
 
 
@@ -103,7 +136,7 @@ def crop_center(field, size=None):
     Parameters
     ----------
     field       : torch.tensor
-                  Input field 2M x 2N or K x L x 2M x 2N or K x 2M x 2N x L array.
+                  Input field MxN, CxMxN, 1xMxN, or 1x1xMxN array.
     size        : list
                   Dimensions to crop with respect to center of the image (e.g., M x N or 1 x 1 x M x N).
                   If None, crops to half of the current size.
@@ -114,14 +147,33 @@ def crop_center(field, size=None):
                   Cropped version of the input field.
     """
     orig_resolution = field.shape
-    if len(field.shape) < 3:
+    orig_ndim = len(orig_resolution)
+    
+    channels_first = True
+    if orig_ndim == 3 and orig_resolution[-1] == 3:
+        channels_first = False
+    elif orig_ndim == 4 and orig_resolution[-1] == 3:
+        channels_first = False
+    
+    if orig_ndim == 2:
         field = field.unsqueeze(0)
+    elif orig_ndim == 3:
+        if orig_resolution[0] == 1:
+            field = field.squeeze(0)
+            field = field.unsqueeze(0)
+        elif not channels_first:
+            field = field.permute(2, 0, 1)
+    elif orig_ndim == 4:
+        if orig_resolution[0] == 1:
+            field = field.squeeze(0)
+            if not channels_first:
+                field = field.permute(2, 0, 1)
+        elif not channels_first:
+            field = field.permute(0, 3, 1, 2)
+    
     if len(field.shape) < 4:
         field = field.unsqueeze(0)
-    permute_flag = False
-    if field.shape[-1] < 5:
-        permute_flag = True
-        field = field.permute(0, 3, 1, 2)
+    
     if size is None:
         qx = int(field.shape[-2] // 4)
         qy = int(field.shape[-1] // 4)
@@ -134,13 +186,25 @@ def crop_center(field, size=None):
         hx = int(size[-2] // 2)
         hy = int(size[-1] // 2)
         cropped_padded = field[:, :, cx - hx : cx + hx, cy - hy : cy + hy]
-    cropped = cropped_padded
-    if permute_flag:
-        cropped = cropped.permute(0, 2, 3, 1)
+    
+    if not channels_first:
+        if len(orig_resolution) == 3:
+            cropped_padded = cropped_padded.squeeze(0)
+            cropped_padded = cropped_padded.permute(1, 2, 0)
+        elif len(orig_resolution) == 4:
+            cropped_padded = cropped_padded.permute(0, 2, 3, 1)
+    
     if len(orig_resolution) == 2:
         cropped = cropped_padded.squeeze(0).squeeze(0)
-    if len(orig_resolution) == 3:
+    elif len(orig_resolution) == 3 and channels_first:
         cropped = cropped_padded.squeeze(0)
+    elif len(orig_resolution) == 4 and channels_first:
+        if orig_resolution[0] == 1:
+            cropped = cropped_padded.squeeze(0)
+        else:
+            cropped = cropped_padded
+    else:
+        cropped = cropped_padded
     return cropped
 
 
