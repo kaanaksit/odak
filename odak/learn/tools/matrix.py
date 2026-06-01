@@ -32,12 +32,14 @@ def quantize(image_field, bits=8, limits=[0.0, 1.0]):
 
 def smooth_pad(field, size=None, method="center", smooth_factor=[0.5, 0.5]):
     """
-    Smooth pad a field to double its size or specified size with gradual transition.
+    Smooth pad a field to double its size or specified size with smooth transition (apodization).
     
-    This function pads a field with a smooth transition from the content edge to zero,
-    avoiding sharp edges. The transition rate is controllable along X and Y axes.
-    The original content area is preserved at full value, and the padding region shows
-    a smooth falloff from the content edge to zero at the canvas boundary.
+    This function implements a Tukey window (cosine-tapered window) to pad a field with a
+    smooth transition from the content edge to zero, avoiding sharp edges.
+    The original content area is preserved at full value.
+    The transition rate is controllable along X and Y axes.
+    If transition rate is not provided, a default transition is applied across
+    the entire padding region, reaching zero at the canvas boundary.
     
     Parameters
     ----------
@@ -54,7 +56,8 @@ def smooth_pad(field, size=None, method="center", smooth_factor=[0.5, 0.5]):
                           0 = gentle (slow falloff, high value at midpoint of padding)
                           1 = steep (fast falloff, low value at midpoint of padding)
                         Example: [0.2, 0.6] gives gentle X-axis falloff and steeper Y-axis falloff.
-
+                        If None, a default falloff covers the entire padding region.
+    
     Returns
     ----------
     field_smooth_padded : torch.tensor
@@ -80,32 +83,25 @@ def smooth_pad(field, size=None, method="center", smooth_factor=[0.5, 0.5]):
     """
     orig_resolution = field.shape
     orig_ndim = len(orig_resolution)
-    
+
     channels_first = True
     if orig_ndim == 3 and orig_resolution[-1] == 3:
         channels_first = False
     elif orig_ndim == 4 and orig_resolution[-1] == 3:
         channels_first = False
-    
+
     if orig_ndim == 2:
         field = field.unsqueeze(0)
     elif orig_ndim == 3:
-        if orig_resolution[0] == 1:
-            field = field.squeeze(0)
-            field = field.unsqueeze(0)
-        elif not channels_first:
+        if not channels_first:
             field = field.permute(2, 0, 1)
     elif orig_ndim == 4:
-        if orig_resolution[0] == 1:
-            field = field.squeeze(0)
-            if not channels_first:
-                field = field.permute(2, 0, 1)
-        elif not channels_first:
+        if not channels_first:
             field = field.permute(0, 3, 1, 2)
-    
+
     if len(field.shape) < 4:
         field = field.unsqueeze(0)
-    
+
     if size is None:
         resolution = [
             field.shape[0],
@@ -115,214 +111,97 @@ def smooth_pad(field, size=None, method="center", smooth_factor=[0.5, 0.5]):
         ]
     else:
         resolution = [field.shape[0], field.shape[1], size[0], size[1]]
-    
+
+    # Determine padding size, field resolution, smooth factors
     h, w = resolution[-2], resolution[-1]
     field_h, field_w = field.shape[-2], field.shape[-1]
-    sx, sy = smooth_factor
-    
-    # Place content in the center
-    field_smooth_padded = torch.zeros(resolution, device=field.device, dtype=field.dtype)
-    
+    sx, sy = smooth_factor if smooth_factor is not None else (None, None)
+
     if method == "center":
-        start_y = h // 2 - field_h // 2
-        start_x = w // 2 - field_w // 2
+        pad_h_top = (h - field_h) // 2
+        pad_h_bot = h - field_h - pad_h_top
+        pad_w_left = (w - field_w) // 2
+        pad_w_right = w - field_w - pad_w_left
     elif method == "left":
-        start_y, start_x = 0, 0
-    
-    field_smooth_padded[
-        :, :,
-        start_y : start_y + field_h,
-        start_x : start_x + field_w,
-    ] = field
-    
-    # For smooth falloff, we need to extend content values into padding region
-    # Create 1D falloff functions for each axis
-    def create_falloff_1d(size, content_start, content_end, factor):
-        """Create 1D falloff array that is 1 in content region and fades to 0 at edges."""
-        result = torch.ones(size, device=field.device, dtype=field.dtype)
-        
-        # Left margin
-        left_margin = content_start
-        if left_margin > 0:
-            for i in range(left_margin):
-                # Distance from content edge (content_start - 1)
-                dist = content_start - i
-                # Normalize: at dist=1 (adjacent to content), t=1 giving value=1; at dist=left_margin (edge), t=0 giving value=0
-                t = (dist - 1) / (left_margin - 1) if left_margin > 1 else 1.0
-                result[i] = torch.cos(torch.pi * (1 - t) * factor / 2.0) ** 2
-        
-        # Right margin
-        right_margin = size - content_end
-        if right_margin > 0:
-            for i in range(content_end, size):
-                dist = i - content_end + 1
-                t = (dist - 1) / (right_margin - 1) if right_margin > 1 else 1.0
-                result[i] = torch.cos(torch.pi * (1 - t) * factor / 2.0) ** 2
-        
-        return result
-    
-    # Actually, let me think about this more carefully
-    # The falloff should be: 1 at content edge, 0 at canvas edge
-    # For left margin: pixel at position i (0 <= i < content_start)
-    #   Distance from content edge = content_start - i
-    #   We want: at i = content_start - 1 (adjacent), value = 1
-    #            at i = 0 (edge), value = 0
-    #   So: t = (content_start - i - 1) / (content_start - 1)
-    #       value = cos(pi * t / 2)^2
-    #       At i = content_start - 1: t = 0, value = 1
-    #       At i = 0: t = 1, value = 0
-    
-    y_falloff = torch.ones(h, device=field.device, dtype=field.dtype)
-    x_falloff = torch.ones(w, device=field.device, dtype=field.dtype)
-    
-    def get_falloff_value(t, factor):
-        """Get falloff value: 1 at t=0 (content edge), 0 at t=1 (canvas edge).
-        
-        smooth_factor in [0, 1] controls falloff steepness using exponential mapping:
-        effective_exp = 100^factor
-        
-        Midpoint (t=0.5) falloff values:
-          factor=0.0 -> 1.0000 (no falloff)
-          factor=0.1 -> 0.58   (very gentle)
-          factor=0.2 -> 0.42   (gentle)
-          factor=0.3 -> 0.25   (moderate-gentle)
-          factor=0.4 -> 0.11   (moderate)
-          factor=0.5 -> 0.03   (moderate-steep)
-          factor=0.6 -> 0.004  (steep)
-          factor>=0.7 -> ~0    (very steep)
-        """
-        base = torch.cos(torch.pi * t / 2.0).clamp(min=0)
-        # Exponential mapping: 100^factor gives good visual spread
-        if factor <= 0:
-            effective_exp = 0.0
+        pad_h_top, pad_w_left = 0, 0
+        pad_h_bot = h - field_h
+        pad_w_right = w - field_w
+    else:
+        raise ValueError(f"Unknown method '{method}'. Expected 'center' or 'left'.")
+
+    def _rep_pad(t):
+        return torch.nn.functional.pad(t, (pad_w_left, pad_w_right, pad_h_top, pad_h_bot), mode='replicate')
+
+    # Replicate padding with no_grad to avoid affecting gradients in the content area
+    with torch.no_grad():
+        if field.is_complex():
+            rep = torch.complex(_rep_pad(field.real), _rep_pad(field.imag))
         else:
-            effective_exp = 100.0 ** factor
-        result = base ** effective_exp
-        # Debug print for t=0.5025 case
-        if abs(t.item() - 0.5025) < 0.001:
-            print(f"  get_falloff_value: t={t.item():.4f}, factor={factor:.4f}, base={base.item():.4f}, exp={effective_exp:.4f}, result={result.item():.4f}")
-        return result
+            rep = _rep_pad(field)
     
-    # Left y margin
-    if start_y > 0:
-        for i in range(start_y):
-            t = torch.tensor((start_y - i - 1) / (start_y - 1) if start_y > 1 else 1.0)
-            y_falloff[i] = get_falloff_value(t, sy)
-    
-    # Right y margin
-    if h - (start_y + field_h) > 0:
-        for i in range(start_y + field_h, h):
-            t = torch.tensor((i - (start_y + field_h)) / (h - start_y - field_h - 1) if (h - start_y - field_h) > 1 else 1.0)
-            y_falloff[i] = get_falloff_value(t, sy)
-    
-    # Left x margin
-    if start_x > 0:
-        for i in range(start_x):
-            t = torch.tensor((start_x - i - 1) / (start_x - 1) if start_x > 1 else 1.0)
-            x_falloff[i] = get_falloff_value(t, sx)
-    
-    # Right x margin  
-    if w - (start_x + field_w) > 0:
-        for i in range(start_x + field_w, w):
-            t = torch.tensor((i - (start_x + field_w)) / (w - start_x - field_w - 1) if (w - start_x - field_w) > 1 else 1.0)
-            x_falloff[i] = get_falloff_value(t, sx)
-    
-    # Result tensor
-    result = torch.zeros(resolution, device=field.device, dtype=field.dtype)
-    
-    # Copy content region
-    result[:, :, start_y:start_y+field_h, start_x:start_x+field_w] = field
-    
-    # Extend top row upward (horizontal strip)
-    if start_y > 0:
-        for i in range(start_y - 1, -1, -1):
-            t = torch.tensor((start_y - i - 1) / (start_y - 1) if start_y > 1 else 1.0)
-            falloff = get_falloff_value(t, sy)
-            result[:, :, i, start_x:start_x+field_w] = falloff * field[:, :, 0, :]
-    
-    # Extend bottom row downward
-    if h - (start_y + field_h) > 0:
-        for i in range(start_y + field_h, h):
-            t_val = (i - (start_y + field_h)) / (h - start_y - field_h - 1) if (h - start_y - field_h) > 1 else 1.0
-            t = torch.tensor(t_val)
-            falloff = get_falloff_value(t, sy)
-            if i == 500:  # Debug print for row 500
-                print(f"DEBUG: i={i}, t={t_val:.4f}, falloff={falloff.item():.4f}, field[:, -1, 100]={field[0, 0, -1, 100].item():.4f}")
-                print(f"DEBUG: Before assignment, result[0, 0, {i}, {start_x+100}] = {result[0, 0, i, start_x+100].item():.6f}")
-            result[:, :, i, start_x:start_x+field_w] = falloff * field[:, :, -1, :]
-            if i == 500:
-                print(f"DEBUG: After bottom extension, result[0, 0, {i}, {start_x+100}] = {result[0, 0, i, start_x+100].item():.6f}")
-    
-    # Extend left column leftward (vertical strip)
-    if start_x > 0:
-        for i in range(start_x - 1, -1, -1):
-            t = torch.tensor((start_x - i - 1) / (start_x - 1) if start_x > 1 else 1.0)
-            falloff = get_falloff_value(t, sx)
-            result[:, :, start_y:start_y+field_h, i] = falloff * field[:, :, :, 0]
-    
-    # Extend right column rightward
-    if w - (start_x + field_w) > 0:
-        for i in range(start_x + field_w, w):
-            t = torch.tensor((i - (start_x + field_w)) / (w - start_x - field_w - 1) if (w - start_x - field_w) > 1 else 1.0)
-            falloff = get_falloff_value(t, sx)
-            result[:, :, start_y:start_y+field_h, i] = falloff * field[:, :, :, -1]
-    
-    # Fill corner regions with product of x and y falloffs
-    # Top-left corner
-    if start_y > 0 and start_x > 0:
-        for yi in range(start_y):
-            t_y = torch.tensor((start_y - yi - 1) / (start_y - 1) if start_y > 1 else 1.0)
-            for xi in range(start_x):
-                t_x = torch.tensor((start_x - xi - 1) / (start_x - 1) if start_x > 1 else 1.0)
-                falloff = get_falloff_value(t_y, sy) * get_falloff_value(t_x, sx)
-                result[:, :, yi, xi] = falloff * field[:, :, 0, 0]
-    
-    # Top-right corner
-    if start_y > 0 and w - (start_x + field_w) > 0:
-        for yi in range(start_y):
-            t_y = torch.tensor((start_y - yi - 1) / (start_y - 1) if start_y > 1 else 1.0)
-            for xi in range(start_x + field_w, w):
-                t_x = torch.tensor((xi - (start_x + field_w)) / (w - start_x - field_w - 1) if (w - start_x - field_w) > 1 else 1.0)
-                falloff = get_falloff_value(t_y, sy) * get_falloff_value(t_x, sx)
-                result[:, :, yi, xi] = falloff * field[:, :, 0, -1]
-    
-    # Bottom-left corner
-    if h - (start_y + field_h) > 0 and start_x > 0:
-        for yi in range(start_y + field_h, h):
-            t_y = torch.tensor((yi - (start_y + field_h)) / (h - start_y - field_h - 1) if (h - start_y - field_h) > 1 else 1.0)
-            for xi in range(start_x):
-                t_x = torch.tensor((start_x - xi - 1) / (start_x - 1) if start_x > 1 else 1.0)
-                falloff = get_falloff_value(t_y, sy) * get_falloff_value(t_x, sx)
-                result[:, :, yi, xi] = falloff * field[:, :, -1, 0]
-    
-    # Bottom-right corner
-    if h - (start_y + field_h) > 0 and w - (start_x + field_w) > 0:
-        for yi in range(start_y + field_h, h):
-            t_y = torch.tensor((yi - (start_y + field_h)) / (h - start_y - field_h - 1) if (h - start_y - field_h) > 1 else 1.0)
-            for xi in range(start_x + field_w, w):
-                t_x = torch.tensor((xi - (start_x + field_w)) / (w - start_x - field_w - 1) if (w - start_x - field_w) > 1 else 1.0)
-                falloff = get_falloff_value(t_y, sy) * get_falloff_value(t_x, sx)
-                result[:, :, yi, xi] = falloff * field[:, :, -1, -1]
-    
+    # Keep gradient connections by zero padding
+    def _zero_pad(t):
+        return torch.nn.functional.pad(t, (pad_w_left, pad_w_right, pad_h_top, pad_h_bot))
+
+    if field.is_complex():
+        zero = torch.complex(_zero_pad(field.real), _zero_pad(field.imag))
+    else:
+        zero = _zero_pad(field)
+
+    # Combine zero padding (with gradients) and replicate padding (without gradients) using a content mask
+    content_mask = torch.zeros(field.shape[0], field.shape[1], h, w, device=field.device)
+    content_mask[:, :, pad_h_top:pad_h_top + field_h, pad_w_left:pad_w_left + field_w] = 1.0
+    padded = zero + rep * (1.0 - content_mask)
+
+    # Construct window function
+    def _taper_1d(total: int, left_start: int, size: int, factor=None) -> torch.Tensor:
+        device = field.device
+        w = torch.zeros(total, device=device, dtype=torch.float32)
+        w[left_start: left_start + size] = 1.0
+
+        if factor is None:
+            # Auto mode: cosine taper across full padding
+            if left_start > 0:
+                t = torch.arange(left_start, device=device, dtype=torch.float32)
+                w[:left_start] = 0.5 * (1.0 - torch.cos(torch.pi * t / left_start))
+            right_start = left_start + size
+            right_length = total - right_start
+            if right_length > 0:
+                t = torch.arange(right_length, device=device, dtype=torch.float32)
+                w[right_start:] = 0.5 * (1.0 + torch.cos(torch.pi * t / right_length))
+        else:
+            # Factor mode: power-cosine taper
+            effective_exp = 0.0 if factor <= 0 else (100.0 ** factor)
+            if left_start > 0:
+                t = torch.arange(left_start, device=device, dtype=torch.float32)
+                t_norm = (left_start - t) / left_start
+                w[:left_start] = torch.cos(torch.pi * t_norm / 2).clamp(min=0) ** effective_exp
+            right_start = left_start + size
+            right_length = total - right_start
+            if right_length > 0:
+                t = torch.arange(right_length, device=device, dtype=torch.float32)
+                t_norm = t / right_length
+                w[right_start:] = torch.cos(torch.pi * t_norm / 2).clamp(min=0) ** effective_exp
+        return w
+
+    # Apply window function to the padded field
+    wy = _taper_1d(h, pad_h_top, field_h, sy)
+    wx = _taper_1d(w, pad_w_left, field_w, sx)
+    window = torch.outer(wy, wx).unsqueeze(0).unsqueeze(0)      # (1, 1, h, w)
+    result = padded * window                                    # (B, C, h, w) × (1, 1, h, w)
+
     if not channels_first:
         if len(orig_resolution) == 3:
             result = result.squeeze(0)
             result = result.permute(1, 2, 0)
         elif len(orig_resolution) == 4:
             result = result.permute(0, 2, 3, 1)
-    
+
     if len(orig_resolution) == 2:
         result = result.squeeze(0).squeeze(0)
     elif len(orig_resolution) == 3 and channels_first:
-        if orig_resolution[0] == 3:
-            result = result.squeeze(0)
-        elif orig_resolution[0] == 1:
-            result = result.squeeze(0)
-        else:
-            result = result.squeeze(0)
-    elif len(orig_resolution) == 4 and channels_first:
-        if orig_resolution[0] == 1:
-            result = result.squeeze(0)
+        result = result.squeeze(0)
+
     return result
 
 
