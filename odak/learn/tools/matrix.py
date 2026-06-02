@@ -59,9 +59,14 @@ def smooth_pad(field, size=None, method="center", smooth_factor=None):
                         If None, a default falloff covers the entire padding region.
     
     Returns
-    ----------
+    -------
     field_smooth_padded : torch.tensor
                           Smoothpadded version of the input field with gradual falloff.
+    
+    Raises
+    ------
+    ValueError          : If target size is smaller than field size.
+    ValueError          : If method is not 'center' or 'left'.
     
     Examples
     --------
@@ -93,10 +98,17 @@ def smooth_pad(field, size=None, method="center", smooth_factor=None):
     if orig_ndim == 2:
         field = field.unsqueeze(0)
     elif orig_ndim == 3:
-        if not channels_first:
+        if orig_resolution[0] == 1:
+            field = field.squeeze(0)
+            field = field.unsqueeze(0)
+        elif not channels_first:
             field = field.permute(2, 0, 1)
     elif orig_ndim == 4:
-        if not channels_first:
+        if orig_resolution[0] == 1:
+            field = field.squeeze(0)
+            if not channels_first:
+                field = field.permute(2, 0, 1)
+        elif not channels_first:
             field = field.permute(0, 3, 1, 2)
 
     if len(field.shape) < 4:
@@ -158,17 +170,17 @@ def smooth_pad(field, size=None, method="center", smooth_factor=None):
     padded = torch.where(content_mask, zero, rep)
 
     # Construct window function
-    def _taper_1d(total: int, left_start: int, size: int, factor=None) -> torch.Tensor:
+    def _taper_1d(total: int, left_start: int, content_size: int, factor=None) -> torch.Tensor:
         device = field.device
         window = torch.zeros(total, device=device, dtype=torch.float32)
-        window[left_start: left_start + size] = 1.0
+        window[left_start: left_start + content_size] = 1.0
 
         if factor is None:
             # Auto mode: cosine taper across full padding
             if left_start > 0:
                 t = torch.arange(left_start, device=device, dtype=torch.float32)
                 window[:left_start] = 0.5 * (1.0 - torch.cos(torch.pi * t / max(left_start - 1, 1)))
-            right_start = left_start + size
+            right_start = left_start + content_size
             right_length = total - right_start
             if right_length > 0:
                 t = torch.arange(right_length, device=device, dtype=torch.float32)
@@ -180,7 +192,7 @@ def smooth_pad(field, size=None, method="center", smooth_factor=None):
                 t = torch.arange(left_start, device=device, dtype=torch.float32)
                 t_norm = (left_start - 1 - t) / max(left_start - 1, 1)
                 window[:left_start] = torch.cos(torch.pi * t_norm / 2).clamp(min=0) ** effective_exp
-            right_start = left_start + size
+            right_start = left_start + content_size
             right_length = total - right_start
             if right_length > 0:
                 t = torch.arange(right_length, device=device, dtype=torch.float32)
@@ -200,12 +212,19 @@ def smooth_pad(field, size=None, method="center", smooth_factor=None):
             result = result.permute(1, 2, 0)
         elif len(orig_resolution) == 4:
             result = result.permute(0, 2, 3, 1)
-
+    
     if len(orig_resolution) == 2:
         result = result.squeeze(0).squeeze(0)
     elif len(orig_resolution) == 3 and channels_first:
-        result = result.squeeze(0)
-
+        if orig_resolution[0] == 3:
+            result = result.squeeze(0)
+        elif orig_resolution[0] == 1:
+            result = result.squeeze(0)
+        else:
+            result = result.squeeze(0)
+    elif len(orig_resolution) == 4 and channels_first:
+        if orig_resolution[0] == 1:
+            result = result.squeeze(0)
     return result
 
 
