@@ -30,7 +30,7 @@ def quantize(image_field, bits=8, limits=[0.0, 1.0]):
     return quantized_field
 
 
-def smooth_pad(field, size=None, method="center", smooth_factor=[0.5, 0.5]):
+def smooth_pad(field, size=None, method="center", smooth_factor=None):
     """
     Smooth pad a field to double its size or specified size with smooth transition (apodization).
     
@@ -112,10 +112,14 @@ def smooth_pad(field, size=None, method="center", smooth_factor=[0.5, 0.5]):
     else:
         resolution = [field.shape[0], field.shape[1], size[0], size[1]]
 
-    # Determine padding size, field resolution, smooth factors
+    # Determine padding size, field resolution, smooth factors, datatype
     h, w = resolution[-2], resolution[-1]
     field_h, field_w = field.shape[-2], field.shape[-1]
     sx, sy = smooth_factor if smooth_factor is not None else (None, None)
+    real_dtype = field.real.dtype if field.is_complex() else field.dtype
+
+    if h < field_h or w < field_w:
+        raise ValueError(f"Target size ({h}, {w}) is smaller than field size ({field_h}, {field_w}).")
 
     if method == "center":
         pad_h_top = (h - field_h) // 2
@@ -132,14 +136,14 @@ def smooth_pad(field, size=None, method="center", smooth_factor=[0.5, 0.5]):
     def _rep_pad(t):
         return torch.nn.functional.pad(t, (pad_w_left, pad_w_right, pad_h_top, pad_h_bot), mode='replicate')
 
-    # Replicate padding with no_grad to avoid affecting gradients in the content area
+    # Replicated padding region is detached from the computation graph,
+    # preventing gradient accumulation/amplification at border pixels.
     with torch.no_grad():
         if field.is_complex():
             rep = torch.complex(_rep_pad(field.real), _rep_pad(field.imag))
         else:
             rep = _rep_pad(field)
-    
-    # Keep gradient connections by zero padding
+
     def _zero_pad(t):
         return torch.nn.functional.pad(t, (pad_w_left, pad_w_right, pad_h_top, pad_h_bot))
 
@@ -149,46 +153,46 @@ def smooth_pad(field, size=None, method="center", smooth_factor=[0.5, 0.5]):
         zero = _zero_pad(field)
 
     # Combine zero padding (with gradients) and replicate padding (without gradients) using a content mask
-    content_mask = torch.zeros(field.shape[0], field.shape[1], h, w, device=field.device)
-    content_mask[:, :, pad_h_top:pad_h_top + field_h, pad_w_left:pad_w_left + field_w] = 1.0
-    padded = zero + rep * (1.0 - content_mask)
+    content_mask = torch.zeros(field.shape[0], field.shape[1], h, w, device=field.device, dtype=torch.bool)
+    content_mask[:, :, pad_h_top:pad_h_top + field_h, pad_w_left:pad_w_left + field_w] = True
+    padded = torch.where(content_mask, zero, rep)
 
     # Construct window function
     def _taper_1d(total: int, left_start: int, size: int, factor=None) -> torch.Tensor:
         device = field.device
-        w = torch.zeros(total, device=device, dtype=torch.float32)
-        w[left_start: left_start + size] = 1.0
+        window = torch.zeros(total, device=device, dtype=torch.float32)
+        window[left_start: left_start + size] = 1.0
 
         if factor is None:
             # Auto mode: cosine taper across full padding
             if left_start > 0:
                 t = torch.arange(left_start, device=device, dtype=torch.float32)
-                w[:left_start] = 0.5 * (1.0 - torch.cos(torch.pi * t / left_start))
+                window[:left_start] = 0.5 * (1.0 - torch.cos(torch.pi * t / max(left_start - 1, 1)))
             right_start = left_start + size
             right_length = total - right_start
             if right_length > 0:
                 t = torch.arange(right_length, device=device, dtype=torch.float32)
-                w[right_start:] = 0.5 * (1.0 + torch.cos(torch.pi * t / right_length))
+                window[right_start:] = 0.5 * (1.0 + torch.cos(torch.pi * t / max(right_length - 1, 1)))
         else:
             # Factor mode: power-cosine taper
-            effective_exp = 0.0 if factor <= 0 else (100.0 ** factor)
+            effective_exp = 100.0 ** max(factor, 0.0)
             if left_start > 0:
                 t = torch.arange(left_start, device=device, dtype=torch.float32)
-                t_norm = (left_start - t) / left_start
-                w[:left_start] = torch.cos(torch.pi * t_norm / 2).clamp(min=0) ** effective_exp
+                t_norm = (left_start - 1 - t) / max(left_start - 1, 1)
+                window[:left_start] = torch.cos(torch.pi * t_norm / 2).clamp(min=0) ** effective_exp
             right_start = left_start + size
             right_length = total - right_start
             if right_length > 0:
                 t = torch.arange(right_length, device=device, dtype=torch.float32)
-                t_norm = t / right_length
-                w[right_start:] = torch.cos(torch.pi * t_norm / 2).clamp(min=0) ** effective_exp
-        return w
+                t_norm = t / max(right_length - 1, 1)
+                window[right_start:] = torch.cos(torch.pi * t_norm / 2).clamp(min=0) ** effective_exp
+        return window.to(real_dtype)
 
     # Apply window function to the padded field
     wy = _taper_1d(h, pad_h_top, field_h, sy)
     wx = _taper_1d(w, pad_w_left, field_w, sx)
-    window = torch.outer(wy, wx).unsqueeze(0).unsqueeze(0)      # (1, 1, h, w)
-    result = padded * window                                    # (B, C, h, w) × (1, 1, h, w)
+    wxy = torch.outer(wy, wx).unsqueeze(0).unsqueeze(0)      # (1, 1, h, w)
+    result = padded * wxy                                    # (B, C, h, w) × (1, 1, h, w)
 
     if not channels_first:
         if len(orig_resolution) == 3:
