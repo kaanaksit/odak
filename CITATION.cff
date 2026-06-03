@@ -87,7 +87,11 @@ authors:
   - family-names: Yang
     given-names: Xinge
     orcid:  https://orcid.org/0000-0002-4936-1347
-  
+
+  - family-names: Wang
+    given-names: Haolong
+    orcid:  https://orcid.org/0009-0003-5174-9230
+
 
 title: "Odak"
 version: 0.2.8
