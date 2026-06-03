@@ -76,7 +76,7 @@ def smooth_pad(field, size=None, method="center", smooth_factor=None):
     >>> # Create a 100x100 field
     >>> field = torch.ones(100, 100)
     >>> 
-    >>> # Double the size with default smooth factor
+    >>> # Double the size with default smooth padding (isotropic falloff covering entire padded area)
     >>> padded = smooth_pad(field)  # 200x200 output
     >>> 
     >>> # Pad to specific size with anisotropic falloff
