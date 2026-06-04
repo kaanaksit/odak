@@ -316,7 +316,7 @@ class multi_color_hologram_optimizer:
         ------
         None
         """
-        optimization_variables = [self.phase]
+        optimization_variables = [self.phase, self.phase_offset]
         if self.optimize_peak_amplitude:
             optimization_variables.append(self.peak_amplitude)
         if self.method == "multi-color":
@@ -563,15 +563,18 @@ class multi_color_hologram_optimizer:
                 loss_phase = 0.0
                 laser_powers = self.propagator.get_laser_powers()
                 for frame_id in range(self.number_of_frames):
-                    if self.double_phase:
-                        phase, loss_phase_frame = self.double_phase_constrain(
-                            self.phase[frame_id], self.phase_offset[frame_id]
-                        )
+                    if weights["phase"] > 0.0:
+                        if self.double_phase:
+                            phase, loss_phase_frame = self.double_phase_constrain(
+                                self.phase[frame_id], self.phase_offset[frame_id]
+                            )
+                        else:
+                            phase, loss_phase_frame = self.direct_phase_constrain(
+                                self.phase[frame_id], self.phase_offset[frame_id]
+                            )
+                        loss_phase += loss_phase_frame
                     else:
-                        phase, loss_phase_frame = self.direct_phase_constrain(
-                            self.phase[frame_id], self.phase_offset[frame_id]
-                        )
-                    loss_phase += loss_phase_frame
+                        phase = self.phase[frame_id]
                     if weights["eyebox"] > 0.0:
                         loss_eyebox += self.eyebox_constrain(phase, offset=eyebox['offset'], diameter=eyebox['diameter'])
                     phase_wrapped = phase % (2. * torch.pi)
