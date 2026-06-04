@@ -256,7 +256,7 @@ class multi_color_hologram_optimizer:
             requires_grad=False,
         ) * 2. * torch.pi
         self.phase.requires_grad = True
-        self.phase_offset = torch.randn(self.number_of_frames, requires_grad=True)
+        self.phase_offset = torch.randn(self.number_of_frames, 2, requires_grad=True)
 
     def init_channel_power(self):
         """
@@ -406,15 +406,15 @@ class multi_color_hologram_optimizer:
                phase_zero_mean[
                    :, 
                    0: phase_zero_mean.shape[-1] // 2
-                ] - phase_offset, 
-            nan=2.0*torch.pi
+                ] - phase_offset[0], 
+            nan=0.0
         )
         phase_high = torch.nan_to_num(
             phase_zero_mean[
                 :, 
                 phase_zero_mean.shape[-1] // 2: phase_zero_mean.shape[-1]
-                ] + phase_offset, 
-            nan=2.0*torch.pi
+                ] + phase_offset[1], 
+            nan=torch.pi
         )
         phase_only = torch.zeros_like(phase)
         loss_phase = multi_scale_total_variation_loss(phase_low, levels=3)
