@@ -123,9 +123,9 @@ class multi_color_hologram_optimizer:
                                       Scaling factor for hologram resolution.
         method                     : str
                                       Optimization method ("conventional" or "multi-color").
-    double_phase               : bool
-                                 Whether to use double phase encoding.
-    channel_power_filename     : str
+        double_phase               : bool
+                                     Whether to use double phase encoding.
+        channel_power_filename     : str
                                       Filename to load channel powers from (optional).
         device                     : torch.device
                                       Device to run optimization on.
@@ -416,11 +416,11 @@ class multi_color_hologram_optimizer:
                 ] + phase_offset[1], 
             nan=torch.pi
         )
-        phase_only = torch.zeros_like(phase)
         loss_phase = multi_scale_total_variation_loss(phase_low, levels=3)
         loss_phase += multi_scale_total_variation_loss(phase_high, levels=3)
         loss_phase += torch.std(phase_low)
         loss_phase += torch.std(phase_high)
+        phase_only = torch.zeros_like(phase)
         phase_only[0::2, 0::2] = phase_low[0::2]
         phase_only[1::2, 1::2] = phase_low[1::2]
         phase_only[0::2, 1::2] = phase_high[0::2]
@@ -445,7 +445,7 @@ class multi_color_hologram_optimizer:
         loss_phase                 : torch.tensor
                                      Total variation loss for constrained phase (scalar).
         """
-        phase_only = torch.nan_to_num(phase - phase_offset, nan=2.0*torch.pi)
+        phase_only = torch.nan_to_num(phase - torch.sum(phase_offset), nan=2.0*torch.pi)
         loss_phase = multi_scale_total_variation_loss(phase_only, levels=3)
         return phase_only, loss_phase
 
