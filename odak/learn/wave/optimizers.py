@@ -6,6 +6,7 @@ from .util import (
     generate_complex_field,
     calculate_amplitude,
     calculate_phase,
+    compose_double_phase,
     decompose_double_phase,
 )
 from ..tools import torch_load, multi_scale_total_variation_loss, quantize, circular_binary_mask, spatial_gradient
@@ -402,29 +403,14 @@ class multi_color_hologram_optimizer:
                                      Total variation loss for constrained phase (scalar).
         """
         phase_zero_mean = phase - torch.mean(phase)
-        phase_low = torch.nan_to_num(
-               phase_zero_mean[
-                   :, 
-                   0: phase_zero_mean.shape[-1] // 2
-                ] - phase_offset[0], 
-            nan=0.0
-        )
-        phase_high = torch.nan_to_num(
-            phase_zero_mean[
-                :, 
-                phase_zero_mean.shape[-1] // 2: phase_zero_mean.shape[-1]
-                ] + phase_offset[1], 
-            nan=torch.pi
-        )
+        phase_low, phase_high = decompose_double_phase(phase_zero_mean)
+        phase_low = torch.nan_to_num(phase_low - phase_offset[0], nan=0.0)
+        phase_high = torch.nan_to_num(phase_high + phase_offset[1], nan=torch.pi)
         loss_phase = multi_scale_total_variation_loss(phase_low, levels=3)
         loss_phase += multi_scale_total_variation_loss(phase_high, levels=3)
         loss_phase += torch.std(phase_low)
         loss_phase += torch.std(phase_high)
-        phase_only = torch.zeros_like(phase)
-        phase_only[0::2, 0::2] = phase_low[0::2]
-        phase_only[1::2, 1::2] = phase_low[1::2]
-        phase_only[0::2, 1::2] = phase_high[0::2]
-        phase_only[1::2, 0::2] = phase_high[1::2]
+        phase_only = compose_double_phase(phase_high, phase_low)
         return phase_only, loss_phase
 
     def direct_phase_constrain(self, phase, phase_offset):
