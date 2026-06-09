@@ -384,30 +384,33 @@ class multi_color_hologram_optimizer:
                 )
         return loss
 
-    def double_phase_constrain(self, phase, phase_offset):
+    def double_phase_constrain(self, phase, phase_offset, levels=6):
         """
         Internal function to constrain a given phase similarly to double phase encoding.
 
         Parameters
         ------
         phase                      : torch.tensor
-                                     Input phase values to be constrained (shape: [1, height]).
+                                      Input phase values to be constrained (shape: [1, height]).
         phase_offset               : torch.tensor
-                                     Phase offset value.
+                                      Phase offset value.
+        levels                     : int
+                                      Number of levels for multi-scale total variation loss.
 
         Returns
         ------
         phase_only                 : torch.tensor
-                                     Constrained phase value (shape: [1, height]).
+                                      Constrained phase value (shape: [1, height]).
         loss_phase                 : torch.tensor
-                                     Total variation loss for constrained phase (scalar).
+                                      Total variation loss for constrained phase (scalar).
         """
+
         phase_zero_mean = phase - torch.mean(phase)
         phase_low, phase_high = decompose_double_phase(phase_zero_mean)
         phase_low = torch.nan_to_num(phase_low - phase_offset, nan=0.0)
         phase_high = torch.nan_to_num(phase_high + phase_offset, nan=torch.pi)
-        loss_phase = multi_scale_total_variation_loss(phase_low, levels=3)
-        loss_phase += multi_scale_total_variation_loss(phase_high, levels=3)
+        loss_phase = multi_scale_total_variation_loss(phase_low, levels=levels)
+        loss_phase += multi_scale_total_variation_loss(phase_high, levels=levels)
         loss_phase += torch.std(phase_low)
         loss_phase += torch.std(phase_high)
         phase_only = compose_double_phase(phase_high, phase_low)
