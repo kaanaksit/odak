@@ -110,6 +110,10 @@ def save_image(fn, img, cmin=0.0, cmax=1.0, color_depth=8):
             new_img[:, :, i] = img[i].detach().clone()
         img = new_img.detach().clone()
     img = img.cpu().detach().numpy()
+    if torch.is_tensor(cmin):
+        cmin = cmin.detach()
+    if torch.is_tensor(cmax):
+        cmax = cmax.detach()
     return tools_save_image(fn, img, cmin=float(cmin), cmax=float(cmax), color_depth=color_depth)
 
 
