@@ -257,7 +257,7 @@ class multi_color_hologram_optimizer:
             requires_grad=False,
         ) * 2. * torch.pi
         self.phase.requires_grad = True
-        self.phase_offset = torch.randn(self.number_of_frames, 2, requires_grad=True)
+        self.phase_offset = torch.randn(self.number_of_frames, requires_grad=True)
 
     def init_channel_power(self):
         """
@@ -404,8 +404,8 @@ class multi_color_hologram_optimizer:
         """
         phase_zero_mean = phase - torch.mean(phase)
         phase_low, phase_high = decompose_double_phase(phase_zero_mean)
-        phase_low = torch.nan_to_num(phase_low - phase_offset[0], nan=0.0)
-        phase_high = torch.nan_to_num(phase_high + phase_offset[1], nan=torch.pi)
+        phase_low = torch.nan_to_num(phase_low - phase_offset, nan=0.0)
+        phase_high = torch.nan_to_num(phase_high + phase_offset, nan=torch.pi)
         loss_phase = multi_scale_total_variation_loss(phase_low, levels=3)
         loss_phase += multi_scale_total_variation_loss(phase_high, levels=3)
         loss_phase += torch.std(phase_low)
@@ -431,7 +431,7 @@ class multi_color_hologram_optimizer:
         loss_phase                 : torch.tensor
                                      Total variation loss for constrained phase (scalar).
         """
-        phase_only = torch.nan_to_num(phase - torch.sum(phase_offset), nan=2.0*torch.pi)
+        phase_only = torch.nan_to_num(phase - phase_offset, nan=2.0*torch.pi)
         loss_phase = multi_scale_total_variation_loss(phase_only, levels=3)
         return phase_only, loss_phase
 
