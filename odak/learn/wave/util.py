@@ -150,35 +150,20 @@ def decompose_double_phase(tensor):
     component_low : torch.Tensor
         Shape is [m, n//2] or [b, m, n//2].
     """
-    has_batch = False
-    original_dim = tensor.dim()
-
-    if original_dim == 3:
-        has_batch = True
-
-    # Work with 2D (h, w) tensor
-    h, w = tensor.shape[-2], tensor.shape[-1]
-    h = h - (h % 2)
-    w = w - (w % 2)
+    # Work with even dimensions to avoid mismatch
+    h = tensor.shape[-2] // 2 * 2
+    w = tensor.shape[-1] // 2 * 2
+    t = tensor[..., :h, :w]
 
     # Extract 2x2 patch positions
-    high_00 = tensor[..., 0:h:2, 0:w:2]    # even rows, even cols
-    high_11 = tensor[..., 1:h:2, 1:w:2]    # odd rows, odd cols
-    low_01 = tensor[..., 0:h:2, 1:w:2]     # even rows, odd cols
-    low_10 = tensor[..., 1:h:2, 0:w:2]     # odd rows, even cols
+    high_00 = t[..., 0::2, 0::2]    # even rows, even cols
+    high_11 = t[..., 1::2, 1::2]    # odd rows, odd cols
+    low_01 = t[..., 0::2, 1::2]     # even rows, odd cols
+    low_10 = t[..., 1::2, 0::2]     # odd rows, even cols
 
-    # Interleave along height to get [h, w//2]
-    component_high = torch.zeros(
-        (h, w // 2), dtype=tensor.dtype, device=tensor.device
-    )
-    component_low = torch.zeros(
-        (h, w // 2), dtype=tensor.dtype, device=tensor.device
-    )
-
-    component_high[0::2, :] = high_00
-    component_high[1::2, :] = high_11
-    component_low[0::2, :] = low_01
-    component_low[1::2, :] = low_10
+    # Interleave along height to get [h, w//2] using stack and reshape for differentiability/batching
+    component_high = torch.stack([high_00, high_11], dim=-2).reshape(*t.shape[:-2], h, w // 2)
+    component_low = torch.stack([low_01, low_10], dim=-2).reshape(*t.shape[:-2], h, w // 2)
 
     return component_high, component_low
 
@@ -202,37 +187,19 @@ def compose_double_phase(component_high, component_low):
     reconstructed : torch.Tensor
         Reconstructed tensor of shape [h, w] or [b, h, w].
     """
-    has_batch = component_high.dim() == 3
+    # Extract rows (each has shape ..., h/2, w/2)
+    h_even = component_high[..., 0::2, :]
+    h_odd = component_high[..., 1::2, :]
+    l_even = component_low[..., 0::2, :]
+    l_odd = component_low[..., 1::2, :]
 
-    h = component_high.shape[-2]
-    w_prime = component_high.shape[-1]
-    h_out, w_out = h, w_prime * 2
+    # Interleave columns to create rows of width w
+    row_even = torch.stack([h_even, l_even], dim=-1).reshape(*h_even.shape[:-1], -1)
+    row_odd = torch.stack([l_odd, h_odd], dim=-1).reshape(*h_odd.shape[:-1], -1)
 
-    # Extract rows
-    h_even = component_high[..., 0::2, :]    # even rows -> [0,0]
-    h_odd = component_high[..., 1::2, :]     # odd rows -> [1,1]
-    l_even = component_low[..., 0::2, :]     # even rows -> [0,1]
-    l_odd = component_low[..., 1::2, :]      # odd rows -> [1,0]
+    # Interleave rows to create grid of height h
+    shape = list(component_high.shape)
+    h, w_half = shape[-2], shape[-1]
+    reconstructed = torch.stack([row_even, row_odd], dim=-2).reshape(*shape[:-2], h, w_half * 2)
 
-    if has_batch:
-        batch_size = component_high.shape[0]
-        full = torch.zeros(
-            (batch_size, h_out, w_out), dtype=component_high.dtype,
-            device=component_high.device
-        )
-
-        full[:, 0::2, 0::2] = h_even
-        full[:, 0::2, 1::2] = l_even
-        full[:, 1::2, 0::2] = l_odd
-        full[:, 1::2, 1::2] = h_odd
-
-        return full
-    else:
-        reconstructed = torch.zeros(
-            (h_out, w_out), dtype=component_high.dtype, device=component_high.device
-        )
-        reconstructed[0::2, 0::2] = h_even
-        reconstructed[0::2, 1::2] = l_even
-        reconstructed[1::2, 0::2] = l_odd
-        reconstructed[1::2, 1::2] = h_odd
-        return reconstructed
+    return reconstructed
