@@ -3,7 +3,7 @@ import torch
 
 def wavenumber(wavelength):
     """
-    Definition for calculating the wavenumber of a plane wave.
+    Calculate the wavenumber of a plane wave.
 
     Parameters
     ----------
@@ -11,7 +11,7 @@ def wavenumber(wavelength):
                    Wavelength of a wave in mm.
 
     Returns
-    ----- --
+    -----
     k            : float
                    Wave number for a given wavelength.
     """
@@ -21,7 +21,7 @@ def wavenumber(wavelength):
 
 def calculate_phase(field, deg=False):
     """
-    Definition to calculate phase of a single or multiple given electric field(s).
+    Calculate phase of a single or multiple given electric field(s).
 
     Parameters
     ----------
@@ -31,9 +31,9 @@ def calculate_phase(field, deg=False):
                    If set True, the angles will be returned in degrees.
 
     Returns
-    ----- --
+    -----
     phase        : torch.float
-                   Phase or phases of electric field(s) in radians.
+                    Phase or phases of electric field(s) in radians (or degrees if deg=True).
     """
     phase = field.imag.atan2(field.real)
     if deg:
@@ -43,7 +43,7 @@ def calculate_phase(field, deg=False):
 
 def calculate_amplitude(field):
     """
-    Definition to calculate amplitude of a single or multiple given electric field(s).
+    Calculate amplitude of a single or multiple given electric field(s).
 
     Parameters
     ----------
@@ -51,7 +51,7 @@ def calculate_amplitude(field):
                    Electric fields or an electric field.
 
     Returns
-    ----- --
+    -----
     amplitude    : torch.float
                    Amplitude or amplitudes of electric field(s).
     """
@@ -61,7 +61,7 @@ def calculate_amplitude(field):
 
 def set_amplitude(field, amplitude):
     """
-    Definition to set amplitude of a given electric field(s) while preserving phase.
+    Set amplitude of a given electric field(s) while preserving phase.
 
     Parameters
     ----------
@@ -71,7 +71,7 @@ def set_amplitude(field, amplitude):
                    New amplitude or amplitudes.
 
     Returns
-    ----- --
+    -----
     new_field    : torch.cfloat
                    New electric field(s) with modified amplitude.
     """
@@ -82,7 +82,7 @@ def set_amplitude(field, amplitude):
 
 def generate_complex_field(amplitude, phase):
     """
-    Definition to generate complex field from amplitude and phase.
+    Generate complex field from amplitude and phase.
 
     Parameters
     ----------
@@ -92,7 +92,7 @@ def generate_complex_field(amplitude, phase):
                    Phase or phases in radians.
 
     Returns
-    ----- --
+    -----
     field        : torch.cfloat
                    Complex field or fields.
     """
@@ -106,7 +106,7 @@ def normalize_phase(
     range_max=2 * torch.pi,
 ):
     """
-    Definition to normalize phase values to a specified range.
+    Normalize phase values to a specified range.
 
     Parameters
     ----------
@@ -118,7 +118,7 @@ def normalize_phase(
                    Maximum value of the output range.
 
     Returns
-    ----- --
+    -----
     normalized   : torch.float
                    Normalized phase tensor.
     """
@@ -144,7 +144,7 @@ def decompose_double_phase(tensor):
         Input tensor of shape [m, n] or [b, m, n] where m and n are even.
 
     Returns
-    ----- --
+    -----
     component_high : torch.Tensor
         Shape is [m, n//2] or [b, m, n//2].
     component_low : torch.Tensor
@@ -183,7 +183,7 @@ def compose_double_phase(component_high, component_low):
         Shape is [h, w//2] or [b, h, w//2].
 
     Returns
-    ----- --
+    -----
     reconstructed : torch.Tensor
         Reconstructed tensor of shape [h, w] or [b, h, w].
     """
