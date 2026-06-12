@@ -17,7 +17,12 @@ class multi_color_hologram_optimizer:
     """
     A class for optimizing single or multi color holograms.
     For more details, see Kavaklı et al., SIGGRAPH ASIA 2023, Multi-color Holograms Improve Brightness in HOlographic Displays.
-    
+
+    Key methods:
+    - optimize: Main entry point for optimization and quantization.
+    - gradient_descent: Core SGD optimization loop.
+    - evaluate: Loss calculation for reconstructed images.
+
     Attributes
     ------
     device                     : torch.device
@@ -121,12 +126,10 @@ class multi_color_hologram_optimizer:
         double_phase               : bool
                                       Whether to use double phase encoding.
         scale_factor               : int
-                                      Scaling factor for hologram resolution.
-        method                     : str
-                                      Optimization method ("conventional" or "multi-color").
-        double_phase               : bool
-                                     Whether to use double phase encoding.
-        channel_power_filename     : str
+                                       Scaling factor for hologram resolution.
+                                       method                     : str
+                                       Optimization method ("conventional" or "multi-color").
+                                       channel_power_filename     : str
                                       Filename to load channel powers from (optional).
         device                     : torch.device
                                       Device to run optimization on.
@@ -333,6 +336,17 @@ class multi_color_hologram_optimizer:
     def init_loss_function(self, loss_function, reduction="sum"):
         """
         Internal function to set the loss function.
+
+        Parameters
+        ------
+        loss_function              : callable
+                                       Custom loss function (optional).
+        reduction                  : str
+                                       Reduction method for loss ("sum" or "mean").
+
+        Returns
+        ------
+        None
         """
         self.l2_loss = torch.nn.MSELoss(reduction=reduction)
         self.loss_type = "custom"
@@ -416,26 +430,29 @@ class multi_color_hologram_optimizer:
         phase_only = compose_double_phase(phase_high, phase_low)
         return phase_only, loss_phase
 
-    def direct_phase_constrain(self, phase, phase_offset):
+    def direct_phase_constrain(self, phase, phase_offset, levels=6):
         """
         Internal function to constrain a given phase.
 
         Parameters
         ------
         phase                      : torch.tensor
-                                     Input phase values to be constrained (shape: [1, height]).
+                                      Input phase values to be constrained (shape: [1, height]).
         phase_offset               : torch.tensor
-                                     Phase offset value.
+                                      Phase offset value.
+        levels                     : int
+                                      Number of levels for multi-scale total variation loss.
 
         Returns
         ------
         phase_only                 : torch.tensor
-                                     Constrained output phase (shape: [1, height]).
+                                      Constrained output phase (shape: [1, height]).
         loss_phase                 : torch.tensor
-                                     Total variation loss for constrained phase (scalar).
+                                      Total variation loss for constrained phase (scalar).
         """
-        phase_only = torch.nan_to_num(phase - phase_offset, nan=2.0*torch.pi)
-        loss_phase = multi_scale_total_variation_loss(phase_only, levels=3)
+        phase_zero_mean = phase - torch.mean(phase)
+        phase_only = torch.nan_to_num(phase - phase_offset, nan=torch.pi)
+        loss_phase = multi_scale_total_variation_loss(phase_only, levels=levels)
         return phase_only, loss_phase
 
     def eyebox_constrain(self, phase, offset, diameter):
