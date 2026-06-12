@@ -16,7 +16,7 @@ from ...log import logger
 class multi_color_hologram_optimizer:
     """
     A class for optimizing single or multi color holograms.
-    For more details, see Kavaklı et al., SIGGRAPH ASIA 2023, Multi-color Holograms Improve Brightness in HOlographic Displays.
+    For more details, see Kavaklı et al., SIGGRAPH ASIA 2023, Multi-color Holograms Improve Brightness in Holographic Displays.
 
     Key methods:
     - optimize: Main entry point for optimization and quantization.
@@ -164,13 +164,10 @@ class multi_color_hologram_optimizer:
         self.double_phase = double_phase
         self.channel_power_filename = channel_power_filename
         self.method = method
-        if self.method != "conventional" and self.method != "multi-color":
-            logger.warning(
-                "Unknown optimization method. Options are conventional or multi-color."
+        if self.method not in ["conventional", "multi-color"]:
+            raise ValueError(
+                f"Unknown optimization method '{self.method}'. Options are 'conventional' or 'multi-color'."
             )
-            import sys
-
-            sys.exit()
         self.peak_amplitude = peak_amplitude
         self.optimize_peak_amplitude = optimize_peak_amplitude
         if self.optimize_peak_amplitude:
@@ -627,11 +624,11 @@ class multi_color_hologram_optimizer:
                     loss += weights["phase"] * loss_phase
                 loss.backward(retain_graph=True)
                 self.optimizer.step()
-                self.scheduler.step()
                 total_loss += loss.detach().item()
                 loss_image = loss_image.detach()
                 del loss_light
                 del loss
+            self.scheduler.step()
             description = "Loss:{:.3f} Loss Image:{:.3f} Peak Amp:{:.1f} Learning rate:{:.4f}".format(
                 total_loss, loss_image.item(), self.peak_amplitude, learning_rate
             )
@@ -707,8 +704,8 @@ class multi_color_hologram_optimizer:
             * 2
             * torch.pi
         )
-        torch.no_grad()
-        reconstruction_intensities = self.propagator.reconstruct(hologram_phases)
+        with torch.no_grad():
+            reconstruction_intensities = self.propagator.reconstruct(hologram_phases)
         laser_powers = self.propagator.get_laser_powers()
         channel_powers = self.propagator.channel_power
         logger.warning("Final peak amplitude: {}".format(self.peak_amplitude))
