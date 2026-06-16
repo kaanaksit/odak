@@ -164,9 +164,9 @@ class multi_color_hologram_optimizer:
         self.double_phase = double_phase
         self.channel_power_filename = channel_power_filename
         self.method = method
-        if self.method not in ["conventional", "multi-color", "full complex conventional", "full complex multi-color"]:
+        if self.method not in ["conventional", "multi-color", "full_complex_conventional", "full_complex_multi-color"]:
             raise ValueError(
-                f"Unknown optimization method '{self.method}'. Options are conventional, multi-color, full complex conventional and full complex multi-color."
+                f"Unknown optimization method '{self.method}'. Options are conventional, multi-color, full_complex_conventional and full_complex_multi-color."
             )
         logger.info("Scheme: {}".format(self.method))
         self.peak_amplitude = peak_amplitude
@@ -210,11 +210,11 @@ class multi_color_hologram_optimizer:
         ------
         None
         """
-        if self.method in ["conventional", "full complex conventional"]:
+        if self.method in ["conventional", "full_complex_conventional"]:
             self.phase_scale = torch.tensor(
                 [1.0, 1.0, 1.0], requires_grad=False, device=self.device
             )
-        elif self.method in ["multi-color", "full complex multi-color"]:
+        elif self.method in ["multi-color", "full_complex_multi-color"]:
             self.phase_scale = torch.tensor(
                 [1.0, 1.0, 1.0], requires_grad=False, device=self.device
             )
@@ -240,7 +240,7 @@ class multi_color_hologram_optimizer:
             device=self.device,
         )
         self.amplitude[:, :: self.scale_factor, :: self.scale_factor] = 1.0
-        if self.method in ["full complex conventional", "full complex multi-color"]:
+        if self.method in ["full_complex_conventional", "full_complex_multi-color"]:
             self.amplitude.requires_grad = True
 
     def init_phase(self):
@@ -277,14 +277,14 @@ class multi_color_hologram_optimizer:
         ------
         None
         """
-        if self.method in ["conventional", "full complex conventional"]:
+        if self.method in ["conventional", "full_complex_conventional"]:
             self.channel_power = torch.eye(
                 self.number_of_frames,
                 self.number_of_channels,
                 device=self.device,
                 requires_grad=False,
             )
-        elif self.method in ["multi-color", "full complex multi-color"]:
+        elif self.method in ["multi-color", "full_complex_multi-color"]:
             self.channel_power = torch.ones(
                 self.number_of_frames,
                 self.number_of_channels,
@@ -296,9 +296,9 @@ class multi_color_hologram_optimizer:
             self.channel_power.requires_grad = False
             self.channel_power[self.channel_power < 0.0] = 0.0
             self.channel_power[self.channel_power > 1.0] = 1.0
-            if self.method in ["multi-color", "full complex multi-color"]:
+            if self.method in ["multi-color", "full_complex_multi-color"]:
                 self.channel_power.requires_grad = True
-            if self.method in ["conventional", "full complex conventional"]:
+            if self.method in ["conventional", "full_complex_conventional"]:
                 self.channel_power = torch.abs(torch.cos(self.channel_power))
             logger.info("Channel powers:")
             logger.info(self.channel_power)
@@ -325,9 +325,9 @@ class multi_color_hologram_optimizer:
             optimization_variables.append(self.peak_amplitude)
         if self.method == "multi-color":
             optimization_variables.append(self.propagator.channel_power)
-        elif self.method == "full complex conventional":
+        elif self.method == "full_complex_conventional":
             optimization_variables.append(self.amplitude)
-        elif self.method == "full complex multi-color":
+        elif self.method == "full_complex_multi-color":
             optimization_variables.append(self.propagator.channel_power, self.amplitude)
         self.optimizer = torch.optim.AdamW(optimization_variables, lr=self.learning_rate)
         self.scheduler = torch.optim.lr_scheduler.PolynomialLR(
