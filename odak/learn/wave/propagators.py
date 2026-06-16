@@ -231,9 +231,9 @@ class propagator:
         laser_power      : torch.tensor
                            Laser powers.
         """
-        if self.method == "conventional":
+        if self.method in ["conventional", "full complex conventional"]:
             laser_power = self.channel_power
-        if self.method == "multi-color":
+        if self.method in ["multi-color", "full complex multi-color"]:
             laser_power = torch.abs(torch.cos(self.channel_power))
         return laser_power
 

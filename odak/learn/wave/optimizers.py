@@ -164,10 +164,11 @@ class multi_color_hologram_optimizer:
         self.double_phase = double_phase
         self.channel_power_filename = channel_power_filename
         self.method = method
-        if self.method not in ["conventional", "multi-color"]:
+        if self.method not in ["conventional", "multi-color", "full complex conventional", "full complex multi-color"]:
             raise ValueError(
-                f"Unknown optimization method '{self.method}'. Options are 'conventional' or 'multi-color'."
+                f"Unknown optimization method '{self.method}'. Options are conventional, multi-color, full complex conventional and full complex multi-color."
             )
+        logger.info("Scheme: {}".format(self.method))
         self.peak_amplitude = peak_amplitude
         self.optimize_peak_amplitude = optimize_peak_amplitude
         if self.optimize_peak_amplitude:
@@ -208,14 +209,15 @@ class multi_color_hologram_optimizer:
         ------
         None
         """
-        if self.method == "conventional":
+        if self.method in ["conventional", "full complex conventional"]:
             self.phase_scale = torch.tensor(
                 [1.0, 1.0, 1.0], requires_grad=False, device=self.device
             )
-        if self.method == "multi-color":
+        elif self.method in ["multi-color", "full complex multi-color"]:
             self.phase_scale = torch.tensor(
                 [1.0, 1.0, 1.0], requires_grad=False, device=self.device
             )
+
 
     def init_amplitude(self):
         """
@@ -230,12 +232,15 @@ class multi_color_hologram_optimizer:
         None
         """
         self.amplitude = torch.zeros(
+            self.number_of_channels,
             self.resolution[0] * self.scale_factor,
             self.resolution[1] * self.scale_factor,
             requires_grad=False,
             device=self.device,
         )
-        self.amplitude[:: self.scale_factor, :: self.scale_factor] = 1.0
+        self.amplitude[:, :: self.scale_factor, :: self.scale_factor] = 1.0
+        if self.method in ["full complex conventional", "full complex multi-color"]:
+            self.amplitude.requires_grad = True
 
     def init_phase(self):
         """
@@ -271,17 +276,14 @@ class multi_color_hologram_optimizer:
         ------
         None
         """
-        if self.method == "conventional":
-            logger.warning("Scheme: Conventional")
+        if self.method in ["conventional", "full complex conventional"]:
             self.channel_power = torch.eye(
                 self.number_of_frames,
                 self.number_of_channels,
                 device=self.device,
                 requires_grad=False,
             )
-
-        elif self.method == "multi-color":
-            logger.warning("Scheme: Multi-color")
+        elif self.method in ["multi-color", "full complex multi-color"]:
             self.channel_power = torch.ones(
                 self.number_of_frames,
                 self.number_of_channels,
@@ -293,13 +295,13 @@ class multi_color_hologram_optimizer:
             self.channel_power.requires_grad = False
             self.channel_power[self.channel_power < 0.0] = 0.0
             self.channel_power[self.channel_power > 1.0] = 1.0
-            if self.method == "multi-color":
+            if self.method in ["multi-color", "full complex multi-color"]:
                 self.channel_power.requires_grad = True
-            if self.method == "conventional":
+            if self.method in ["conventional", "full complex conventional"]:
                 self.channel_power = torch.abs(torch.cos(self.channel_power))
-            logger.warning("Channel powers:")
-            logger.warning(self.channel_power)
-            logger.warning(
+            logger.info("Channel powers:")
+            logger.info(self.channel_power)
+            logger.info(
                 "Channel powers loaded from {}.".format(self.channel_power_filename)
             )
         self.propagator.set_laser_powers(self.channel_power)
@@ -322,6 +324,10 @@ class multi_color_hologram_optimizer:
             optimization_variables.append(self.peak_amplitude)
         if self.method == "multi-color":
             optimization_variables.append(self.propagator.channel_power)
+        elif self.method == "full complex conventional":
+            optimization_variables.append(self.amplitude)
+        elif self.method == "full complex multi-color":
+            optimization_variables.append(self.propagator.channel_power, self.amplitude)
         self.optimizer = torch.optim.AdamW(optimization_variables, lr=self.learning_rate)
         self.scheduler = torch.optim.lr_scheduler.PolynomialLR(
             self.optimizer,
@@ -541,6 +547,12 @@ class multi_color_hologram_optimizer:
             self.resolution[1],
             device=self.device,
         )
+        hologram_amplitudes = torch.zeros(
+            self.number_of_channels,
+            self.resolution[0],
+            self.resolution[1],
+            device=self.device,
+        )
         t = tqdm(range(number_of_iterations), leave=False, dynamic_ncols=True)
         if self.optimize_peak_amplitude:
             peak_amp_cache = self.peak_amplitude.item()
@@ -582,11 +594,11 @@ class multi_color_hologram_optimizer:
                         loss_eyebox += self.eyebox_constrain(phase, offset=eyebox['offset'], diameter=eyebox['diameter'])
                     phase_wrapped = phase % (2. * torch.pi)
                     for channel_id in range(self.number_of_channels):
-                        phase_scaled = torch.zeros_like(self.amplitude)
+                        phase_scaled = torch.zeros_like(self.amplitude[channel_id])
                         phase_scaled[:: self.scale_factor, :: self.scale_factor] = phase_wrapped
                         laser_power = laser_powers[frame_id][channel_id]
                         hologram = generate_complex_field(
-                            laser_power * self.amplitude,
+                            laser_power * self.amplitude[channel_id],
                             phase_scaled * self.phase_scale[channel_id],
                         )
                         reconstruction_field = self.propagator(
@@ -594,6 +606,7 @@ class multi_color_hologram_optimizer:
                         )
                         intensity = calculate_amplitude(reconstruction_field) ** 2
                         reconstruction_intensities[frame_id, channel_id] += intensity.squeeze(0).squeeze(0)
+                    hologram_amplitudes[channel_id] = self.amplitude[channel_id].detach().clone()
                     hologram_phases[frame_id] = phase_wrapped.detach().clone()
                     if weights["light"] > 0.0:
                         loss_light += self.l2_loss(
@@ -641,7 +654,7 @@ class multi_color_hologram_optimizer:
             del phase
             del hologram
         logger.warning(description)
-        return hologram_phases.detach()
+        return hologram_amplitudes.detach(), hologram_phases.detach()
 
     def optimize(
         self,
@@ -689,7 +702,10 @@ class multi_color_hologram_optimizer:
         if weights is None:
             weights = {"image": 1.0, "light": 1.0, "eyebox": 1.0, "phase": 0.0}
         self.init_optimizer(number_of_iterations=number_of_iterations)
-        hologram_phases = self.gradient_descent(
+        (
+            hologram_amplitudes,
+            hologram_phases 
+        )= self.gradient_descent(
             number_of_iterations=number_of_iterations,
             noise_ratio=noise_ratio,
             inject_noise=inject_noise,
@@ -711,6 +727,7 @@ class multi_color_hologram_optimizer:
         logger.warning("Final peak amplitude: {}".format(self.peak_amplitude))
         logger.warning("Laser powers: {}".format(laser_powers))
         return (
+            hologram_amplitudes,
             hologram_phases,
             reconstruction_intensities,
             laser_powers,

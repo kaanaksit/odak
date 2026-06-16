@@ -13,7 +13,7 @@ def test_weights_dictionary():
         resolution=resolution,
         wavelengths=wavelengths,
         pixel_pitch=8e-6,
-        number_of_frames=2,
+        number_of_frames=3,
         number_of_depth_layers=1,
         volume_depth=0.01,
         image_location_offset=0.005,
@@ -26,7 +26,7 @@ def test_weights_dictionary():
         resolution=resolution,
         targets=targets,
         propagator=prop,
-        number_of_frames=2,
+        number_of_frames=3,
         number_of_depth_layers=1,
         method="multi-color",
         device="cpu",
@@ -44,8 +44,8 @@ def test_weights_dictionary():
         weights=weights,
     )
     
-    assert len(result) == 5
-    assert result[0].shape[0] == 2
+    assert len(result) == 6
+    assert result[0].shape[0] == len(wavelengths)
 
 
 def test_weights_default():
@@ -82,7 +82,7 @@ def test_weights_default():
         weights=None,
     )
     
-    assert len(result) == 5
+    assert len(result) == 6
 
 
 def test_weights_with_eyebox():
@@ -127,7 +127,7 @@ def test_weights_with_eyebox():
         eyebox={"offset": [0.0, 0.0], "diameter": 50},
     )
     
-    assert len(result) == 5
+    assert len(result) == 6
 
 
 if __name__ == "__main__":
