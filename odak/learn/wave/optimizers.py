@@ -180,6 +180,7 @@ class multi_color_hologram_optimizer:
         self.init_loss_function(loss_function, reduction=reduction)
         self.init_amplitude()
         self.init_phase_scale()
+        self.activation = torch.nn.ReLU()
 
     def init_peak_amplitude_scale(self):
         """
@@ -598,7 +599,7 @@ class multi_color_hologram_optimizer:
                         phase_scaled[:: self.scale_factor, :: self.scale_factor] = phase_wrapped
                         laser_power = laser_powers[frame_id][channel_id]
                         hologram = generate_complex_field(
-                            laser_power * self.amplitude[channel_id],
+                            laser_power * self.activation(self.amplitude[channel_id]),
                             phase_scaled * self.phase_scale[channel_id],
                         )
                         reconstruction_field = self.propagator(
@@ -606,7 +607,7 @@ class multi_color_hologram_optimizer:
                         )
                         intensity = calculate_amplitude(reconstruction_field) ** 2
                         reconstruction_intensities[frame_id, channel_id] += intensity.squeeze(0).squeeze(0)
-                    hologram_amplitudes[channel_id] = self.amplitude[channel_id].detach().clone()
+                        hologram_amplitudes[channel_id] = self.activation(self.amplitude[channel_id]).detach().clone()
                     hologram_phases[frame_id] = phase_wrapped.detach().clone()
                     if weights["light"] > 0.0:
                         loss_light += self.l2_loss(
