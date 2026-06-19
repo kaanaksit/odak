@@ -215,6 +215,7 @@ If you have used `odak` in your research project, please consider citing any of 
 ## ⚙️ Sample Projects that use Odak
 Here are some sample projects that use `odak`:
 
+* [Complex-Valued 2D Gaussian Representation for Computer-Generated Holography](https://complightlab.com/publications/complex_valued_2d_gaussians/)
 * [Compressing Double Phase Holograms using 2D Gaussians](https://complightlab.com/publications/compressing_double_phase_gs/)
 * [Complex-Valued Holographic Radiance Fields](https://complightlab.com/publications/complex_valued_holographic_radiance_fields/)
 * [Learned Display Radiance Fields with Lensless Cameras](https://complightlab.com/publications/lensless_display_radiance_field/)
