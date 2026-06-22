@@ -1,15 +1,19 @@
 """
 ``odak.learn.wave.complex_gaussians``
 
-Provides complex-valued 3D Gaussian splatting primitives for holographic rendering.
-This module implements the core Gaussian representation and wave-based rendering
-pipeline from "Complex Valued Holographic Radiance Fields" as a pure PyTorch
-implementation without external dependencies (no pytorch3d or CUDA extensions).
+Provides complex-valued Gaussian splatting primitives for holographic rendering.
+This module implements both the 3D scene representation from "Complex Valued
+Holographic Radiance Fields" and the 2D per-plane representation from
+"Complex-Valued 2D Gaussian Representation for Computer-Generated Holography",
+as a pure PyTorch implementation without external dependencies (no pytorch3d or
+CUDA extensions).
 
 References
 ----------
 Zhan, Y etal. 2025. ACM TOG
 Complex Valued Holographic Radiance Fields.
+Zhan, Y etal. 2026. ECCV
+Complex-Valued 2D Gaussian Representation for Computer-Generated Holography.
 """
 
 import math
@@ -1205,3 +1209,340 @@ class Scene:
         )
 
         return hologram_complex, plane_field
+
+
+class complex_2d_gaussians(torch.nn.Module):
+    """
+    Complex-valued 2-D Gaussian primitives for holographic rendering.
+
+    Each Gaussian is parameterised by a 2-D mean (in ``atanh`` space), a
+    rotation angle, log-scales, per-channel colour amplitudes, per-channel
+    phases, and opacity. Unlike :class:`complex_3d_gaussians`, the Gaussians
+    live directly on the hologram plane (no perspective projection), following
+    a per-plane propagation scheme.
+
+    Parameters
+    ----------
+    num_points    : int
+                    Number of Gaussians.
+    img_size      : tuple of int
+                    ``(W, H)`` of the hologram plane.
+    device        : str
+                    Torch device string, e.g. ``"cuda:0"`` or ``"cpu"``.
+    merge_opacity : bool, optional
+                    If ``True`` all opacities are fixed to one (default:
+                    ``False``).
+    """
+
+    def __init__(
+        self,
+        num_points: int,
+        img_size: Tuple[int, int],
+        device: str,
+        merge_opacity: bool = False,
+    ):
+        super(complex_2d_gaussians, self).__init__()
+
+        self.device = device
+        self.img_size = img_size
+        self.merge_opacity = merge_opacity
+
+        data = self._initialize(num_points, img_size)
+
+        self.register_parameter(
+            "means_2d", torch.nn.Parameter(data["means_2d"], requires_grad=False)
+        )
+        self.register_parameter(
+            "pre_act_scales",
+            torch.nn.Parameter(data["pre_act_scales"], requires_grad=False),
+        )
+        self.register_parameter(
+            "pre_act_rotation",
+            torch.nn.Parameter(data["pre_act_rotation"], requires_grad=False),
+        )
+        self.register_parameter(
+            "colours", torch.nn.Parameter(data["colours"], requires_grad=False)
+        )
+        self.register_parameter(
+            "pre_act_phase",
+            torch.nn.Parameter(data["pre_act_phase"], requires_grad=False),
+        )
+        self.register_parameter(
+            "pre_act_opacities",
+            torch.nn.Parameter(data["pre_act_opacities"], requires_grad=False),
+        )
+        self.to(self.device)
+
+    def __len__(self):
+        return len(self.means_2d)
+
+    def _initialize(self, num_points: int, img_size: Tuple[int, int]):
+        """
+        Build the raw (pre-activation) Gaussian parameters.
+
+        Parameters
+        ----------
+        num_points : int
+                     Number of Gaussians.
+        img_size   : tuple of int
+                     ``(W, H)`` of the hologram plane.
+
+        Returns
+        -------
+        data : dict
+               Dictionary of initial parameter tensors.
+        """
+        W, H = img_size
+        data = {}
+
+        # Positions in atanh space so that tanh maps them back into [0, W]x[0, H].
+        means = torch.rand((num_points, 2), dtype=torch.float32) * 2 - 1
+        data["means_2d"] = torch.atanh(torch.clamp(means, -0.999, 0.999))
+
+        data["colours"] = torch.rand((num_points, 3), dtype=torch.float32)
+
+        min_scale, max_scale = 1.5, 5.0
+        data["pre_act_scales"] = torch.log(
+            torch.rand((num_points, 2), dtype=torch.float32) * (max_scale - min_scale)
+            + min_scale
+        )
+
+        data["pre_act_rotation"] = (
+            torch.rand((num_points,), dtype=torch.float32) * 2 * torch.pi - torch.pi
+        )
+        data["pre_act_phase"] = torch.zeros((num_points, 3), dtype=torch.float32)
+        data["pre_act_opacities"] = (
+            torch.zeros((num_points,), dtype=torch.float32) - 0.5
+        )
+
+        print(f"Initialized {num_points} 2D Gaussians for image size {img_size}")
+        return data
+
+    def apply_activations(self):
+        """
+        Apply non-linear activations to the raw Gaussian parameters.
+
+        Returns
+        -------
+        scales    : torch.Tensor ``(N, 2)``
+        rotation  : torch.Tensor ``(N,)``
+        phase     : torch.Tensor ``(N, 3)``
+        opacities : torch.Tensor ``(N,)``
+        means_2d  : torch.Tensor ``(N, 2)`` in pixel coordinates.
+        """
+        W, H = self.img_size
+        means_tanh = torch.tanh(self.means_2d)
+        means_2d = torch.zeros_like(means_tanh)
+        means_2d[:, 0] = (means_tanh[:, 0] + 1) * 0.5 * W
+        means_2d[:, 1] = (means_tanh[:, 1] + 1) * 0.5 * H
+
+        scales = torch.exp(self.pre_act_scales) + 0.1
+        rotation = self.pre_act_rotation
+        phase = self.pre_act_phase % (2.0 * torch.pi)
+        if self.merge_opacity:
+            opacities = torch.ones_like(self.pre_act_opacities)
+        else:
+            opacities = torch.sigmoid(self.pre_act_opacities)
+
+        return scales, rotation, phase, opacities, means_2d
+
+    @staticmethod
+    def compute_cov_2D(scales: torch.Tensor, rotation: torch.Tensor):
+        """
+        Compute the elements of the 2-D covariance matrices ``R S^2 R^T``.
+
+        Parameters
+        ----------
+        scales   : torch.Tensor
+                   Scale vectors ``(N, 2)``.
+        rotation : torch.Tensor
+                   Rotation angles ``(N,)`` in radians.
+
+        Returns
+        -------
+        cov_00, cov_01, cov_11 : torch.Tensor
+                                 Upper-triangular covariance elements ``(N,)``.
+        """
+        cos_r, sin_r = torch.cos(rotation), torch.sin(rotation)
+        sx2, sy2 = scales[:, 0] ** 2, scales[:, 1] ** 2
+
+        cov_00 = sx2 * cos_r**2 + sy2 * sin_r**2 + 0.1
+        cov_01 = (sx2 - sy2) * cos_r * sin_r
+        cov_11 = sx2 * sin_r**2 + sy2 * cos_r**2 + 0.1
+        return cov_00, cov_01, cov_11
+
+    @staticmethod
+    def invert_cov_2D(cov_00, cov_01, cov_11):
+        """
+        Invert 2×2 covariance matrices given by their elements.
+
+        Parameters
+        ----------
+        cov_00, cov_01, cov_11 : torch.Tensor
+                                 Covariance elements ``(N,)``.
+
+        Returns
+        -------
+        inv_00, inv_01, inv_11 : torch.Tensor
+                                 Inverse covariance elements ``(N,)``.
+        """
+        det = (cov_00 * cov_11 - cov_01 * cov_01).clamp(min=1e-10)
+        inv_det = 1.0 / det
+        return cov_11 * inv_det, -cov_01 * inv_det, cov_00 * inv_det
+
+    def make_trainable(self):
+        """Enable gradients on all learnable parameters."""
+        self.means_2d.requires_grad_()
+        self.pre_act_scales.requires_grad_()
+        self.pre_act_rotation.requires_grad_()
+        self.colours.requires_grad_()
+        self.pre_act_phase.requires_grad_()
+        if not self.merge_opacity:
+            self.pre_act_opacities.requires_grad_()
+
+    def save_gaussians(self, save_path: str):
+        """
+        Save Gaussian parameters to a ``.pth`` checkpoint.
+
+        Parameters
+        ----------
+        save_path : str
+                    Destination file path.
+        """
+        state_dict = {
+            "means_2d": self.means_2d.cpu(),
+            "pre_act_scales": self.pre_act_scales.cpu(),
+            "pre_act_rotation": self.pre_act_rotation.cpu(),
+            "colours": self.colours.cpu(),
+            "pre_act_phase": self.pre_act_phase.cpu(),
+            "pre_act_opacities": self.pre_act_opacities.cpu(),
+            "img_size": self.img_size,
+            "merge_opacity": self.merge_opacity,
+        }
+        torch.save(state_dict, save_path)
+        print(f"2D Gaussians saved to {save_path}")
+
+    def load_gaussians(self, load_path: str):
+        """
+        Load Gaussian parameters from a ``.pth`` checkpoint.
+
+        Parameters
+        ----------
+        load_path : str
+                    Source file path.
+        """
+        state_dict = torch.load(load_path, map_location=self.device)
+        for name in [
+            "means_2d",
+            "pre_act_scales",
+            "pre_act_rotation",
+            "colours",
+            "pre_act_phase",
+            "pre_act_opacities",
+        ]:
+            getattr(self, name).data.copy_(state_dict[name].to(self.device))
+        self.merge_opacity = state_dict.get("merge_opacity", False)
+        print(f"2D Gaussians loaded from {load_path}")
+
+
+class Scene2D:
+    """
+    Per-plane rendering scene for complex-valued 2-D Gaussian splatting.
+
+    Rasterises a set of :class:`complex_2d_gaussians` directly onto the
+    hologram plane as a complex field, ready for band-limited propagation to
+    each target depth plane.
+
+    Parameters
+    ----------
+    gaussians : complex_2d_gaussians
+                The 2-D Gaussian primitives.
+    args_prop : argparse.Namespace
+                Must contain ``wavelengths`` and ``pad_size``.
+    """
+
+    def __init__(self, gaussians: complex_2d_gaussians, args_prop):
+        self.gaussians = gaussians
+        self.args_prop = args_prop
+        self.device = gaussians.device
+        self.wavelengths = torch.tensor(
+            args_prop.wavelengths, dtype=torch.float32, device=self.device
+        )
+        self._pixel_grid_cache = {}
+
+    def __repr__(self):
+        return f"<Scene2D with {len(self.gaussians)} Gaussians>"
+
+    def get_pixel_grid(self, img_size: Tuple[int, int]):
+        """
+        Return a cached ``(1, H*W, 2)`` grid of pixel coordinates.
+
+        Parameters
+        ----------
+        img_size : tuple of int
+                   ``(W, H)``.
+
+        Returns
+        -------
+        grid : torch.Tensor
+               Pixel coordinates ``(1, H*W, 2)``.
+        """
+        W, H = img_size
+        key = f"{W}x{H}"
+        if key not in self._pixel_grid_cache:
+            xs, ys = torch.meshgrid(
+                torch.arange(W, device=self.device, dtype=torch.float32),
+                torch.arange(H, device=self.device, dtype=torch.float32),
+                indexing="xy",
+            )
+            self._pixel_grid_cache[key] = torch.stack([xs, ys], dim=-1).reshape(
+                1, H * W, 2
+            )
+        return self._pixel_grid_cache[key]
+
+    def render(self, img_size: Tuple[int, int]):
+        """
+        Rasterise the Gaussians into a zero-padded complex hologram field.
+
+        Parameters
+        ----------
+        img_size : tuple of int
+                   ``(W, H)`` of the hologram plane.
+
+        Returns
+        -------
+        hologram_complex : torch.Tensor
+                           Zero-padded complex hologram ``(C, H', W')``.
+        """
+        W, H = img_size
+        scales, rotation, phase, opacities, means_2d = (
+            self.gaussians.apply_activations()
+        )
+        cov_00, cov_01, cov_11 = self.gaussians.compute_cov_2D(scales, rotation)
+        inv_00, inv_01, inv_11 = self.gaussians.invert_cov_2D(cov_00, cov_01, cov_11)
+
+        points_2d = self.get_pixel_grid(img_size)
+        diff = points_2d - means_2d.unsqueeze(1)
+        dx, dy = diff[..., 0], diff[..., 1]
+        mahalanobis = (
+            dx * dx * inv_00.view(-1, 1)
+            + 2 * dx * dy * inv_01.view(-1, 1)
+            + dy * dy * inv_11.view(-1, 1)
+        )
+        gaussian_values = torch.exp(torch.clamp(-0.5 * mahalanobis, min=-50)).view(
+            -1, H, W
+        )
+        alphas = opacities.view(-1, 1, 1) * gaussian_values
+
+        hologram_complex = torch.zeros(
+            (len(self.wavelengths), H, W), dtype=torch.complex64, device=self.device
+        )
+        for c in range(len(self.wavelengths)):
+            colour_c = self.gaussians.colours[:, c].view(-1, 1, 1)
+            phase_c = phase[:, c].view(-1, 1, 1)
+            hologram_complex[c] = (
+                colour_c * alphas * torch.exp(1j * phase_c)
+            ).sum(dim=0)
+
+        hologram_complex = zero_pad(hologram_complex, self.args_prop.pad_size)
+        return hologram_complex
