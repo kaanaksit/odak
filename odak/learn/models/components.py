@@ -93,9 +93,22 @@ class siren_activation(torch.nn.Module):
 class film_siren_activation(torch.nn.Module):
     def __init__(self, dim):
         super().__init__()
-        self.alpha = torch.nn.Parameter(torch.randn(2, 1, dim))
+        self.alpha = torch.nn.Parameter(torch.randn(2, dim))
 
     def forward(self, x):
+        """
+        Forward pass of the FiLM SIREN activation.
+
+        Parameters
+        ----------
+        x : torch.Tensor
+            Input tensor of shape (batch_size, dim).
+
+        Returns
+        -------
+        result : torch.Tensor
+            Output tensor of shape (batch_size, dim).
+        """
         return torch.sin(self.alpha[0] * x + self.alpha[1])
 
 
