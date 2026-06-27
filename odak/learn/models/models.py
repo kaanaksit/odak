@@ -16,6 +16,7 @@ class multi_layer_perceptron(torch.nn.Module):
         model_type="conventional",
         siren_multiplier=1.0,
         input_multiplier=None,
+        uniform_flag=True,
     ):
         """
         Initialize the multi-layer perceptron.
@@ -42,7 +43,10 @@ class multi_layer_perceptron(torch.nn.Module):
             For `FILM SIREN`, see: Chan, Eric R., et al. "pi-gan: Periodic implicit generative adversarial networks for 3d-aware image synthesis." Proceedings of the IEEE/CVF conference on computer vision and pattern recognition. 2021.
             For `Gaussian`, see: Ramasinghe, Sameera, and Simon Lucey. "Beyond periodicity: Towards a unifying framework for activations in coordinate-mlps." In European Conference on Computer Vision, pp. 142-158. Cham: Springer Nature Switzerland, 2022.
             Default is "conventional".
+        uniform_flag : bool, optional
+            If True, applies specialized uniform initialization for SIREN and FILM SIREN models. Default is True.
         """
+
         super(multi_layer_perceptron, self).__init__()
 
         if not isinstance(dimensions, list) or len(dimensions) < 2:
@@ -54,11 +58,12 @@ class multi_layer_perceptron(torch.nn.Module):
         self.model_type = model_type
         self.siren_multiplier = siren_multiplier
         self.dimensions = dimensions
+        self.uniform_flag = uniform_flag
 
         logger.info(
             f"Initializing multi_layer_perceptron: model_type={model_type}, "
             f"dimensions={dimensions}, bias={bias}, "
-            f"siren_multiplier={siren_multiplier}"
+            f"siren_multiplier={siren_multiplier}, uniform_flag={uniform_flag}"
         )
         
         modules = []
@@ -89,7 +94,7 @@ class multi_layer_perceptron(torch.nn.Module):
         self.model = torch.nn.Sequential(*modules)
 
         # SIREN and FILM SIREN specialized weight initialization
-        if model_type in ["SIREN", "FILM SIREN"]:
+        if uniform_flag and model_type in ["SIREN", "FILM SIREN"]:
             with torch.no_grad():
                 first_linear = True
                 for module in self.model:
