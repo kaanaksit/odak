@@ -56,29 +56,33 @@ class multi_layer_perceptron(torch.nn.Module):
             f"dimensions={dimensions}, bias={bias}, "
             f"siren_multiplier={siren_multiplier}"
         )
+        
+        modules = []
         for i in range(len(self.dimensions) - 1):
-            self.layers.append(
-                torch.nn.Linear(
-                    self.dimensions[i], self.dimensions[i + 1], bias=self.bias
-                )
+            # Add linear layer
+            linear_layer = torch.nn.Linear(
+                self.dimensions[i], self.dimensions[i + 1], bias=self.bias
             )
+            modules.append(linear_layer)
 
-        # Initialize activations for each hidden layer to avoid string checks in forward pass
-        self.activations = torch.nn.ModuleList()
-        for i in range(len(self.layers) - 1):
-            dim = self.dimensions[i + 1]
-            if model_type == "conventional":
-                self.activations.append(activation)
-            elif model_type == "swish":
-                self.activations.append(swish_activation())
-            elif model_type == "SIREN":
-                self.activations.append(siren_activation(multiplier=siren_multiplier))
-            elif model_type == "FILM SIREN":
-                self.activations.append(film_siren_activation(dim=dim))
-            elif model_type == "Gaussian":
-                self.activations.append(gaussian_activation(dim=dim))
-            else:
-                raise ValueError(f"Unsupported model_type: {model_type}")
+            # Add activation for all but the last layer
+            if i < len(self.dimensions) - 2:
+                dim = self.dimensions[i + 1]
+                if model_type == "conventional":
+                    act = activation
+                elif model_type == "swish":
+                    act = swish_activation()
+                elif model_type == "SIREN":
+                    act = siren_activation(multiplier=siren_multiplier)
+                elif model_type == "FILM SIREN":
+                    act = film_siren_activation(dim=dim)
+                elif model_type == "Gaussian":
+                    act = gaussian_activation(dim=dim)
+                else:
+                    raise ValueError(f"Unsupported model_type: {model_type}")
+                modules.append(act)
+
+        self.model = torch.nn.Sequential(*modules)
 
         if input_multiplier is not None:
             self.input_multiplier = torch.nn.Parameter(torch.ones(1, self.dimensions[0]) * input_multiplier)
@@ -108,11 +112,7 @@ class multi_layer_perceptron(torch.nn.Module):
             result = x * self.input_multiplier
         else:
             result = x
-        for layer_id, layer in enumerate(self.layers):
-            result = layer(result)
-            if layer_id < len(self.activations):
-                result = self.activations[layer_id](result)
-        return result
+        return self.model(result)
 
 
 class unet(torch.nn.Module):

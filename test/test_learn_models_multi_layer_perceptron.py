@@ -17,7 +17,7 @@ def test(
         output_directory
     )
     learning_rate = 1e-4
-    no_epochs = 10  # 100000
+    no_epochs = 100000  # 100000
     dimensions = [2, 64, 64, 64, 64, 64, 64, 3]
     device_name = "cuda"
     save_at_every = 1000
