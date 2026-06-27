@@ -44,10 +44,14 @@ class multi_layer_perceptron(torch.nn.Module):
             Default is "conventional".
         """
         super(multi_layer_perceptron, self).__init__()
-        self.activation = activation
+
+        if not isinstance(dimensions, list) or len(dimensions) < 2:
+            raise ValueError("dimensions must be a list of at least two integers.")
+        if any(not isinstance(d, int) or d <= 0 for d in dimensions):
+            raise ValueError("All elements in dimensions must be positive integers.")
+
         self.bias = bias
         self.model_type = model_type
-        self.layers = torch.nn.ModuleList()
         self.siren_multiplier = siren_multiplier
         self.dimensions = dimensions
 
@@ -84,15 +88,20 @@ class multi_layer_perceptron(torch.nn.Module):
 
         self.model = torch.nn.Sequential(*modules)
 
+        # SIREN and FILM SIREN specialized weight initialization
+        if model_type in ["SIREN", "FILM SIREN"]:
+            with torch.no_grad():
+                for module in self.model:
+                    if isinstance(module, torch.nn.Linear):
+                        # Hidden layers use uniform distribution scaled by siren_multiplier
+                        limit = 1.0 / siren_multiplier if siren_multiplier != 0 else 1.0
+                        torch.nn.init.uniform_(module.weight, -limit, limit)
+                        if self.bias:
+                            torch.nn.init.zeros_(module.bias)
+
         if input_multiplier is not None:
             self.input_multiplier = torch.nn.Parameter(torch.ones(1, self.dimensions[0]) * input_multiplier)
             logger.debug(f"Input multiplier initialized: {input_multiplier}")
-        if self.model_type == "FILM SIREN":
-            # This is now handled by the self.activations ModuleList
-            pass
-        if self.model_type == "Gaussian":
-            # This is now handled by the self.activations ModuleList
-            pass
 
     def forward(self, x):
         """
