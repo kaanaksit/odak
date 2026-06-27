@@ -50,6 +50,7 @@ class multi_layer_perceptron(torch.nn.Module):
         self.layers = torch.nn.ModuleList()
         self.siren_multiplier = siren_multiplier
         self.dimensions = dimensions
+
         logger.info(
             f"Initializing multi_layer_perceptron: model_type={model_type}, "
             f"dimensions={dimensions}, bias={bias}, "
@@ -61,22 +62,33 @@ class multi_layer_perceptron(torch.nn.Module):
                     self.dimensions[i], self.dimensions[i + 1], bias=self.bias
                 )
             )
-        if not isinstance(input_multiplier, type(None)):
-            self.input_multiplier = torch.nn.ParameterList()
-            self.input_multiplier.append(
-                torch.nn.Parameter(torch.ones(1, self.dimensions[0]) * input_multiplier)
-            )
+
+        # Initialize activations for each hidden layer to avoid string checks in forward pass
+        self.activations = torch.nn.ModuleList()
+        for i in range(len(self.layers) - 1):
+            dim = self.dimensions[i + 1]
+            if model_type == "conventional":
+                self.activations.append(activation)
+            elif model_type == "swish":
+                self.activations.append(swish_activation())
+            elif model_type == "SIREN":
+                self.activations.append(siren_activation(multiplier=siren_multiplier))
+            elif model_type == "FILM SIREN":
+                self.activations.append(film_siren_activation(dim=dim))
+            elif model_type == "Gaussian":
+                self.activations.append(gaussian_activation(dim=dim))
+            else:
+                raise ValueError(f"Unsupported model_type: {model_type}")
+
+        if input_multiplier is not None:
+            self.input_multiplier = torch.nn.Parameter(torch.ones(1, self.dimensions[0]) * input_multiplier)
             logger.debug(f"Input multiplier initialized: {input_multiplier}")
         if self.model_type == "FILM SIREN":
-            self.alpha = torch.nn.ParameterList()
-            for j in self.dimensions[1::]:
-                self.alpha.append(torch.nn.Parameter(torch.randn(2, 1, j)))
-            logger.debug("FILM SIREN alpha parameters initialized")
+            # This is now handled by the self.activations ModuleList
+            pass
         if self.model_type == "Gaussian":
-            self.alpha = torch.nn.ParameterList()
-            for j in self.dimensions[1::]:
-                self.alpha.append(torch.nn.Parameter(torch.randn(1, 1, j)))
-            logger.debug("Gaussian alpha parameters initialized")
+            # This is now handled by the self.activations ModuleList
+            pass
 
     def forward(self, x):
         """
@@ -85,31 +97,21 @@ class multi_layer_perceptron(torch.nn.Module):
         Parameters
         ----------
         x : torch.Tensor
-            Input data.
+            Input data of shape (batch_size, input_dim).
 
         Returns
         -------
         result : torch.Tensor
-            Estimated output.
+            Estimated output of shape (batch_size, output_dim).
         """
         if hasattr(self, "input_multiplier"):
-            result = x * self.input_multiplier[0]
+            result = x * self.input_multiplier
         else:
             result = x
         for layer_id, layer in enumerate(self.layers):
             result = layer(result)
-            if self.model_type == "conventional" and layer_id != len(self.layers) - 1:
-                result = self.activation(result)
-            elif self.model_type == "swish" and layer_id != len(self.layers) - 1:
-                result = swish(result)
-            elif self.model_type == "SIREN" and layer_id != len(self.layers) - 1:
-                result = torch.sin(result * self.siren_multiplier)
-            elif self.model_type == "FILM SIREN" and layer_id != len(self.layers) - 1:
-                result = torch.sin(
-                    self.alpha[layer_id][0] * result + self.alpha[layer_id][1]
-                )
-            elif self.model_type == "Gaussian" and layer_id != len(self.layers) - 1:
-                result = gaussian(result, self.alpha[layer_id][0])
+            if layer_id < len(self.activations):
+                result = self.activations[layer_id](result)
         return result
 
 

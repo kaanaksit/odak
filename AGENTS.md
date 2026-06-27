@@ -35,7 +35,7 @@
 
 ### Naming Conventions
 - Functions/variables: **snake_case** (e.g., `validate_positive_parameter`)
-- Classes: **PascalCase** (e.g., `MultiLayerPerceptron`)
+- Classes: **snake_case** (e.g., `multi_layer_perceptron`)
 - Constants: **ALL_CAPS** (e.g., `ALLOWED_COMMANDS`, `DANGEROUS_PATTERNS`)
 - Test functions: `test_<function_name>` (e.g., `test_validate_positive_parameter`)
 

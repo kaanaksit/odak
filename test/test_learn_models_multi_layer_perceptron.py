@@ -17,9 +17,9 @@ def test(
         output_directory
     )
     learning_rate = 1e-4
-    no_epochs = 2  # 100000
+    no_epochs = 10  # 100000
     dimensions = [2, 64, 64, 64, 64, 64, 64, 3]
-    device_name = "cpu"
+    device_name = "cuda"
     save_at_every = 1000
     model_type = "FILM SIREN"
     test_resolution_scale = 4

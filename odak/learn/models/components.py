@@ -8,18 +8,40 @@ def gaussian(x, multiplier=1.0):
 
     Parameters
     ----------
-    x            : float or torch.tensor
-                   Input data.
-    multiplier   : float or torch.tensor
-                   Multiplier.
+    x            : torch.Tensor
+                    Input data of shape (batch_size, dim).
+    multiplier   : float or torch.Tensor
+                    Multiplier of shape (1, dim) or scalar.
 
     Returns
     -------
-    result       : float or torch.tensor
-                   Ouput data.
+    result       : torch.Tensor
+                    Output data of shape (batch_size, dim).
     """
     result = torch.exp(-((multiplier * x) ** 2))
     return result
+
+
+class gaussian_activation(torch.nn.Module):
+    def __init__(self, dim):
+        super().__init__()
+        self.alpha = torch.nn.Parameter(torch.randn(1, dim))
+
+    def forward(self, x):
+        """
+        Forward pass of the Gaussian activation.
+
+        Parameters
+        ----------
+        x : torch.Tensor
+            Input tensor of shape (batch_size, dim).
+
+        Returns
+        -------
+        result : torch.Tensor
+            Output tensor of shape (batch_size, dim).
+        """
+        return gaussian(x, self.alpha)
 
 
 def swish(x):
@@ -29,16 +51,52 @@ def swish(x):
 
     Parameters
     -----------
-    x              : float or torch.tensor
-                     Input.
+    x              : torch.Tensor
+                      Input tensor of shape (batch_size, dim).
 
     Returns
     -------
-    out            : float or torch.tensor
-                     Output.
+    out            : torch.Tensor
+                      Output tensor of shape (batch_size, dim).
     """
     out = x * torch.sigmoid(x)
     return out
+
+
+class swish_activation(torch.nn.Module):
+    def forward(self, x):
+        return swish(x)
+
+
+class siren_activation(torch.nn.Module):
+    def __init__(self, multiplier=1.0):
+        super().__init__()
+        self.multiplier = multiplier
+
+    def forward(self, x):
+        """
+        Forward pass of the SIREN activation.
+
+        Parameters
+        ----------
+        x : torch.Tensor
+            Input tensor of shape (batch_size, dim).
+
+        Returns
+        -------
+        result : torch.Tensor
+            Output tensor of shape (batch_size, dim).
+        """
+        return torch.sin(x * self.multiplier)
+
+
+class film_siren_activation(torch.nn.Module):
+    def __init__(self, dim):
+        super().__init__()
+        self.alpha = torch.nn.Parameter(torch.randn(2, 1, dim))
+
+    def forward(self, x):
+        return torch.sin(self.alpha[0] * x + self.alpha[1])
 
 
 class residual_layer(torch.nn.Module):
