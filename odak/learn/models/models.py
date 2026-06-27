@@ -23,9 +23,9 @@ class multi_layer_perceptron(torch.nn.Module):
         Parameters
         ----------
         dimensions : list of int
-            List of integers representing the dimensions of each layer (e.g., [2, 10, 1], where the first layer has two channels and last one has one channel).
+            List of integers representing the dimensions of each layer (e.g., [2, 10, 1], where the first element is the input dimension and the last one is the output dimension).
         activation : torch.nn.Module, optional
-            Nonlinear activation function. Default is `torch.nn.ReLU()`.
+            Nonlinear activation function. Default is `torch.nn.ReLU()`. Note: this parameter is only utilized when `model_type` is set to 'conventional'.
         bias : bool, optional
             If set to True, linear layers will include biases. Default is False.
         siren_multiplier : float, optional
@@ -91,11 +91,19 @@ class multi_layer_perceptron(torch.nn.Module):
         # SIREN and FILM SIREN specialized weight initialization
         if model_type in ["SIREN", "FILM SIREN"]:
             with torch.no_grad():
+                first_linear = True
                 for module in self.model:
                     if isinstance(module, torch.nn.Linear):
-                        # Hidden layers use uniform distribution scaled by siren_multiplier
-                        limit = 1.0 / siren_multiplier if siren_multiplier != 0 else 1.0
-                        torch.nn.init.uniform_(module.weight, -limit, limit)
+                        if first_linear:
+                            limit = 1.0 / siren_multiplier if siren_multiplier != 0 else 1.0
+                            torch.nn.init.uniform_(module.weight, -limit, limit)
+                            first_linear = False
+                        else:
+                            # Hidden layers scale by omega_0 / sqrt(fan_in) to preserve variance (SIREN paper)
+                            fan_in = module.weight.size(1)
+                            limit = siren_multiplier / (fan_in ** 0.5) if siren_multiplier != 0 else 1.0 / (fan_in ** 0.5)
+                            torch.nn.init.uniform_(module.weight, -limit, limit)
+
                         if self.bias:
                             torch.nn.init.zeros_(module.bias)
 
