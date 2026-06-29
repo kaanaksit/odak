@@ -1,4 +1,5 @@
 import torch
+import copy
 from .components import *
 from ...log import logger
 
@@ -14,7 +15,7 @@ class multi_layer_perceptron(torch.nn.Module):
         activation=torch.nn.ReLU(),
         bias=False,
         model_type="conventional",
-        siren_multiplier=1.0,
+        siren_multiplier=30.0,
         input_multiplier=None,
         uniform_flag=True,
     ):
@@ -78,7 +79,7 @@ class multi_layer_perceptron(torch.nn.Module):
             if i < len(self.dimensions) - 2:
                 dim = self.dimensions[i + 1]
                 if model_type == "conventional":
-                    act = activation
+                    act = copy.deepcopy(activation)
                 elif model_type == "swish":
                     act = swish_activation()
                 elif model_type == "SIREN":
