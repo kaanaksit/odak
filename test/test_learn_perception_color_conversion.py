@@ -29,9 +29,9 @@ def test():
 
     input_srgb_image = torch.randn((3, 256, 256)).to(device)
     srgb_image = odak.learn.perception.color_conversion.srgb_to_lab(input_srgb_image)
-    lab_image = odak.learn.perception.color_conversion.lab_to_srgb(srgb_image)
+    odak.learn.perception.color_conversion.lab_to_srgb(srgb_image)
 
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

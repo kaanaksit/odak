@@ -3,7 +3,6 @@ import numpy as np
 import odak
 from odak.wave import (
     gerchberg_saxton_3d,
-    adjust_phase_only_slm_range,
     produce_phase_only_slm_pattern,
     calculate_amplitude,
     wavenumber,
@@ -19,7 +18,6 @@ def test(output_directory="test_output"):
     distances = np.array([0.2, 0.1])
     input_fields = np.random.rand(2, 500, 500).astype(np.complex64)
     iteration_number = 3
-    distance_light_slm = 2.0
     k = wavenumber(wavelength)
     hologram = gerchberg_saxton_3d(
         input_fields,
@@ -67,7 +65,7 @@ def test(output_directory="test_output"):
         cmin=0,
         cmax=np.amax(amplitude_1),
     )
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

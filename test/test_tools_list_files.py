@@ -2,7 +2,6 @@ import unittest
 import tempfile
 import os
 from odak.tools import list_files
-from pathlib import Path
 
 
 class TestListFiles(unittest.TestCase):

@@ -1540,9 +1540,9 @@ class Scene2D:
         for c in range(len(self.wavelengths)):
             colour_c = self.gaussians.colours[:, c].view(-1, 1, 1)
             phase_c = phase[:, c].view(-1, 1, 1)
-            hologram_complex[c] = (
-                colour_c * alphas * torch.exp(1j * phase_c)
-            ).sum(dim=0)
+            hologram_complex[c] = (colour_c * alphas * torch.exp(1j * phase_c)).sum(
+                dim=0
+            )
 
         hologram_complex = zero_pad(hologram_complex, self.args_prop.pad_size)
         return hologram_complex

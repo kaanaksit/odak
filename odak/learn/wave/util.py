@@ -156,14 +156,18 @@ def decompose_double_phase(tensor):
     t = tensor[..., :h, :w]
 
     # Extract 2x2 patch positions
-    high_00 = t[..., 0::2, 0::2]    # even rows, even cols
-    high_11 = t[..., 1::2, 1::2]    # odd rows, odd cols
-    low_01 = t[..., 0::2, 1::2]     # even rows, odd cols
-    low_10 = t[..., 1::2, 0::2]     # odd rows, even cols
+    high_00 = t[..., 0::2, 0::2]  # even rows, even cols
+    high_11 = t[..., 1::2, 1::2]  # odd rows, odd cols
+    low_01 = t[..., 0::2, 1::2]  # even rows, odd cols
+    low_10 = t[..., 1::2, 0::2]  # odd rows, even cols
 
     # Interleave along height to get [h, w//2] using stack and reshape for differentiability/batching
-    component_high = torch.stack([high_00, high_11], dim=-2).reshape(*t.shape[:-2], h, w // 2)
-    component_low = torch.stack([low_01, low_10], dim=-2).reshape(*t.shape[:-2], h, w // 2)
+    component_high = torch.stack([high_00, high_11], dim=-2).reshape(
+        *t.shape[:-2], h, w // 2
+    )
+    component_low = torch.stack([low_01, low_10], dim=-2).reshape(
+        *t.shape[:-2], h, w // 2
+    )
 
     return component_high, component_low
 
@@ -200,6 +204,8 @@ def compose_double_phase(component_high, component_low):
     # Interleave rows to create grid of height h
     shape = list(component_high.shape)
     h, w_half = shape[-2], shape[-1]
-    reconstructed = torch.stack([row_even, row_odd], dim=-2).reshape(*shape[:-2], h, w_half * 2)
+    reconstructed = torch.stack([row_even, row_odd], dim=-2).reshape(
+        *shape[:-2], h, w_half * 2
+    )
 
     return reconstructed

@@ -3,7 +3,6 @@ import numpy as np
 import odak
 from odak.wave import (
     gerchberg_saxton,
-    adjust_phase_only_slm_range,
     produce_phase_only_slm_pattern,
     calculate_amplitude,
     wavenumber,
@@ -45,7 +44,7 @@ def test(output_directory="test_output"):
         cmin=0,
         cmax=np.amax(amplitude),
     )
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

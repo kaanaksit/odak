@@ -46,7 +46,7 @@ def clear_text(text):
                 found_ids.append(item_id)
     new_list = []
     for item_id, item in enumerate(text):
-        if not item_id in found_ids:
+        if item_id not in found_ids:
             new_list.append(item)
     text = new_list
     output_text = "".join(text)

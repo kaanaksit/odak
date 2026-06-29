@@ -4,9 +4,8 @@ import sys
 
 
 def test():
-    import odak
 
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

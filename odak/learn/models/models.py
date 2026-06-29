@@ -66,7 +66,7 @@ class multi_layer_perceptron(torch.nn.Module):
             f"dimensions={dimensions}, bias={bias}, "
             f"siren_multiplier={siren_multiplier}, uniform_flag={uniform_flag}"
         )
-        
+
         modules = []
         for i in range(len(self.dimensions) - 1):
             # Add linear layer
@@ -101,20 +101,28 @@ class multi_layer_perceptron(torch.nn.Module):
                 for module in self.model:
                     if isinstance(module, torch.nn.Linear):
                         if first_linear:
-                            limit = 1.0 / siren_multiplier if siren_multiplier != 0 else 1.0
+                            limit = (
+                                1.0 / siren_multiplier if siren_multiplier != 0 else 1.0
+                            )
                             torch.nn.init.uniform_(module.weight, -limit, limit)
                             first_linear = False
                         else:
                             # Hidden layers scale by omega_0 / sqrt(fan_in) to preserve variance (SIREN paper)
                             fan_in = module.weight.size(1)
-                            limit = siren_multiplier / (fan_in ** 0.5) if siren_multiplier != 0 else 1.0 / (fan_in ** 0.5)
+                            limit = (
+                                siren_multiplier / (fan_in**0.5)
+                                if siren_multiplier != 0
+                                else 1.0 / (fan_in**0.5)
+                            )
                             torch.nn.init.uniform_(module.weight, -limit, limit)
 
                         if self.bias:
                             torch.nn.init.zeros_(module.bias)
 
         if input_multiplier is not None:
-            self.input_multiplier = torch.nn.Parameter(torch.ones(1, self.dimensions[0]) * input_multiplier)
+            self.input_multiplier = torch.nn.Parameter(
+                torch.ones(1, self.dimensions[0]) * input_multiplier
+            )
             logger.debug(f"Input multiplier initialized: {input_multiplier}")
 
     def forward(self, x):
@@ -204,7 +212,9 @@ class unet(torch.nn.Module):
                 activation=activation,
             )
             self.downsampling_layers.append(down_layer)
-            logger.debug(f"Added downsampling layer {i}: {in_channels} -> {out_channels}")
+            logger.debug(
+                f"Added downsampling layer {i}: {in_channels} -> {out_channels}"
+            )
 
         for i in range(depth - 1, -1, -1):  # upsampling layers
             up_in_channels = dimensions * (2 ** (i + 1))
@@ -218,7 +228,9 @@ class unet(torch.nn.Module):
                 bilinear=bilinear,
             )
             self.upsampling_layers.append(up_layer)
-            logger.debug(f"Added upsampling layer: {up_in_channels} -> {up_out_channels}")
+            logger.debug(
+                f"Added upsampling layer: {up_in_channels} -> {up_out_channels}"
+            )
         self.outc = torch.nn.Conv2d(
             dimensions,
             output_channels,
@@ -372,7 +384,9 @@ class spatially_varying_kernel_generation_model(torch.nn.Module):
             )
             spatially_varying_kernel_generation.append(kernel_generation_block)
             self.spatially_varying_feature.append(spatially_varying_kernel_generation)
-            logger.debug(f"Added SVF block {i}: {svf_in_channels} -> {svf_out_channels}")
+            logger.debug(
+                f"Added SVF block {i}: {svf_in_channels} -> {svf_out_channels}"
+            )
 
         self.decoder = torch.nn.ModuleList()
         global_feature_layer = global_feature_module(  # global feature layer
@@ -413,8 +427,12 @@ class spatially_varying_kernel_generation_model(torch.nn.Module):
                 activation=activation,
             )
             self.decoder.append(torch.nn.ModuleList([upsample_layer, conv_layer]))
-            logger.debug(f"Added decoder block {i}: {up_in_channels} -> {up_out_channels}")
-        logger.info("spatially_varying_kernel_generation_model initialization completed")
+            logger.debug(
+                f"Added decoder block {i}: {up_in_channels} -> {up_out_channels}"
+            )
+        logger.info(
+            "spatially_varying_kernel_generation_model initialization completed"
+        )
 
     def forward(self, focal_surface, field):
         """
@@ -575,7 +593,9 @@ class spatially_adaptive_unet(torch.nn.Module):
             self.encoder.append(
                 torch.nn.ModuleList([pooling_layer, double_convolution_layer, sam])
             )
-            logger.debug(f"Added encoder block {i}: {down_in_channels} -> {down_out_channels}")
+            logger.debug(
+                f"Added encoder block {i}: {down_in_channels} -> {down_out_channels}"
+            )
         self.global_feature_module = torch.nn.ModuleList()
         double_convolution_layer = double_convolution(
             input_channels=dimensions * (2 ** (depth + 1)),
@@ -631,7 +651,9 @@ class spatially_adaptive_unet(torch.nn.Module):
                     ),
                 )
                 self.decoder.append(torch.nn.ModuleList([upsample_layer, conv_layer]))
-                logger.debug(f"Added decoder block {i}: {up_in_channels} -> {up_out_channels}")
+                logger.debug(
+                    f"Added decoder block {i}: {up_in_channels} -> {up_out_channels}"
+                )
             else:
                 up_out_channels = up_in_channels // 2
                 upsample_layer = upsample_convtranspose2d_layer(
@@ -651,7 +673,9 @@ class spatially_adaptive_unet(torch.nn.Module):
                     activation=activation,
                 )
                 self.decoder.append(torch.nn.ModuleList([upsample_layer, conv_layer]))
-                logger.debug(f"Added decoder block {i}: {up_in_channels} -> {up_out_channels}")
+                logger.debug(
+                    f"Added decoder block {i}: {up_in_channels} -> {up_out_channels}"
+                )
         logger.info("spatially_adaptive_unet initialization completed")
 
     def forward(self, sv_kernel, field):

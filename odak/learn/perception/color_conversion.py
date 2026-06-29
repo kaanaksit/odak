@@ -1,7 +1,6 @@
 import math
 import torch
 import numpy as np_cpu
-import odak
 from torch.functional import F
 from ...log import logger
 
@@ -815,7 +814,7 @@ def rgb_to_gray(image):
             Input RGB image tensor. Supports multiple shapes:
             - (3, H, W): Channel-first format
             - (H, W, 3): Channel-last format
-            
+
             Values should be in range [0, 1].
 
     Returns
@@ -824,7 +823,7 @@ def rgb_to_gray(image):
                  Grayscale image tensor with shape:
                  - (1, H, W) if input was (3, H, W)
                  - (H, W) if input was (H, W, 3)
-                 
+
                  Values are in range [0, 1].
 
     Examples
@@ -850,16 +849,16 @@ def rgb_to_gray(image):
             # Channel-last format (H, W, C)
             H, W, C = image.shape
             if C != 3:
-                raise ValueError(
-                    "Expected 3 channels for RGB, got {}".format(C)
-                )
+                raise ValueError("Expected 3 channels for RGB, got {}".format(C))
             R = image[:, :, 0]
             G = image[:, :, 1]
             B = image[:, :, 2]
             gray_image = 0.299 * R + 0.587 * G + 0.114 * B  # Shape: (H, W)
     else:
         raise ValueError(
-            "Expected 3D tensor with shape (C, H, W) or (H, W, C), got {}".format(image.shape)
+            "Expected 3D tensor with shape (C, H, W) or (H, W, C), got {}".format(
+                image.shape
+            )
         )
 
     return gray_image

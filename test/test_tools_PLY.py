@@ -1,8 +1,6 @@
-import odak.raytracing as raytracer
 import sys
 import numpy as np
 import odak
-from odak.visualize import PLY_object
 
 
 def test(output_directory="test_output"):
@@ -17,7 +15,7 @@ def test(output_directory="test_output"):
             ]
             cad.draw_a_ray([0.0, 0.0, 0.0], [i, j, 50.0], color=color)
     cad.save_PLY(savefn="{}/out.ply".format(output_directory))
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

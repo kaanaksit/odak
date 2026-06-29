@@ -15,11 +15,11 @@ def test_learned_perceptual_losses():
     fvvdp = odak.learn.perception.learned_perceptual_losses.FVVDP()
     lpips = odak.learn.perception.learned_perceptual_losses.LPIPS()
 
-    l_CVVDP = cvvdp(test_image, test_target, dim_order="BCHW")
-    l_FVVDP = fvvdp(test_image, test_target, dim_order="BCHW")
-    l_LPIPS = lpips(test_image, test_target)
+    cvvdp(test_image, test_target, dim_order="BCHW")
+    fvvdp(test_image, test_target, dim_order="BCHW")
+    lpips(test_image, test_target)
 
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

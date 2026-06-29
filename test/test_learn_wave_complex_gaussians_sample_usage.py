@@ -11,8 +11,8 @@ import torch
 def main():
     # 1. Define scene parameters.
     num_points = 256
-    distances=[0.03, 0.02, 0.01]
-    num_planes=len(distances)
+    distances = [0.03, 0.02, 0.01]
+    num_planes = len(distances)
     img_size = (512, 512)
     focal_length = (500.0, 500.0)
     z_depth = 2.0
@@ -102,8 +102,16 @@ def main():
 
     # Distinct colours for each plane (works for N planes).
     plane_colors = [
-        "red", "blue", "green", "orange", "purple",
-        "cyan", "magenta", "yellow", "lime", "pink",
+        "red",
+        "blue",
+        "green",
+        "orange",
+        "purple",
+        "cyan",
+        "magenta",
+        "yellow",
+        "lime",
+        "pink",
     ]
 
     # 3D point cloud of Gaussian positions, coloured by plane index.

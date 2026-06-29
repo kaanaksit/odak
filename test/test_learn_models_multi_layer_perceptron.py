@@ -1,7 +1,6 @@
 import torch
 import odak
 import sys
-import random
 import os
 from tqdm import tqdm
 
@@ -17,7 +16,7 @@ def test(
         output_directory
     )
     learning_rate = 1e-4
-    no_epochs = 2 # 100000
+    no_epochs = 2  # 100000
     dimensions = [2, 64, 64, 64, 64, 64, 64, 3]
     device_name = "cpu"
     save_at_every = 1000
@@ -94,8 +93,8 @@ def test(
             "{} -> Model weights save: {}".format(header, weights_filename)
         )
         odak.learn.tools.save_image(test_filename, estimation, cmin=0.0, cmax=1.0)
-        assert True == True
-    assert True == True
+        assert True
+    assert True
 
 
 def get_batches(size):

@@ -42,8 +42,8 @@ def test(
         target = final_target.repeat(final_points.shape[0], 1)
         if step == 0:
             start_triangles = triangles.detach().clone()
-            start_reflected_rays = reflected_rays.detach().clone()
-            start_final_normals = final_normals.detach().clone()
+            reflected_rays.detach().clone()
+            final_normals.detach().clone()
         loss = loss_function(final_points, target)
         loss.backward(retain_graph=True)
         optimizer.step()
@@ -71,7 +71,7 @@ def test(
         markdown_file = open("{}/ray.txt".format(output_directory), "w")
         markdown_file.write(html)
         markdown_file.close()
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

@@ -1,5 +1,4 @@
 import sys
-import os
 import odak
 import torch
 
@@ -98,7 +97,7 @@ def test(
                 cmax=reconstruction_intensities_rgb.max(),
             )
 
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

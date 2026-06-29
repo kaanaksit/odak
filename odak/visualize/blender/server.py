@@ -7,7 +7,6 @@ import socket
 import traceback
 import sys
 import ast
-import inspect
 
 sys.path.append("%s" % os.path.dirname(os.path.realpath(__file__)))
 

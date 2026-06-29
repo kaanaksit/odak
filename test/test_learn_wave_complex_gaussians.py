@@ -129,12 +129,14 @@ def test_gaussians_activations():
         args_prop=args,
     )
 
-    quats, scales, phase, opacities, plane_probs = complex_3d_gaussians.apply_activations(
-        gaussians.pre_act_quats,
-        gaussians.pre_act_scales,
-        gaussians.pre_act_phase,
-        gaussians.pre_act_opacities,
-        gaussians.pre_act_plane_assignment,
+    quats, scales, phase, opacities, plane_probs = (
+        complex_3d_gaussians.apply_activations(
+            gaussians.pre_act_quats,
+            gaussians.pre_act_scales,
+            gaussians.pre_act_phase,
+            gaussians.pre_act_opacities,
+            gaussians.pre_act_plane_assignment,
+        )
     )
 
     # Quaternions should be unit-norm

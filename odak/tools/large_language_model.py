@@ -40,9 +40,7 @@ def query_llm(
                   Generated response from the model.
     """
     if not isinstance(prompt, str):
-        raise TypeError(
-            "Prompt must be a string."
-        )
+        raise TypeError("Prompt must be a string.")
 
     url = "http://{}:{}{}".format(
         address,
@@ -78,19 +76,13 @@ def query_llm(
         request,
         timeout=timeout,
     ) as response:
-        data = json.loads(
-            response.read().decode("utf-8")
-        )
+        data = json.loads(response.read().decode("utf-8"))
 
     if "message" not in data:
-        raise ValueError(
-            "Invalid response format from model server."
-        )
+        raise ValueError("Invalid response format from model server.")
 
     if "content" not in data["message"]:
-        raise ValueError(
-            "Missing content field in model response."
-        )
+        raise ValueError("Missing content field in model response.")
 
     answer = data["message"]["content"].strip()
 

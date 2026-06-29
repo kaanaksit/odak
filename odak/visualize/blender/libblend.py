@@ -1,6 +1,5 @@
 import math
 import bpy
-import mathutils
 from mathutils import Vector
 import numpy as np
 
@@ -82,7 +81,7 @@ def intersect_a_ray(p0, p1, ob):
     result = ob.ray_cast(origin=ray_begin, direction=ray_direction)
     loc = False
     dist = 0
-    if result[0] == True:
+    if result[0]:
         mw = ob.matrix_world
         loc = mw @ result[1]
         dist = (
@@ -166,7 +165,7 @@ def render(fn, exit=False):
     bpy.data.scenes["Scene"].render.resolution_percentage = 100
     print("Device: %s" % bpy.data.scenes["Scene"].cycles.device)
     bpy.ops.render.render(use_viewport=True, write_still=True)
-    if exit == True:
+    if exit:
         quit()
     return True
 
@@ -191,11 +190,11 @@ def set_render_type(render_type="rgb"):
     node_composite.location = 800, 0
     node_norm.location = 400, -100
     node_layers.location = 0, 0
-    link0 = links.new(node_layers.outputs[2], node_norm.inputs[0])
+    links.new(node_layers.outputs[2], node_norm.inputs[0])
     if render_type == "rgb":
-        linkr = links.new(node_layers.outputs[0], node_composite.inputs[0])
+        links.new(node_layers.outputs[0], node_composite.inputs[0])
     elif render_type == "depth":
-        linkr = links.new(node_norm.outputs[0], node_composite.inputs[0])
+        links.new(node_norm.outputs[0], node_composite.inputs[0])
     return True
 
 
@@ -244,7 +243,7 @@ def prepare(
     try:
         delete_object("Cube")
         delete_object("Light")
-    except:
+    except Exception:
         pass
     return camera_angles
 
@@ -278,7 +277,7 @@ def assign_color(fn, obj, color=[0.0, 0.0, 0.0], label="color"):
     links = mat.node_tree.links
     colors = matnodes.new("ShaderNodeRGB")
     output = matnodes.new("ShaderNodeOutputMaterial")
-    link = links.new(colors.outputs["Color"], output.inputs["Surface"])
+    links.new(colors.outputs["Color"], output.inputs["Surface"])
     obj.data.materials.append(mat)
     colors.outputs["Color"].default_value = (color[0], color[1], color[2], 0)
 
@@ -296,8 +295,8 @@ def assign_texture(fn, obj, label):
     #    bpy.data.images[0].pack(as_png=True)
     bpy.data.images[0].pack()
     tex.image = bpy.data.images[0]
-    link = links.new(tex.outputs["Color"], diffuse.inputs["Color"])
-    link = links.new(diffuse.outputs["BSDF"], output.inputs["Surface"])
+    links.new(tex.outputs["Color"], diffuse.inputs["Color"])
+    links.new(diffuse.outputs["BSDF"], output.inputs["Surface"])
     #    disp           = matnodes['Material Output'].inputs['Displacement']
     #    mat.node_tree.links.new(disp, tex.outputs['Color'])
     obj.data.materials.append(mat)
@@ -328,7 +327,7 @@ def create_plane(objname, location, size=[1.0, 1.0]):
     plane          : blender object
                      Created blender object.
     """
-    ob = bpy.ops.mesh.primitive_plane_add(
+    bpy.ops.mesh.primitive_plane_add(
         size=size[0], enter_editmode=False, location=location
     )
     plane = bpy.context.render_layer.obkects.active
@@ -355,7 +354,7 @@ def create_circle(objname, location, radius=1.0):
     circle         : blender object
                      Created blender object.
     """
-    ob = bpy.ops.mesh.primitive_circle_add(
+    bpy.ops.mesh.primitive_circle_add(
         radius=radius, enter_editmode=False, location=location, fill_type="TRIFAN"
     )
     circle = bpy.context.render_layer.obkects.active
@@ -454,7 +453,7 @@ def cylinder_between(
     dy = y2 - y1
     dz = z2 - z1
     dist = math.sqrt(dx**2 + dy**2 + dz**2)
-    obj = bpy.ops.mesh.primitive_cylinder_add(
+    bpy.ops.mesh.primitive_cylinder_add(
         radius=r, depth=dist, location=(dx / 2 + x1, dy / 2 + y1, dz / 2 + z1)
     )
     cylinder = bpy.context.view_layer.objects.active
@@ -471,6 +470,6 @@ def cylinder_between(
     diffuse = matnodes.new("ShaderNodeBsdfDiffuse")
     diffuse.inputs[0].default_value = [color[0], color[1], color[2], color[3]]
     output = matnodes.new("ShaderNodeOutputMaterial")
-    link = links.new(diffuse.outputs["BSDF"], output.inputs["Surface"])
+    links.new(diffuse.outputs["BSDF"], output.inputs["Surface"])
     cylinder.data.materials.append(mat)
     return cylinder

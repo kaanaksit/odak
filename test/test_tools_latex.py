@@ -10,7 +10,7 @@ def test(
         line, content_type = manuscript.get_line(line_id=line_id)
         if content_type == "text":
             odak.log.logger.info("{} -> {}".format(header, line))
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

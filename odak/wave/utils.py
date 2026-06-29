@@ -29,7 +29,7 @@ def rayleigh_resolution(diameter, focal=None, wavelength=0.0005):
     if diameter <= 0:
         raise ValueError(f"diameter must be positive, got {diameter}")
     if not isinstance(wavelength, (int, float)):
-        raise TypeError(f"wavelength must be numeric")
+        raise TypeError("wavelength must be numeric")
     if wavelength <= 0:
         raise ValueError(f"wavelength must be positive, got {wavelength}")
 

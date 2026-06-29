@@ -3,10 +3,8 @@ import os
 import json
 import pathlib
 import re
-import shlex
 import numpy as np
 import cv2
-import sys
 import shutil
 from ..log import logger
 
@@ -85,7 +83,7 @@ def validate_shell_command(cmd_list):
 
         validated.append(arg)
 
-    logger.debug(f"Shell command validated successfully")
+    logger.debug("Shell command validated successfully")
     return validated
 
 
@@ -346,7 +344,7 @@ def load_image(fn, normalizeby=0.0, torch_style=False):
         image = new_image
     if normalizeby != 0.0:
         image = image * 1.0 / normalizeby
-    if torch_style == True and len(image.shape) > 2:
+    if torch_style and len(image.shape) > 2:
         image = np.moveaxis(image, -1, 0)
     logger.info("Loaded image: {}".format(safe_path))
     return image.astype(float)
@@ -538,9 +536,9 @@ def list_files(path, key="*.*", recursive=True):
     """
     safe_path = validate_path(path + "/")
     search_result = None
-    if recursive == True:
+    if recursive:
         search_result = pathlib.Path(safe_path).rglob(key)
-    elif recursive == False:
+    elif not recursive:
         search_result = pathlib.Path(safe_path).glob(key)
     if search_result is None:
         return []

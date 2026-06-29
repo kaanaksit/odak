@@ -1,5 +1,4 @@
 import sys
-import os
 import odak
 import numpy as np
 
@@ -46,7 +45,7 @@ def test():
     #        contour=False
     #    )
     #    figure.show()
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

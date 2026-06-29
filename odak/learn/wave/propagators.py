@@ -1,8 +1,6 @@
 import torch
-import numpy as np
 from .classical import get_propagation_kernel, custom
 from .util import (
-    wavenumber,
     generate_complex_field,
     calculate_amplitude,
     calculate_phase,
@@ -297,7 +295,7 @@ class propagator:
                     nv=self.resolution[1] * 2,
                     dx=self.pixel_pitch,
                     wavelength=self.wavelengths[channel_id],
-                    distance=distance+vaccination_residual,
+                    distance=distance + vaccination_residual,
                     device=self.device,
                     propagation_type=self.propagation_type,
                     samples=self.aperture_samples,
@@ -323,7 +321,7 @@ class propagator:
                     nv=self.resolution[1] * 2,
                     dx=self.pixel_pitch,
                     wavelength=self.wavelengths[channel_id],
-                    distance=distance_back+vaccination_residual,
+                    distance=distance_back + vaccination_residual,
                     device=self.device,
                     propagation_type=self.propagation_type,
                     samples=self.aperture_samples,
@@ -375,7 +373,7 @@ class propagator:
         if len(hologram_phases.shape) == 2:
             hologram_phases = hologram_phases.unsqueeze(0)
             logger.warning("hologram_phases shape is M x N, unsqueezed to 1 x M x N")
-        if get_complex == True:
+        if get_complex:
             reconstruction_type = torch.complex64
         else:
             reconstruction_type = torch.float32
@@ -422,7 +420,7 @@ class propagator:
                         phase * self.phase_scale[channel_id],
                     )
                     reconstruction_field = self.__call__(hologram, channel_id, depth_id)
-                    if get_complex == True:
+                    if get_complex:
                         result = reconstruction_field
                     else:
                         result = calculate_amplitude(reconstruction_field) ** 2

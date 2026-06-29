@@ -1,7 +1,6 @@
 import torch
 import odak
 import sys
-import random
 import os
 from tqdm import tqdm
 
@@ -79,8 +78,8 @@ def test(
             "{} -> Model weights save: {}".format(header, weights_filename)
         )
         odak.learn.tools.save_image(test_filename, estimation, cmin=0.0, cmax=1.0)
-        assert True == True
-    assert True == True
+        assert True
+    assert True
 
 
 def get_batches(image, number_of_batches=100):

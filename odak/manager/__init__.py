@@ -9,7 +9,7 @@ import threading
 
 try:
     import dispy
-except:
+except Exception:
     print("odak.manager relies on dispy. Install it using: pip install dispy")
 from tqdm import tqdm
 from ..tools import shell_command
@@ -45,9 +45,9 @@ class agent:
         self.server = server
         self.results = []
         self.jobs = []
-        if self.cluster == True:
+        if self.cluster:
             self.job_cluster = dispy.JobCluster(self.compute, depends=self.depends)
-        if self.server == True:
+        if self.server:
             self.server_thread = threading.Thread(target=start_server)
             self.server_thread.start()
 
@@ -60,10 +60,10 @@ class agent:
         args           : list
                          Variable arguments to pass to the compute.
         """
-        if self.cluster == True:
+        if self.cluster:
             job = self.job_cluster.submit(*args)
             self.jobs.append(job)
-        elif self.cluster == False:
+        elif not self.cluster:
             job = args
             self.jobs.append(job)
 
@@ -80,13 +80,13 @@ class agent:
         print("Progress of the submitted jobs:")
         pbar = tqdm(total=len(self.jobs))
         self.results = []
-        if self.cluster == False:
+        if not self.cluster:
             for job in self.jobs:
                 arguments = job
                 result = self.compute(*arguments)
                 self.results.append(result)
                 pbar.update(1)
-        if self.cluster == True:
+        if self.cluster:
             while len(self.jobs) > 0:
                 for job in self.jobs:
                     if job.status == dispy.DispyJob.Finished:
@@ -103,6 +103,6 @@ class agent:
         """
         Definition to close the cluster.
         """
-        if self.cluster == True:
+        if self.cluster:
             self.job_cluster.close()
         return True

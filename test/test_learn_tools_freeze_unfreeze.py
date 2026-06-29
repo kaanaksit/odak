@@ -23,7 +23,7 @@ def test(
     check_parameters_gradient(model)
     odak.learn.tools.unfreeze(model)
     check_parameters_gradient(model)
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

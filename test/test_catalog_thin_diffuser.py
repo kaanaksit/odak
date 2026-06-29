@@ -1,7 +1,7 @@
 import odak.raytracing as raytracer
 import odak.catalog as catalog
 import sys
-from odak.tools.sample import grid_sample, batch_of_rays
+from odak.tools.sample import grid_sample
 
 
 def test():
@@ -35,7 +35,7 @@ def test():
     #    ray_visualize.add_line(rays[:,0],normal[:,0])
     #    ray_visualize.add_line(new_rays[:,0],normals[:,0])
     #    ray_visualize.show()
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

@@ -86,7 +86,7 @@ def main(
     )
     save(light_kernels_x, directory="{}/vectorized/".format(output_directory))
     save_psfs(light_kernels, directory="{}/vectorized/psfs/".format(output_directory))
-    assert True == True
+    assert True
 
 
 def save_psfs(kernels, directory):

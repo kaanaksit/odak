@@ -28,7 +28,7 @@ def test():
     learning_rate = 5e-1
     iteration_number = 2000
     initial_parameters = np.array([10.0, 10.0, 0.0])
-    estimated_parameters = odak.fit.gradient_descent_1d(
+    odak.fit.gradient_descent_1d(
         input_data=x,
         ground_truth_data=y,
         function=function,
@@ -38,7 +38,7 @@ def test():
         learning_rate=learning_rate,
         iteration_number=iteration_number,
     )
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

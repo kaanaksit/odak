@@ -44,7 +44,7 @@ def test_gaussian_2d_overfit(
                          Device to run computation on. If None, uses CPU (default: None).
 
     Notes
-    ----- 
+    -----
     - Loss should decrease over time as the model learns to fit the data.
     - Visualization shows original image vs model reconstruction.
     """
@@ -53,15 +53,15 @@ def test_gaussian_2d_overfit(
     from odak.log import logger
 
     if device is None:
-        _device = torch.device("cuda" if torch.cuda.is_available() else "cpu") 
+        _device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     else:
         _device = device
-    
+
     # Load test image using odak.learn.tools.load_image (returns torch tensor)
     image = odak.learn.tools.load_image(
-        "test/data/fruit_lady.png", 
+        "test/data/fruit_lady.png",
         normalizeby=255.0,  # Normalize to [0, 1]
-        torch_style=False   # Keep as (H, W, C)
+        torch_style=False,  # Keep as (H, W, C)
     )
 
     # Get image dimensions directly from tensor shape
@@ -119,7 +119,7 @@ def test_gaussian_2d_overfit(
         # Forward pass: primitive receives (N, 1), returns (N, number_of_elements)
         # but wrapper sums over elements and adds dimension → (N, 1)
         estimates = model(X_flat, Y_flat)  # Shape: (N, 1) from wrapper
-        
+
         # Remove the last dimension and reshape back to original image dimensions
         estimates_squeezed = estimates.squeeze(-1)  # Shape: (N,)
         estimates_reshaped = estimates_squeezed.reshape(height, width)  # Shape: (H, W)
@@ -146,10 +146,10 @@ def test_gaussian_2d_overfit(
     if len(loss_history) > 1:
         initial_loss = loss_history[0]
         final_loss = loss_history[-1]
-        assert final_loss < initial_loss, (
-            "Model failed to learn: final loss ({:.6f}) >= initial loss ({:.6f})".format(
-                final_loss, initial_loss
-            )
+        assert (
+            final_loss < initial_loss
+        ), "Model failed to learn: final loss ({:.6f}) >= initial loss ({:.6f})".format(
+            final_loss, initial_loss
         )
         logger.info(
             "Loss reduced from {:.6f} to {:.6f} ({:.1f}% improvement)".format(
@@ -162,8 +162,10 @@ def test_gaussian_2d_overfit(
     # Generate final reconstruction for visualization (use flattened coords like training)
     with torch.no_grad():
         final_reconstruction = model(X_flat, Y_flat)  # Shape: (N, 1) from wrapper
-        final_reconstruction = final_reconstruction.squeeze(-1).reshape(height, width)  # Back to (H, W)
-        
+        final_reconstruction = final_reconstruction.squeeze(-1).reshape(
+            height, width
+        )  # Back to (H, W)
+
         # Clip to valid range for display
         final_reconstruction = final_reconstruction.clamp(0, 1)
 
@@ -177,8 +179,11 @@ def test_gaussian_2d_overfit(
     if visualize:
         # Prepare visualization using odak.visualize.plotly.plot2dshow
         fields = [ground_truth, final_reconstruction]
-        row_titles = ["Original", "Reconstructed ({} Gaussians)".format(number_of_elements)]
-        
+        row_titles = [
+            "Original",
+            "Reconstructed ({} Gaussians)".format(number_of_elements),
+        ]
+
         diagram = odak.visualize.plotly.plot2dshow(
             title="2D Gaussian Model Overfit Test",
             row_titles=row_titles,
@@ -187,7 +192,7 @@ def test_gaussian_2d_overfit(
             cols=1,
             shape=[512, 600 * 2],
         )
-        
+
         for field_id, field in enumerate(fields):
             diagram.add_field(
                 field=torch.flipud(field),
@@ -195,7 +200,7 @@ def test_gaussian_2d_overfit(
                 col=1,
                 showscale=False,
             )
-        
+
         # Show only if not running under pytest
         if "pytest" not in sys.modules and "pytest" not in str(sys.argv):
             diagram.show()
@@ -209,7 +214,7 @@ def test_gaussian_2d_overfit(
 if __name__ == "__main__":
     import odak
 
-    # Initialize test output directory  
+    # Initialize test output directory
     output_directory = "test_output"
     odak.tools.check_directory(output_directory)
 
@@ -217,7 +222,7 @@ if __name__ == "__main__":
     test_gaussian_2d_overfit(
         number_of_elements=2700,
         learning_rate=5e-3,
-        number_of_epochs=1, # Set it to 10000 for a full optimization
+        number_of_epochs=1,  # Set it to 10000 for a full optimization
         output_directory=output_directory,
         visualize=False,
     )

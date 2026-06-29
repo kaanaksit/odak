@@ -27,16 +27,16 @@ def test(output_directory="test_output"):
         ray_diagram.add_line(rays[:, 0], normals[:, 0], color="blue")
         colors = []
         for color_id in range(check.shape[1]):
-            if check[0, color_id] == True:
+            if check[0, color_id]:
                 colors.append("green")
-            elif check[0, color_id] == False:
+            elif not check[0, color_id]:
                 colors.append("red")
         ray_diagram.add_point(normals[:, 0], color=colors)
         html = ray_diagram.save_offline()
         markdown_file = open("{}/ray.txt".format(output_directory), "w")
         markdown_file.write(html)
         markdown_file.close()
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

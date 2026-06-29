@@ -30,9 +30,9 @@ def test():
             ray_diagram.add_line(rays[:, 0], normals[i, :, 0], color="blue")
             colors = []
             for color_id in range(check.shape[1]):
-                if check[i, color_id] == True:
+                if check[i, color_id]:
                     colors.append("green")
-                elif check[i, color_id] == False:
+                elif not check[i, color_id]:
                     colors.append("red")
             ray_diagram.add_point(normals[i, :, 0], color=colors)
             # ray_diagram.show()
@@ -41,7 +41,7 @@ def test():
         markdown_file = open("ray.txt", "w")
         markdown_file.write(html)
         markdown_file.close()
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

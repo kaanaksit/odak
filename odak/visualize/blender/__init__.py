@@ -32,14 +32,14 @@ def init(headless=False, blend_fn=""):
     """
     directory = os.path.dirname(__file__)
     server_fn = "%s/server.py" % directory
-    if headless == False:
+    if not headless:
         cmd = [
             "blender",
             blend_fn,
             "-P",
             server_fn,
         ]
-    elif headless == True:
+    elif headless:
         cmd = [
             "blender",
             blend_fn,
@@ -62,6 +62,6 @@ def check(proc):
                    Process to be monitored, see init() in odak.visualizer.blender to create one.
 
     """
-    while proc.poll() == None:
+    while proc.poll() is None:
         pass
     proc.kill()

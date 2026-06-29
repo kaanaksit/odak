@@ -152,7 +152,7 @@ def main(
             points=points,
             ground_truth=ground_truth,
         )
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

@@ -112,7 +112,7 @@ def perceptron(x, y, learning_rate=0.1, iteration_number=100):
             if y_hat - y_i != 0:
                 unsuccessful += 1
                 weights = weights + learning_rate * (y_i - y_hat) * x_i
-            description = "Unsuccessful count: {}/{}".format(unsuccessful, x.shape[0])
+            "Unsuccessful count: {}/{}".format(unsuccessful, x.shape[0])
     return weights
 
 

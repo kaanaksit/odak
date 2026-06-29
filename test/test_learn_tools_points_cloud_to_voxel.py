@@ -43,7 +43,7 @@ def test(
             points=points,
             values=values,
         )
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

@@ -1,13 +1,12 @@
 import sys
 import odak
 import torch
-from tqdm import tqdm
 
 
 def test(output_directory="test_output"):
     odak.tools.check_directory(output_directory)
     final_surface_point = torch.tensor([0.0, 0.0, 10.0])
-    final_surface = odak.learn.raytracing.define_plane(point=final_surface_point)
+    odak.learn.raytracing.define_plane(point=final_surface_point)
     no = [500, 500]
     start_points, _, _, _ = odak.learn.tools.grid_sample(
         no=no, size=[10.0, 10.0], center=[0.0, 0.0, -10.0]
@@ -38,13 +37,13 @@ def test(output_directory="test_output"):
         _, _, _, _, check = odak.learn.raytracing.intersect_w_triangle(rays, triangle)
         check = check.squeeze(0).unsqueeze(-1).repeat(1, 3)
         color = triangles_color[triangle_id].unsqueeze(0).repeat(check.shape[0], 1)
-        image[check == True] = color[check == True] * check[check == True]
+        image[check] = color[check] * check[check]
     image[image == [0.0, 0.0, 0]] = background_color
     image = image.view(no[0], no[1], 3)
     odak.learn.tools.save_image(
         "{}/image.png".format(output_directory), image, cmin=0.0, cmax=1.0
     )
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

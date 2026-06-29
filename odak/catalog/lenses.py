@@ -88,7 +88,7 @@ class plano_convex_lens:
         test_normal = convex_normal
         if len(test_normal.shape) < 3:
             test_normal = convex_normal[0]
-        is_it_in_lens = same_side(
+        same_side(
             test_normal,
             self.convex_point,
             self.plane_surface[0][1],

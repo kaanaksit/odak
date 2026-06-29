@@ -1,7 +1,6 @@
 import numpy as np
-from .transformation import rotate_points, rotate_point
+from .transformation import rotate_points
 from ..raytracing import create_ray_from_two_points
-from ..log import logger
 
 
 def random_sample_point_cloud(point_cloud, no, p=None):

@@ -78,7 +78,7 @@ def test(
         )
         ray_diagram.add_point(centers, color="green", opacity=0.3)
         ray_diagram.show()
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

@@ -36,11 +36,11 @@ def plot_data(x, y, w, show=True):
     """
     Function to plot data and a boundary drawn using the given weights.
     """
-    if show == False:
+    if not show:
         return
     import matplotlib.pyplot as plt
 
-    figure = plt.figure()
+    plt.figure()
     plt.scatter(x[:, 0], x[:, 1], c=y[:, 0])
     x1 = [min(x[:, 0]), max(x[:, 0])]
     m = -w[1] / w[2]
@@ -61,7 +61,7 @@ def test():
         x_train, y_train, learning_rate=learning_rate, iteration_number=iteration_number
     )
     plot_data(x_train, y_train, weights, show=False)
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

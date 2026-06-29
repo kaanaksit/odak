@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import sys
-import numpy as np
 import odak
 import odak.raytracing
 
@@ -24,7 +23,7 @@ def test_ray_intersect_w_a_triangle():
     ]
     normal_0, distance_0 = odak.raytracing.intersect_w_triangle(ray_0, triangle)
     normal_1, distance_1 = odak.raytracing.intersect_w_triangle(ray_1, triangle)
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

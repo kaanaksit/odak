@@ -114,7 +114,7 @@ def get_triangle_normal(triangle, triangle_center=None):
     direction = np.cross(
         triangle[:, 0] - triangle[:, 1], triangle[:, 2] - triangle[:, 1]
     )
-    if type(triangle_center) == type(None):
+    if triangle_center is None:
         normal[:, 0] = center_of_triangle(triangle)
     else:
         normal[:, 0] = triangle_center
@@ -171,7 +171,7 @@ def intersect_w_triangle(ray, triangle):
                    Distance in between a starting point of a ray and the intersection point with a given triangle.
     """
     normal, distance = intersect_w_surface(ray, triangle)
-    if is_it_on_triangle(normal[0], triangle[0], triangle[1], triangle[2]) == False:
+    if not is_it_on_triangle(normal[0], triangle[0], triangle[1], triangle[2]):
         return 0, 0
     return normal, distance
 

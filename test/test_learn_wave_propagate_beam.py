@@ -1,7 +1,5 @@
 import sys
-import os
 import odak
-import numpy as np
 import torch
 
 
@@ -52,7 +50,7 @@ def test(output_directory="test_output"):
             cmin=0.0,
             cmax=1.0,
         )  # (12)
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

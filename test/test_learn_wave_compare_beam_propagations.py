@@ -1,7 +1,5 @@
 import sys
-import os
 import odak
-import numpy as np
 import torch
 
 
@@ -19,7 +17,7 @@ def test(device=torch.device("cpu"), output_directory="test_output"):
         "Bandlimited Angular Spectrum",
         "Incoherent Angular Spectrum",
     ]
-    k = odak.learn.wave.wavenumber(wavelength)
+    odak.learn.wave.wavenumber(wavelength)
 
     hologram = (
         odak.learn.tools.load_image(
@@ -79,7 +77,7 @@ def test(device=torch.device("cpu"), output_directory="test_output"):
         cmin=0.0,
         cmax=1.0,
     )
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

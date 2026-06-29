@@ -70,9 +70,7 @@ class TestQueryLLM(unittest.TestCase):
 
     @patch("odak.tools.large_language_model.urllib.request.urlopen")
     def test_query_llm_missing_content_raises_value_error(self, mock_urlopen):
-        mock_urlopen.return_value = self.mock_urlopen_response(
-            {"message": {}}
-        )
+        mock_urlopen.return_value = self.mock_urlopen_response({"message": {}})
 
         with self.assertRaises(ValueError):
             query_llm("Hello")

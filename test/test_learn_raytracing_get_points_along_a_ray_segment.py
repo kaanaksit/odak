@@ -10,10 +10,10 @@ def test(directory="test_output"):
     distances = torch.linspace(0.0, 10.0, 10)
 
     ray = odak.learn.raytracing.create_ray_from_two_points(starting_point, end_point)
-    points = odak.learn.raytracing.get_points_along_a_ray_segment(
+    odak.learn.raytracing.get_points_along_a_ray_segment(
         ray=ray, distances=distances
     )
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

@@ -22,9 +22,9 @@ def test():
     )
     complex_field_phase = odak.learn.wave.calculate_phase(complex_field)
     complex_field_amplitude = odak.learn.wave.calculate_amplitude(complex_field)
-    phase_gradient_regular = phase_gradient_calculator(complex_field_phase)
-    speckle_contrast_regular = speckle_contrast_calculator(complex_field_amplitude)
-    assert True == True
+    phase_gradient_calculator(complex_field_phase)
+    speckle_contrast_calculator(complex_field_amplitude)
+    assert True
 
 
 if __name__ == "__main__":

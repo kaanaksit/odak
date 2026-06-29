@@ -23,11 +23,4 @@ import odak.learn.models
 import odak.learn.lensless
 
 # Make modules available at package level
-__all__ = [
-    'wave',
-    'tools',
-    'perception',
-    'raytracing',
-    'models',
-    'lensless'
-]
+__all__ = ["wave", "tools", "perception", "raytracing", "models", "lensless"]

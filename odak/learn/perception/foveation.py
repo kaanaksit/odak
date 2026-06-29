@@ -1,4 +1,3 @@
-from numpy import dot
 import torch
 import math
 

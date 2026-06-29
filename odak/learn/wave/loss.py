@@ -29,7 +29,7 @@ class phase_gradient(nn.Module):
         super(phase_gradient, self).__init__()
         self.device = device
         self.loss = loss
-        if kernel == None:
+        if kernel is None:
             self.kernel = (
                 torch.tensor(
                     [[[[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]]]], dtype=torch.float32

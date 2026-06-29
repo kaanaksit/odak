@@ -61,7 +61,7 @@ def test(device=torch.device("cpu"), output_directory="test_output"):
             header, loss_lms
         )
     )
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

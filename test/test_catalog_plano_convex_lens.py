@@ -4,7 +4,6 @@ import sys
 
 
 def test_plano_convex():
-    import odak
     import odak.raytracing as raytracer
     import odak.tools as tools
     import odak.catalog as catalog
@@ -16,7 +15,7 @@ def test_plano_convex():
     rays = raytracer.create_ray_from_two_points(start_point, end_points)
     lens = catalog.plano_convex_lens()
     normals, distances = lens.intersect(rays)
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

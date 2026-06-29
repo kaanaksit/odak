@@ -1,9 +1,7 @@
-import os
 from tqdm import tqdm
 import torch
 import torch.nn as nn
 from os.path import join
-from os import makedirs
 from collections import OrderedDict
 from ...tools.file import validate_path, check_directory
 

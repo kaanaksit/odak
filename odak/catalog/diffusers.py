@@ -1,6 +1,5 @@
 import numpy as np
-import odak.catalog
-from ..raytracing.primitives import define_plane, bring_plane_to_origin
+from ..raytracing.primitives import define_plane
 from ..raytracing.boundary import intersect_w_surface
 from ..wave import wavenumber
 from ..tools.sample import circular_uniform_sample, grid_sample
@@ -59,7 +58,7 @@ class thin_diffuser:
             radius=np.tan(np.radians(self.settings["diffusion angle"] / 2.0)),
             center=[0.0, 0.0, 1.0],
         )
-        if type(phase) == type(None):
+        if phase is None:
             self.surface_points = grid_sample(
                 no=[100, 100],
                 size=self.settings["shape"],

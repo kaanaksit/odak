@@ -1,10 +1,9 @@
 import torch
-import os
 import json
 import numpy as np
 from tqdm import tqdm
 from ..models import *
-from .util import generate_complex_field, wavenumber, calculate_amplitude
+from .util import generate_complex_field, calculate_amplitude
 from ...tools.file import validate_path, check_directory
 from ...log import logger
 from os.path import join

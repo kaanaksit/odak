@@ -1,5 +1,4 @@
 import torch
-from ..tools.vector import same_side
 from ..tools.transformation import rotate_points
 
 

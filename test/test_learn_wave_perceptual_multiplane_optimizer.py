@@ -1,4 +1,3 @@
-import sys
 import torch
 from odak.learn.wave import multiplane_hologram_optimizer, perceptual_multiplane_loss
 

@@ -1,15 +1,17 @@
 import torch
 from tqdm import tqdm
-from .propagators import propagator
 from .util import (
-    wavenumber,
     generate_complex_field,
     calculate_amplitude,
-    calculate_phase,
     compose_double_phase,
     decompose_double_phase,
 )
-from ..tools import torch_load, multi_scale_total_variation_loss, quantize, circular_binary_mask, spatial_gradient
+from ..tools import (
+    torch_load,
+    multi_scale_total_variation_loss,
+    quantize,
+    circular_binary_mask,
+)
 from ...log import logger
 
 
@@ -164,7 +166,12 @@ class multi_color_hologram_optimizer:
         self.double_phase = double_phase
         self.channel_power_filename = channel_power_filename
         self.method = method
-        if self.method not in ["conventional", "multi-color", "full_complex_conventional", "full_complex_multi-color"]:
+        if self.method not in [
+            "conventional",
+            "multi-color",
+            "full_complex_conventional",
+            "full_complex_multi-color",
+        ]:
             raise ValueError(
                 f"Unknown optimization method '{self.method}'. Options are conventional, multi-color, full_complex_conventional and full_complex_multi-color."
             )
@@ -219,7 +226,6 @@ class multi_color_hologram_optimizer:
                 [1.0, 1.0, 1.0], requires_grad=False, device=self.device
             )
 
-
     def init_amplitude(self):
         """
         Internal function to set the amplitude of the illumination source.
@@ -255,13 +261,17 @@ class multi_color_hologram_optimizer:
         ------
         None
         """
-        self.phase = torch.randn(
-            self.number_of_frames,
-            self.resolution[0],
-            self.resolution[1],
-            device=self.device,
-            requires_grad=False,
-        ) * 2. * torch.pi
+        self.phase = (
+            torch.randn(
+                self.number_of_frames,
+                self.resolution[0],
+                self.resolution[1],
+                device=self.device,
+                requires_grad=False,
+            )
+            * 2.0
+            * torch.pi
+        )
         self.phase.requires_grad = True
         self.phase_offset = torch.randn(self.number_of_frames, requires_grad=True)
 
@@ -329,7 +339,9 @@ class multi_color_hologram_optimizer:
             optimization_variables.append(self.amplitude)
         elif self.method == "full_complex_multi-color":
             optimization_variables.append(self.propagator.channel_power, self.amplitude)
-        self.optimizer = torch.optim.AdamW(optimization_variables, lr=self.learning_rate)
+        self.optimizer = torch.optim.AdamW(
+            optimization_variables, lr=self.learning_rate
+        )
         self.scheduler = torch.optim.lr_scheduler.PolynomialLR(
             self.optimizer,
             total_iters=number_of_iterations * 4,
@@ -454,7 +466,7 @@ class multi_color_hologram_optimizer:
         loss_phase                 : torch.tensor
                                       Total variation loss for constrained phase (scalar).
         """
-        phase_zero_mean = phase - torch.mean(phase)
+        phase - torch.mean(phase)
         phase_only = torch.nan_to_num(phase - phase_offset, nan=torch.pi)
         loss_phase = multi_scale_total_variation_loss(phase_only, levels=levels)
         return phase_only, loss_phase
@@ -484,13 +496,20 @@ class multi_color_hologram_optimizer:
         fft_amplitude = torch.abs(fft_field)
         height, width = fft_amplitude.shape
         radius = diameter / 2.0
-        
-        mask = circular_binary_mask(height, width, radius, offset_x=offset[0], offset_y=offset[1]).to(self.device).squeeze(0).squeeze(0)
-        
+
+        mask = (
+            circular_binary_mask(
+                height, width, radius, offset_x=offset[0], offset_y=offset[1]
+            )
+            .to(self.device)
+            .squeeze(0)
+            .squeeze(0)
+        )
+
         masked_amplitude = fft_amplitude * mask
         unmask = torch.abs(1.0 - mask)
         unmasked_amplitude = fft_amplitude * unmask
-        
+
         masked_amplitude_squeeze = masked_amplitude[mask > 0]
         if masked_amplitude_squeeze.numel() > 0:
             masked_mean = masked_amplitude_squeeze.mean()
@@ -498,13 +517,13 @@ class multi_color_hologram_optimizer:
             normalized_var = masked_var / (masked_mean**2 + 1e-8)
         else:
             normalized_var = torch.tensor(1.0, device=self.device)
-        
+
         total_amplitude = fft_amplitude.sum() + 1e-8
         loss_sparsity = unmasked_amplitude.sum() / total_amplitude
-        
+
         loss_homogeneity = normalized_var
         loss_sparsity = loss_sparsity
-        
+
         loss = loss_homogeneity + loss_sparsity
         return loss
 
@@ -513,10 +532,7 @@ class multi_color_hologram_optimizer:
         number_of_iterations=100,
         weights=None,
         inject_noise=False,
-        eyebox={
-            "offset": 0.0,
-            "diameter" : 100
-            },
+        eyebox={"offset": 0.0, "diameter": 100},
         noise_ratio=1e-3,
     ):
         """
@@ -556,7 +572,7 @@ class multi_color_hologram_optimizer:
         )
         t = tqdm(range(number_of_iterations), leave=False, dynamic_ncols=True)
         if self.optimize_peak_amplitude:
-            peak_amp_cache = self.peak_amplitude.item()
+            self.peak_amplitude.item()
         for step in t:
             for g in self.optimizer.param_groups:
                 learning_rate = g["lr"]
@@ -574,7 +590,7 @@ class multi_color_hologram_optimizer:
                     self.resolution[1] * self.scale_factor,
                     device=self.device,
                 )
-                loss_light = 0.0    
+                loss_light = 0.0
                 loss_eyebox = 0.0
                 loss_phase = 0.0
                 laser_powers = self.propagator.get_laser_powers()
@@ -592,11 +608,15 @@ class multi_color_hologram_optimizer:
                     else:
                         phase = self.phase[frame_id]
                     if weights["eyebox"] > 0.0:
-                        loss_eyebox += self.eyebox_constrain(phase, offset=eyebox['offset'], diameter=eyebox['diameter'])
-                    phase_wrapped = phase % (2. * torch.pi)
+                        loss_eyebox += self.eyebox_constrain(
+                            phase, offset=eyebox["offset"], diameter=eyebox["diameter"]
+                        )
+                    phase_wrapped = phase % (2.0 * torch.pi)
                     for channel_id in range(self.number_of_channels):
                         phase_scaled = torch.zeros_like(self.amplitude[channel_id])
-                        phase_scaled[:: self.scale_factor, :: self.scale_factor] = phase_wrapped
+                        phase_scaled[:: self.scale_factor, :: self.scale_factor] = (
+                            phase_wrapped
+                        )
                         laser_power = laser_powers[frame_id][channel_id]
                         hologram = generate_complex_field(
                             laser_power * self.activation(self.amplitude[channel_id]),
@@ -606,8 +626,12 @@ class multi_color_hologram_optimizer:
                             hologram, channel_id, depth_id
                         )
                         intensity = calculate_amplitude(reconstruction_field) ** 2
-                        reconstruction_intensities[frame_id, channel_id] += intensity.squeeze(0).squeeze(0)
-                        hologram_amplitudes[channel_id] = self.activation(self.amplitude[channel_id]).detach().clone()
+                        reconstruction_intensities[
+                            frame_id, channel_id
+                        ] += intensity.squeeze(0).squeeze(0)
+                        hologram_amplitudes[channel_id] = (
+                            self.activation(self.amplitude[channel_id]).detach().clone()
+                        )
                     hologram_phases[frame_id] = phase_wrapped.detach().clone()
                     if weights["light"] > 0.0:
                         loss_light += self.l2_loss(
@@ -615,12 +639,16 @@ class multi_color_hologram_optimizer:
                             torch.sum(laser_powers, dim=0),
                         )
                         loss_light += self.l2_loss(
-                            torch.tensor([self.number_of_frames * self.peak_amplitude]).to(
-                                self.device
+                            torch.tensor(
+                                [self.number_of_frames * self.peak_amplitude]
+                            ).to(self.device),
+                            torch.sum(laser_powers).view(
+                                1,
                             ),
-                            torch.sum(laser_powers).view(1,),
                         )
-                        loss_light += torch.cos(torch.min(torch.sum(laser_powers, dim=1)))
+                        loss_light += torch.cos(
+                            torch.min(torch.sum(laser_powers, dim=1))
+                        )
                 reconstruction_intensity = torch.sum(reconstruction_intensities, dim=0)
                 loss_image = self.evaluate(
                     reconstruction_intensity,
@@ -661,10 +689,7 @@ class multi_color_hologram_optimizer:
         self,
         number_of_iterations=100,
         weights=None,
-        eyebox={
-            "offset" : [0.0, 0.0],
-            "diameter" : 100
-            },
+        eyebox={"offset": [0.0, 0.0], "diameter": 100},
         bits=8,
         inject_noise=False,
         noise_ratio=1e-3,
@@ -703,10 +728,7 @@ class multi_color_hologram_optimizer:
         if weights is None:
             weights = {"image": 1.0, "light": 1.0, "eyebox": 1.0, "phase": 0.0}
         self.init_optimizer(number_of_iterations=number_of_iterations)
-        (
-            hologram_amplitudes,
-            hologram_phases 
-        )= self.gradient_descent(
+        hologram_amplitudes, hologram_phases = self.gradient_descent(
             number_of_iterations=number_of_iterations,
             noise_ratio=noise_ratio,
             inject_noise=inject_noise,

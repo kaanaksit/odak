@@ -37,7 +37,7 @@ def test(
                 cmax=1.0,
             )
     odak.log.logger.info(description)
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

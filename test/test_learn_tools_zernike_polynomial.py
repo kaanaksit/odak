@@ -61,7 +61,7 @@ def test(
                 showscale=False,
             )
         diagram.show()
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

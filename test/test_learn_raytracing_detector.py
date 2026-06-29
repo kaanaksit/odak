@@ -59,7 +59,7 @@ def test(
     )
     target_binary = torch.ones_like(target) * (target > 0.0) * 1.0
     target_binary = target_binary.reshape(1, -1)
-    target_binary_inverted = torch.abs(1.0 - target_binary) * 1e6
+    torch.abs(1.0 - target_binary) * 1e6
     optimizer = torch.optim.AdamW(
         [
             mesh.heights,
@@ -131,7 +131,7 @@ def test(
         markdown_file = open("ray.txt", "w")
         markdown_file.write(html)
         markdown_file.close()
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

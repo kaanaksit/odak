@@ -15,11 +15,11 @@ def test_image_quality_losses():
     ssim = odak.learn.perception.image_quality_losses.SSIM()
     msssim = odak.learn.perception.image_quality_losses.MSSSIM()
 
-    l_PSNR = psnr(test_image, test_target)
-    l_SSIM = ssim(test_image, test_target)
-    l_MSSSIM = msssim(test_image, test_target)
+    psnr(test_image, test_target)
+    ssim(test_image, test_target)
+    msssim(test_image, test_target)
 
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

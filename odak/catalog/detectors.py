@@ -47,7 +47,7 @@ class plane_detector:
         self.plane = define_plane(
             self.settings["center"], angles=self.settings["angles"]
         )
-        if type(field) == type(None):
+        if field is None:
             self.field = np.zeros(
                 (self.settings["resolution"][0], self.settings["resolution"][1], 1),
                 dtype=np.complex64,
@@ -221,7 +221,7 @@ class plane_detector:
             x = detector_ids[0, detector_id]
             y = detector_ids[1, detector_id]
             r2 = distance[detector_id] ** 2
-            if type(field) == type(None):
+            if field is None:
                 cache[x, y] += 1000.0 / r2
             else:
                 cache[x, y] += field[x, y] / r2

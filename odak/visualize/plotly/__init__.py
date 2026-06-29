@@ -234,7 +234,6 @@ class plotshow:
             "height": shape[1],
         }
         specs = []
-        new_row = []
         for row in range(rows):
             new_col = []
             for col in range(cols):
@@ -300,7 +299,7 @@ class plotshow:
         mode        : str
                       Mode for the plot, it can be either lines+markers, lines or markers.
         """
-        if type(data_y) == type(None):
+        if data_y is None:
             data_y = np.arange(0, data_x.shape[0])
         self.fig.add_trace(
             go.Scatter(
@@ -560,7 +559,10 @@ class plot2dshow:
             col=col,
         )
         if not isinstance(zoomed_inset, type(None)):
-            safe_path = validate_path(zoomed_inset, allowed_extensions=[".png", ".jpg", ".jpeg", ".gif", ".bmp"])
+            safe_path = validate_path(
+                zoomed_inset,
+                allowed_extensions=[".png", ".jpg", ".jpeg", ".gif", ".bmp"],
+            )
 
             # Load image with cv2 (BGR format)
             img = cv2.imread(safe_path, cv2.IMREAD_UNCHANGED)
@@ -574,10 +576,10 @@ class plot2dshow:
                 img = cv2.cvtColor(img, cv2.COLOR_BGRA2RGBA)
 
             # Encode as PNG in memory
-            _, buffer = cv2.imencode('.png', img)
+            _, buffer = cv2.imencode(".png", img)
 
             # Convert to base64 data URL for plotly
-            base64_string = base64.b64encode(buffer).decode('utf-8')
+            base64_string = base64.b64encode(buffer).decode("utf-8")
             data_url = f"data:image/png;base64,{base64_string}"
 
             self.fig.add_layout_image(
@@ -628,11 +630,11 @@ class detectorshow:
                          Flag to show phase.
         """
         m = 0
-        if show_intensity == True:
+        if show_intensity:
             m += 1
-        if show_amplitude == True:
+        if show_amplitude:
             m += 1
-        if show_phase == True:
+        if show_phase:
             m += 1
 
         self.settings = {
@@ -682,9 +684,11 @@ class detectorshow:
         total = self.settings["row number"] * self.settings["column number"]
         for i in range(total):
             suffix = "" if i == 0 else str(i + 1)
-            self.fig.update_layout(**{
-                f"yaxis{suffix}": dict(scaleanchor=f"x{suffix}", scaleratio=1),
-            })
+            self.fig.update_layout(
+                **{
+                    f"yaxis{suffix}": dict(scaleanchor=f"x{suffix}", scaleratio=1),
+                }
+            )
         self.fig.show()
 
     def save_image(self, filename):
@@ -717,7 +721,7 @@ class detectorshow:
         phase = calculate_phase(field, deg=True)
         intensity = calculate_intensity(field)
         col = (col - 1) * (self.settings["sub column no"]) + 1
-        if self.settings["show amplitude"] == True:
+        if self.settings["show amplitude"]:
             self.fig.add_trace(
                 go.Heatmap(
                     z=amplitude,
@@ -729,7 +733,7 @@ class detectorshow:
             )
             col += 1
 
-        if self.settings["show phase"] == True:
+        if self.settings["show phase"]:
             self.fig.add_trace(
                 go.Heatmap(
                     z=phase,
@@ -741,7 +745,7 @@ class detectorshow:
             )
             col += 1
 
-        if self.settings["show intensity"] == True:
+        if self.settings["show intensity"]:
             self.fig.add_trace(
                 go.Heatmap(
                     z=intensity,
@@ -967,7 +971,14 @@ class rayshow:
         self.fig.write_image(filename)
 
     def add_point(
-        self, point, row=1, column=1, color="red", opacity=1.0, show_legend=False, label=None
+        self,
+        point,
+        row=1,
+        column=1,
+        color="red",
+        opacity=1.0,
+        show_legend=False,
+        label=None,
     ):
         """
         Definition to add a point to the figure.
@@ -989,9 +1000,9 @@ class rayshow:
         label          : str or None
                          Legend label for this trace.
         """
-        if torch.is_tensor(point) == True:
+        if torch.is_tensor(point):
             point = point.detach().cpu().numpy()
-        if torch.is_tensor(color) == True:
+        if torch.is_tensor(color):
             color = color.detach().cpu().numpy()
         if len(point.shape) == 1:
             point = np.expand_dims(point, axis=0)
@@ -1036,7 +1047,7 @@ class rayshow:
         show_legend    : bool
                          Set True to enable legend for the line.
         """
-        if torch.is_tensor(sphere) == True:
+        if torch.is_tensor(sphere):
             sphere = sphere.detach().cpu().numpy()
         if len(sphere.shape) == 1:
             sphere = np.expand_dims(sphere, axis=0)
@@ -1081,7 +1092,7 @@ class rayshow:
                          Set True to enable legend for the line.
         """
 
-        if torch.is_tensor(triangle) == True:
+        if torch.is_tensor(triangle):
             triangle = triangle.detach().cpu().numpy()
         if len(triangle.shape) == 2:
             triangle = np.expand_dims(triangle, axis=0)

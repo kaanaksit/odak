@@ -14,13 +14,13 @@ def test():
                 header
             )
         )
-        assert True == True
+        assert True
     if "pycvvdp" in sys.modules:
         import pycvvdp
 
         odak.log.logger.warning("{} -> ColorVideoVDP is imported.".format(header))
         main(pycvvdp)
-    assert True == True
+    assert True
 
 
 def main(
@@ -52,7 +52,7 @@ def main(
     )
     loss = colorvdp.loss(image_noisy, image, dim_order="CHW")
     odak.log.logger.info("{} -> {}".format(header, loss))
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

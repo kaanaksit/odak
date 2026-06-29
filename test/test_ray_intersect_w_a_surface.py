@@ -1,5 +1,4 @@
 import sys
-import numpy as np
 import odak
 import odak.raytracing
 
@@ -12,7 +11,7 @@ def test_ray_intersect_w_a_surface():
     surface_angles = [0.0, 0.0, 0.0]
     surface_points = odak.raytracing.define_plane(surface_center, surface_angles)
     normal, distance = odak.raytracing.intersect_w_surface(ray, surface_points)
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

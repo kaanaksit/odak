@@ -12,7 +12,6 @@ from ..tools import (
     zero_pad,
     crop_center,
     generate_2d_gaussian,
-    circular_binary_mask,
     correlation_2d,
 )
 from ...log import logger
@@ -146,7 +145,7 @@ def propagate_beam(
         )
     else:
         logger.warning("Propagation type not recognized")
-        assert True == False
+        assert False
     if zero_padding[2]:
         result = crop_center(result)
     return result
@@ -239,7 +238,7 @@ def get_propagation_kernel(
         )
     else:
         logger.warning("Propagation type not recognized")
-        assert True == False
+        assert False
     return kernel
 
 
@@ -339,8 +338,8 @@ def get_light_kernels(
         else:
             logger.warning("Unknown kernel type requested.")
             raise ValueError("Unknown kernel type requested.")
-        kernel_amplitude = calculate_amplitude(kernel)
-        kernel_phase = calculate_phase(kernel) % (2 * torch.pi)
+        calculate_amplitude(kernel)
+        calculate_phase(kernel) % (2 * torch.pi)
         light_kernels_complex[wavelength_id, distance_id, pixel_pitch_id] = kernel
         light_parameters[wavelength_id, distance_id, pixel_pitch_id, :, :, 0] = (
             wavelength
@@ -424,14 +423,14 @@ def custom(field, kernel, zero_padding=False, aperture=1.0):
                        Final complex field (MxN).
 
     """
-    if type(kernel) == type(None):
+    if kernel is None:
         H = torch.ones(field.shape).to(field.device)
     else:
         H = kernel * aperture
     U1 = torch.fft.fftshift(torch.fft.fft2(field)) * aperture
-    if zero_padding == False:
+    if not zero_padding:
         U2 = H * U1
-    elif zero_padding == True:
+    elif zero_padding:
         U2 = zero_pad(H * U1)
     result = torch.fft.ifft2(torch.fft.ifftshift(U2))
     return result
@@ -658,7 +657,6 @@ def get_point_wise_impulse_response_fresnel_kernel(
     h                        : float
                                Complex field in spatial domain.
     """
-    device = aperture_field.device
     k = wavenumber(wavelength)
     if randomization:
         pp = [
@@ -1288,7 +1286,7 @@ def stochastic_gradient_descent(
     phase = torch.randn_like(target, requires_grad=True)
     k = wavenumber(wavelength)
     optimizer = torch.optim.Adam([phase], lr=learning_rate)
-    if type(loss_function) == type(None):
+    if loss_function is None:
         loss_function = torch.nn.MSELoss()
     t = tqdm(range(n_iteration), leave=False, dynamic_ncols=True)
     for i in t:
@@ -1351,7 +1349,7 @@ def point_wise(target, wavelength, distance, dx, device, lens_size=401):
     target = zero_pad(target)
     nx, ny = target.shape
     k = wavenumber(wavelength)
-    ones = torch.ones(target.shape, requires_grad=False).to(device)
+    torch.ones(target.shape, requires_grad=False).to(device)
     x = torch.linspace(-nx / 2, nx / 2, nx).to(device)
     y = torch.linspace(-ny / 2, ny / 2, ny).to(device)
     X, Y = torch.meshgrid(x, y, indexing="ij")
@@ -1401,7 +1399,7 @@ def shift_w_double_phase(
     amplitude        : torch.tensor
                        Amplitude value of a complex hologram.
     """
-    if type(amplitude) == type(None):
+    if amplitude is None:
         amplitude = torch.ones_like(phase)
     hologram = generate_complex_field(amplitude, phase)
     k = wavenumber(wavelength)

@@ -1,7 +1,8 @@
 import os
 from setuptools import setup, find_packages
 
-read = lambda fname: open(os.path.join(os.path.dirname(__file__), fname)).read()
+def read(fname):
+    return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 thelibFolder = os.path.dirname(os.path.realpath(__file__))
 requirementPath = os.path.join(thelibFolder, "requirements.txt")

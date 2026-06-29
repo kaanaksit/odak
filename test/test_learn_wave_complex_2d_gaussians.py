@@ -161,9 +161,7 @@ def test_render_2d_differentiable():
     loss.backward()
 
     assert gaussians.colours.grad is not None, "Colours should receive gradients"
-    assert (
-        gaussians.pre_act_scales.grad is not None
-    ), "Scales should receive gradients"
+    assert gaussians.pre_act_scales.grad is not None, "Scales should receive gradients"
 
     print("  Scene2D differentiability: PASSED")
 

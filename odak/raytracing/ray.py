@@ -156,7 +156,7 @@ def calculate_intersection_of_two_rays(ray0, ray1):
         [ray0[0][0] - ray1[0][0], ray0[0][1] - ray1[0][1], ray0[0][2] - ray1[0][2]]
     )
     distances = np.linalg.lstsq(A, B, rcond=None)[0]
-    if np.allclose(np.dot(A, distances), B) == False:
+    if not np.allclose(np.dot(A, distances), B):
         distances = np.array([0, 0])
     distances = distances[np.argsort(-distances)]
     point = propagate_a_ray(ray0, distances[0])[0]

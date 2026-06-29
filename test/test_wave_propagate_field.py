@@ -24,10 +24,10 @@ def test():
         samples_surface_0, samples_surface_1, field_0, wave_number, direction=1
     )
     # Reconstruction: propagates back from that specific plane to start plane.
-    field_2 = wave.propagate_field(
+    wave.propagate_field(
         samples_surface_1, samples_surface_0, field_1, wave_number, direction=-1
     )
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

@@ -71,7 +71,7 @@ class markdown:
             for syntax in self.markdown_dictionary:
                 if line.find(syntax) != -1:
                     content_type = "markdown"
-            if content_type_flag == True:
+            if content_type_flag:
                 content_type = "markdown"
                 for syntax in self.markdown_end_dictionary:
                     if line.find(syntax) != -1:

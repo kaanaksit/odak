@@ -1,5 +1,4 @@
 import torch
-from .file import resize
 
 
 def multi_scale_total_variation_loss(frame, levels=3):

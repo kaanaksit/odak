@@ -1,13 +1,17 @@
 import sys
 import os
 import torch
-import numpy as np
 import odak
 from odak.learn.wave import decompose_double_phase, compose_double_phase
 
 
-def plot_comparison(input_tensor, component_high, component_low, reconstructed,
-                    output_directory="test_output"):
+def plot_comparison(
+    input_tensor,
+    component_high,
+    component_low,
+    reconstructed,
+    output_directory="test_output",
+):
     """Plot visual comparison of input tensor, components, and reconstructed output."""
     odak.tools.check_directory(output_directory)
 
@@ -68,8 +72,9 @@ def test():
     device = torch.device("cpu")
     output_directory = "test_output"
 
-    resolution = [16, 16]
-    input_tensor = odak.learn.tools.load_image('test/data/sample_hologram.png', normalizeby=255.0, torch_style=True)[0].to(device)
+    input_tensor = odak.learn.tools.load_image(
+        "test/data/sample_hologram.png", normalizeby=255.0, torch_style=True
+    )[0].to(device)
 
     print("Input tensor shape:", input_tensor.shape)
     print("Input tensor:\n", input_tensor)
@@ -87,12 +92,16 @@ def test():
     print("\nReconstructed tensor shape:", reconstructed.shape)
     print("Reconstructed tensor:\n", reconstructed)
 
-    assert input_tensor.shape == reconstructed.shape, (
-        f"Shape mismatch: {input_tensor.shape} vs {reconstructed.shape}"
-    )
-    assert torch.allclose(input_tensor, reconstructed), "Input and reconstructed tensors are not equal!"
+    assert (
+        input_tensor.shape == reconstructed.shape
+    ), f"Shape mismatch: {input_tensor.shape} vs {reconstructed.shape}"
+    assert torch.allclose(
+        input_tensor, reconstructed
+    ), "Input and reconstructed tensors are not equal!"
 
-    plot_comparison(input_tensor, component_high, component_low, reconstructed, output_directory)
+    plot_comparison(
+        input_tensor, component_high, component_low, reconstructed, output_directory
+    )
 
     print("\nAll checks passed!")
     return 0

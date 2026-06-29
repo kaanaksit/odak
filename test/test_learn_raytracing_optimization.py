@@ -99,7 +99,7 @@ def test(
         markdown_file = open("{}/ray.txt".format(output_directory), "w")
         markdown_file.write(html)
         markdown_file.close()
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

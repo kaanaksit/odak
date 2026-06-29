@@ -19,10 +19,10 @@ def test(directory="test_output"):
         center=[0.0, 0.0, 10.0],
     )
     angles = torch.randn_like(starting_points) * 180.0  # (5)
-    rays_from_angles = odak.learn.raytracing.create_ray(starting_points, angles)  # (6)
+    odak.learn.raytracing.create_ray(starting_points, angles)  # (6)
 
     distances = torch.ones(rays_from_points.shape[0]) * 12.5
-    propagated_rays = odak.learn.raytracing.propagate_ray(
+    odak.learn.raytracing.propagate_ray(
         rays_from_points, distances
     )  # (7)
 
@@ -48,7 +48,7 @@ def test(directory="test_output"):
         markdown_file = open("{}/ray.txt".format(directory), "w")
         markdown_file.write(html)
         markdown_file.close()
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

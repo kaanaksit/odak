@@ -24,7 +24,7 @@ def send_msg(cmds):
     """
     try:
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    except:
+    except Exception:
         return False
     client.connect((host, port))
     for cmd in cmds:

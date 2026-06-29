@@ -24,7 +24,7 @@ def test(output_directory="test_output"):
         ray_diagram = odak.visualize.plotly.rayshow(line_width=3.0, marker_size=3.0)
         ray_diagram.add_point(rays[:, 0], color="blue")
         ray_diagram.add_line(
-            rays[:, 0][check == True], intersecting_rays[:, 0], color="blue"
+            rays[:, 0][check], intersecting_rays[:, 0], color="blue"
         )
         ray_diagram.add_sphere(sphere, color="orange")
         ray_diagram.add_point(intersecting_normals[:, 0], color="green")
@@ -32,7 +32,7 @@ def test(output_directory="test_output"):
         markdown_file = open("{}/ray.txt".format(output_directory), "w")
         markdown_file.write(html)
         markdown_file.close()
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

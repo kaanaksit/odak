@@ -24,11 +24,10 @@ def create_ray(xyz, abg, direction=False):
                    Size will be either [1 x 3] or [m x 3].
     """
     points = xyz
-    angles = abg
     if len(xyz) == 1:
         points = xyz.unsqueeze(0)
     if len(abg) == 1:
-        angles = abg.unsqueeze(0)
+        abg.unsqueeze(0)
     ray = torch.zeros(points.shape[0], 2, 3, device=points.device)
     ray[:, 0] = points
     if direction:

@@ -3,7 +3,6 @@ from ...tools.file import validate_path
 from ...log import logger
 import torch
 import os
-from pathlib import Path
 from tqdm import tqdm
 
 
@@ -71,9 +70,7 @@ class gaussian_2d(torch.nn.Module):
 
         # Initialize parameters as learnable tensors
         self.widths = torch.nn.Parameter(torch.rand(2, 1, self.number_of_elements))
-        self.offsets = torch.nn.Parameter(
-            torch.randn(2, 1, self.number_of_elements)
-        )
+        self.offsets = torch.nn.Parameter(torch.randn(2, 1, self.number_of_elements))
         self.rotations = torch.nn.Parameter(torch.randn(1, self.number_of_elements))
         self.alphas = torch.nn.Parameter(torch.randn(1, self.number_of_elements))
 
@@ -161,49 +158,49 @@ class gaussian_2d(torch.nn.Module):
 
     def forward(self, x, y, residual=1e-6):
         """
-        Forward pass: evaluate the 2D Gaussian model at given coordinates.
+            Forward pass: evaluate the 2D Gaussian model at given coordinates.
 
-        Computes a weighted sum of 2D Gaussians evaluated at the input grid
-        coordinates (x, y). Each Gaussian is rotated and translated according
-        to its learned parameters.
+            Computes a weighted sum of 2D Gaussians evaluated at the input grid
+            coordinates (x, y). Each Gaussian is rotated and translated according
+            to its learned parameters.
 
-        Parameters
-        ----------
-        x : torch.Tensor
-            X-coordinates of the evaluation grid. Shape should broadcast with y.
-        y : torch.Tensor
-            Y-coordinates of the evaluation grid. Shape should broadcast with x.
-        residual : float, optional
-                   Small constant to avoid numerical issues (default: 1e-6).
+            Parameters
+            ----------
+            x : torch.Tensor
+                X-coordinates of the evaluation grid. Shape should broadcast with y.
+            y : torch.Tensor
+                Y-coordinates of the evaluation grid. Shape should broadcast with x.
+            residual : float, optional
+                       Small constant to avoid numerical issues (default: 1e-6).
 
-        Returns
-        -------
-        results : torch.Tensor
-                  The evaluated Gaussian field at input coordinates. The output
-                  shape is determined by broadcasting x, y with the parameter shapes.
-                  Values are passed through tanh() activation and multiplied by alphas.
+            Returns
+            -------
+            results : torch.Tensor
+                      The evaluated Gaussian field at input coordinates. The output
+                      shape is determined by broadcasting x, y with the parameter shapes.
+                      Values are passed through tanh() activation and multiplied by alphas.
+
+            Notes
+            -----
+            - Coordinates are first rotated using learned rotation angles.
+            - Then translated by learned offsets for each Gaussian.
+            - The 2D Gaussian function is evaluated as exp(-(x^2 + y^2)) scaled by widths.
+            - Final output: tanh(alphas * gaussians) summed over all elements.
 
         Notes
         -----
-        - Coordinates are first rotated using learned rotation angles.
-        - Then translated by learned offsets for each Gaussian.
-        - The 2D Gaussian function is evaluated as exp(-(x^2 + y^2)) scaled by widths.
-        - Final output: tanh(alphas * gaussians) summed over all elements.
-
-    Notes
-    -----
-    - Supports multiple input shapes via PyTorch broadcasting
-    - For grid inputs (H, W): automatically broadcasts to (H, W, N_elements)
-    - For flattened inputs (N, 1): broadcasts directly with parameters
-    """
+        - Supports multiple input shapes via PyTorch broadcasting
+        - For grid inputs (H, W): automatically broadcasts to (H, W, N_elements)
+        - For flattened inputs (N, 1): broadcasts directly with parameters
+        """
         # PyTorch broadcasting handles shape alignment automatically
         # Input shapes: x, y can be (H, W), (H*W,), or (-1, 1)
         # Parameters are stored as (2, 1, N) for offsets/widths and (1, N) for rotations/alphas
-        
+
         # Rotate coordinates according to each Gaussian's rotation angle
         cos_rot = torch.cos(self.rotations)  # Shape: (1, N)
         sin_rot = torch.sin(self.rotations)  # Shape: (1, N)
-        
+
         # Broadcasting: x (*), y (*) automatically expand with cos_rot/sin_rot
         x_r = x * cos_rot - y * sin_rot
         y_r = x * sin_rot + y * cos_rot
@@ -284,14 +281,14 @@ class gaussians_2d(torch.nn.Module):
         if not isinstance(number_of_elements, int) or number_of_elements <= 0:
             raise ValueError(
                 "number_of_elements must be a positive integer, got {}".format(
-                    type(number_of_elements).__name__ if not isinstance(number_of_elements, int) else str(number_of_elements)
+                    type(number_of_elements).__name__
+                    if not isinstance(number_of_elements, int)
+                    else str(number_of_elements)
                 )
             )
 
         self.number_of_elements = number_of_elements
-        self.model = gaussian_2d(
-            number_of_elements=self.number_of_elements
-        )
+        self.model = gaussian_2d(number_of_elements=self.number_of_elements)
 
         # Count total trainable parameters
         self.total_params = sum(p.numel() for p in self.parameters() if p.requires_grad)
@@ -357,17 +354,12 @@ class gaussians_2d(torch.nn.Module):
         from ...tools.file import validate_path
 
         safe_path = validate_path(
-            os.path.expanduser(weights_filename), 
-            allowed_extensions=[".pt", ".pth"]
+            os.path.expanduser(weights_filename), allowed_extensions=[".pt", ".pth"]
         )
         torch.save(self.state_dict(), safe_path)
         self.logger.info("Model weights saved to: {}".format(safe_path))
 
-    def load_weights(
-        self, 
-        weights_filename=None,
-        device=torch.device("cpu")
-    ):
+    def load_weights(self, weights_filename=None, device=torch.device("cpu")):
         """
         Load model weights from a file.
 
@@ -382,8 +374,7 @@ class gaussians_2d(torch.nn.Module):
             from ...tools.file import validate_path
 
             safe_path = validate_path(
-                os.path.expanduser(weights_filename),
-                allowed_extensions=[".pt", ".pth"]
+                os.path.expanduser(weights_filename), allowed_extensions=[".pt", ".pth"]
             )
 
             if not os.path.isfile(safe_path):
@@ -616,7 +607,6 @@ class gaussian_3d_volume(torch.nn.Module):
                 "larger": 0e-0,
                 "threshold": [0.0, 1.0],
             },
-            "alpha": 0e-0,
             "angle": 0e-0,
             "center": 0e-0,
             "utilization": {"l2": 0e0, "percentile": 0},

@@ -11,8 +11,8 @@ def test():
     device = torch.device("cpu")
     target = torch.zeros(resolution[0], resolution[1], device=device)
     target[540:600, 960:1020] = 1
-    hologram = point_wise(target, wavelength, distance, dx, device, lens_size=401)
-    assert True == True
+    point_wise(target, wavelength, distance, dx, device, lens_size=401)
+    assert True
 
 
 if __name__ == "__main__":

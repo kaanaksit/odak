@@ -113,7 +113,7 @@ def is_it_on_triangle(pointtocheck, point0, point1, point2):
     side0 = same_side(pointtocheck, point0, point1, point2)
     side1 = same_side(pointtocheck, point1, point0, point2)
     side2 = same_side(pointtocheck, point2, point0, point1)
-    if side0 == True and side1 == True and side2 == True:
+    if side0 and side1 and side2:
         return True
     return False
 

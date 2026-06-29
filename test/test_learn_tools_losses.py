@@ -21,13 +21,13 @@ def test(header="test/test_learn_tools_losses.py"):
         odak.log.logger.info(
             f"{header} -> Running test {idx}, input shape: {img.size()}..."
         )
-        y = loss.multi_scale_total_variation_loss(img, levels=4)
-        y = loss.total_variation_loss(img)
-        y = loss.histogram_loss(img, pred, bins=16, limits=[0.0, 1.0])
-        y = loss.wrapped_mean_squared_error(img, pred, reduction="sum")
+        loss.multi_scale_total_variation_loss(img, levels=4)
+        loss.total_variation_loss(img)
+        loss.histogram_loss(img, pred, bins=16, limits=[0.0, 1.0])
+        loss.wrapped_mean_squared_error(img, pred, reduction="sum")
     value = torch.tensor(1.0, dtype=torch.float)
-    y = loss.radial_basis_function(value=value, epsilon=0.5)
-    assert True == True
+    loss.radial_basis_function(value=value, epsilon=0.5)
+    assert True
 
 
 if __name__ == "__main__":

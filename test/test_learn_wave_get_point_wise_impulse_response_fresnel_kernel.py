@@ -2,7 +2,6 @@ import odak
 import torch
 import sys
 
-from tqdm import tqdm
 
 
 def get_target_plane_points(
@@ -121,7 +120,7 @@ def main(
             )
     h = h / nx / ny
     save_psfs(h, directory="{}/aperture_psfs/".format(output_directory))
-    assert True == True
+    assert True
 
 
 def save_psfs(kernel, directory, wavelength_id=0, distance_id=0, pixel_pitch_id=0):

@@ -1,12 +1,13 @@
 import torch
 from typing import Union
 
+
 def circular_binary_mask(
     px: int, py: int, r: Union[int, float], offset_x: float = 0.0, offset_y: float = 0.0
 ) -> torch.Tensor:
     """
     Generate a 2D circular binary mask.
-    
+
     Parameters
     ----------
     px : int
@@ -19,7 +20,7 @@ def circular_binary_mask(
         Offset of the circle center in x direction (in pixels).
     offset_y : float
         Offset of the circle center in y direction (in pixels).
-        
+
     Returns
     -------
     torch.Tensor

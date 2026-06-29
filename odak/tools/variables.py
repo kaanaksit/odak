@@ -182,26 +182,17 @@ def create_group_tensor(
     # Validate input percentages sum to 1.0
     total_percentage = sum(group_percentages)
     if abs(total_percentage - 1.0) > 1e-6:
-        logger.error(
-            f"group_percentages must sum to 1.0, got {total_percentage}"
-        )
-        raise ValueError(
-            f"group_percentages must sum to 1.0, got {total_percentage}"
-        )
+        logger.error(f"group_percentages must sum to 1.0, got {total_percentage}")
+        raise ValueError(f"group_percentages must sum to 1.0, got {total_percentage}")
 
     # Validate all percentages are within valid range
     if any(p < 0 or p > 1 for p in group_percentages):
-        logger.error(
-            "All percentages must be between 0.0 and 1.0"
-        )
-        raise ValueError(
-            "All percentages must be between 0.0 and 1.0"
-        )
+        logger.error("All percentages must be between 0.0 and 1.0")
+        raise ValueError("All percentages must be between 0.0 and 1.0")
 
     # Calculate number of elements per group
     group_sizes = []
     remaining_elements = number_of_elements
-    cumulative_percentage = 0.0  # Reserved for potential future use
 
     for i, pct in enumerate(group_percentages):
         if i == len(group_percentages) - 1:

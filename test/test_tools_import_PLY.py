@@ -8,9 +8,9 @@ def test(output_directory="test_output"):
     odak.tools.check_directory(output_directory)
     triangles = read_PLY("./test/data/sample.ply")
     centers = raytracer.center_of_triangle(triangles)
-    normals = raytracer.get_triangle_normal(triangles, centers)
+    raytracer.get_triangle_normal(triangles, centers)
     write_PLY(triangles, savefn="{}/output.ply".format(output_directory))
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

@@ -1,8 +1,7 @@
 import sys
-import os
 import odak
 import numpy as np
-from odak.wave import wavenumber, propagate_beam, add_random_phase
+from odak.wave import wavenumber, propagate_beam
 
 
 def test(output_directory="test_output"):
@@ -38,7 +37,7 @@ def test(output_directory="test_output"):
             cmin=0.0,
             cmax=output_intensity.max(),
         )
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

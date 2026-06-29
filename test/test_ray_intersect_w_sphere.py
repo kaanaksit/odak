@@ -7,7 +7,7 @@ def test_sphere_intersection():
     ray = raytracer.create_ray_from_two_points([-2.0, 0.0, 0.0], [10.0, 0.0, 0.0])
     sphere = raytracer.define_sphere([0.0, 0.0, 0.0], 10)
     normal, distance = raytracer.intersect_w_sphere(ray, sphere)
-    assert True == True
+    assert True
 
 
 def test_multiple_rays_w_sphere():
@@ -20,7 +20,7 @@ def test_multiple_rays_w_sphere():
     rays = raytracer.create_ray_from_two_points(start_point, end_points)
     sphere = raytracer.define_sphere([0.0, 0.0, 100.0], 20)
     normals, distances = raytracer.intersect_w_sphere(rays, sphere)
-    assert True == True
+    assert True
 
 
 def test_all():

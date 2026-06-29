@@ -2,7 +2,6 @@ import torch
 from .primitives import define_plane
 from .boundary import intersect_w_surface
 from ..tools import grid_sample
-from ...log import logger
 
 
 class detector:

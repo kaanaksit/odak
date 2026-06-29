@@ -1,6 +1,5 @@
 import numpy as np
 from ..tools import nufft2, nuifft2, zero_pad
-from .lens import quadratic_phase_function
 from .utils import (
     wavenumber,
     calculate_amplitude,
@@ -95,7 +94,7 @@ def adaptive_sampling_angular_spectrum(field, k, distance, dx, wavelength):
     fc2 = 1.0 / 2 * (nu / wavelength / np.abs(distance)) ** 0.5
     ss = np.abs(fc2) / forig
     zc = nu * dx**2 / wavelength
-    K = nu / 2 / np.amax(np.abs(fx))
+    nu / 2 / np.amax(np.abs(fx))
     m = 2
     nnu2 = m * nu
     nnv2 = m * nv
@@ -177,7 +176,7 @@ def fraunhofer(field, k, distance, dx, wavelength):
     nv, nu = field.shape
     l = nu * dx
     l2 = wavelength * distance / dx
-    dx2 = wavelength * distance / l
+    wavelength * distance / l
     fx = np.linspace(-l2 / 2.0, l2 / 2.0, nu)
     fy = np.linspace(-l2 / 2.0, l2 / 2.0, nv)
     FX, FY = np.meshgrid(fx, fy)
@@ -217,7 +216,7 @@ def fraunhofer_inverse(field, k, distance, dx, wavelength):
     nv, nu = field.shape
     l = nu * dx
     l2 = wavelength * distance / dx
-    dx2 = wavelength * distance / l
+    wavelength * distance / l
     fx = np.linspace(-l2 / 2.0, l2 / 2.0, nu)
     fy = np.linspace(-l2 / 2.0, l2 / 2.0, nv)
     FX, FY = np.meshgrid(fx, fy)
@@ -413,11 +412,11 @@ def band_extended_angular_spectrum(field, k, distance, dx, wavelength):
     x = np.linspace(-l / 2, l / 2, nu)
     y = np.linspace(-l / 2, l / 2, nv)
     X, Y = np.meshgrid(x, y)
-    Z = X**2 + Y**2
+    X**2 + Y**2
     fx = np.linspace(-1.0 / 2.0 / dx, 1.0 / 2.0 / dx, nu)
     fy = np.linspace(-1.0 / 2.0 / dx, 1.0 / 2.0 / dx, nv)
     FX, FY = np.meshgrid(fx, fy)
-    K = nu / 2 / np.amax(fx)
+    nu / 2 / np.amax(fx)
     fcn = 1.0 / 2 * (nu / wavelength / np.abs(distance)) ** 0.5
     ss = np.abs(fcn) / np.amax(np.abs(fx))
     zc = nu * dx**2 / wavelength
@@ -467,7 +466,7 @@ def rayleigh_sommerfeld(field, k, distance, dx, wavelength):
     x = np.linspace(-nv * dx / 2, nv * dx / 2, nv)
     y = np.linspace(-nu * dx / 2, nu * dx / 2, nu)
     X, Y = np.meshgrid(x, y)
-    Z = X**2 + Y**2
+    X**2 + Y**2
     result = np.zeros(field.shape, dtype=np.complex64)
     direction = int(distance / np.abs(distance))
     for i in range(nu):
@@ -609,7 +608,7 @@ def gerchberg_saxton_3d(
     targets = calculate_amplitude(np.asarray(fields)).astype(np.float64)
     hologram = generate_complex_field(np.ones(targets[0].shape), 0)
     hologram = zero_pad(hologram)
-    if type(initial_phase) == type(None):
+    if initial_phase is None:
         hologram = add_random_phase(hologram)
     else:
         initial_phase = zero_pad(initial_phase)

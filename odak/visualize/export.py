@@ -35,9 +35,9 @@ class PLY_object:
 
         point0 = np_cpu.reshape(np_cpu.array(point0), (3))
         point1 = np_cpu.reshape(np_cpu.array(point1), (3))
-        if type(self.pnts) == type(None):
+        if self.pnts is None:
             a = 0
-        elif type(self.pnts) != type(None):
+        elif self.pnts is not None:
             a = np_cpu.asarray(self.pnts).shape[0]
         pnts = np_cpu.array(
             [
@@ -74,7 +74,7 @@ class PLY_object:
                 ("blue", "u1"),
             ],
         )
-        if type(self.pnts) != type(None):
+        if self.pnts is not None:
             self.tris = np_cpu.concatenate([np.copy(self.tris), np.copy(tris)])
             self.pnts = np_cpu.concatenate([np.copy(self.pnts), np.copy(pnts)])
         else:

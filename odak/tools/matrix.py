@@ -47,11 +47,11 @@ def nufft2(field, fx, fy, size=None, sign=1, eps=10 ** (-12)):
     """
     try:
         import finufft
-    except:
+    except Exception:
         print("odak.tools.nufft2 requires finufft to be installed: pip install finufft")
     image = np.copy(field).astype(np.complex128)
     result = finufft.nufft2d2(fx.flatten(), fy.flatten(), image, eps=eps, isign=sign)
-    if type(size) == type(None):
+    if size is None:
         result = result.reshape(field.shape)
     else:
         result = result.reshape(size)
@@ -84,12 +84,12 @@ def nuifft2(field, fx, fy, size=None, sign=1, eps=10 ** (-12)):
     """
     try:
         import finufft
-    except:
+    except Exception:
         print(
             "odak.tools.nuifft2 requires finufft to be installed: pip install finufft"
         )
     image = np.copy(field).astype(np.complex128)
-    if type(size) == type(None):
+    if size is None:
         result = finufft.nufft2d1(
             fx.flatten(),
             fy.flatten(),
@@ -159,7 +159,7 @@ def zero_pad(field, size=None, method="center"):
     field_zero_padded : ndarray
                         Zeropadded version of the input field.
     """
-    if type(size) == type(None):
+    if size is None:
         hx = int(np.ceil(field.shape[0]) / 2)
         hy = int(np.ceil(field.shape[1]) / 2)
     else:
@@ -171,7 +171,7 @@ def zero_pad(field, size=None, method="center"):
         field_zero_padded = np.pad(
             field, ([0, 2 * hx], [0, 2 * hy]), constant_values=(0, 0)
         )
-    if type(size) != type(None):
+    if size is not None:
         field_zero_padded = field_zero_padded[0 : size[0], 0 : size[1]]
     return field_zero_padded
 
@@ -190,7 +190,7 @@ def crop_center(field, size=None):
     cropped     : ndarray
                   Cropped version of the input field.
     """
-    if type(size) == type(None):
+    if size is None:
         qx = int(np.ceil(field.shape[0]) / 4)
         qy = int(np.ceil(field.shape[1]) / 4)
         cropped = np.copy(field[qx : 3 * qx, qy : 3 * qy])

@@ -20,7 +20,7 @@ def test():
         2 * odak.pi,
         "Transfer Function Fresnel",
     )
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

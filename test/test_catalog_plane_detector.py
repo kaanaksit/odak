@@ -2,7 +2,7 @@ import odak.raytracing as raytracer
 import odak.catalog as catalog
 import sys
 import odak
-from odak.tools.sample import grid_sample, batch_of_rays
+from odak.tools.sample import grid_sample
 
 
 def test(
@@ -23,7 +23,7 @@ def test(
     )
     normals, distances = detector.raytrace(rays)
     odak.log.logger.info("{} -> {}".format(header, detector.get_field()))
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

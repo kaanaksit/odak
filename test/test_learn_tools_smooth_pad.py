@@ -1,6 +1,4 @@
 import sys
-import os
-import tempfile
 import torch
 from odak.learn.tools.matrix import smooth_pad
 
@@ -77,18 +75,18 @@ def test_smooth_pad_custom_smooth_factor():
     field = torch.ones(10, 10) * 100
     field_padded_soft = smooth_pad(field, smooth_factor=[0.5, 0.5])
     field_padded_hard = smooth_pad(field, smooth_factor=[2.0, 2.0])
-    
+
     assert field_padded_soft.shape == (20, 20)
     assert field_padded_hard.shape == (20, 20)
-    
+
     # Both should have content at full value at center
     assert field_padded_soft[5, 5] == 100.0
     assert field_padded_hard[5, 5] == 100.0
-    
+
     # Both should fade to near zero at edges
     assert field_padded_soft[0, 0] < 1.0
     assert field_padded_hard[0, 0] < 1.0
-    
+
     # At intermediate positions, hard factor should have smaller values (faster falloff)
     assert field_padded_hard[3, 5].item() < field_padded_soft[3, 5].item()
 
@@ -120,7 +118,7 @@ def run_all_tests():
         test_smooth_pad_device_preservation,
         test_smooth_pad_dtype_preservation,
     ]
-    
+
     failed = 0
     for test_func in tests:
         try:
@@ -132,7 +130,7 @@ def run_all_tests():
         except Exception as e:
             print(f"✗ {test_func.__name__}: {e}")
             failed += 1
-    
+
     return failed == 0
 
 

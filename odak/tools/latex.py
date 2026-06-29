@@ -145,7 +145,7 @@ class latex:
             for syntax in self.latex_dictionary:
                 if line.find(syntax) != -1:
                     content_type = "latex"
-            if content_type_flag == True:
+            if content_type_flag:
                 content_type = "latex"
                 for syntax in self.latex_end_dictionary:
                     if line.find(syntax) != -1:

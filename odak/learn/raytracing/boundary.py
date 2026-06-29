@@ -165,7 +165,7 @@ def intersect_w_sphere(
         optimizer.step()
         t.set_description("Sphere intersection loss: {}".format(loss.item()))
     check = test < error_threshold
-    intersecting_ray = propagate_ray(ray[check == True], distance[check == True])
+    intersecting_ray = propagate_ray(ray[check], distance[check])
     intersecting_normal = create_ray_from_two_points(
         sphere[:, 0:3], intersecting_ray[:, 0]
     )
@@ -211,10 +211,10 @@ def intersect_w_triangle(ray, triangle):
     check = is_it_on_triangle(normal[:, 0], triangle)
     intersecting_ray = ray.unsqueeze(0)
     intersecting_ray = intersecting_ray.repeat(triangle.shape[0], 1, 1, 1)
-    intersecting_ray = intersecting_ray[check == True]
+    intersecting_ray = intersecting_ray[check]
     intersecting_normal = normal.unsqueeze(0)
     intersecting_normal = intersecting_normal.repeat(triangle.shape[0], 1, 1, 1)
-    intersecting_normal = intersecting_normal[check == True]
+    intersecting_normal = intersecting_normal[check]
     return normal, distance, intersecting_ray, intersecting_normal, check
 
 
@@ -384,7 +384,7 @@ def get_triangle_normal(triangle, triangle_center=None):
     direction = torch.linalg.cross(
         triangle[:, 0] - triangle[:, 1], triangle[:, 2] - triangle[:, 1]
     )
-    if type(triangle_center) == type(None):
+    if triangle_center is None:
         normal[:, 0] = center_of_triangle(triangle)
     else:
         normal[:, 0] = triangle_center

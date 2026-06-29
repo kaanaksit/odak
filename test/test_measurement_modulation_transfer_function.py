@@ -18,7 +18,7 @@ def test():
         line_y,
         px_size=[angsize, angsize],
     )
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

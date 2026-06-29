@@ -59,7 +59,7 @@ def test(device=torch.device("cpu"), output_directory="test_output"):
             cmin=min_value,
             cmax=max_value,
         )
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

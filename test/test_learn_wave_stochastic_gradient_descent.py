@@ -5,7 +5,7 @@ import torch
 
 def test(output_directory="test_output"):
     odak.tools.check_directory(output_directory)
-    device = torch.device("cpu")  # (1)
+    torch.device("cpu")  # (1)
     target = odak.learn.tools.load_image(
         "./test/data/usaf1951.png", normalizeby=255.0, torch_style=True
     )[
@@ -35,7 +35,7 @@ def test(output_directory="test_output"):
         cmin=0.0,
         cmax=1.0,
     )
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":

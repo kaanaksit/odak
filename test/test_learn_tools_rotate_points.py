@@ -1,7 +1,6 @@
 import sys
 import odak
 import torch
-from tqdm import tqdm
 
 
 def test(
@@ -108,7 +107,7 @@ def test(
                     column=j + 1,
                 )
         diagram.show()
-    assert test_result == True
+    assert test_result
 
 
 if __name__ == "__main__":

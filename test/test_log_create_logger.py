@@ -21,7 +21,7 @@ def test(
         logger_level=logging.DEBUG,
     )
     logger.info("This is a test.")
-    assert True == True
+    assert True
 
 
 if __name__ == "__main__":
