@@ -33,7 +33,7 @@ class multi_layer_perceptron(torch.nn.Module):
         siren_multiplier : float, optional
             When using `SIREN` model type, this parameter functions as a hyperparameter.
             The original SIREN work uses 30.
-            You can bypass this parameter by providing input that are not normalized and larger than one. Default is 1.0.
+             You can bypass this parameter by providing input that are not normalized and larger than one. Default is 30.0.
         input_multiplier : float, optional
             Initial value of the input multiplier before the very first layer.
         model_type : str, optional
