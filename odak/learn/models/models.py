@@ -12,7 +12,7 @@ class multi_layer_perceptron(torch.nn.Module):
     def __init__(
         self,
         dimensions,
-        activation=torch.nn.ReLU(),
+        activation=torch.nn.ReLU(inplace=True),
         bias=False,
         model_type="conventional",
         siren_multiplier=30.0,
@@ -60,6 +60,7 @@ class multi_layer_perceptron(torch.nn.Module):
         self.siren_multiplier = siren_multiplier
         self.dimensions = dimensions
         self.uniform_flag = uniform_flag
+        self.input_multiplier = None
 
         logger.info(
             f"Initializing multi_layer_perceptron: model_type={model_type}, "
@@ -79,7 +80,7 @@ class multi_layer_perceptron(torch.nn.Module):
             if i < len(self.dimensions) - 2:
                 dim = self.dimensions[i + 1]
                 if model_type == "conventional":
-                    act = copy.deepcopy(activation)
+                    act = copy.deepcopy(activation)  # Deepcopy ensures each layer has its own activation instance (crucial for stateful activations like PReLU)
                 elif model_type == "swish":
                     act = swish_activation()
                 elif model_type == "SIREN":
@@ -139,7 +140,7 @@ class multi_layer_perceptron(torch.nn.Module):
         result : torch.Tensor
             Estimated output of shape (batch_size, output_dim).
         """
-        if hasattr(self, "input_multiplier"):
+        if self.input_multiplier is not None:
             result = x * self.input_multiplier
         else:
             result = x
