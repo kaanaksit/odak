@@ -92,7 +92,7 @@ class multi_color_hologram_optimizer:
         number_of_frames=3,
         number_of_depth_layers=1,
         learning_rate=2e-2,
-        scheduler_power=1,
+        min_learning_rate=None,
         double_phase=True,
         scale_factor=1,
         method="multi-color",
@@ -123,18 +123,18 @@ class multi_color_hologram_optimizer:
                                       Number of depth layers.
         learning_rate              : float
                                       Learning rate for the optimizer.
-        scheduler_power            : int
-                                      Power for polynomial learning rate scheduler.
         double_phase               : bool
                                       Whether to use double phase encoding.
         scale_factor               : int
                                        Scaling factor for hologram resolution.
-                                       method                     : str
+        method                     : str
                                        Optimization method ("conventional" or "multi-color").
-                                       channel_power_filename     : str
-                                      Filename to load channel powers from (optional).
+        channel_power_filename     : str
+                                       Filename to load channel powers from (optional).
+        min_learning_rate           : float, optional
+                                       Minimum learning rate for the scheduler.
         device                     : torch.device
-                                      Device to run optimization on.
+                                       Device to run optimization on.
         loss_function              : callable
                                       Custom loss function (optional).
         peak_amplitude             : float
@@ -159,7 +159,9 @@ class multi_color_hologram_optimizer:
         self.scale_factor = scale_factor
         self.propagator = propagator
         self.learning_rate = learning_rate
-        self.scheduler_power = scheduler_power
+        self.min_learning_rate = min_learning_rate
+        if self.min_learning_rate is None:
+           self.min_learning_rate = learning_rate * 1e-2
         self.number_of_channels = len(self.wavelengths)
         self.number_of_frames = number_of_frames
         self.number_of_depth_layers = number_of_depth_layers
@@ -338,14 +340,15 @@ class multi_color_hologram_optimizer:
         elif self.method == "full_complex_conventional":
             optimization_variables.append(self.amplitude)
         elif self.method == "full_complex_multi-color":
-            optimization_variables.append(self.propagator.channel_power, self.amplitude)
+            optimization_variables.append(self.propagator.channel_power)
+            optimization_variables.append(self.amplitude)
         self.optimizer = torch.optim.AdamW(
             optimization_variables, lr=self.learning_rate
         )
-        self.scheduler = torch.optim.lr_scheduler.PolynomialLR(
+        self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
             self.optimizer,
-            total_iters=number_of_iterations * 4,
-            power=self.scheduler_power,
+            T_max=number_of_iterations,
+            eta_min=self.min_learning_rate,
             last_epoch=-1,
         )
 
@@ -466,8 +469,8 @@ class multi_color_hologram_optimizer:
         loss_phase                 : torch.tensor
                                       Total variation loss for constrained phase (scalar).
         """
-        phase - torch.mean(phase)
-        phase_only = torch.nan_to_num(phase - phase_offset, nan=torch.pi)
+        phase_zero_mean = phase - torch.mean(phase)
+        phase_only = torch.nan_to_num(phase_zero_mean - phase_offset, nan=torch.pi)
         loss_phase = multi_scale_total_variation_loss(phase_only, levels=levels)
         return phase_only, loss_phase
 
@@ -540,8 +543,8 @@ class multi_color_hologram_optimizer:
 
         Parameters
         ------
-        number_of_iterations       : float
-                                      Number of iterations.
+         number_of_iterations       : int
+                                           Number of iterations.
         weights                    : dict
                                       Loss weights as dictionary with keys: "image", "light", "eyebox", "phase".
         inject_noise               : bool
