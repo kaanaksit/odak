@@ -1,6 +1,6 @@
 opencv-python>=5.0.0.93
 numpy>=2.5.0
-torch>=2.8.0
+torch>=2.13.0
 plyfile>=1.1.4
 tqdm>=4.68.3
 plotly>=6.9.0
