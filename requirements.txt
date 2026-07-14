@@ -4,6 +4,6 @@ torch>=2.8.0
 plyfile>=1.1.4
 tqdm>=4.68.3
 plotly>=6.9.0
-ruff>=0.15.20
+ruff>=0.15.21
 flake8>=7.3.0
 black>=26.5.1
