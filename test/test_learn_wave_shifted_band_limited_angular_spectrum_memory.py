@@ -103,11 +103,8 @@ def test(device=torch.device("cpu"), output_directory="test_output"):
     tilted_field_fine = field_fine * carrier_fine.to(torch.complex64)
 
     memory_raw_bytes = tilted_field_fine.numel() * 8  # complex64 = 8 bytes/element
-    if device.type == "cuda":
-        torch.cuda.reset_peak_memory_stats(device)
     propagated_raw = odak.learn.wave.band_limited_angular_spectrum(tilted_field_fine, k, distance, pitch_fine, wavelength)
     recentered_raw = recenter(propagated_raw, pitch_fine)
-    peak_cuda_bytes_raw = torch.cuda.max_memory_allocated(device) if device.type == "cuda" else None
 
     intensity_raw_fine = odak.learn.wave.calculate_amplitude(recentered_raw) ** 2
     # Bin the fine-grid intensity down to the coarse pixel scale (pitch_coarse = 4 * pitch_fine)
@@ -123,13 +120,10 @@ def test(device=torch.device("cpu"), output_directory="test_output"):
 
     # Arm B: shifted BASM on the untilted field, at the coarse grid.
     memory_shifted_bytes = field_coarse.numel() * 8
-    if device.type == "cuda":
-        torch.cuda.reset_peak_memory_stats(device)
     propagated_shifted = odak.learn.wave.shifted_band_limited_angular_spectrum(
         field_coarse, k, distance, pitch_coarse, wavelength, offset_fx=offset_fx, offset_fy=offset_fy
     )
     recentered_shifted = recenter(propagated_shifted, pitch_coarse)
-    peak_cuda_bytes_shifted = torch.cuda.max_memory_allocated(device) if device.type == "cuda" else None
     intensity_shifted = odak.learn.wave.calculate_amplitude(recentered_shifted) ** 2
 
     similarity = torch.sum(intensity_raw_binned * intensity_shifted) / torch.sqrt(
@@ -144,17 +138,6 @@ def test(device=torch.device("cpu"), output_directory="test_output"):
         "shifted BASM (coarse, {0}x{0}): {1:>10.2f} MB array".format(resolution_coarse, memory_shifted_bytes / 1e6)
     )
     print("array memory ratio (raw / shifted): {:.2f}x".format(memory_ratio))
-    if peak_cuda_bytes_raw is not None:
-        print("raw BASM peak CUDA memory:      {:.2f} MB".format(peak_cuda_bytes_raw / 1e6))
-        print("shifted BASM peak CUDA memory:  {:.2f} MB".format(peak_cuda_bytes_shifted / 1e6))
-        print("peak CUDA memory ratio (raw / shifted): {:.2f}x".format(peak_cuda_bytes_raw / peak_cuda_bytes_shifted))
-        print(
-            "(the CUDA ratio is smaller than the array-size ratio above at this array scale --"
-            " fixed CUDA overhead, e.g. context and cuFFT plan allocation, dominates the peak"
-            " reading here; the array-byte-footprint ratio is the scale-accurate figure, and the"
-            " CUDA ratio would approach it at larger, more realistic array sizes such as the ones"
-            " in src/asm_psf_propagation.py's grazing-angle stress test.)"
-        )
     print("normalized similarity (raw vs. shifted): {:.6f}".format(similarity.item()))
 
     odak.learn.tools.save_image(
