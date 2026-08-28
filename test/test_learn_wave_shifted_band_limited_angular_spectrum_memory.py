@@ -53,17 +53,22 @@ def test(device=torch.device("cpu"), output_directory="test_output"):
 
     k = odak.learn.wave.wavenumber(wavelength)
 
-    # Diffuser-like phase: random at a *native* feature resolution coarser than either
-    # simulation grid (64x64, one random value per diffuser feature), then nearest-neighbor
-    # upsampled to both the coarse and fine grids -- the SAME physical mask represented at two
-    # simulation-grid resolutions, mirroring load_height_map's diffuser_pixel_pitch/
-    # simulation_grid_pitch upsampling in src/asm_psf_propagation.py. Per-simulation-pixel white
-    # noise (one random value per *simulation* pixel, not per diffuser feature) would put
-    # spectral content all the way out to each grid's own Nyquist limit with no rolloff, which
-    # is a different (much harsher) spatial-frequency profile than a real diffuser's finite
-    # feature size actually has -- the native-feature/upsample step is what keeps the residual
-    # bandwidth controlled and below each grid's Nyquist limit with real margin.
-    diffuser_native_resolution = 32
+    # Diffuser-like phase: random at a *native* feature resolution much coarser than either
+    # simulation grid (8x8 -- one random value per diffuser feature, each feature 32 coarse /
+    # 128 fine pixels wide), then nearest-neighbor upsampled to both the coarse and fine grids --
+    # the SAME physical mask represented at two simulation-grid resolutions, mirroring
+    # load_height_map's diffuser_pixel_pitch/simulation_grid_pitch upsampling in
+    # src/asm_psf_propagation.py. Deliberately chunky (large, individually countable blocks)
+    # rather than fine per-pixel noise, purely so the saved images are easy to visually compare
+    # feature-by-feature between the two arms -- this is not a sampling requirement (a finer
+    # native resolution would also satisfy the margins computed below, just look like unresolved
+    # speckle instead of a visible mosaic). Per-simulation-pixel white noise (one random value
+    # per *simulation* pixel, not per diffuser feature) would additionally put spectral content
+    # all the way out to each grid's own Nyquist limit with no rolloff, a different (much
+    # harsher) spatial-frequency profile than a real diffuser's finite feature size actually has
+    # -- the native-feature/upsample step is what keeps the residual bandwidth controlled and
+    # below each grid's Nyquist limit with real margin, independent of how chunky it looks.
+    diffuser_native_resolution = 8
     diffuser_native_upsample = resolution_coarse // diffuser_native_resolution
     torch.manual_seed(0)
     diffuser_phase_native = 2.0 * odak.pi * torch.rand(diffuser_native_resolution, diffuser_native_resolution, device=device)
@@ -140,6 +145,12 @@ def test(device=torch.device("cpu"), output_directory="test_output"):
     print("array memory ratio (raw / shifted): {:.2f}x".format(memory_ratio))
     print("normalized similarity (raw vs. shifted): {:.6f}".format(similarity.item()))
 
+    odak.learn.tools.save_image(
+        "{}/diffuser_phase_native.png".format(output_directory),
+        diffuser_phase_coarse,  # upsampled to 256x256 for viewing; native is only 8x8 pixels
+        cmin=0.0,
+        cmax=2.0 * odak.pi,
+    )
     odak.learn.tools.save_image(
         "{}/raw_basm_fine.png".format(output_directory),
         intensity_raw_binned,
