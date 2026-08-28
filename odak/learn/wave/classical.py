@@ -1203,6 +1203,33 @@ def get_shifted_band_limited_angular_spectrum_kernel(
     `Matsushima, Kyoji. "Shifted angular spectrum method for off-axis numerical propagation."
     Optics express 18.17 (2010): 18453-18463`.
 
+    The propagation phase and the aperture/grid band-limiting mask use different frequency
+    arguments, matching Kang et al., "Geometry-aware phase compensation for sampling-efficient
+    angular spectrum method," Opt. Express 34(8), 15244 (2026) -- the paper this is based on
+    states "all incident angles share the same on-axis sampling condition" once the carrier is
+    absorbed into the kernel, which only holds if the aliasing-prevention mask stays tied to the
+    fixed computational grid rather than shifting with the carrier:
+
+    - the propagation phase (the true physical wavevector) is evaluated at the absolute,
+      carrier-shifted frequency (FX + offset_fx, FY + offset_fy), since it must reflect the
+      actual tilted wave;
+    - the aperture/grid band-limiting mask (Eq. 5-6 of the paper above; prevents the finite
+      discrete grid's own convolution from aliasing) is evaluated at the residual, unshifted
+      frequency (FX, FY), independent of the carrier -- this is what keeps the sampling
+      requirement identical across all carrier offsets rather than growing (and eventually
+      zeroing the kernel entirely) with the offset;
+    - a separate physical-propagation (non-evanescent) check, k^2 >= kx^2 + ky^2, is applied at
+      the absolute frequency, since a carrier large enough to leave the Helmholtz propagating
+      region is genuinely non-physical regardless of grid sampling. The propagation phase's own
+      sqrt argument is clamped to zero for those components purely to avoid NaN from taking the
+      square root of a negative number -- the clamp only affects already-rejected (masked-out)
+      components and never turns a non-propagating component into a propagating one.
+
+    No refractive index parameter is exposed, consistent with every other kernel in this file
+    (e.g. get_band_limited_angular_spectrum_kernel, wavenumber): the caller is expected to pass
+    the in-medium wavelength (vacuum wavelength divided by the refractive index) rather than a
+    vacuum wavelength plus a separate index.
+
     Parameters
     ----------
     nu                 : int
@@ -1212,7 +1239,8 @@ def get_shifted_band_limited_angular_spectrum_kernel(
     dx                 : float
                          Pixel pitch in meters.
     wavelength         : float
-                         Wavelength in meters.
+                         Wavelength in meters (in-medium, i.e. already divided by the
+                         refractive index if propagating through a non-vacuum medium).
     distance           : float
                          Distance in meters.
     offset_fx          : float
@@ -1247,12 +1275,17 @@ def get_shifted_band_limited_angular_spectrum_kernel(
     FY, FX = torch.meshgrid(fx, fy, indexing="ij")
     FX_shifted = FX + offset_fx
     FY_shifted = FY + offset_fy
-    HH_exp = 2 * torch.pi * torch.sqrt(1 / wavelength**2 - (FX_shifted**2 + FY_shifted**2))
     distance = torch.tensor([distance], device=device)
+
+    kz_squared = 1 / wavelength**2 - (FX_shifted**2 + FY_shifted**2)
+    propagating = kz_squared >= 0.0
+    HH_exp = 2 * torch.pi * torch.sqrt(torch.clamp(kz_squared, min=0.0))
     H_exp = torch.mul(HH_exp, distance)
+
     fx_max = 1 / torch.sqrt((2 * distance * (1 / x)) ** 2 + 1) / wavelength
     fy_max = 1 / torch.sqrt((2 * distance * (1 / y)) ** 2 + 1) / wavelength
-    H_filter = ((torch.abs(FX_shifted) < fx_max) & (torch.abs(FY_shifted) < fy_max)).clone().detach()
+    B = (torch.abs(FX) < fx_max) & (torch.abs(FY) < fy_max)
+    H_filter = (B & propagating).clone().detach()
     H = generate_complex_field(H_filter, H_exp)
     return H
 
