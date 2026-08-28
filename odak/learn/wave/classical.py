@@ -1191,6 +1191,125 @@ def band_limited_angular_spectrum(
     return result
 
 
+def get_shifted_band_limited_angular_spectrum_kernel(
+    nu, nv, dx=8e-6, wavelength=515e-9, distance=0.0, offset_fx=0.0, offset_fy=0.0, device=torch.device("cpu")
+):
+    """
+    Helper function for odak.learn.wave.shifted_band_limited_angular_spectrum. Generalizes
+    odak.learn.wave.get_band_limited_angular_spectrum_kernel with a carrier-frequency shift
+    (offset_fx, offset_fy), which absorbs the dominant tilt of an off-axis/tilted illumination
+    into the kernel instead of the sampled field, relaxing the transversal sampling that a
+    directly tilted field would otherwise require. For more
+    `Matsushima, Kyoji. "Shifted angular spectrum method for off-axis numerical propagation."
+    Optics express 18.17 (2010): 18453-18463`.
+
+    Parameters
+    ----------
+    nu                 : int
+                         Resolution at X axis in pixels.
+    nv                 : int
+                         Resolution at Y axis in pixels.
+    dx                 : float
+                         Pixel pitch in meters.
+    wavelength         : float
+                         Wavelength in meters.
+    distance           : float
+                         Distance in meters.
+    offset_fx          : float
+                         Carrier frequency shift at X axis in cycles per meter.
+    offset_fy          : float
+                         Carrier frequency shift at Y axis in cycles per meter.
+    device             : torch.device
+                         Device, for more see torch.device().
+
+
+    Returns
+    -------
+    H                  : torch.complex64
+                         Complex kernel in Fourier domain.
+    """
+    x = dx * float(nu)
+    y = dx * float(nv)
+    fx = torch.linspace(
+        -1 / (2 * dx) + 0.5 / (2 * x),
+        1 / (2 * dx) - 0.5 / (2 * x),
+        nu,
+        dtype=torch.float32,
+        device=device,
+    )
+    fy = torch.linspace(
+        -1 / (2 * dx) + 0.5 / (2 * y),
+        1 / (2 * dx) - 0.5 / (2 * y),
+        nv,
+        dtype=torch.float32,
+        device=device,
+    )
+    FY, FX = torch.meshgrid(fx, fy, indexing="ij")
+    FX_shifted = FX + offset_fx
+    FY_shifted = FY + offset_fy
+    HH_exp = 2 * torch.pi * torch.sqrt(1 / wavelength**2 - (FX_shifted**2 + FY_shifted**2))
+    distance = torch.tensor([distance], device=device)
+    H_exp = torch.mul(HH_exp, distance)
+    fx_max = 1 / torch.sqrt((2 * distance * (1 / x)) ** 2 + 1) / wavelength
+    fy_max = 1 / torch.sqrt((2 * distance * (1 / y)) ** 2 + 1) / wavelength
+    H_filter = ((torch.abs(FX_shifted) < fx_max) & (torch.abs(FY_shifted) < fy_max)).clone().detach()
+    H = generate_complex_field(H_filter, H_exp)
+    return H
+
+
+def shifted_band_limited_angular_spectrum(
+    field, k, distance, dx, wavelength, offset_fx=0.0, offset_fy=0.0, zero_padding=False, aperture=1.0
+):
+    """
+    A definition to calculate carrier-frequency shifted bandlimited angular spectrum based beam
+    propagation, useful for efficiently simulating off-axis/tilted illumination without the
+    transversal oversampling a directly tilted field would require. For more
+    `Matsushima, Kyoji. "Shifted angular spectrum method for off-axis numerical propagation."
+    Optics express 18.17 (2010): 18453-18463`.
+
+    Parameters
+    ----------
+    field            : torch.complex
+                       A complex field.
+                       The expected size is [m x n].
+    k                : odak.wave.wavenumber
+                       Wave number of a wave, see odak.wave.wavenumber for more.
+    distance         : float
+                       Propagation distance.
+    dx               : float
+                       Size of one single pixel in the field grid (in meters).
+    wavelength       : float
+                       Wavelength of the electric field.
+    offset_fx        : float
+                       Carrier frequency shift at X axis in cycles per meter.
+    offset_fy        : float
+                       Carrier frequency shift at Y axis in cycles per meter.
+    zero_padding     : bool
+                       Zero pad in Fourier domain.
+    aperture         : torch.tensor
+                       Fourier domain aperture (e.g., pinhole in a typical holographic display).
+                       The default is one, but an aperture could be as large as input field [m x n].
+
+
+    Returns
+    -------
+    result           : torch.complex
+                       Final complex field [m x n].
+    """
+    H = get_shifted_band_limited_angular_spectrum_kernel(
+        nu=field.shape[-2],
+        nv=field.shape[-1],
+        dx=dx,
+        wavelength=wavelength,
+        distance=distance,
+        offset_fx=offset_fx,
+        offset_fy=offset_fy,
+        device=field.device,
+    )
+    result = custom(field, H, zero_padding=zero_padding, aperture=aperture)
+    return result
+
+
 def gerchberg_saxton(
     field,
     n_iterations,
