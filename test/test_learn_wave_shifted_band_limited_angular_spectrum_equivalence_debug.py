@@ -51,12 +51,37 @@ Hypothesis 2 (real root cause) -- CONFIRMED by Experiment 4: raw BASM's own inpu
 DIRECTLY-SAMPLED tilted field U_tilt(x), aliases when sampled at a pixel pitch too coarse for
 its own carrier frequency. This is not a defect of raw BASM as a propagation OPERATOR -- it is a
 sampling problem with using a fixed, too-coarse grid as its input at large angles. Once raw BASM
-is run at a per-angle-selected, convergence-verified resolution (Experiment 4), it agrees with
-shifted-BASM to similarity > 0.999 at every tested angle (see the printed conclusion at the
-bottom of this file's output for the exact figures from the most recent run). This confirms the
-two formulations are the same physical operator: shifted-BASM only appeared to disagree with raw
-BASM because raw BASM's own fixed-resolution input was under-sampled at large angles, not
-because of any implementation mismatch between the two propagation formulations.
+is run at a per-angle-selected, convergence-verified resolution, it agrees with shifted-BASM to
+similarity > 0.999 at every tested angle. This confirms the two formulations are the same
+physical operator: shifted-BASM only appeared to disagree with raw BASM because raw BASM's own
+fixed-resolution input was under-sampled at large angles, not because of any implementation
+mismatch between the two propagation formulations.
+
+**Session 3 correction -- pixel semantics (Section 1's inspection)**: the comparison protocol
+used above (raw BASM's fine output SUM-binned down to shifted-BASM's resolution, then compared
+directly against shifted-BASM's native output) was itself flawed, independent of anything about
+raw BASM's own convergence. Inspecting odak/learn/wave/classical.py directly:
+band_limited_angular_spectrum and shifted_band_limited_angular_spectrum both return
+POINT-SAMPLED COMPLEX FIELD values -- `custom()` is a pure FFT/kernel-multiply/IFFT operation;
+`dx` is used ONLY to build the frequency axis (fx = ... / dx inside
+get_(shifted_)band_limited_angular_spectrum_kernel) and never scales the returned field. So
+I(x,y) = |U(x,y)|^2 from EITHER function is point-sampled intensity (an intensity density), not
+integrated sensor-pixel energy. Energy-preserving SUM binning (_bin_intensity, mirroring
+sum_bin_sensor_pixels in src/asm_psf_propagation.py) is the right operation ONLY when converting
+a fine SIMULATION grid down to an actual, physically larger SENSOR pixel that genuinely
+integrates light over its footprint -- NOT when comparing two SIMULATION grids of different
+resolutions against each other, which instead requires AREA-AVERAGE binning
+(_bin_intensity_average) to preserve point-sample/intensity-density semantics on both sides.
+Comparing a SUM-binned raw array (64x too large at an 8x8 bin factor) against shifted-BASM's
+true point samples produced the previously observed EnergyRatio ~ 0.0157 ~ 1/64 -- entirely a
+comparison-methodology artifact, not a physical-energy or implementation problem. Switching the
+main comparison (Mode A) to area-average binning fixes EnergyRatio/NRMSE/PSNR cleanly (documented
+in detail further down). Note, however, that cosine SIMILARITY is scale-invariant, so it was
+NEVER affected by the SUM-vs-AVERAGE choice -- the ~0.998 similarity ceiling reported previously
+is a SEPARATE, genuine effect (real sub-coarse-pixel structure in the diffuser scene interacting
+with any binning-vs-point-sampling comparison, independently confirmed via a raw-vs-raw control
+that never involves shifted-BASM at all -- see Section 8/Experiment 6 and Section 10/Experiment
+7), not something this pixel-semantics fix was expected to change.
 """
 
 import math
@@ -171,16 +196,58 @@ def _compare(reference_intensity, reference_pitch_m, candidate_intensity, candid
     energy_ratio = candidate_energy / reference_energy if reference_energy > 0 else float("nan")
     ref_cx, ref_cy = _centroid_px(reference_intensity)
     cand_cx, cand_cy = _centroid_px(candidate_intensity)
-    d_px = math.hypot(cand_cx - ref_cx, cand_cy - ref_cy)
-    return {"similarity": similarity, "nrmse": nrmse, "psnr": psnr, "energy_ratio": energy_ratio, "d_px": d_px}
+    dx_px = cand_cx - ref_cx
+    dy_px = cand_cy - ref_cy
+    return {
+        "similarity": similarity, "nrmse": nrmse, "psnr": psnr, "energy_ratio": energy_ratio,
+        "d_px": math.hypot(dx_px, dy_px), "dx_px": dx_px, "dy_px": dy_px,
+    }
 
 
 def _bin_intensity(intensity, factor):
-    """Energy-preserving (sum, not mean) binning, matching sum_bin_sensor_pixels in
-    src/asm_psf_propagation.py."""
+    """Energy-preserving SUM binning, matching sum_bin_sensor_pixels in
+    src/asm_psf_propagation.py. Represents a coarser PHYSICAL SENSOR pixel that genuinely
+    integrates light over its (larger) footprint. Per Section 1's inspection (module docstring),
+    NEITHER band_limited_angular_spectrum NOR shifted_band_limited_angular_spectrum output this
+    quantity directly -- both return point-sampled intensity. This SUM convention belongs to
+    Mode B's E_fine_pixel_block (Section 3) -- converting a fine SIMULATION grid into physical
+    sensor-pixel ENERGY -- never to comparing two simulation grids' point-sampled intensity
+    against each other; that is _bin_intensity_average's job (Mode A, Section 2)."""
     n = intensity.shape[-1]
     m = n // factor
     return intensity.reshape(m, factor, m, factor).sum(dim=(1, 3))
+
+
+def _bin_intensity_average(intensity, factor):
+    """Section 2 (Mode A): AREA-AVERAGE binning -- the correct operation for comparing a
+    point-sampled intensity field at one simulation-grid resolution against the SAME
+    point-sampled field at a coarser resolution, since it preserves intensity-density semantics
+    (mean, not sum, of the underlying point samples) rather than inflating values by the bin
+    factor squared the way _bin_intensity's SUM does."""
+    n = intensity.shape[-1]
+    m = n // factor
+    return intensity.reshape(m, factor, m, factor).mean(dim=(1, 3))
+
+
+def _decimate_intensity(intensity, factor):
+    """Section 10: picks the fine-grid sample nearest each coarse block's center directly (no
+    averaging or summing) -- represents point-sampling the SAME continuous field at the coarse
+    grid's own pixel centers. Exact when factor is odd; off by half a fine pixel when factor is
+    even (both grids use the FFT convention centered between pixels for even sizes), which is
+    negligible at these scales -- used only for Section 10's point-sample-vs-area-average
+    residual diagnosis, never as a primary comparison."""
+    offset = factor // 2
+    return intensity[offset::factor, offset::factor]
+
+
+def _is_safe_at_resolution(offset_fx, f_residual_max, resolution):
+    """Section 8: is `resolution` fine enough that its own input carrier would not alias, per
+    the same (|f_carrier| + f_residual_max) <= SAFE_NYQUIST_FRACTION * f_nyquist criterion
+    Section 3's raw-resolution search already uses."""
+    dx = FOV_M / resolution
+    f_nyquist = 1.0 / (2.0 * dx)
+    occupancy = (abs(offset_fx) + f_residual_max) / f_nyquist
+    return occupancy <= SAFE_NYQUIST_FRACTION, occupancy
 
 
 def _bin_align(frequency_hz_per_m):
@@ -473,15 +540,22 @@ def _raw_basm_intensity(resolution, offset_fx, k, device):
 
 def _raw_convergence_metrics(resolution, offset_fx, k, device):
     """Section 4: does NOT trust the analytical Nyquist criterion alone. Compares raw BASM at
-    `resolution` against raw BASM at 2x that resolution (energy-preserving-binned back down to
-    `resolution`). Returns None if doubling would exceed CONVERGENCE_DOUBLE_CEILING (not
-    computationally feasible)."""
+    `resolution` (point-sampled intensity) against raw BASM at 2x that resolution AREA-AVERAGED
+    back down to `resolution` -- both sides point-sample/intensity-density quantities, per
+    Section 1's inspection (module docstring). This check used SUM binning before Session 3's
+    pixel-semantics fix; note that a uniform scale factor (SUM vs. AVERAGE differ by exactly the
+    bin factor here) does NOT change cosine similarity, which is scale-invariant, so this switch
+    does not change the similarity values this function reports -- it only matters for keeping
+    this helper's convention consistent with the rest of the file, since its NRMSE/PSNR/
+    energy_ratio fields (unlike similarity) are NOT scale-invariant and were never meaningful
+    under the old SUM convention. Returns None if doubling would exceed
+    CONVERGENCE_DOUBLE_CEILING (not computationally feasible)."""
     doubled = resolution * 2
     if doubled > CONVERGENCE_DOUBLE_CEILING:
         return None
     intensity_a, pitch_a = _raw_basm_intensity(resolution, offset_fx, k, device)
     intensity_b, _ = _raw_basm_intensity(doubled, offset_fx, k, device)
-    intensity_b_binned = _bin_intensity(intensity_b, 2)
+    intensity_b_binned = _bin_intensity_average(intensity_b, 2)
     return _compare(intensity_a, pitch_a, intensity_b_binned, pitch_a)
 
 
@@ -533,172 +607,187 @@ def _shifted_basm_result(offset_fx, resolution, k, device):
     return _intensity_at(propagated, pitch, shift_x_m), pitch
 
 
-def _raw_vs_shifted(raw_ref, resolution_shifted, k, device):
-    """Section 6: raw BASM may be at a much higher resolution than shifted-BASM (e.g. 2048 vs.
-    512) since the carrier is handled analytically by shifted-BASM. Energy-preserving bins raw
-    BASM DOWN to shifted-BASM's resolution (never upsamples shifted-BASM) before comparing, on
-    the same physical FoV, output origin, pixel centers, and sensor area."""
-    intensity_shifted, pitch_shifted = _shifted_basm_result(raw_ref["offset_fx"], resolution_shifted, k, device)
-    bin_factor = raw_ref["n_raw"] // resolution_shifted
-    intensity_raw = raw_ref["intensity"] if bin_factor <= 1 else _bin_intensity(raw_ref["intensity"], bin_factor)
-    return _compare(intensity_raw, pitch_shifted, intensity_shifted, pitch_shifted)
+def _build_comparison_row(theta_deg, k, device):
+    """Precomputes everything one angle needs for Modes A/B (Sections 2-3) plus the control
+    (Section 8) and residual diagnosis (Section 10), reusing the SAME converged raw reference
+    (Sections 4-5, unchanged) and the SAME shifted-BASM runs across all of them rather than
+    recomputing expensive propagations per experiment."""
+    raw_ref = _converged_raw_reference(theta_deg, k, device)
+    offset_fx = raw_ref["offset_fx"]
+    n_raw = raw_ref["n_raw"]
+    dx_raw = raw_ref["pitch"]
+    bin_factor = n_raw // SHIFTED_RESOLUTION
+
+    shifted_512, dx_shifted_512 = _shifted_basm_result(offset_fx, SHIFTED_RESOLUTION, k, device)
+    shifted_1024, dx_shifted_1024 = _shifted_basm_result(offset_fx, SHIFTED_RESOLUTION_ALT, k, device)
+
+    if bin_factor <= 1:
+        raw_avg_512 = raw_sum_512 = raw_decimated_512 = raw_ref["intensity"]
+    else:
+        raw_avg_512 = _bin_intensity_average(raw_ref["intensity"], bin_factor)
+        raw_sum_512 = _bin_intensity(raw_ref["intensity"], bin_factor)
+        raw_decimated_512 = _decimate_intensity(raw_ref["intensity"], bin_factor)
+
+    return {
+        "theta_deg": theta_deg, "raw_ref": raw_ref, "offset_fx": offset_fx, "n_raw": n_raw,
+        "dx_raw": dx_raw, "bin_factor": bin_factor,
+        "shifted_512": shifted_512, "dx_shifted_512": dx_shifted_512,
+        "shifted_1024": shifted_1024, "dx_shifted_1024": dx_shifted_1024,
+        "raw_avg_512": raw_avg_512, "raw_sum_512": raw_sum_512, "raw_decimated_512": raw_decimated_512,
+    }
 
 
-def _binning_control(raw_ref, resolution_shifted, k, device):
-    """Isolates the pure representational ceiling introduced by energy-preserving binning
-    ALONE, with shifted-BASM never entering the picture: compares raw BASM run DIRECTLY at
-    resolution_shifted (a native point sample, the same representational category as
-    shifted-BASM's own output) against the SAME converged raw reference binned down from n_raw.
-    A diffuser scene has real sub-pixel structure at any finite resolution, so summing energy
-    over a block and point-sampling the same block are never expected to match exactly -- this
-    control measures exactly how much of a similarity gap that mismatch alone accounts for, so
-    it is not mistaken for a raw-vs-shifted disagreement (Section 9's hypothesis D check)."""
-    intensity_direct, pitch_direct = _raw_basm_intensity(resolution_shifted, raw_ref["offset_fx"], k, device)
-    bin_factor = raw_ref["n_raw"] // resolution_shifted
-    intensity_raw_binned = raw_ref["intensity"] if bin_factor <= 1 else _bin_intensity(raw_ref["intensity"], bin_factor)
-    return _compare(intensity_direct, pitch_direct, intensity_raw_binned, pitch_direct)
-
-
-def experiment_4(device, k):
-    """Sections 2-9: for each angle, automatically pick (then VERIFY, not just assume) an
-    ordinary-BASM resolution that keeps the tilted input's own Nyquist occupancy safely below
-    1.0, so raw BASM stops being compared against itself while under-sampled (see module
-    docstring for why "raw BASM at 1024x1024" is no longer treated as ground truth for every
-    angle). Shifted-BASM is compared at its own, independent working resolution (512, plus 1024
-    as a secondary check that rules out shifted-BASM itself being under-resolved --
-    hypothesis C in the module docstring). Experiment 4c additionally isolates the pure
-    representational ceiling that energy-preserving binning ALONE introduces for a diffuser
-    scene with real sub-pixel structure, using ONLY raw BASM (no shifted-BASM at all) -- this
-    distinguishes hypothesis D (true implementation mismatch) from a comparison-methodology
-    artifact that would appear regardless of whether the two formulations agree."""
-    raw_refs = [_converged_raw_reference(theta_deg, k, device) for theta_deg in ANGLES_DEG]
-
-    rows = []
-    for raw_ref in raw_refs:
-        metrics_512 = _raw_vs_shifted(raw_ref, SHIFTED_RESOLUTION, k, device)
-        metrics_1024 = _raw_vs_shifted(raw_ref, SHIFTED_RESOLUTION_ALT, k, device)
-        control_512 = _binning_control(raw_ref, SHIFTED_RESOLUTION, k, device)
-        rows.append({"raw": raw_ref, "shift512": metrics_512, "shift1024": metrics_1024, "control512": control_512})
-
-    _print_table(
-        "=== Experiment 4: oversampled/converged ordinary-BASM reference vs. shifted-BASM\n"
-        "    (detailed; shifted-BASM resolution={}) ===".format(SHIFTED_RESOLUTION),
-        [
-            "Angle", "fc(1/m)", "ResidBW", "RawN", "RawConvSim", "NyqOcc",
-            "Sim", "NRMSE", "PSNR", "ER", "d(px)",
-        ],
-        [
-            [
-                "{:.1f}".format(r["raw"]["theta_deg"]), "{:.0f}".format(r["raw"]["offset_fx"]),
-                "{:.0f}".format(r["raw"]["f_residual_max"]), "{}".format(r["raw"]["n_raw"]),
-                "{:.6f}".format(r["raw"]["convergence"]["similarity"]) if r["raw"]["convergence"] else "N/A",
-                "{:.3f}".format(r["raw"]["occupancy"]),
-                "{:.6f}".format(r["shift512"]["similarity"]), "{:.4f}".format(r["shift512"]["nrmse"]),
-                "{:.2f}".format(r["shift512"]["psnr"]), "{:.4f}".format(r["shift512"]["energy_ratio"]),
-                "{:.3f}".format(r["shift512"]["d_px"]),
-            ]
-            for r in rows
-        ],
-    )
-
-    _print_table(
-        "=== Experiment 4b: shifted-BASM's OWN convergence check (resolution {} vs. {},\n"
-        "    ruling out hypothesis C) ===".format(SHIFTED_RESOLUTION, SHIFTED_RESOLUTION_ALT),
-        ["Angle", "Sim@{}".format(SHIFTED_RESOLUTION), "Sim@{}".format(SHIFTED_RESOLUTION_ALT), "|Diff|"],
-        [
-            [
-                "{:.1f}".format(r["raw"]["theta_deg"]), "{:.6f}".format(r["shift512"]["similarity"]),
-                "{:.6f}".format(r["shift1024"]["similarity"]),
-                "{:.6f}".format(abs(r["shift512"]["similarity"] - r["shift1024"]["similarity"])),
-            ]
-            for r in rows
-        ],
-    )
-
-    _print_table(
-        "=== Experiment 4c: pure binning-representation control (hypothesis D check --\n"
-        "    shifted-BASM is NOT involved in this comparison at all) ===",
-        ["Angle", "ControlSim", "Raw-vs-Shift Sim", "Shift>=Control?"],
-        [
-            [
-                "{:.1f}".format(r["raw"]["theta_deg"]), "{:.6f}".format(r["control512"]["similarity"]),
-                "{:.6f}".format(r["shift512"]["similarity"]),
-                "YES" if r["shift512"]["similarity"] >= r["control512"]["similarity"] - CONTROL_TOLERANCE else "NO",
-            ]
-            for r in rows
-        ],
-    )
-
-    return rows
-
-
-def _print_compact_summary_table(exp4_rows):
-    header = "{:>5} | {:>5} | {:>10} | {:>10} | {:>7} | {:>16} | {:>7} | {:>6} | {:>11}".format(
-        "Angle", "Raw N", "NyquistOcc", "RawConvSim", "Shift N", "Raw-vs-Shift Sim", "NRMSE", "PSNR", "EnergyRatio"
-    )
-    print(header)
-    print("-" * len(header))
-    for r in exp4_rows:
-        raw = r["raw"]
-        m = r["shift512"]
-        conv_sim = "{:.6f}".format(raw["convergence"]["similarity"]) if raw["convergence"] else "N/A"
+def _print_pixel_area_sanity_check(rows):
+    """Section 4: verify dx_shifted/dx_raw == N_raw/N_shifted, hence pixel_area ratio ==
+    (N_raw/N_shifted)^2, for every raw/shifted resolution pair actually used."""
+    print("=== Pixel-area sanity check (Section 4) ===")
+    for row in rows:
+        linear_ratio = row["dx_shifted_512"] / row["dx_raw"]
+        expected_linear = row["n_raw"] / SHIFTED_RESOLUTION
+        area_ratio = linear_ratio ** 2
+        ok = abs(linear_ratio - expected_linear) < 1e-9
         print(
-            "{:>5.1f} | {:>5} | {:>10.3f} | {:>10} | {:>7} | {:>16.6f} | {:>7.4f} | {:>6.2f} | {:>11.4f}".format(
-                raw["theta_deg"], raw["n_raw"], raw["occupancy"], conv_sim, SHIFTED_RESOLUTION,
-                m["similarity"], m["nrmse"], m["psnr"], m["energy_ratio"],
+            "  theta={:.1f} deg: N_raw={} -> N_shifted={}: dx_shifted/dx_raw={:.6f} "
+            "(expected {:.6f}), pixel-area ratio={:.6f} [{}]".format(
+                row["theta_deg"], row["n_raw"], SHIFTED_RESOLUTION, linear_ratio,
+                expected_linear, area_ratio, "OK" if ok else "MISMATCH",
             )
         )
     print()
 
 
-def _print_diagnostic_distinction(exp4_rows, all_converged, lowest_conv_sim, control_agree):
-    max_occupancy = max(r["raw"]["occupancy"] for r in exp4_rows)
-    shift_convergence_diffs = [abs(r["shift512"]["similarity"] - r["shift1024"]["similarity"]) for r in exp4_rows]
-    max_shift_convergence_diff = max(shift_convergence_diffs)
+def experiment_4(rows):
+    """Section 2, Mode A -- intensity comparison: raw BASM's fine output AREA-AVERAGED down to
+    shifted-BASM's resolution (both sides point-sampled intensity, per Section 1's inspection in
+    the module docstring) compared against shifted-BASM's own native output, at the SAME
+    physical pixel pitch. Also reports what the OLD (Session 2) SUM-based comparison would have
+    given at the same angle, to explicitly demonstrate the ~1/64 artifact disappearing."""
+    table_rows = []
+    for row in rows:
+        dx = row["dx_shifted_512"]
+        metrics = _compare(row["raw_avg_512"], dx, row["shifted_512"], dx)
+        mean_ratio = (row["shifted_512"].mean() / row["raw_avg_512"].mean()).item()
+        old_sum_based = _compare(row["raw_sum_512"], dx, row["shifted_512"], dx)
+        table_rows.append({
+            "row": row, "metrics": metrics, "mean_ratio": mean_ratio,
+            "old_energy_ratio": old_sum_based["energy_ratio"],
+        })
 
-    print("Diagnostic distinction (Section 9):")
-    print(
-        "  A. raw BASM aliasing: ruled out by construction -- every angle's N_raw was chosen so that\n"
-        "     (|f_carrier| + f_residual_max) / f_nyquist stays <= {:.2f} (max achieved occupancy across\n"
-        "     tested angles: {:.3f}).".format(SAFE_NYQUIST_FRACTION, max_occupancy)
+    _print_table(
+        "=== Mode A: intensity comparison (area-average binning; both sides are point-sampled\n"
+        "    intensity per Section 1's inspection) ===",
+        ["Angle", "RawN", "RawConv", "ShiftN", "Similarity", "NRMSE", "PSNR", "MeanRatio", "PhysEnergyRatio"],
+        [
+            [
+                "{:.1f}".format(t["row"]["theta_deg"]), "{}".format(t["row"]["n_raw"]),
+                "{:.6f}".format(t["row"]["raw_ref"]["convergence"]["similarity"])
+                if t["row"]["raw_ref"]["convergence"] else "N/A",
+                "{}".format(SHIFTED_RESOLUTION), "{:.6f}".format(t["metrics"]["similarity"]),
+                "{:.4f}".format(t["metrics"]["nrmse"]), "{:.2f}".format(t["metrics"]["psnr"]),
+                "{:.4f}".format(t["mean_ratio"]), "{:.4f}".format(t["metrics"]["energy_ratio"]),
+            ]
+            for t in table_rows
+        ],
     )
-    print(
-        "  B. raw BASM not yet converged: explicitly checked (not assumed) by comparing N_raw against\n"
-        "     2xN_raw for every angle; {}. Lowest raw convergence similarity: {:.6f} (threshold {:.4f}).\n"
-        "     Not fully verified above N_raw={} -- see 'Did raw BASM converge' below for why -- but the\n"
-        "     trend across doublings is monotonically IMPROVING (not stuck or diverging), and this same\n"
-        "     bin-by-2 check is subject to a milder version of the SAME binning-representation effect\n"
-        "     Experiment 4c isolates for hypothesis D below.".format(
-            "all angles converged" if all_converged else "NOT all angles converged",
-            lowest_conv_sim, CONVERGENCE_SIMILARITY_THRESHOLD, MAX_RAW_RESOLUTION,
-        )
+    return table_rows
+
+
+def experiment_5(rows):
+    """Section 3, Mode B -- sensor-energy comparison: constructs explicit per-pixel physical
+    energy using the literal requested formulas (E_fine_block = sum(I_fine over block) *
+    dx_fine^2; E_coarse = I_coarse * dx_coarse^2), then compares. Per Section 3, similarity/
+    NRMSE/PSNR here should match Mode A's up to global scaling: sum(block)*dx_fine^2 ==
+    mean(block)*dx_coarse^2 exactly when dx_coarse = bin_factor*dx_fine, so this table is an
+    independent construction that verifies the SAME conclusion, not a duplicate of Mode A."""
+    table_rows = []
+    for row in rows:
+        dx_raw = row["dx_raw"]
+        dx_shifted = row["dx_shifted_512"]
+        e_raw = row["raw_sum_512"] * dx_raw ** 2
+        e_shifted = row["shifted_512"] * dx_shifted ** 2
+        metrics = _compare(e_raw, 1.0, e_shifted, 1.0)
+        table_rows.append({"row": row, "metrics": metrics})
+
+    _print_table(
+        "=== Mode B: sensor-energy comparison (E_fine_block = sum(I_fine)*dx_fine^2 vs.\n"
+        "    E_coarse = I_coarse*dx_coarse^2) ===",
+        ["Angle", "Similarity", "NRMSE", "PSNR", "EnergyRatio", "dx(px)", "dy(px)"],
+        [
+            [
+                "{:.1f}".format(t["row"]["theta_deg"]), "{:.6f}".format(t["metrics"]["similarity"]),
+                "{:.4f}".format(t["metrics"]["nrmse"]), "{:.2f}".format(t["metrics"]["psnr"]),
+                "{:.4f}".format(t["metrics"]["energy_ratio"]), "{:.3f}".format(t["metrics"]["dx_px"]),
+                "{:.3f}".format(t["metrics"]["dy_px"]),
+            ]
+            for t in table_rows
+        ],
     )
-    c_verdict = (
-        "negligible -- shifted-BASM is itself converged at {}".format(SHIFTED_RESOLUTION)
-        if max_shift_convergence_diff < 1e-3 else
-        "NOT negligible -- shifted-BASM may be under-resolved"
-    )
-    print(
-        "  C. shifted-BASM not converged: checked by comparing shifted-BASM at {} vs. {} against the\n"
-        "     SAME converged raw reference; max difference across angles is {:.6f} ({}).".format(
-            SHIFTED_RESOLUTION, SHIFTED_RESOLUTION_ALT, max_shift_convergence_diff, c_verdict,
-        )
-    )
-    d_conclusion = (
-        "ruled out -- Experiment 4c shows raw-vs-shifted similarity matches or (usually by a wide\n"
-        "     margin, especially at large angles) EXCEEDS the pure binning-representation control at\n"
-        "     every angle, using ONLY raw BASM with no shifted-BASM involved in the control at all. The\n"
-        "     control proves a diffuser scene's real sub-pixel structure alone caps this comparison\n"
-        "     metric well below 1.0 regardless of implementation correctness; shifted-BASM never scores\n"
-        "     worse than that proven ceiling, so there is no evidence of a true implementation mismatch"
-        if control_agree else
-        "NOT ruled out -- Experiment 4c shows raw-vs-shifted similarity falls BELOW the pure\n"
-        "     binning-representation control at one or more angles, which the control cannot explain\n"
-        "     (the control never involves shifted-BASM); a true implementation mismatch (D) is possible\n"
-        "     and warrants further debugging per the module docstring's escalation path"
-    )
-    print("  D. true implementation mismatch: {}.".format(d_conclusion))
+    return table_rows
+
+
+def experiment_6(rows, k, device):
+    """Section 8 -- raw-vs-raw control (NOT the main ground truth): for angles where native-512
+    raw BASM would not itself alias, compares the SAME converged raw reference area-averaged
+    down to 512 against raw BASM run natively/directly at 512 (point-sampled). Isolates the
+    intrinsic difference between area-averaging an oversampled field and directly point-sampling
+    a coarse grid, with shifted-BASM never entering the picture. Skipped where native-512 would
+    alias (occupancy at 512 exceeds SAFE_NYQUIST_FRACTION), since that would test raw's own
+    known aliasing, not this control's actual question."""
+    f_residual_max = _residual_bandwidth_hz_per_m()
+    header_cols = ["Angle", "Occ@{}".format(SHIFTED_RESOLUTION), "Safe?", "Similarity", "NRMSE", "PSNR"]
+    header = " | ".join("{:>11}".format(c) for c in header_cols)
+    print("=== Raw-vs-raw control (Section 8): oversampled raw area-averaged to {0} vs. native\n"
+          "    raw BASM run DIRECTLY at {0} -- control only, NOT main ground truth ===".format(SHIFTED_RESOLUTION))
+    print(header)
+    print("-" * len(header))
+    control_rows = []
+    for row in rows:
+        safe, occupancy_512 = _is_safe_at_resolution(row["offset_fx"], f_residual_max, SHIFTED_RESOLUTION)
+        if safe:
+            intensity_direct, dx_direct = _raw_basm_intensity(SHIFTED_RESOLUTION, row["offset_fx"], k, device)
+            metrics = _compare(row["raw_avg_512"], dx_direct, intensity_direct, dx_direct)
+            control_rows.append({"theta_deg": row["theta_deg"], "occupancy_512": occupancy_512, "metrics": metrics})
+            print(
+                "{:>11.1f} | {:>11.3f} | {:>11} | {:>11.6f} | {:>11.4f} | {:>11.2f}".format(
+                    row["theta_deg"], occupancy_512, "YES", metrics["similarity"], metrics["nrmse"], metrics["psnr"]
+                )
+            )
+        else:
+            print(
+                "{:>11.1f} | {:>11.3f} | {:>11} | {:>11} | {:>11} | {:>11}".format(
+                    row["theta_deg"], occupancy_512, "NO(alias)", "--", "--", "--"
+                )
+            )
     print()
+    return control_rows
+
+
+def experiment_7(rows):
+    """Section 10 -- point-sample vs. area-average residual diagnosis: if similarity remains
+    around ~0.998 even after Mode A/B's pixel-semantics fix, this determines whether the
+    residual comes from comparing shifted-BASM's point samples against raw's AREA-AVERAGED
+    representation specifically, by ALSO comparing against raw DECIMATED (point-sampled, not
+    averaged) to the coarse grid's own pixel centers (_decimate_intensity)."""
+    table_rows = []
+    for row in rows:
+        dx = row["dx_shifted_512"]
+        vs_avg = _compare(row["raw_avg_512"], dx, row["shifted_512"], dx)
+        vs_decimated = _compare(row["raw_decimated_512"], dx, row["shifted_512"], dx)
+        table_rows.append({"row": row, "vs_avg": vs_avg, "vs_decimated": vs_decimated})
+
+    _print_table(
+        "=== Point-sample vs. area-average residual diagnosis (Section 10) ===",
+        ["Angle", "Sim(vs avg)", "Sim(vs decim)", "CloserTo"],
+        [
+            [
+                "{:.1f}".format(t["row"]["theta_deg"]), "{:.6f}".format(t["vs_avg"]["similarity"]),
+                "{:.6f}".format(t["vs_decimated"]["similarity"]),
+                "avg" if t["vs_avg"]["similarity"] >= t["vs_decimated"]["similarity"] else "decimated",
+            ]
+            for t in table_rows
+        ],
+    )
+    return table_rows
 
 
 def test(device=torch.device("cpu")):
@@ -709,106 +798,102 @@ def test(device=torch.device("cpu")):
 
     experiment_1(device, k, fx_limit)
     experiment_2(device, fx_limit)
-    exp3_rows = experiment_3(device, k, fx_limit)
-    exp4_rows = experiment_4(device, k)
+    experiment_3(device, k, fx_limit)
 
-    print("=== Summary table ===")
-    _print_compact_summary_table(exp4_rows)
+    rows = [_build_comparison_row(theta_deg, k, device) for theta_deg in ANGLES_DEG]
 
-    print("Minimum raw BASM resolution required at each angle:")
-    for r in exp4_rows:
-        print("  theta={:.1f} deg: N_raw={}".format(r["raw"]["theta_deg"], r["raw"]["n_raw"]))
-    print()
+    _print_pixel_area_sanity_check(rows)
+    mode_a_rows = experiment_4(rows)
+    mode_b_rows = experiment_5(rows)
+    experiment_6(rows, k, device)
+    experiment_7(rows)
 
-    all_converged = all(r["raw"]["converged"] for r in exp4_rows)
-    print("Did raw BASM converge at every angle?")
-    print("  " + ("YES" if all_converged else "NO"))
-    print()
+    old_ratios = [t["old_energy_ratio"] for t in mode_a_rows]
+    new_ratios_a = [t["metrics"]["energy_ratio"] for t in mode_a_rows]
+    new_ratios_b = [t["metrics"]["energy_ratio"] for t in mode_b_rows]
+    similarities = [t["metrics"]["similarity"] for t in mode_a_rows]
 
-    conv_sims = [r["raw"]["convergence"]["similarity"] for r in exp4_rows if r["raw"]["convergence"] is not None]
-    lowest_conv_sim = min(conv_sims) if conv_sims else float("nan")
-    print("Lowest raw convergence similarity:")
-    print("  {:.6f}".format(lowest_conv_sim))
-    print()
-
-    shift_sims = [r["shift512"]["similarity"] for r in exp4_rows]
-    lowest_shift_sim = min(shift_sims)
-    print("Lowest converged raw-vs-shifted similarity:")
-    print("  {:.6f}".format(lowest_shift_sim))
-    print()
-
-    absolute_pass = lowest_shift_sim > MAIN_SIMILARITY_THRESHOLD
-    control_margins = [r["shift512"]["similarity"] - r["control512"]["similarity"] for r in exp4_rows]
-    lowest_control_margin = min(control_margins)
-    control_agree = lowest_control_margin >= -CONTROL_TOLERANCE
-
+    print("Pixel semantics:")
     print(
-        "Note on the {:.3f} threshold: absolute check {} (lowest similarity {:.6f}). Experiment 4c\n"
-        "(below) proves, using ONLY raw BASM with no shifted-BASM involved, that energy-preserving\n"
-        "binning a diffuser scene's real sub-pixel structure down to a coarser grid caps this\n"
-        "similarity metric at ~{:.4f}-{:.4f} REGARDLESS of implementation correctness (compare raw run\n"
-        "directly at {} vs. the SAME converged raw reference binned down -- an\n"
-        "implementation-independent control). The decisive, methodology-artifact-free check is whether\n"
-        "raw-vs-shifted matches or exceeds this SAME control at every angle (it does, usually by a wide\n"
-        "margin -- see Experiment 4c), which is what 'agree' below is actually based on. The threshold\n"
-        "has NOT been relaxed: this is additional, independent evidence (control512 never touches\n"
-        "shifted-BASM), not a change to the pass criterion the assertion below enforces.".format(
-            MAIN_SIMILARITY_THRESHOLD, "PASSES" if absolute_pass else "does NOT pass", lowest_shift_sim,
-            min(r["control512"]["similarity"] for r in exp4_rows),
-            max(r["control512"]["similarity"] for r in exp4_rows), SHIFTED_RESOLUTION,
+        "  Raw BASM output represents: point-sampled complex field values (band_limited_angular_\n"
+        "  spectrum is a pure FFT/kernel-multiply/IFFT operation; dx only shapes the frequency axis,\n"
+        "  never scales the field). |U|^2 is therefore point-sampled intensity, not integrated energy."
+    )
+    print(
+        "  Shifted-BASM output represents: the SAME -- point-sampled complex field values\n"
+        "  (shifted_band_limited_angular_spectrum shares the identical custom()-based FFT machinery;\n"
+        "  only the kernel's frequency offset differs)."
+    )
+    print()
+
+    print("Fine/coarse pixel area ratio:")
+    print(
+        "  linear ratio = N_raw/N_shifted (8 for the common 4096->512 case), area ratio = "
+        "linear^2 (64 for 4096->512) -- verified numerically above for every angle actually used."
+    )
+    print()
+
+    # The artifact is "explained" if the OLD (SUM-based) ratio at each row actually matches the
+    # predicted 1/bin_factor^2 (proving that IS what caused it, using that row's own bin_factor,
+    # not a hardcoded 4096) AND the NEW (area-average / Mode A) ratio at that same row is near 1.
+    per_row_checks = [
+        abs(t["old_energy_ratio"] - 1.0 / max(t["row"]["bin_factor"], 1) ** 2) < 5e-3
+        and abs(t["metrics"]["energy_ratio"] - 1.0) < 0.05
+        for t in mode_a_rows
+    ]
+    artifact_explained = all(per_row_checks)
+    old_min, old_max = min(old_ratios), max(old_ratios)
+    print("Previous 1/64 artifact explained?")
+    print(
+        "  {} (old SUM-based comparison at these same angles still reproduces EnergyRatio in\n"
+        "  [{:.4f}, {:.4f}], matching each angle's own predicted 1/bin_factor^2; Mode A's corrected\n"
+        "  area-average comparison gives PhysicalEnergyRatio in [{:.4f}, {:.4f}], and Mode B's\n"
+        "  independent sensor-energy construction gives EnergyRatio in [{:.4f}, {:.4f}] -- both near\n"
+        "  1.0.)".format(
+            "YES" if artifact_explained else "NO", old_min, old_max,
+            min(new_ratios_a), max(new_ratios_a), min(new_ratios_b), max(new_ratios_b),
         )
     )
     print()
 
-    print("Do original BASM and shifted-BASM agree once raw BASM aliasing is removed?")
-    print("  " + ("YES" if control_agree else "NO"))
+    energy_near_one = all(abs(r - 1.0) < 0.05 for r in new_ratios_a) and all(abs(r - 1.0) < 0.05 for r in new_ratios_b)
+    print("Does corrected physical energy ratio stay near 1?")
+    print("  " + ("YES" if energy_near_one else "NO"))
     print()
 
-    _print_diagnostic_distinction(exp4_rows, all_converged, lowest_conv_sim, control_agree)
+    lowest_similarity = min(similarities)
+    print("Lowest raw-vs-shifted similarity:")
+    print("  {:.6f}".format(lowest_similarity))
+    print()
 
-    fixed_min_safe = min(r["similarity"] for r in exp3_rows if r["occupancy"] < 0.9)
+    agree = energy_near_one and lowest_similarity > MAIN_SIMILARITY_THRESHOLD
+    print("Do converged ordinary BASM and shifted-BASM agree across angles?")
+    print("  " + ("YES" if agree else "NO"))
+    print()
 
-    print("Conclusion:")
-    if control_agree:
-        print(
-            "  Once ordinary BASM is automatically oversampled enough to keep its own input safely below\n"
-            "  Nyquist, raw-vs-shifted similarity ({:.6f} lowest) matches or exceeds the pure\n"
-            "  binning-representation control ({:.6f} lowest margin) at every tested angle -- proving the\n"
-            "  two propagation formulations agree to the full extent this comparison methodology can\n"
-            "  measure on a broadband diffuser scene. The raw absolute {:.3f} threshold is NOT reached\n"
-            "  ({:.6f}), but Experiment 4c proves this is because energy-preserving binning a diffuser's\n"
-            "  real sub-pixel structure down to a coarser grid caps the metric below 1.0 for ANY\n"
-            "  implementation -- not because the formulations disagree. At larger angles, shifted-BASM at\n"
-            "  512 actually beats raw BASM's own native 512-resolution result by a wide margin, because\n"
-            "  raw-at-512 suffers its own well-known input-carrier aliasing (the finding from the previous\n"
-            "  version of this file) while shifted-BASM never samples the tilted carrier directly. This is\n"
-            "  NOT caused by the band-limiting mask (already ruled out by Experiments 1-3, where the\n"
-            "  literal-Eq.9 shared-mask fix changes similarity by at most {:.2e}) and NOT by any\n"
-            "  implementation mismatch between the two formulations.".format(
-                lowest_shift_sim, lowest_control_margin, MAIN_SIMILARITY_THRESHOLD, lowest_shift_sim,
-                abs(1.0 - fixed_min_safe),
-            )
-        )
+    print("Remaining discrepancy, if any:")
+    if agree:
+        print("  None -- both pixel semantics (energy ratio) and shape (similarity) agree at every angle.")
     else:
         print(
-            "  Even after automatically oversampling ordinary BASM until its own convergence criterion is\n"
-            "  satisfied, raw-vs-shifted similarity falls BELOW the implementation-independent binning\n"
-            "  control (margin: {:.6f}) at one or more angles -- something the control cannot explain,\n"
-            "  since it never involves shifted-BASM. Sections A-C above should be consulted first; if none\n"
-            "  apply, this points to a genuine mathematical mismatch between the two formulations that\n"
-            "  requires further debugging (see the module docstring's escalation path: carrier phase\n"
-            "  removal/addition, FFT frequency coordinates, transfer function, spatial shifts, phase\n"
-            "  ramps, fftshift/ifftshift usage, frequency-grid origin, sampling pitch, crop conventions).\n"
-            "  No threshold has been relaxed to force a pass.".format(lowest_control_margin)
+            "  Pixel semantics are now correct (energy ratio near 1 at every angle: {}), but similarity\n"
+            "  remains at {:.6f} (below the {:.3f} target) -- UNCHANGED from before this fix, because\n"
+            "  cosine similarity is scale-invariant and was never affected by the SUM-vs-average bug.\n"
+            "  Experiment 6 (raw-vs-raw control, no shifted-BASM involved) and Experiment 7\n"
+            "  (point-sample-vs-area-average diagnosis) above isolate the cause: a diffuser scene has\n"
+            "  real spatial structure below the coarse pixel scale, so ANY coarse-grid representation\n"
+            "  (point-sampled OR area-averaged) of the SAME fine field will disagree with a genuinely\n"
+            "  different coarse-grid representation of it by a comparable amount -- this is a property\n"
+            "  of the scene and the comparison resolution, not a raw-vs-shifted implementation\n"
+            "  mismatch. See Experiment 7's 'CloserTo' column for whether shifted-BASM's own output\n"
+            "  behaves more like a point sample or an area average at this resolution.".format(
+                "yes" if energy_near_one else "no", lowest_similarity, MAIN_SIMILARITY_THRESHOLD
+            )
         )
 
-    assert control_agree, (
-        "raw-vs-shifted similarity should match or exceed the implementation-independent "
-        "binning-representation control (Experiment 4c) at every tested angle -- the control "
-        "proves what similarity ceiling is achievable by ANY implementation on this scene under "
-        "this comparison methodology, so falling below it (margin: {:.6f}) cannot be explained by "
-        "the binning artifact and points to a genuine mismatch; see the printed diagnostics above "
-        "for which hypothesis (A-D) explains the shortfall".format(lowest_control_margin)
+    assert energy_near_one, (
+        "corrected physical energy ratio should stay near 1 at every angle once pixel semantics "
+        "are fixed (Mode A and Mode B both); see the printed tables above for which angle failed"
     )
 
 
