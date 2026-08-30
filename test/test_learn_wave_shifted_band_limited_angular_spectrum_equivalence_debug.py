@@ -1,5 +1,23 @@
 """Debug: verify and fix BASM vs shifted-BASM angular equivalence.
 
+**Where this file sits relative to the two dedicated validation-level tests in this suite**:
+this file's Experiments 1-4 are all INTENSITY-based (|U|^2), after either sum- or area-binning
+depending on which session's version of the file you are reading (see the "Session 3
+correction" paragraph below) -- a useful diagnostic history, but neither of the two rigorous,
+clearly-separated validation levels now available:
+- test_learn_wave_shifted_band_limited_angular_spectrum_field_equivalence.py (Test 1): do the
+  two solvers compute the SAME propagated COMPLEX field at identical physical coordinates, up to
+  one global phase? A point-sampled, numerical-solver-level question.
+- test_learn_wave_shifted_band_limited_angular_spectrum_sensor_equivalence.py (Test 2): do the
+  two solvers predict the SAME measurement for a real, finite-area SENSOR pixel, i.e.
+  integral_over_pixel |U|^2 dx dy rather than a point sample or a naive area-average? The
+  question actually relevant to downstream lensless PSF simulation.
+Point-sampled-complex-field equivalence and finite-area sensor-measurement equivalence are
+DIFFERENT questions with different answers on this diffuser scene (Test 1 does not yet reach its
+ideal >0.9999 aligned-correlation target at every angle; Test 2 passes cleanly, similarity >
+0.9999 and energy ratio within 0.13% of 1 at every angle) -- do not conflate them when reading
+this file's older, intensity-only diagnostics below.
+
 Shifted-BASM is meant to be a numerically more efficient formulation of the SAME optical
 propagation as raw band_limited_angular_spectrum -- not a different model. Similarity was
 observed decreasing with incident angle well before the estimated bandlimit, even at matching
