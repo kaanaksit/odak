@@ -383,6 +383,35 @@ def _converged_raw_reference(theta_deg, k, device):
     }
 
 
+def _fixed_raw_reference(theta_deg, k, device, resolution=None):
+    """Raw-BASM reference at a fixed, explicit resolution -- deliberately NOT the adaptively
+    -converged one from _converged_raw_reference. test_sensor_equivalence asks a specific
+    scientific question: does shifted-BASM match a SUFFICIENTLY SAMPLED ordinary BASM? That
+    answer must not hinge on whether an N-vs-2N similarity metric, computed in float32, happens
+    to land on one side or the other of CONVERGENCE_SIMILARITY_THRESHOLD -- environment-to
+    -environment float32 noise near that boundary can flip which raw N a run lands on (observed:
+    CI landing on 1024/2048 where every other environment reached the 4096 cap), producing
+    pass/fail flips unrelated to the physics under test. `resolution` defaults to
+    MAX_RAW_RESOLUTION, the physical/evanescent-frequency-bounded cap (see
+    _max_physical_raw_resolution) that the adaptive loop was heading for anyway in every
+    environment where it wasn't cut short -- fixing it directly is at least as well-resolved and
+    fully deterministic."""
+    if resolution is None:
+        resolution = MAX_RAW_RESOLUTION
+    offset_fx = _angle_to_offset(theta_deg)
+    f_residual_max = _residual_bandwidth_hz_per_m()
+    intensity, pitch = _raw_basm_intensity(resolution, offset_fx, k, device)
+    _assert_energy_in_band(intensity, resolution, offset_fx, k, device)
+    dx_raw = FOV_M / resolution
+    f_nyquist_raw = 1.0 / (2.0 * dx_raw)
+    occupancy = (abs(offset_fx) + f_residual_max) / f_nyquist_raw
+    return {
+        "theta_deg": theta_deg, "offset_fx": offset_fx, "f_residual_max": f_residual_max,
+        "n_raw": resolution, "dx_raw": dx_raw, "f_nyquist_raw": f_nyquist_raw, "occupancy": occupancy,
+        "intensity": intensity, "pitch": pitch,
+    }
+
+
 # ============================================================================
 # test_correctness: zero-offset identity, large-offset stability, mask/phase/evanescent checks
 # ============================================================================
@@ -1022,9 +1051,13 @@ def test_sensor_equivalence(device=torch.device("cpu")):
     """Do the two solvers predict the same measurement for a real, finite-area sensor pixel
     (E_ij = integral_over_pixel |U|^2 dx dy)? Shifted-BASM is run on an internal grid finer than
     the sensor (SHIFT_INTERNAL_PRIMARY=2048), never its own native-resolution point sample, to
-    avoid repeating the point-sample-vs-area-average mismatch from test_pixel_semantics."""
+    avoid repeating the point-sample-vs-area-average mismatch from test_pixel_semantics. The raw
+    reference is built at a FIXED resolution (_fixed_raw_reference, MAX_RAW_RESOLUTION) rather
+    than test_pixel_semantics's adaptively-converged one, so this test's pass/fail answers "does
+    shifted-BASM match a sufficiently sampled raw BASM?" and not "did a float32 N-vs-2N
+    similarity heuristic happen to cross 0.9999 on this machine?"."""
     k = odak.learn.wave.wavenumber(WAVELENGTH_M)
-    raw_rows = [_converged_raw_reference(theta_deg, k, device) for theta_deg in ANGLES_DEG]
+    raw_rows = [_fixed_raw_reference(theta_deg, k, device) for theta_deg in ANGLES_DEG]
 
     rows = []
     for raw_ref in raw_rows:
