@@ -1081,16 +1081,18 @@ def test_sensor_equivalence(device=torch.device("cpu")):
     shifted-BASM match a sufficiently sampled raw BASM?" and not "did a float32 N-vs-2N
     similarity heuristic happen to cross 0.9999 on this machine?"."""
     k = odak.learn.wave.wavenumber(WAVELENGTH_M)
-    raw_rows = [_fixed_raw_reference(theta_deg, k, device) for theta_deg in ANGLES_DEG]
 
     rows = []
-    for raw_ref in raw_rows:
+    raw_sensor_rows = []
+    for theta_deg in ANGLES_DEG:
+        raw_ref = _fixed_raw_reference(theta_deg, k, device)
         offset_fx, n_raw = raw_ref["offset_fx"], raw_ref["n_raw"]
         e_raw = _sensor_energy(raw_ref["intensity"], raw_ref["pitch"], n_raw // SENSOR_RESOLUTION)
         intensity_shift, pitch_shift = _shifted_basm_intensity(offset_fx, SHIFT_INTERNAL_PRIMARY, k, device)
         e_shift = _sensor_energy(intensity_shift, pitch_shift, SHIFT_INTERNAL_PRIMARY // SENSOR_RESOLUTION)
         metrics = _compare_energy(e_raw, e_shift)
         rows.append({"theta_deg": raw_ref["theta_deg"], "n_raw": n_raw, "metrics": metrics})
+        raw_sensor_rows.append({"theta_deg": theta_deg, "offset_fx": offset_fx, "n_raw": n_raw, "e_raw": e_raw})
 
     _print_table(
         "=== Sensor-measurement equivalence (raw N vs. shifted internal {},\n"
@@ -1122,13 +1124,15 @@ def test_sensor_equivalence(device=torch.device("cpu")):
 
     # Control: raw-vs-raw sensor-integration reference accuracy (no shifted-BASM at all).
     control_rows = []
-    for raw_ref in raw_rows:
+    for raw_ref in raw_sensor_rows:
         n_raw = raw_ref["n_raw"]
         other_n = n_raw * 2 if n_raw * 2 <= CONVERGENCE_DOUBLE_CEILING else n_raw // 2
-        e_raw = _sensor_energy(raw_ref["intensity"], raw_ref["pitch"], n_raw // SENSOR_RESOLUTION)
         intensity_other, pitch_other = _raw_basm_intensity(other_n, raw_ref["offset_fx"], k, device)
         e_other = _sensor_energy(intensity_other, pitch_other, max(other_n // SENSOR_RESOLUTION, 1))
-        control_rows.append({"theta_deg": raw_ref["theta_deg"], "sim": _compare_energy(e_raw, e_other)["similarity"]})
+        control_rows.append({
+            "theta_deg": raw_ref["theta_deg"],
+            "sim": _compare_energy(raw_ref["e_raw"], e_other)["similarity"],
+        })
     _print_table(
         "=== Control: raw-vs-raw sensor-integration reference accuracy (no shifted-BASM) ===",
         ["Angle", "Similarity"],
@@ -1138,7 +1142,7 @@ def test_sensor_equivalence(device=torch.device("cpu")):
     # Control: shifted internal-grid sensor-integration convergence (512 -> 1024 -> 2048).
     convergence_rows = []
     for row in rows:
-        offset_fx = next(r["offset_fx"] for r in raw_rows if r["theta_deg"] == row["theta_deg"])
+        offset_fx = next(r["offset_fx"] for r in raw_sensor_rows if r["theta_deg"] == row["theta_deg"])
         energies = {}
         for internal_n in SHIFT_INTERNAL_RESOLUTIONS:
             intensity, pitch = _shifted_basm_intensity(offset_fx, internal_n, k, device)
