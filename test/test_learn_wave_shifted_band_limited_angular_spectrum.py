@@ -192,11 +192,21 @@ def _select_raw_resolution(offset_fx, f_residual_max):
         n *= 2
 
 
+def _assert_finite(tensor, context):
+    """Fails immediately and specifically at the propagation call that produced a non-finite
+    result, instead of letting it silently propagate into a confusing downstream ratio (e.g. an
+    astronomical MeanRatio or an inf/nan similarity several functions later)."""
+    if not torch.isfinite(tensor).all():
+        raise AssertionError("non-finite (NaN/Inf) values produced by {}".format(context))
+
+
 def _raw_basm_intensity(resolution, offset_fx, k, device):
     _, tilted_field, pitch, shift_x_m = _build_scene_at(resolution, offset_fx, device)
     propagated = odak.learn.wave.band_limited_angular_spectrum(tilted_field, k, DISTANCE_M, pitch, WAVELENGTH_M)
     recentered = _recenter(propagated, pitch, shift_x_m)
-    return odak.learn.wave.calculate_amplitude(recentered) ** 2, pitch
+    intensity = odak.learn.wave.calculate_amplitude(recentered) ** 2
+    _assert_finite(intensity, "band_limited_angular_spectrum at resolution={}, offset_fx={}".format(resolution, offset_fx))
+    return intensity, pitch
 
 
 def _shifted_basm_intensity(offset_fx, resolution, k, device):
@@ -205,7 +215,11 @@ def _shifted_basm_intensity(offset_fx, resolution, k, device):
         field, k, DISTANCE_M, pitch, WAVELENGTH_M, offset_fx=offset_fx, offset_fy=0.0
     )
     recentered = _recenter(propagated, pitch, shift_x_m)
-    return odak.learn.wave.calculate_amplitude(recentered) ** 2, pitch
+    intensity = odak.learn.wave.calculate_amplitude(recentered) ** 2
+    _assert_finite(
+        intensity, "shifted_band_limited_angular_spectrum at resolution={}, offset_fx={}".format(resolution, offset_fx)
+    )
+    return intensity, pitch
 
 
 def _print_table(title, header_cols, rows):
@@ -221,6 +235,18 @@ def _print_table(title, header_cols, rows):
 # ============================================================================
 # Comparison metrics
 # ============================================================================
+_DEGENERATE_RELATIVE_FLOOR = 1e-6
+
+
+def _is_degenerate_reference(reference_value, candidate_value):
+    """A reference that is technically positive but astronomically tiny relative to either side
+    would otherwise slip past a plain `> 0` guard and produce a nonsensical, silently-huge ratio
+    (observed once as ~3e26) instead of a clearly-flagged failure. Self-relative -- no arbitrary
+    absolute constant -- and also catches the both-exactly-zero case via the floor."""
+    scale = max(reference_value, candidate_value, 1e-300)
+    return reference_value < _DEGENERATE_RELATIVE_FLOOR * scale
+
+
 def _compare_intensity(reference, reference_pitch_m, candidate, candidate_pitch_m):
     """Compares two point-sampled intensity arrays of the same shape/pitch."""
     similarity = (
@@ -231,16 +257,17 @@ def _compare_intensity(reference, reference_pitch_m, candidate, candidate_pitch_
     ref_rms = torch.sqrt(torch.mean(reference**2)).item()
     nrmse = rmse / ref_rms if ref_rms > 0 else float("nan")
     peak = float(reference.max())
-    psnr = 20.0 * math.log10(peak / rmse) if rmse > 0 else float("inf")
+    psnr = 20.0 * math.log10(peak / rmse) if rmse > 0 and peak > 0 else float("inf") if rmse == 0 else float("nan")
     reference_energy = float(reference.sum()) * reference_pitch_m**2
     candidate_energy = float(candidate.sum()) * candidate_pitch_m**2
-    energy_ratio = candidate_energy / reference_energy if reference_energy > 0 else float("nan")
+    degenerate = _is_degenerate_reference(reference_energy, candidate_energy)
+    energy_ratio = candidate_energy / reference_energy if not degenerate else float("nan")
     ref_cx, ref_cy = _centroid_px(reference)
     cand_cx, cand_cy = _centroid_px(candidate)
     dx_px, dy_px = cand_cx - ref_cx, cand_cy - ref_cy
     return {
         "similarity": similarity, "nrmse": nrmse, "psnr": psnr, "energy_ratio": energy_ratio,
-        "d_px": math.hypot(dx_px, dy_px), "dx_px": dx_px, "dy_px": dy_px,
+        "d_px": math.hypot(dx_px, dy_px), "dx_px": dx_px, "dy_px": dy_px, "degenerate": degenerate,
     }
 
 
@@ -255,15 +282,16 @@ def _compare_energy(reference, candidate):
     ref_rms = torch.sqrt(torch.mean(reference**2)).item()
     nrmse = rmse / ref_rms if ref_rms > 0 else float("nan")
     peak = float(reference.max())
-    psnr = 20.0 * math.log10(peak / rmse) if rmse > 0 else float("inf")
+    psnr = 20.0 * math.log10(peak / rmse) if rmse > 0 and peak > 0 else float("inf") if rmse == 0 else float("nan")
     ref_total, cand_total = float(reference.sum()), float(candidate.sum())
-    energy_ratio = cand_total / ref_total if ref_total > 0 else float("nan")
+    degenerate = _is_degenerate_reference(ref_total, cand_total)
+    energy_ratio = cand_total / ref_total if not degenerate else float("nan")
     ref_cx, ref_cy = _centroid_px(reference)
     cand_cx, cand_cy = _centroid_px(candidate)
     dx_px, dy_px = cand_cx - ref_cx, cand_cy - ref_cy
     return {
         "similarity": similarity, "nrmse": nrmse, "psnr": psnr, "energy_ratio": energy_ratio,
-        "dx_px": dx_px, "dy_px": dy_px, "d_px": math.hypot(dx_px, dy_px),
+        "dx_px": dx_px, "dy_px": dy_px, "d_px": math.hypot(dx_px, dy_px), "degenerate": degenerate,
     }
 
 
@@ -271,6 +299,34 @@ def _compare_energy(reference, candidate):
 # Oversampled/converged raw-BASM reference -- intensity-based (shared by
 # test_pixel_semantics and test_sensor_equivalence)
 # ============================================================================
+_ZERO_ANGLE_ENERGY_CACHE = {}
+
+
+def _zero_angle_baseline_energy(resolution, k, device):
+    """Total energy of the on-axis (theta=0, no carrier, no input-aliasing risk) raw-BASM output
+    at `resolution`, memoized. Used as a sanity baseline in _raw_convergence_metrics: a candidate
+    resolution whose own energy has collapsed to a degenerate scale relative to this baseline is
+    flagged even when the purely-relative N-vs-2N similarity check alone would not catch it (the
+    scenario where N and 2N are correlated-degraded and fool a relative comparison)."""
+    if resolution not in _ZERO_ANGLE_ENERGY_CACHE:
+        intensity, _ = _raw_basm_intensity(resolution, 0.0, k, device)
+        _ZERO_ANGLE_ENERGY_CACHE[resolution] = float(intensity.sum())
+    return _ZERO_ANGLE_ENERGY_CACHE[resolution]
+
+
+def _assert_energy_in_band(intensity, resolution, offset_fx, k, device):
+    baseline = _zero_angle_baseline_energy(resolution, k, device)
+    energy = float(intensity.sum())
+    if not (0.1 * baseline <= energy <= 10.0 * baseline):
+        raise AssertionError(
+            "raw BASM intensity at resolution={}, offset_fx={} has total energy {:.3e}, far "
+            "outside the expected [{:.3e}, {:.3e}] band relative to the theta=0 baseline -- "
+            "likely a degenerate (aliased or otherwise corrupted) result".format(
+                resolution, offset_fx, energy, 0.1 * baseline, 10.0 * baseline
+            )
+        )
+
+
 def _raw_convergence_metrics(resolution, offset_fx, k, device):
     """Compares raw BASM at `resolution` against raw BASM at 2x, area-average-binned back down
     -- both point-sampled-intensity quantities. None if doubling exceeds the physical cap."""
@@ -279,8 +335,18 @@ def _raw_convergence_metrics(resolution, offset_fx, k, device):
         return None
     intensity_a, pitch_a = _raw_basm_intensity(resolution, offset_fx, k, device)
     intensity_b, _ = _raw_basm_intensity(doubled, offset_fx, k, device)
+    _assert_energy_in_band(intensity_a, resolution, offset_fx, k, device)
+    _assert_energy_in_band(intensity_b, doubled, offset_fx, k, device)
     intensity_b_binned = _bin_intensity_average(intensity_b, 2)
-    return _compare_intensity(intensity_a, pitch_a, intensity_b_binned, pitch_a)
+    metrics = _compare_intensity(intensity_a, pitch_a, intensity_b_binned, pitch_a)
+    if math.isnan(metrics["similarity"]):
+        raise AssertionError(
+            "convergence check produced NaN similarity at resolution={}, offset_fx={} -- a "
+            "degenerate comparison slipped past the finiteness/energy-band checks above".format(
+                resolution, offset_fx
+            )
+        )
+    return metrics
 
 
 def _converged_raw_reference(theta_deg, k, device):
@@ -838,7 +904,9 @@ def _mode_a_intensity_comparison(rows):
     for row in rows:
         dx = row["dx_shifted_512"]
         metrics = _compare_intensity(row["raw_avg_512"], dx, row["shifted_512"], dx)
-        mean_ratio = (row["shifted_512"].mean() / row["raw_avg_512"].mean()).item()
+        raw_mean = row["raw_avg_512"].mean().item()
+        shifted_mean = row["shifted_512"].mean().item()
+        mean_ratio = shifted_mean / raw_mean if not _is_degenerate_reference(raw_mean, shifted_mean) else float("nan")
         old_sum_based = _compare_intensity(row["raw_sum_512"], dx, row["shifted_512"], dx)
         table_rows.append({
             "row": row, "metrics": metrics, "mean_ratio": mean_ratio,
@@ -909,6 +977,14 @@ def test_pixel_semantics(device=torch.device("cpu")):
     _mode_b_sensor_comparison(rows)
     control_rows = _raw_vs_raw_binning_control(rows, k, device)
 
+    degenerate_thetas = [t["row"]["theta_deg"] for t in mode_a_rows if t["metrics"]["degenerate"]]
+    if degenerate_thetas:
+        raise AssertionError(
+            "raw-vs-shifted comparison reference collapsed to near-zero energy at theta={} deg "
+            "-- see the Mode A table above; this is a degenerate comparison, not a genuine "
+            "similarity/energy-ratio failure".format(degenerate_thetas)
+        )
+
     old_ratios = [t["old_energy_ratio"] for t in mode_a_rows]
     new_ratios = [t["metrics"]["energy_ratio"] for t in mode_a_rows]
     control_sims = {c["theta_deg"]: c["metrics"]["similarity"] for c in control_rows}
@@ -958,6 +1034,14 @@ def test_sensor_equivalence(device=torch.device("cpu")):
         e_shift = _sensor_energy(intensity_shift, pitch_shift, SHIFT_INTERNAL_PRIMARY // SENSOR_RESOLUTION)
         metrics = _compare_energy(e_raw, e_shift)
         rows.append({"theta_deg": raw_ref["theta_deg"], "n_raw": n_raw, "metrics": metrics})
+
+    degenerate_thetas = [r["theta_deg"] for r in rows if r["metrics"]["degenerate"]]
+    if degenerate_thetas:
+        raise AssertionError(
+            "raw-vs-shifted sensor-energy reference collapsed to near-zero at theta={} deg -- "
+            "see the table below; this is a degenerate comparison, not a genuine similarity/"
+            "energy-ratio failure".format(degenerate_thetas)
+        )
 
     _print_table(
         "=== Sensor-measurement equivalence (raw N vs. shifted internal {},\n"
