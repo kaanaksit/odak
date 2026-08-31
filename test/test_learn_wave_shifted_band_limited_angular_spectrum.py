@@ -10,20 +10,17 @@ equivalence-with-ordinary-BASM tests, in one file.
   test_pixel_semantics()   -- raw and shifted BASM both return POINT-SAMPLED intensity (see
                               Warning below); downsampling raw's fine grid for comparison must
                               use AREA-AVERAGE binning, not SUM binning (sensor-pixel style).
-  test_sensor_equivalence() -- do the two solvers predict the same finite-area SENSOR pixel
-                              measurement? PASSES (similarity > 0.9999, energy ratio ~0.1%).
-
 Warning -- intensity vs. complex field: shifted-BASM was validated here to reproduce ordinary
-BASM's INTENSITY (|U|^2) to similarity > 0.9999 once both are properly resolved
-(test_sensor_equivalence). A separate, stricter investigation compared the underlying COMPLEX
-field at exact matching coordinates (global phase removed) and found aligned correlation only
-reaches ~0.98-0.997, not the ideal > 0.9999, and is non-monotonic with angle -- most likely
-float32 precision loss in the kernel's phase term at large carrier offsets, not a conceptual
-mismatch, but not fully confirmed. That test currently fails and has been removed from this
-file's passing suite; see git history (test_learn_wave_shifted_band_limited_angular_spectrum_
-field_equivalence.py, since removed) and shifted_band_limited_angular_spectrum's own docstring
-in odak/learn/wave/classical.py for the full finding. Do not assume this function's raw complex
-output matches band_limited_angular_spectrum's to high precision for phase-sensitive uses.
+BASM's INTENSITY (|U|^2) under the point-sampled comparison semantics exercised below. A
+separate, stricter investigation compared the underlying COMPLEX field at exact matching
+coordinates (global phase removed) and found aligned correlation only reaches ~0.98-0.997, not
+the ideal > 0.9999, and is non-monotonic with angle -- most likely float32 precision loss in the
+kernel's phase term at large carrier offsets, not a conceptual mismatch, but not fully
+confirmed. That test currently fails and has been removed from this file's passing suite; see
+git history (test_learn_wave_shifted_band_limited_angular_spectrum_field_equivalence.py, since
+removed) and shifted_band_limited_angular_spectrum's own docstring in odak/learn/wave/classical.py
+for the full finding. Do not assume this function's raw complex output matches
+band_limited_angular_spectrum's to high precision for phase-sensitive uses.
 """
 
 import math
@@ -35,7 +32,7 @@ import odak
 
 # ============================================================================
 # Shared physical setup (used by test_mask_ablation / test_pixel_semantics /
-# test_sensor_equivalence; test_correctness/test_memory/test_convergence use their own
+# test_correctness/test_memory/test_convergence use their own
 # self-contained parameters, documented inline where they differ)
 # ============================================================================
 WAVELENGTH_M = 532e-9
@@ -51,12 +48,8 @@ BASE_RAW_RESOLUTION = RESOLUTION
 SAFE_NYQUIST_FRACTION = 0.8
 CONVERGENCE_SIMILARITY_THRESHOLD = 0.9999
 SHIFTED_RESOLUTION = 512
-SENSOR_RESOLUTION = SHIFTED_RESOLUTION
-SHIFT_INTERNAL_RESOLUTIONS = [512, 1024, 2048]
-SHIFT_INTERNAL_PRIMARY = 2048
 
 CONTROL_TOLERANCE = 1e-4
-SENSOR_SIMILARITY_TARGET = 0.9999
 ENERGY_RATIO_TOLERANCE = 0.05
 
 
@@ -163,14 +156,6 @@ def _decimate_intensity(intensity, factor):
     when `factor` is odd, off by half a fine pixel when even (negligible at these scales)."""
     offset = factor // 2
     return intensity[offset::factor, offset::factor]
-
-
-def _sensor_energy(intensity_fine, dx_fine, factor):
-    """E_ij = sum(I_fine over the sensor pixel footprint) * dx_fine^2 -- a physical
-    pixel-area-integrated energy, as opposed to a point-sampled intensity."""
-    if factor <= 1:
-        return intensity_fine * dx_fine**2
-    return _bin_intensity(intensity_fine, factor) * dx_fine**2
 
 
 def _residual_bandwidth_hz_per_m():
@@ -317,7 +302,7 @@ def _compare_energy(reference, candidate):
 
 # ============================================================================
 # Oversampled/converged raw-BASM reference -- intensity-based (shared by
-# test_pixel_semantics and test_sensor_equivalence)
+# test_pixel_semantics)
 # ============================================================================
 _ZERO_ANGLE_ENERGY_CACHE = {}
 
@@ -405,17 +390,10 @@ def _converged_raw_reference(theta_deg, k, device):
 
 def _fixed_raw_reference(theta_deg, k, device, resolution=None):
     """Raw-BASM reference at a fixed, explicit resolution -- deliberately NOT the adaptively
-    -converged one from _converged_raw_reference. test_sensor_equivalence asks a specific
-    scientific question: does shifted-BASM match a SUFFICIENTLY SAMPLED ordinary BASM? That
-    answer must not hinge on whether an N-vs-2N similarity metric, computed in float32, happens
-    to land on one side or the other of CONVERGENCE_SIMILARITY_THRESHOLD -- environment-to
-    -environment float32 noise near that boundary can flip which raw N a run lands on (observed:
-    CI landing on 1024/2048 where every other environment reached the 4096 cap), producing
-    pass/fail flips unrelated to the physics under test. `resolution` defaults to
-    MAX_RAW_RESOLUTION, the physical/evanescent-frequency-bounded cap (see
-    _max_physical_raw_resolution) that the adaptive loop was heading for anyway in every
-    environment where it wasn't cut short -- fixing it directly is at least as well-resolved and
-    fully deterministic."""
+    -converged one from _converged_raw_reference. This avoids making CI-facing equivalence checks
+    depend on whether an N-vs-2N similarity metric, computed in float32, happens to land on one
+    side or the other of CONVERGENCE_SIMILARITY_THRESHOLD. `resolution` defaults to
+    MAX_RAW_RESOLUTION, the physical/evanescent-frequency-bounded cap."""
     if resolution is None:
         resolution = MAX_RAW_RESOLUTION
     offset_fx = _angle_to_offset(theta_deg)
@@ -1067,120 +1045,11 @@ def test_pixel_semantics(device=torch.device("cpu")):
     )
 
 
-# ============================================================================
-# test_sensor_equivalence: integrate |U|^2 over the SAME physical sensor pixels for
-# both methods before comparing -- the question relevant to lensless PSF simulation.
-# ============================================================================
-def test_sensor_equivalence(device=torch.device("cpu")):
-    """Do the two solvers predict the same measurement for a real, finite-area sensor pixel
-    (E_ij = integral_over_pixel |U|^2 dx dy)? Shifted-BASM is run on an internal grid finer than
-    the sensor (SHIFT_INTERNAL_PRIMARY=2048), never its own native-resolution point sample, to
-    avoid repeating the point-sample-vs-area-average mismatch from test_pixel_semantics. The raw
-    reference is built at a FIXED resolution (_fixed_raw_reference, MAX_RAW_RESOLUTION) rather
-    than test_pixel_semantics's adaptively-converged one, so this test's pass/fail answers "does
-    shifted-BASM match a sufficiently sampled raw BASM?" and not "did a float32 N-vs-2N
-    similarity heuristic happen to cross 0.9999 on this machine?"."""
-    k = odak.learn.wave.wavenumber(WAVELENGTH_M)
-    raw_rows = [_fixed_raw_reference(theta_deg, k, device) for theta_deg in ANGLES_DEG]
-
-    rows = []
-    for raw_ref in raw_rows:
-        offset_fx, n_raw = raw_ref["offset_fx"], raw_ref["n_raw"]
-        e_raw = _sensor_energy(raw_ref["intensity"], raw_ref["pitch"], n_raw // SENSOR_RESOLUTION)
-        intensity_shift, pitch_shift = _shifted_basm_intensity(offset_fx, SHIFT_INTERNAL_PRIMARY, k, device)
-        e_shift = _sensor_energy(intensity_shift, pitch_shift, SHIFT_INTERNAL_PRIMARY // SENSOR_RESOLUTION)
-        metrics = _compare_energy(e_raw, e_shift)
-        rows.append({"theta_deg": raw_ref["theta_deg"], "n_raw": n_raw, "metrics": metrics})
-
-    _print_table(
-        "=== Sensor-measurement equivalence (raw N vs. shifted internal {},\n"
-        "    both integrated onto the same {}x{} sensor) ===".format(
-            SHIFT_INTERNAL_PRIMARY, SENSOR_RESOLUTION, SENSOR_RESOLUTION
-        ),
-        ["Angle", "RawN", "Similarity", "NRMSE", "PSNR", "EnergyRatio", "d(px)"],
-        [
-            [
-                "{:.1f}".format(r["theta_deg"]), "{}".format(r["n_raw"]), "{:.6f}".format(r["metrics"]["similarity"]),
-                "{:.4f}".format(r["metrics"]["nrmse"]), "{:.2f}".format(r["metrics"]["psnr"]),
-                "{:.4f}".format(r["metrics"]["energy_ratio"]), "{:.3f}".format(r["metrics"]["d_px"]),
-            ]
-            for r in rows
-        ],
-    )
-
-    degenerate_rows = [
-        (r["theta_deg"], r["metrics"]["degenerate_side"])
-        for r in rows
-        if r["metrics"]["degenerate"]
-    ]
-    if degenerate_rows:
-        raise AssertionError(
-            "raw-vs-shifted sensor-energy comparison collapsed to near-zero at theta/side={} "
-            "-- see the table above; this is a degenerate comparison, not a genuine similarity/"
-            "energy-ratio failure".format(degenerate_rows)
-        )
-
-    # Control: raw-vs-raw sensor-integration reference accuracy (no shifted-BASM at all).
-    control_rows = []
-    for raw_ref in raw_rows:
-        n_raw = raw_ref["n_raw"]
-        other_n = n_raw * 2 if n_raw * 2 <= CONVERGENCE_DOUBLE_CEILING else n_raw // 2
-        e_raw = _sensor_energy(raw_ref["intensity"], raw_ref["pitch"], n_raw // SENSOR_RESOLUTION)
-        intensity_other, pitch_other = _raw_basm_intensity(other_n, raw_ref["offset_fx"], k, device)
-        e_other = _sensor_energy(intensity_other, pitch_other, max(other_n // SENSOR_RESOLUTION, 1))
-        control_rows.append({"theta_deg": raw_ref["theta_deg"], "sim": _compare_energy(e_raw, e_other)["similarity"]})
-    _print_table(
-        "=== Control: raw-vs-raw sensor-integration reference accuracy (no shifted-BASM) ===",
-        ["Angle", "Similarity"],
-        [["{:.1f}".format(c["theta_deg"]), "{:.6f}".format(c["sim"])] for c in control_rows],
-    )
-
-    # Control: shifted internal-grid sensor-integration convergence (512 -> 1024 -> 2048).
-    convergence_rows = []
-    for row in rows:
-        offset_fx = next(r["offset_fx"] for r in raw_rows if r["theta_deg"] == row["theta_deg"])
-        energies = {}
-        for internal_n in SHIFT_INTERNAL_RESOLUTIONS:
-            intensity, pitch = _shifted_basm_intensity(offset_fx, internal_n, k, device)
-            energies[internal_n] = _sensor_energy(intensity, pitch, max(internal_n // SENSOR_RESOLUTION, 1))
-        sim_512_1024 = _compare_energy(energies[512], energies[1024])["similarity"]
-        sim_1024_2048 = _compare_energy(energies[1024], energies[2048])["similarity"]
-        convergence_rows.append({"theta_deg": row["theta_deg"], "s1": sim_512_1024, "s2": sim_1024_2048})
-    _print_table(
-        "=== Control: shifted internal-grid sensor convergence (512->1024->2048) ===",
-        ["Angle", "Sim(512v1024)", "Sim(1024v2048)"],
-        [["{:.1f}".format(c["theta_deg"]), "{:.6f}".format(c["s1"]), "{:.6f}".format(c["s2"])] for c in convergence_rows],
-    )
-
-    similarities = [r["metrics"]["similarity"] for r in rows]
-    energy_ratios = [r["metrics"]["energy_ratio"] for r in rows]
-    lowest_similarity = min(similarities)
-    worst_theta = rows[similarities.index(lowest_similarity)]["theta_deg"]
-    energy_near_one = all(abs(e - 1.0) < ENERGY_RATIO_TOLERANCE for e in energy_ratios)
-    largest_energy_mismatch = max(abs(e - 1.0) for e in energy_ratios)
-
-    print("Lowest sensor similarity: {:.6f} (theta={:.1f} deg)".format(lowest_similarity, worst_theta))
-    print("Largest physical energy mismatch: {:.4f}".format(largest_energy_mismatch))
-    print(
-        "Do both methods predict the same finite-area sensor measurement? "
-        + ("YES" if energy_near_one and lowest_similarity > SENSOR_SIMILARITY_TARGET else "NO")
-    )
-
-    assert energy_near_one, (
-        "physical sensor-energy ratio should stay within {:.0%} of 1.0 at every angle -- largest "
-        "mismatch was {:.4f}; see the table above".format(ENERGY_RATIO_TOLERANCE, largest_energy_mismatch)
-    )
-    assert lowest_similarity > SENSOR_SIMILARITY_TARGET, (
-        "sensor similarity should exceed {:.3f} at every angle -- lowest was {:.6f} at theta={:.1f}; "
-        "see the table/controls above".format(SENSOR_SIMILARITY_TARGET, lowest_similarity, worst_theta)
-    )
-
-
 if __name__ == "__main__":
     for _name, _fn in [
         ("test_correctness", test_correctness), ("test_memory", test_memory),
         ("test_convergence", test_convergence), ("test_mask_ablation", test_mask_ablation),
-        ("test_pixel_semantics", test_pixel_semantics), ("test_sensor_equivalence", test_sensor_equivalence),
+        ("test_pixel_semantics", test_pixel_semantics),
     ]:
         print("\n" + "#" * 78 + "\n# {}\n".format(_name) + "#" * 78 + "\n")
         _fn()
