@@ -142,8 +142,7 @@ def _centroid_px(intensity):
 
 
 def _bin_intensity(intensity, factor):
-    """Energy-preserving SUM binning (matches sum_bin_sensor_pixels in
-    src/asm_psf_propagation.py): a coarser PHYSICAL SENSOR pixel that integrates light over its
+    """Energy-preserving SUM binning: a coarser PHYSICAL SENSOR pixel that integrates light over its
     footprint. NOT the right operation for comparing two simulation grids of the same
     point-sampled field -- use _bin_intensity_average for that (see module Warning)."""
     n = intensity.shape[-1]
