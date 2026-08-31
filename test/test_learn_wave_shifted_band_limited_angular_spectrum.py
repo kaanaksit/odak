@@ -238,13 +238,29 @@ def _print_table(title, header_cols, rows):
 _DEGENERATE_RELATIVE_FLOOR = 1e-6
 
 
-def _is_degenerate_reference(reference_value, candidate_value):
-    """A reference that is technically positive but astronomically tiny relative to either side
-    would otherwise slip past a plain `> 0` guard and produce a nonsensical, silently-huge ratio
-    (observed once as ~3e26) instead of a clearly-flagged failure. Self-relative -- no arbitrary
-    absolute constant -- and also catches the both-exactly-zero case via the floor."""
+def _degenerate_energy_side(reference_value, candidate_value):
+    """Identifies either comparison side collapsing to a near-zero energy scale.
+
+    A value that is technically positive but astronomically tiny relative to the other side would
+    otherwise slip past a plain `> 0` guard and produce nonsensical ratios or NaN/Inf similarity
+    values instead of a clearly flagged failure. Self-relative -- no arbitrary absolute constant
+    -- and also catches the both-exactly-zero case via the floor.
+    """
     scale = max(reference_value, candidate_value, 1e-300)
-    return reference_value < _DEGENERATE_RELATIVE_FLOOR * scale
+    reference_degenerate = reference_value < _DEGENERATE_RELATIVE_FLOOR * scale
+    candidate_degenerate = candidate_value < _DEGENERATE_RELATIVE_FLOOR * scale
+    if reference_degenerate and candidate_degenerate:
+        return "reference and candidate"
+    if reference_degenerate:
+        return "reference"
+    if candidate_degenerate:
+        return "candidate"
+    return None
+
+
+def _is_degenerate_reference(reference_value, candidate_value):
+    """Backward-compatible boolean check for ratio formatting guards."""
+    return _degenerate_energy_side(reference_value, candidate_value) is not None
 
 
 def _compare_intensity(reference, reference_pitch_m, candidate, candidate_pitch_m):
@@ -260,7 +276,8 @@ def _compare_intensity(reference, reference_pitch_m, candidate, candidate_pitch_
     psnr = 20.0 * math.log10(peak / rmse) if rmse > 0 and peak > 0 else float("inf") if rmse == 0 else float("nan")
     reference_energy = float(reference.sum()) * reference_pitch_m**2
     candidate_energy = float(candidate.sum()) * candidate_pitch_m**2
-    degenerate = _is_degenerate_reference(reference_energy, candidate_energy)
+    degenerate_side = _degenerate_energy_side(reference_energy, candidate_energy)
+    degenerate = degenerate_side is not None
     energy_ratio = candidate_energy / reference_energy if not degenerate else float("nan")
     ref_cx, ref_cy = _centroid_px(reference)
     cand_cx, cand_cy = _centroid_px(candidate)
@@ -268,6 +285,7 @@ def _compare_intensity(reference, reference_pitch_m, candidate, candidate_pitch_
     return {
         "similarity": similarity, "nrmse": nrmse, "psnr": psnr, "energy_ratio": energy_ratio,
         "d_px": math.hypot(dx_px, dy_px), "dx_px": dx_px, "dy_px": dy_px, "degenerate": degenerate,
+        "degenerate_side": degenerate_side,
     }
 
 
@@ -284,7 +302,8 @@ def _compare_energy(reference, candidate):
     peak = float(reference.max())
     psnr = 20.0 * math.log10(peak / rmse) if rmse > 0 and peak > 0 else float("inf") if rmse == 0 else float("nan")
     ref_total, cand_total = float(reference.sum()), float(candidate.sum())
-    degenerate = _is_degenerate_reference(ref_total, cand_total)
+    degenerate_side = _degenerate_energy_side(ref_total, cand_total)
+    degenerate = degenerate_side is not None
     energy_ratio = cand_total / ref_total if not degenerate else float("nan")
     ref_cx, ref_cy = _centroid_px(reference)
     cand_cx, cand_cy = _centroid_px(candidate)
@@ -292,6 +311,7 @@ def _compare_energy(reference, candidate):
     return {
         "similarity": similarity, "nrmse": nrmse, "psnr": psnr, "energy_ratio": energy_ratio,
         "dx_px": dx_px, "dy_px": dy_px, "d_px": math.hypot(dx_px, dy_px), "degenerate": degenerate,
+        "degenerate_side": degenerate_side,
     }
 
 
@@ -907,7 +927,7 @@ def test_mask_ablation(device=torch.device("cpu")):
 # plus a raw-vs-raw control isolating the diffuser's own sub-pixel structure
 # ============================================================================
 def _build_comparison_row(theta_deg, k, device):
-    raw_ref = _converged_raw_reference(theta_deg, k, device)
+    raw_ref = _fixed_raw_reference(theta_deg, k, device)
     offset_fx, n_raw = raw_ref["offset_fx"], raw_ref["n_raw"]
     bin_factor = n_raw // SHIFTED_RESOLUTION
 
@@ -1006,12 +1026,16 @@ def test_pixel_semantics(device=torch.device("cpu")):
     _mode_b_sensor_comparison(rows)
     control_rows = _raw_vs_raw_binning_control(rows, k, device)
 
-    degenerate_thetas = [t["row"]["theta_deg"] for t in mode_a_rows if t["metrics"]["degenerate"]]
-    if degenerate_thetas:
+    degenerate_rows = [
+        (t["row"]["theta_deg"], t["metrics"]["degenerate_side"])
+        for t in mode_a_rows
+        if t["metrics"]["degenerate"]
+    ]
+    if degenerate_rows:
         raise AssertionError(
-            "raw-vs-shifted comparison reference collapsed to near-zero energy at theta={} deg "
+            "raw-vs-shifted comparison collapsed to near-zero energy at theta/side={} "
             "-- see the Mode A table above; this is a degenerate comparison, not a genuine "
-            "similarity/energy-ratio failure".format(degenerate_thetas)
+            "similarity/energy-ratio failure".format(degenerate_rows)
         )
 
     old_ratios = [t["old_energy_ratio"] for t in mode_a_rows]
@@ -1068,14 +1092,6 @@ def test_sensor_equivalence(device=torch.device("cpu")):
         metrics = _compare_energy(e_raw, e_shift)
         rows.append({"theta_deg": raw_ref["theta_deg"], "n_raw": n_raw, "metrics": metrics})
 
-    degenerate_thetas = [r["theta_deg"] for r in rows if r["metrics"]["degenerate"]]
-    if degenerate_thetas:
-        raise AssertionError(
-            "raw-vs-shifted sensor-energy reference collapsed to near-zero at theta={} deg -- "
-            "see the table below; this is a degenerate comparison, not a genuine similarity/"
-            "energy-ratio failure".format(degenerate_thetas)
-        )
-
     _print_table(
         "=== Sensor-measurement equivalence (raw N vs. shifted internal {},\n"
         "    both integrated onto the same {}x{} sensor) ===".format(
@@ -1091,6 +1107,18 @@ def test_sensor_equivalence(device=torch.device("cpu")):
             for r in rows
         ],
     )
+
+    degenerate_rows = [
+        (r["theta_deg"], r["metrics"]["degenerate_side"])
+        for r in rows
+        if r["metrics"]["degenerate"]
+    ]
+    if degenerate_rows:
+        raise AssertionError(
+            "raw-vs-shifted sensor-energy comparison collapsed to near-zero at theta/side={} "
+            "-- see the table above; this is a degenerate comparison, not a genuine similarity/"
+            "energy-ratio failure".format(degenerate_rows)
+        )
 
     # Control: raw-vs-raw sensor-integration reference accuracy (no shifted-BASM at all).
     control_rows = []
