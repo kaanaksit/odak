@@ -1300,6 +1300,17 @@ def shifted_band_limited_angular_spectrum(
     `Matsushima, Kyoji. "Shifted angular spectrum method for off-axis numerical propagation."
     Optics express 18.17 (2010): 18453-18463`.
 
+    Warning
+    -------
+    Validated to reproduce ordinary `band_limited_angular_spectrum`'s INTENSITY (|U|^2) closely
+    once both are properly resolved (matching a physical sensor-pixel measurement to similarity
+    > 0.9999 in testing). The underlying COMPLEX field, however, has only been validated to a
+    looser standard (global-phase-aligned correlation ~0.98-0.997, not yet the ideal > 0.9999) --
+    do not rely on this function's raw complex output matching `band_limited_angular_spectrum`'s
+    to high precision if your application is phase-sensitive (e.g. holography, interferometry)
+    rather than intensity-only (e.g. incoherent PSF/image simulation). See
+    test/test_learn_wave_shifted_band_limited_angular_spectrum.py for the underlying tests.
+
     Parameters
     ----------
     field            : torch.complex
