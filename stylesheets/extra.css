@@ -1,0 +1,16 @@
+[data-md-color-scheme="odak"] {
+  --md-primary-fg-color:        #00577D;
+  --md-primary-fg-color--light: #00577D;
+  --md-primary-fg-color--dark:  #00577D;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-hue: 210;
+  --md-primary-fg-color:        #00577D;
+}
+
+.md-grid {
+  max-width: 1440px; 
+
+
+}
