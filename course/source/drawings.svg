@@ -1,0 +1,2760 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="drawings.svg">
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="382.48226"
+     inkscape:cy="770.65189"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1060"
+     inkscape:window-x="1917"
+     inkscape:window-y="-3"
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid2985" />
+  </sodipodi:namedview>
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Lend"
+       style="overflow:visible;">
+      <path
+         id="path3841"
+         style="fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round;"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) rotate(180) translate(1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lend"
+       style="overflow:visible;">
+      <path
+         id="path3823"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;"
+         transform="scale(0.8) rotate(180) translate(12.5,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Lstart"
+       style="overflow:visible">
+      <path
+         id="path3838"
+         style="fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) translate(1,0)" />
+    </marker>
+    <linearGradient
+       id="linearGradient3808">
+      <stop
+         id="stop3810"
+         offset="0"
+         style="stop-color:#000000;stop-opacity:0;" />
+      <stop
+         id="stop3812"
+         offset="1"
+         style="stop-color:#000000;stop-opacity:1;" />
+    </linearGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3808"
+       id="radialGradient3806"
+       cx="72.5"
+       cy="109.86218"
+       fx="72.5"
+       fy="109.86218"
+       r="12.5"
+       gradientUnits="userSpaceOnUse" />
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart-2"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3838-5"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3808-3"
+       id="radialGradient3806-8"
+       cx="72.5"
+       cy="109.86218"
+       fx="72.5"
+       fy="109.86218"
+       r="12.5"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       id="linearGradient3808-3">
+      <stop
+         id="stop3810-1"
+         offset="0"
+         style="stop-color:#000000;stop-opacity:0;" />
+      <stop
+         id="stop3812-3"
+         offset="1"
+         style="stop-color:#000000;stop-opacity:1;" />
+    </linearGradient>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend-4"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3823-0"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart-4"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3838-9"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3808-4"
+       id="radialGradient3806-1"
+       cx="72.5"
+       cy="109.86218"
+       fx="72.5"
+       fy="109.86218"
+       r="12.5"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       id="linearGradient3808-4">
+      <stop
+         id="stop3810-15"
+         offset="0"
+         style="stop-color:#000000;stop-opacity:0;" />
+      <stop
+         id="stop3812-2"
+         offset="1"
+         style="stop-color:#000000;stop-opacity:1;" />
+    </linearGradient>
+    <marker
+       inkscape:stockid="Arrow2Lstart-4t"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart-4t"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path6046"
+         style="stroke-linejoin:round;stroke:#ff0000;stroke-width:0.625;fill:#ff0000;fill-rule:evenodd"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend0"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Lend0"
+       style="overflow:visible;">
+      <path
+         id="path6049"
+         style="stroke-linejoin:round;stroke:#ff0000;stroke-width:0.62500000;fill:#ff0000;fill-rule:evenodd"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) rotate(180) translate(1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart-4-2"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3838-9-5"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart-4t"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart-4t-5"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path6046-4"
+         style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend0"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend0-1"
+       style="overflow:visible">
+      <path
+         id="path6049-4"
+         style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart-8"
+       style="overflow:visible">
+      <path
+         id="path3838-58"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <linearGradient
+       id="linearGradient3808-4-9">
+      <stop
+         id="stop3810-15-9"
+         offset="0"
+         style="stop-color:#000000;stop-opacity:0;" />
+      <stop
+         id="stop3812-2-4"
+         offset="1"
+         style="stop-color:#000000;stop-opacity:1;" />
+    </linearGradient>
+    <marker
+       inkscape:stockid="Arrow2Lstart-4t"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart-4t-9"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path6046-7"
+         style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend0"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend0-8"
+       style="overflow:visible">
+      <path
+         id="path6049-0"
+         style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart-4t"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart-4t-6"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path6046-71"
+         style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend0"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend0-17"
+       style="overflow:visible">
+      <path
+         id="path6049-3"
+         style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart-4t"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart-4t-2"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path6046-1"
+         style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend0"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend0-2"
+       style="overflow:visible">
+      <path
+         id="path6049-7"
+         style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart-4t"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart-4t-51"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path6046-8"
+         style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend0"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend0-3"
+       style="overflow:visible">
+      <path
+         id="path6049-5"
+         style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart-4t"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker6987"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path6989"
+         style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend0"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker6991"
+       style="overflow:visible">
+      <path
+         id="path6993"
+         style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart-4t"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker6995"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path6997"
+         style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend0"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker6999"
+       style="overflow:visible">
+      <path
+         id="path7001"
+         style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart-4t"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker7003"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path7005"
+         style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend0"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker7007"
+       style="overflow:visible">
+      <path
+         id="path7009"
+         style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart-1"
+       style="overflow:visible">
+      <path
+         id="path3838-93"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <linearGradient
+       id="linearGradient3808-4-9-8">
+      <stop
+         id="stop3810-15-9-3"
+         offset="0"
+         style="stop-color:#000000;stop-opacity:0;" />
+      <stop
+         id="stop3812-2-4-6"
+         offset="1"
+         style="stop-color:#000000;stop-opacity:1;" />
+    </linearGradient>
+    <marker
+       inkscape:stockid="Arrow2LendV"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2LendV"
+       style="overflow:visible;">
+      <path
+         id="path7673"
+         style="stroke-linejoin:round;stroke:#ff0000;stroke-width:0.62500000;fill:#ff0000;fill-rule:evenodd"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) rotate(180) translate(1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2LendV"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2LendV-2"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path7673-7"
+         style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart-81"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3838-8"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <linearGradient
+       id="linearGradient3808-4-9-8-0">
+      <stop
+         id="stop3810-15-9-3-2"
+         offset="0"
+         style="stop-color:#000000;stop-opacity:0;" />
+      <stop
+         id="stop3812-2-4-6-7"
+         offset="1"
+         style="stop-color:#000000;stop-opacity:1;" />
+    </linearGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3808-4-9-8"
+       id="radialGradient8084"
+       gradientUnits="userSpaceOnUse"
+       cx="72.5"
+       cy="109.86218"
+       fx="72.5"
+       fy="109.86218"
+       r="12.5" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3808-4-9"
+       id="radialGradient8086"
+       gradientUnits="userSpaceOnUse"
+       cx="72.5"
+       cy="109.86218"
+       fx="72.5"
+       fy="109.86218"
+       r="12.5" />
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart-4-9"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3838-9-0"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart-4t"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart-4t-23"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path6046-713"
+         style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend0"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend0-5"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path6049-32"
+         style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart-47"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3838-4"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3808-4-3"
+       id="radialGradient3806-1-0"
+       cx="72.5"
+       cy="109.86218"
+       fx="72.5"
+       fy="109.86218"
+       r="12.5"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       id="linearGradient3808-4-3">
+      <stop
+         id="stop3810-15-8"
+         offset="0"
+         style="stop-color:#000000;stop-opacity:0;" />
+      <stop
+         id="stop3812-2-1"
+         offset="1"
+         style="stop-color:#000000;stop-opacity:1;" />
+    </linearGradient>
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart-4-3"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3838-9-53"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart-4t"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart-4t-7"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path6046-2"
+         style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend0"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend0-12"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path6049-2"
+         style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart-6"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3838-0"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3808-4-3-8"
+       id="radialGradient3806-1-0-5"
+       cx="72.5"
+       cy="109.86218"
+       fx="72.5"
+       fy="109.86218"
+       r="12.5"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       id="linearGradient3808-4-3-8">
+      <stop
+         id="stop3810-15-8-8"
+         offset="0"
+         style="stop-color:#000000;stop-opacity:0;" />
+      <stop
+         id="stop3812-2-1-5"
+         offset="1"
+         style="stop-color:#000000;stop-opacity:1;" />
+    </linearGradient>
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart-5"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3838-83"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <linearGradient
+       id="linearGradient3808-47">
+      <stop
+         id="stop3810-8"
+         offset="0"
+         style="stop-color:#000000;stop-opacity:0;" />
+      <stop
+         id="stop3812-8"
+         offset="1"
+         style="stop-color:#000000;stop-opacity:1;" />
+    </linearGradient>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-6"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3841-0"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart-5-5"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3838-83-4"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker13054"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path13056"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+  </defs>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 70,42.362183 0,69.999997 75,-34.999997"
+       id="path2987"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonintro.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 70,112.36218 85,0"
+       id="path2989"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonintro.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 150,107.36218 5,5 -5,5"
+       id="path2991"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonintro.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 140,77.362183 5,0 0,5"
+       id="path2993"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonintro.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 75,47.362183 -5,-5 -5,5"
+       id="path2995"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonintro.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="150"
+       y="77.362183"
+       id="text2997"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonintro.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan2999"
+         x="150"
+         y="77.362183"
+         style="font-size:10px">Z</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="160"
+       y="112.36218"
+       id="text3001"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonintro.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan3003"
+         x="160"
+         y="112.36218"
+         style="font-size:10px">X</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="66.922607"
+       y="39.93679"
+       id="text3005"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonintro.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan3007"
+         x="66.922607"
+         y="39.93679"
+         style="font-size:10px">Y</tspan></text>
+    <path
+       sodipodi:type="arc"
+       id="path3028"
+       sodipodi:cx="72.5"
+       sodipodi:cy="109.86218"
+       sodipodi:rx="12.5"
+       sodipodi:ry="12.5"
+       d="m 85,109.86218 a 12.5,12.5 0 1 1 -25,0 12.5,12.5 0 1 1 25,0 z"
+       transform="translate(-2.5253814,-0.50507627)"
+       style="fill-opacity:1.0;fill:url(#radialGradient3806)"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonintro.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.69999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow2Lstart)"
+       d="M 75.178572,120.75504 C 86.130475,135.9993 88.858697,130.28097 100,137.36218"
+       id="path3814"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonintro.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="104.46429"
+       y="142.36218"
+       id="text4260"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonintro.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan4262"
+         x="104.46429"
+         y="142.36218"
+         style="font-size:10px">Photon</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 245.53571,42.362183 0,69.999997 75,-35.000001"
+       id="path2987-8"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 245.53571,112.36218 85,0"
+       id="path2989-5"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 325.53571,107.36218 5,5 -5,5"
+       id="path2991-6"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 315.53571,77.362179 5,0 0,5"
+       id="path2993-7"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 250.53571,47.362179 -5,-4.999996 -5,4.999996"
+       id="path2995-6"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="325.53571"
+       y="77.362183"
+       id="text2997-3"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan2999-6"
+         x="325.53571"
+         y="77.362183"
+         style="font-size:10px">Z</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="335.53571"
+       y="112.36218"
+       id="text3001-1"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan3003-1"
+         x="335.53571"
+         y="112.36218"
+         style="font-size:10px">X</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="242.45831"
+       y="39.93679"
+       id="text3005-4"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan3007-3"
+         x="242.45831"
+         y="39.93679"
+         style="font-size:10px">Y</tspan></text>
+    <path
+       sodipodi:type="arc"
+       id="path3028-5"
+       sodipodi:cx="72.5"
+       sodipodi:cy="109.86218"
+       sodipodi:rx="12.5"
+       sodipodi:ry="12.5"
+       d="m 85,109.86218 a 12.5,12.5 0 1 1 -25,0 12.5,12.5 0 1 1 25,0 z"
+       transform="translate(173.01032,-0.5050755)"
+       style="fill:url(#radialGradient3806-8);fill-opacity:1"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.69999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow2Lstart)"
+       d="m 250.71428,120.75504 c 10.9519,15.24426 13.68013,9.52593 24.82143,16.60714"
+       id="path3814-3"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="280"
+       y="142.36218"
+       id="text4260-8"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan4262-4"
+         x="280"
+         y="142.36218"
+         style="font-size:10px">Photon</tspan></text>
+    <path
+       style="fill:none;stroke:#ff0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 245,112.36218 C 251.10227,55.151946 258.87099,9.924342 284.64286,94.147895"
+       id="path4342"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#ff0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 285,94.505038 c 7.10133,21.098182 11.22918,65.520252 30.71429,-14.642857"
+       id="path4344"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#00d1cf;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 245,112.36218 c -15.64671,-13.33543 -25.20222,-25.112638 39.64286,-17.857142 59.68722,7.506262 60.33358,-0.06174 30.71428,-15.357143"
+       id="path4346"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.69999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow2Lstart-2)"
+       d="M 275.71429,68.076467 C 285.51242,65.923996 299.89107,67.382393 300,37.362183"
+       id="path4348"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.69999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow2Lstart-2)"
+       d="M 334.28571,92.719324 C 368.03607,85.758582 349.94974,72.699407 355,62.362183"
+       id="path4534"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="291.78571"
+       y="34.505039"
+       id="text4720"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan4722"
+         x="291.78571"
+         y="34.505039"
+         style="font-size:10px">E(r,t)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="346.78571"
+       y="60.21936"
+       id="text4720-1"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan4722-1"
+         x="346.78571"
+         y="60.21936"
+         style="font-size:10px">B(r,t)</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.30000001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Lend)"
+       d="m 290.71429,24.862183 10,0"
+       id="path4747"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.30000001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Lend)"
+       d="m 345.71429,49.862183 10,0"
+       id="path4747-0"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 450.53571,42.362179 0,70.000001 75,-35.000001"
+       id="path2987-1"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photoneb.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 450.53571,112.36218 85,0"
+       id="path2989-8"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photoneb.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 530.53571,107.36218 5,5 -5,5"
+       id="path2991-3"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photoneb.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 520.53571,77.362179 5,0 0,5"
+       id="path2993-79"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photoneb.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 455.53571,47.362179 -5,-5 -5,5"
+       id="path2995-0"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photoneb.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="530.53571"
+       y="77.362183"
+       id="text2997-36"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photoneb.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan2999-68"
+         x="530.53571"
+         y="77.362183"
+         style="font-size:10px">Z</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="540.53571"
+       y="112.36218"
+       id="text3001-2"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photoneb.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan3003-9"
+         x="540.53571"
+         y="112.36218"
+         style="font-size:10px">X</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="447.45831"
+       y="39.93679"
+       id="text3005-9"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photoneb.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan3007-7"
+         x="447.45831"
+         y="39.93679"
+         style="font-size:10px">Y</tspan></text>
+    <path
+       sodipodi:type="arc"
+       id="path3028-3"
+       sodipodi:cx="72.5"
+       sodipodi:cy="109.86218"
+       sodipodi:rx="12.5"
+       sodipodi:ry="12.5"
+       d="m 85,109.86218 a 12.5,12.5 0 1 1 -25,0 12.5,12.5 0 1 1 25,0 z"
+       transform="translate(378.01032,-0.50507552)"
+       style="fill:url(#radialGradient3806-1);fill-opacity:1"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photoneb.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.69999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow2Lstart)"
+       d="m 455.71428,120.75504 c 10.9519,15.24426 13.68013,9.52593 24.82143,16.60714"
+       id="path3814-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photoneb.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="485"
+       y="142.36218"
+       id="text4260-2"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photoneb.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan4262-1"
+         x="485"
+         y="142.36218"
+         style="font-size:10px">Photon</tspan></text>
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#ff0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart-4t);marker-end:url(#Arrow2Lend0)"
+       d="m 450,62.362183 0,94.999997"
+       id="path5039"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photoneb.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path6201"
+       d="m 450,82.362183 c -31.23145,0.419378 3.59314,-38.879411 -25,-30"
+       style="fill:none;stroke:#000000;stroke-width:0.69999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow2Lstart-4);marker-end:none"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photoneb.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       transform="matrix(0,-1,1,0,0,0)"
+       sodipodi:linespacing="125%"
+       id="text6791"
+       y="420"
+       x="-112.36218"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photoneb.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         style="font-size:10px"
+         y="420"
+         x="-112.36218"
+         id="tspan6793"
+         sodipodi:role="line">Polarization axis</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text6795"
+       y="87.362183"
+       x="270"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         style="font-size:10px"
+         y="87.362183"
+         x="270"
+         id="tspan6797"
+         sodipodi:role="line">λ</tspan></text>
+    <path
+       inkscape:connector-curvature="0"
+       id="path6799"
+       d="M 240,107.36218 310,72.362183"
+       style="fill:none;stroke:#00c900;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path6801"
+       d="m 310,67.362183 0,10"
+       style="fill:none;stroke:#00c900;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path6803"
+       d="m 240,102.36218 0,10"
+       style="fill:none;stroke:#00c900;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonebalone.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 625.53571,42.36219 0,70 75,-35"
+       id="path2987-1-3"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 625.53571,112.36219 85,0"
+       id="path2989-8-8"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 705.53571,107.36219 5,5 -5,5"
+       id="path2991-3-5"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 695.53571,77.36219 5,0 0,5"
+       id="path2993-79-3"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 630.53571,47.36219 -5,-5 -5,5"
+       id="path2995-0-1"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="705.53571"
+       y="77.362198"
+       id="text2997-36-1"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan2999-68-2"
+         x="705.53571"
+         y="77.362198"
+         style="font-size:10px">Z</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="715.53571"
+       y="112.36218"
+       id="text3001-2-1"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan3003-9-5"
+         x="715.53571"
+         y="112.36218"
+         style="font-size:10px">X</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="622.45831"
+       y="39.936798"
+       id="text3005-9-3"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan3007-7-2"
+         x="622.45831"
+         y="39.936798"
+         style="font-size:10px">Y</tspan></text>
+    <path
+       sodipodi:type="arc"
+       id="path3028-3-4"
+       sodipodi:cx="72.5"
+       sodipodi:cy="109.86218"
+       sodipodi:rx="12.5"
+       sodipodi:ry="12.5"
+       d="m 85,109.86218 a 12.5,12.5 0 1 1 -25,0 12.5,12.5 0 1 1 25,0 z"
+       transform="translate(553.01032,-0.50507)"
+       style="fill:url(#radialGradient8086);fill-opacity:1"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.69999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow2Lstart)"
+       d="m 630.71428,120.75505 c 10.9519,15.24426 13.68013,9.52593 24.82143,16.60714"
+       id="path3814-6-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="660"
+       y="142.36218"
+       id="text4260-2-9"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan4262-1-8"
+         x="660"
+         y="142.36218"
+         style="font-size:10px">Photon</tspan></text>
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#ff0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart-4t);marker-end:url(#Arrow2Lend0)"
+       d="m 625,62.36219 0,95"
+       id="path5039-9"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#ff0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart-4t);marker-end:url(#Arrow2Lend0)"
+       d="m 605,72.36218 40,80"
+       id="path5039-9-3"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#ff0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart-4t);marker-end:url(#Arrow2Lend0)"
+       d="m 645,72.36218 -40,80"
+       id="path5039-9-7"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#ff0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart-4t);marker-end:url(#Arrow2Lend0)"
+       d="m 655,112.36218 -60,0"
+       id="path5039-9-5"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 70.53571,197.36219 0,70 75,-35"
+       id="path2987-1-3-1"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 70.53571,267.36219 85,0"
+       id="path2989-8-8-4"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 150.53571,262.36219 5,5 -5,5"
+       id="path2991-3-5-7"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 140.53571,232.36219 5,0 0,5"
+       id="path2993-79-3-0"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 75.53571,202.36219 -5,-5 -5,5"
+       id="path2995-0-1-4"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="150.53571"
+       y="232.3622"
+       id="text2997-36-1-9"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan2999-68-2-4"
+         x="150.53571"
+         y="232.3622"
+         style="font-size:10px">Z</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="160.53571"
+       y="267.36218"
+       id="text3001-2-1-2"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan3003-9-5-6"
+         x="160.53571"
+         y="267.36218"
+         style="font-size:10px">X</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="67.458313"
+       y="194.9368"
+       id="text3005-9-3-7"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan3007-7-2-6"
+         x="67.458313"
+         y="194.9368"
+         style="font-size:10px">Y</tspan></text>
+    <path
+       sodipodi:type="arc"
+       id="path3028-3-4-5"
+       sodipodi:cx="72.5"
+       sodipodi:cy="109.86218"
+       sodipodi:rx="12.5"
+       sodipodi:ry="12.5"
+       d="m 85,109.86218 a 12.5,12.5 0 1 1 -25,0 12.5,12.5 0 1 1 25,0 z"
+       transform="translate(-1.98968,154.49493)"
+       style="fill:url(#radialGradient8084);fill-opacity:1"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.69999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow2Lstart)"
+       d="m 75.71428,275.75505 c 10.9519,15.24426 13.68013,9.52593 24.82143,16.60714"
+       id="path3814-6-6-0"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="105"
+       y="297.36218"
+       id="text4260-2-9-3"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan4262-1-8-9"
+         x="105"
+         y="297.36218"
+         style="font-size:10px">Photon</tspan></text>
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path7280"
+       d="M 72.6289,270.73696 C 62.04462,252.7174 93.51486,228.89837 105.27369,257.79534"
+       style="fill:none;stroke:#ff0000;stroke-width:1.07200003;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <a
+       style="stroke:#ff0000;stroke-opacity:1"
+       id="a7328"
+       transform="translate(-180,25)"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200">
+      <path
+         style="fill:none;stroke:#ff0000;stroke-width:1.07200003;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 271.17485,238.55491 c -10.58428,-18.01956 20.88596,-41.83859 32.6448,-12.94162"
+         id="path7280-6"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc" />
+    </a>
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path7300"
+       d="m 105.27369,257.79534 c 2.03222,19.13369 -13.2839,10.79049 -13.99062,5.54641"
+       style="fill:none;stroke:#ff0000;stroke-width:1.07200003;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path7280-9"
+       d="m 91.20033,263.5941 c -10.58428,-18.01956 20.88596,-41.83859 32.64479,-12.94162"
+       style="fill:none;stroke:#ff0000;stroke-width:1.07200003;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <a
+       style="stroke:#ff0000;stroke-opacity:1"
+       id="a7328-6"
+       transform="translate(-161.42857,17.857143)"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200">
+      <path
+         style="fill:none;stroke:#ff0000;stroke-width:1.07200003;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 271.17485,238.55491 c -10.58428,-18.01956 20.88596,-41.83859 32.6448,-12.94162"
+         id="path7280-6-6"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc" />
+    </a>
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path7300-2"
+       d="m 123.84512,250.65248 c 2.03222,19.13369 -13.2839,10.79049 -13.99062,5.54641"
+       style="fill:none;stroke:#ff0000;stroke-width:1.07200003;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path7358"
+       d="m 119.64285,223.79075 c 4.40471,-13.82092 41.97539,-33.81452 30,5"
+       style="fill:none;stroke:#ff0000;stroke-width:0.69999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow2LendV)"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/photonpol.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 245.53571,197.36219 0,70 75,-35"
+       id="path2987-1-9"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 245.53571,267.36219 85,0"
+       id="path2989-8-6"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 325.53571,262.36219 5,5 -5,5"
+       id="path2991-3-8"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 315.53571,232.36219 5,0 0,5"
+       id="path2993-79-4"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 250.53571,202.36219 -5,-5 -5,5"
+       id="path2995-0-9"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="325.53571"
+       y="232.36218"
+       id="text2997-36-0"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan2999-68-21"
+         x="325.53571"
+         y="232.36218"
+         style="font-size:10px">Z</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="335.53571"
+       y="267.36218"
+       id="text3001-2-3"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan3003-9-4"
+         x="335.53571"
+         y="267.36218"
+         style="font-size:10px">X</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="242.45831"
+       y="194.9368"
+       id="text3005-9-0"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan3007-7-8"
+         x="242.45831"
+         y="194.9368"
+         style="font-size:10px">Y</tspan></text>
+    <path
+       sodipodi:type="arc"
+       id="path3028-3-8"
+       sodipodi:cx="72.5"
+       sodipodi:cy="109.86218"
+       sodipodi:rx="12.5"
+       sodipodi:ry="12.5"
+       d="m 85,109.86218 a 12.5,12.5 0 1 1 -25,0 12.5,12.5 0 1 1 25,0 z"
+       transform="translate(173.01032,154.49493)"
+       style="fill:url(#radialGradient3806-1-0);fill-opacity:1"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.69999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow2Lstart)"
+       d="m 250.71428,275.75505 c 10.9519,15.24426 13.68013,9.52593 24.82143,16.60714"
+       id="path3814-6-2"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="280"
+       y="297.36218"
+       id="text4260-2-7"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan4262-1-0"
+         x="280"
+         y="297.36218"
+         style="font-size:10px">Photon</tspan></text>
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#ff0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart-4t);marker-end:url(#Arrow2Lend0)"
+       d="m 245,217.36219 0,95"
+       id="path5039-5"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path6201-0"
+       d="m 245,237.36219 c -31.23145,0.41938 3.59314,-38.87941 -25,-30"
+       style="fill:none;stroke:#000000;stroke-width:0.69999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow2Lstart-4);marker-end:none"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       transform="matrix(0,-1,1,0,0,0)"
+       sodipodi:linespacing="125%"
+       id="text6791-8"
+       y="215"
+       x="-267.36218"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         style="font-size:10px"
+         y="215"
+         x="-267.36218"
+         id="tspan6793-8"
+         sodipodi:role="line">Polarization axis</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 275,202.36218 0,75"
+       id="path8274"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 280,202.36218 0,75"
+       id="path8284"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 285,202.36218 0,75"
+       id="path8286"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 290,277.36218 0,-75"
+       id="path8288"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 270,202.36218 0,75"
+       id="path8290"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 265,277.36218 0,-75"
+       id="path8292"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 295,202.36218 0,75"
+       id="path8294"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 450.53571,197.36219 0,70 75,-35"
+       id="path2987-1-9-4"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 450.53571,267.36219 85,0"
+       id="path2989-8-6-8"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 530.53571,262.36219 5,5 -5,5"
+       id="path2991-3-8-5"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 520.53571,232.36219 5,0 0,5"
+       id="path2993-79-4-8"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 455.53571,202.36219 -5,-5 -5,5"
+       id="path2995-0-9-1"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="530.53571"
+       y="232.36218"
+       id="text2997-36-0-0"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan2999-68-21-3"
+         x="530.53571"
+         y="232.36218"
+         style="font-size:10px">Z</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="540.53571"
+       y="267.36218"
+       id="text3001-2-3-2"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan3003-9-4-8"
+         x="540.53571"
+         y="267.36218"
+         style="font-size:10px">X</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="447.45831"
+       y="194.9368"
+       id="text3005-9-0-3"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan3007-7-8-4"
+         x="447.45831"
+         y="194.9368"
+         style="font-size:10px">Y</tspan></text>
+    <path
+       sodipodi:type="arc"
+       id="path3028-3-8-5"
+       sodipodi:cx="72.5"
+       sodipodi:cy="109.86218"
+       sodipodi:rx="12.5"
+       sodipodi:ry="12.5"
+       d="m 85,109.86218 a 12.5,12.5 0 1 1 -25,0 12.5,12.5 0 1 1 25,0 z"
+       transform="translate(378.01032,154.49493)"
+       style="fill:url(#radialGradient3806-1-0-5);fill-opacity:1"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.69999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow2Lstart)"
+       d="m 455.71428,275.75505 c 10.9519,15.24426 13.68013,9.52593 24.82143,16.60714"
+       id="path3814-6-2-4"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="485"
+       y="297.36218"
+       id="text4260-2-7-1"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan4262-1-0-6"
+         x="485"
+         y="297.36218"
+         style="font-size:10px">Photon</tspan></text>
+    <path
+       sodipodi:nodetypes="cc"
+       style="fill:none;stroke:#ff0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart-4t);marker-end:url(#Arrow2Lend0)"
+       d="m 450,217.36219 0,95"
+       id="path5039-5-4"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path6201-0-1"
+       d="m 450,237.36219 c -31.23145,0.41938 3.59314,-38.87941 -25,-30"
+       style="fill:none;stroke:#000000;stroke-width:0.69999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow2Lstart-4);marker-end:none"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       transform="matrix(0,-1,1,0,0,0)"
+       sodipodi:linespacing="125%"
+       id="text6791-8-1"
+       y="420"
+       x="-267.36218"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         style="font-size:10px"
+         y="420"
+         x="-267.36218"
+         id="tspan6793-8-9"
+         sodipodi:role="line">Polarization axis</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 459.54569,212.31142 65,0"
+       id="path8425"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 459.54569,217.31142 65,0"
+       id="path8427"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 459.54569,222.31142 65,0"
+       id="path8429"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 460.10153,226.35203 65,0"
+       id="path8425-5"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 460.10153,231.35203 65,0"
+       id="path8427-3"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 460.10153,236.35203 65,0"
+       id="path8429-6"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 459.54314,241.19974 65,0"
+       id="path8425-3"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 459.54314,246.19974 65,0"
+       id="path8427-8"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 459.54314,251.19974 65,0"
+       id="path8429-1"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 460.65227,257.06016 65,0"
+       id="path8425-34"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 460.65227,262.06016 65,0"
+       id="path8427-9"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 460.65227,267.06016 65,0"
+       id="path8429-5"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.69999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow2Lstart-6);marker-end:none"
+       d="m 295,207.36218 c 37.80528,-1.83748 14.74348,-27.0984 30,-25"
+       id="path8477"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="340"
+       y="177.36218"
+       id="text9247"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan9249"
+         x="340"
+         y="177.36218"
+         style="font-size:10px;text-align:center;text-anchor:middle">Polarization</tspan><tspan
+         sodipodi:role="line"
+         x="340"
+         y="189.86218"
+         id="tspan9251"
+         style="font-size:10px;text-align:center;text-anchor:middle">filter</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.69999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow2Lstart-6);marker-end:none"
+       d="m 495,212.36218 c 10.0663,-17.13077 17.56989,-16.32257 25,-15"
+       id="path9253"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="535.51276"
+       y="193.12108"
+       id="text9247-6"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/polfilter.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan9249-4"
+         x="535.51276"
+         y="193.12108"
+         style="font-size:10px;text-align:center;text-anchor:middle">Polarization</tspan><tspan
+         sodipodi:role="line"
+         x="535.51276"
+         y="205.62108"
+         id="tspan9251-9"
+         style="font-size:10px;text-align:center;text-anchor:middle">filter</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 158.75,365.21931 0,140"
+       id="path10637"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.29999995;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path10639"
+       sodipodi:cx="210"
+       sodipodi:cy="472.36218"
+       sodipodi:rx="10"
+       sodipodi:ry="10"
+       d="m 220,472.36218 a 10,10 0 1 1 -20,0 10,10 0 1 1 20,0 z"
+       transform="translate(-161.25,12.85713)"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart-5);marker-end:none"
+       d="m 48.75,493.79074 c -12.449496,24.50141 -11.723729,46.75413 30,40"
+       id="path11159"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="106.05608"
+       y="525.21924"
+       id="text11935"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan11937"
+         x="106.05608"
+         y="525.21924"
+         style="font-size:10px;text-align:center;text-anchor:middle">Collimated light</tspan><tspan
+         sodipodi:role="line"
+         x="106.05608"
+         y="537.71924"
+         id="tspan11939"
+         style="font-size:10px;text-align:center;text-anchor:middle">source</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 158.75,423.79074 -145,0"
+       id="path11943"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart-5)"
+       d="M 106.13075,392.54437 C 113.72338,353.90215 85.48645,363.52783 83.75,353.79074"
+       id="path11945"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="54.35405"
+       y="349.9024"
+       id="text12463"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan12465"
+         x="54.35405"
+         y="349.9024"
+         style="font-size:10px">Path of the light</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1, 1;stroke-dashoffset:0;marker-start:none"
+       d="m 48.75,483.79074 110,-60 -110,-65"
+       id="path12469"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#ff0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 128.75,438.79074 c -5.92044,-6.97348 -1.62673,-10.54224 0,-15"
+       id="path12731"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#ff0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 129.50379,423.13338 c -5.92044,-6.97348 -1.62673,-10.54224 0,-15"
+       id="path12731-3"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="115.22212"
+       y="415.77786"
+       id="text12751"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan12753"
+         x="115.22212"
+         y="415.77786"
+         style="font-size:10px">α</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="115.12315"
+       y="437.19156"
+       id="text12751-1"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan12753-4"
+         x="115.12315"
+         y="437.19156"
+         style="font-size:10px">α</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="178.75"
+       y="378.79074"
+       id="text12776"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan12778"
+         x="178.75"
+         y="378.79074"
+         style="font-size:10px">Dielectric mirror</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       d="m 158.75,463.79074 c 86.43401,-9.3195 -22.97859,-58.02317 55,-80"
+       id="path12780"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 410.23397,363.96135 0,140"
+       id="path10637-5"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.29999995;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path10639-6"
+       sodipodi:cx="210"
+       sodipodi:cy="472.36218"
+       sodipodi:rx="10"
+       sodipodi:ry="10"
+       d="m 220,472.36218 a 10,10 0 1 1 -20,0 10,10 0 1 1 20,0 z"
+       transform="translate(93.8054,13.027742)"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart-5);marker-end:none"
+       d="m 303.8054,493.96135 c -12.4495,24.50141 -11.72373,46.75413 30,40"
+       id="path11159-8"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="361.11148"
+       y="525.38989"
+       id="text11935-2"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan11937-8"
+         x="361.11148"
+         y="525.38989"
+         style="font-size:10px;text-align:center;text-anchor:middle">Collimated light</tspan><tspan
+         sodipodi:role="line"
+         x="361.11148"
+         y="537.88989"
+         id="tspan11939-8"
+         style="font-size:10px;text-align:center;text-anchor:middle">source</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="433.80539"
+       y="378.96136"
+       id="text12776-4"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan12778-6"
+         x="433.80539"
+         y="378.96136"
+         style="font-size:10px">Lambertian Surface</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       d="m 409.51969,463.24706 c 86.43401,-9.3195 -22.97859,-58.02317 55,-80"
+       id="path12780-9"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#ff0000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1, 1;stroke-dashoffset:0"
+       d="M 303.03571,485.21931 410.17857,427.36217"
+       id="path13192"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1, 1;stroke-dashoffset:0"
+       d="m 410.17857,427.36217 -60,-40"
+       id="path13194"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1, 1;stroke-dashoffset:0"
+       d="m 350.17857,427.36217 60,0 -20,-50"
+       id="path13196"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1, 1;stroke-dashoffset:0"
+       d="m 350.17857,407.36217 60,20 L 373.75,381.64789"
+       id="path13198"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1, 1;stroke-dashoffset:0"
+       d="m 350.17857,447.36217 60,-20 -50,40"
+       id="path13200"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1, 1;stroke-dashoffset:0"
+       d="m 410.17857,427.36217 -20,40"
+       id="path13202"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.29999995;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path10639-2"
+       sodipodi:cx="210"
+       sodipodi:cy="472.36218"
+       sodipodi:rx="10"
+       sodipodi:ry="10"
+       d="m 220,472.36218 a 10,10 0 1 1 -20,0 10,10 0 1 1 20,0 z"
+       transform="translate(418.75,-8.0357163)"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/retro2d.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 708.75,493.61218 40,-40.71429"
+       id="path13222"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/retro2d.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 748.75,453.61218 -40,-40"
+       id="path13242"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/retro2d.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1, 1;stroke-dashoffset:0"
+       d="m 628.75,463.61218 110,0 0,-20 -110,0"
+       id="path13244"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/retro2d.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow2Lend-6)"
+       d="m 708.75,363.61218 0,50"
+       id="path13246"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/retro2d.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend-6)"
+       d="m 708.75,553.61218 0,-60"
+       id="path13512"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/retro2d.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="257.32144"
+       y="436.64789"
+       id="text12463-5"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan12465-4"
+         x="257.32144"
+         y="436.64789"
+         style="font-size:10px">Path of the light</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend-6)"
+       d="m 298.75,443.79074 40,20"
+       id="path13799"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/reflection.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="-383.61218"
+       y="688.75"
+       id="text14067"
+       sodipodi:linespacing="125%"
+       transform="matrix(0,-1,1,0,0,0)"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/retro2d.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan14069"
+         x="-383.61218"
+         y="688.75"
+         style="font-size:10px;text-align:center;text-anchor:middle">Aperture</tspan><tspan
+         sodipodi:role="line"
+         x="-383.61218"
+         y="701.25"
+         id="tspan14071"
+         style="font-size:10px;text-align:center;text-anchor:middle">Size</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#marker13054);marker-end:url(#Arrow2Lend-6)"
+       d="m 610.89286,443.61218 0,20"
+       id="path14073"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/retro2d.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="602.32141"
+       y="455.75504"
+       id="text14603"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/retro2d.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan14605"
+         x="602.32141"
+         y="455.75504"
+         style="font-size:10px">a</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:3, 1;stroke-dashoffset:0"
+       d="m 748.75,373.61218 0,150"
+       id="path14607"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/retro2d.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#fe0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 738.75,463.61218 c 3.12657,9.44536 6.90887,6.58344 10,5"
+       id="path14609"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/retro2d.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#ff0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 738.75,443.61218 c 0.85233,-3.75071 0.23491,-8.93749 10,-5"
+       id="path14611"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/retro2d.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="730"
+       y="432.36218"
+       id="text14613"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/retro2d.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan14615"
+         x="730"
+         y="432.36218"
+         style="font-size:10px">45ᐤ</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="730"
+       y="482.18362"
+       id="text14613-4"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/retro2d.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan14615-4"
+         x="730"
+         y="482.18362"
+         style="font-size:10px">45ᐤ</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#marker13054);marker-end:none"
+       d="m 718.75,423.61218 c 43.84721,-27.28961 -3.31557,-45.2076 15,-65"
+       id="path14638"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/retro2d.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="713.79205"
+       y="353.56143"
+       id="text14904"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/retro2d.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan14906"
+         x="713.79205"
+         y="353.56143"
+         style="font-size:10px">2D Retro-reflector</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="573.75"
+       y="503.61218"
+       id="text11935-5"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/retro2d.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan11937-0"
+         x="573.75"
+         y="503.61218"
+         style="font-size:10px;text-align:center;text-anchor:middle">Collimated light</tspan><tspan
+         sodipodi:role="line"
+         x="573.75"
+         y="516.11218"
+         id="tspan11939-4"
+         style="font-size:10px;text-align:center;text-anchor:middle">source 1</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend-6)"
+       d="m 573.75,488.61218 c 5.87054,-9.76417 15.29885,-18.03034 46.44432,-17.15244"
+       id="path15471"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/retro2d.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.29999995;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path10639-2-0"
+       sodipodi:cx="210"
+       sodipodi:cy="472.36218"
+       sodipodi:rx="10"
+       sodipodi:ry="10"
+       d="m 220,472.36218 a 10,10 0 1 1 -20,0 10,10 0 1 1 20,0 z"
+       transform="translate(437.84138,-41.11439)"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/retro2d.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;stroke:#0000ff;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1, 1;stroke-dashoffset:0"
+       d="m 648.34645,431.13756 66.29713,-11.1956 10.10152,56.06347 -74.75128,13.13198"
+       id="path15757"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/home/kaan/SparkleShare/ims/Presentation/Presentation at IMS/img/retro2d.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+  </g>
+</svg>
